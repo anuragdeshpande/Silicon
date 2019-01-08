@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="CurrentProgramIncrement" verbose="1" parallel="tests" thread-count="45">
+    <listeners>
+        <listener class-name="framework.listener.Listener"/>
+    </listeners>
+    <test name="Test Tests" preserve-order="false" parallel="classes">
+        <classes>
+            <class name="TestClass"/>
+        </classes>
+    </test>
+</suite>
