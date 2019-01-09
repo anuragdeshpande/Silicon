@@ -46,7 +46,7 @@ public class DriverManager {
         int clockMoveAmount = 0;
         String buildNumber = System.getProperty("jenkinsBuildNumber");
         String suiteName = iTestResult.getTestContext().getSuite().getName();
-        String testRunSource = iTestResult.getTestContext().getHost();
+        String testRunSource = System.getProperty("startedByUser");
 
         if (status.equalsIgnoreCase("Failed")) {
             failureImageURL = null;
