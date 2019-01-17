@@ -1,11 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="CurrentProgramIncrement" verbose="1" parallel="tests" thread-count="45">
+<suite name="SuiteOfTests" verbose="1" parallel="methods" thread-count="45">
     <listeners>
-        <listener class-name="framework.listener.Listener"/>
+        <listener class-name="framework.Listener"/>
     </listeners>
-    <test name="Test Tests" preserve-order="false" parallel="classes">
+    <test name="TestClasses" preserve-order="false" parallel="classes">
         <classes>
-            <class name="TestClass"/>
+            <class name="com.idfbins.qa.guidewire.TestClassOne"/>
+            <class name="com.idfbins.qa.guidewire.TestClassTwo"/>
         </classes>
     </test>
 </suite>
