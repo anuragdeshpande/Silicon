@@ -3,10 +3,11 @@
     <listeners>
         <listener class-name="framework.Listener"/>
     </listeners>
-    <test name="TestClasses" preserve-order="false" parallel="classes">
+    <test name="Test Classes" preserve-order="false" parallel="classes">
         <classes>
             <class name="com.idfbins.qa.guidewire.TestClassOne"/>
             <class name="com.idfbins.qa.guidewire.TestClassTwo"/>
+            <class name="com.idfbins.qa.guidewire.TestClassThree"/>
         </classes>
     </test>
 </suite>

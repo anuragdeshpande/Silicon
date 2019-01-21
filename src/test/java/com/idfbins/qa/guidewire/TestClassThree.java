@@ -9,25 +9,25 @@ import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class TestClassOne extends BaseOperations {
+public class TestClassThree extends BaseOperations {
 
-    private static final Logger _logger = LogManager.getLogger(TestClassOne.class.getName());
+    private static final Logger _logger = LogManager.getLogger(TestClassThree.class.getName());
 
     @Test()
-    public void passTestClassOne() {
+    public void passTestThree() {
         WebDriver driver = DriverManager.chromeDriverSupplier.get();
         driver.get("http://cc8dev.idfbins.com/cc");
-        logger().log(Status.INFO, "Something 4");
+        logger().log(Status.INFO, "Turkey");
 
         driver.close();
         driver.quit();
     }
 
     @Test()
-    public void failTestClassOne() {
+    public void failTestThree() {
         WebDriver driver = DriverManager.chromeDriverSupplier.get();
         driver.get("http://cc8dev.idfbins.com/cc");
-        logger().log(Status.INFO, "Something 5");
+        logger().log(Status.INFO, "Turkey 2");
         Assert.fail("This test fails");
 
         driver.close();
@@ -35,13 +35,11 @@ public class TestClassOne extends BaseOperations {
     }
 
     @Test()
-    public void exceptionTestClassOne() throws Exception {
+    public void exceptionTestThree() throws Exception {
         WebDriver driver = DriverManager.chromeDriverSupplier.get();
         driver.get("http://cc8dev.idfbins.com/cc");
-        logger().log(Status.INFO, "Something 6");
-
+        logger().log(Status.INFO, "Turkey 3");
 
         throw new Exception("Throwing This");
-
     }
 }

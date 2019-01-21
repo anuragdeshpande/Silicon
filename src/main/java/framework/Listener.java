@@ -1,6 +1,5 @@
 package framework;
 
-import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -21,43 +20,45 @@ import java.util.HashMap;
 
 public class Listener implements ISuiteListener, ITestListener {
 
+    private static String directoryName;
     private ExtentReports extentReports;
     private ExtentHtmlReporter extentReporter;
     private ExtentTest suite;
     private ExtentTest classLogger;
     private String className;
-    private ExtentTest logger;
-    private String directoryName;
-    private HashMap<String, ExtentTest> loggers;
+    private ExtentTest testLogger;
+    private HashMap<String, ExtentTest> classLevel;
+    private HashMap<String, ExtentTest> testLevel;
+    private String currentTestName;
 
     public Listener() {
-        this.loggers = new HashMap<>();
         extentReports = new ExtentReports();
-        extentReports.setAnalysisStrategy(AnalysisStrategy.SUITE);
+        // Set path to report
 
         // Create new directory and files
         String rootPath = "\\\\qa\\regression_logs\\";
         String resultsFileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy_HHmmssA"));
-        this.directoryName = rootPath + resultsFileName;
+        directoryName = rootPath + resultsFileName;
 
-        // Set path to report
         if (new File(directoryName).mkdir()) {
             extentReporter = new ExtentHtmlReporter(directoryName + "\\" + resultsFileName + ".html");
         } else {
             extentReporter = new ExtentHtmlReporter(rootPath + resultsFileName + ".html");
         }
-
         // Configurations
         extentReporter.config().enableTimeline(true);
         extentReporter.config().setAutoCreateRelativePathMedia(true);
         extentReporter.config().setTheme(Theme.DARK);
         extentReports.attachReporter(extentReporter);
+
     }
 
     @Override
     public void onStart(ISuite iSuite) {
         // Create the suite name
-        suite = this.extentReports.createTest(iSuite.getName());
+        this.classLevel = new HashMap<>();
+        this.testLevel = new HashMap<>();
+        //suite = this.extentReports.createTest(iSuite.getName());
     }
 
     @Override
@@ -68,39 +69,47 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestStart(ITestResult iTestResult) {
         System.out.println("***  On Test Start  ***");
-        String simpleName = iTestResult.getTestClass().getRealClass().getSimpleName();
+        String simpleClassName = iTestResult.getTestClass().getRealClass().getSimpleName();
+        String testName = iTestResult.getName();
 
-        if (!simpleName.equalsIgnoreCase(this.className) && !loggers.containsKey(simpleName)) {
-            this.className = simpleName;
-            this.classLogger = suite.createNode(this.className);
-            loggers.put(simpleName, this.classLogger);
+        if (!simpleClassName.equalsIgnoreCase(this.className) && !classLevel.containsKey(simpleClassName)) {
+            this.className = simpleClassName;
+            this.classLogger = this.extentReports.createTest(this.className);
+            classLevel.put(simpleClassName, this.classLogger);
         }
-        this.logger = loggers.get(simpleName).createNode(iTestResult.getName());
-        ((BaseOperations) iTestResult.getInstance()).setLogger(this.logger);
+
+        if (!testName.equalsIgnoreCase(this.currentTestName) && !testLevel.containsKey(testName)) {
+            this.currentTestName = testName;
+            this.testLogger = classLevel.get(simpleClassName).createNode(iTestResult.getName());
+            testLevel.put(testName, this.testLogger);
+        }
+
+        this.testLogger = testLevel.get(testName);
+        ((BaseOperations) iTestResult.getInstance()).setLogger(this.testLogger);
     }
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         DriverManager.recordTestResult(iTestResult, "Success");
-        this.logger.pass(iTestResult.getName() + ": Passed");
+        testLevel.get(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
     }
 
     @Override
     public void onTestFailure(ITestResult iTestResult) {
         DriverManager.recordTestResult(iTestResult, "Failure");
         try {
-            this.logger.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
+            testLevel.get(iTestResult.getName()).addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
-            this.logger.warning(e);
+            testLevel.get(iTestResult.getName()).warning(e);
         }
-        this.logger.log(Status.FAIL, iTestResult.getName() + ": Failed");
-        this.logger.fail(iTestResult.getThrowable());
+        testLevel.get(iTestResult.getName()).log(Status.FAIL, iTestResult.getName() + ": Failed");
+        testLevel.get(iTestResult.getName()).fail(iTestResult.getThrowable());
     }
 
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         DriverManager.recordTestResult(iTestResult, "Skipped");
-        this.logger.skip(iTestResult.getName() + ": Skipped");
+        testLevel.get(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
     }
 
     @Override
@@ -123,7 +132,7 @@ public class Listener implements ISuiteListener, ITestListener {
         WebDriver driver = ((BaseOperations) iTestResult.getInstance()).driver;
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {
-            FileUtils.copyFile(scrFile, new File(this.directoryName + "\\" + iTestResult.getName() + ".png"));
+            FileUtils.copyFile(scrFile, new File(directoryName + "\\" + iTestResult.getName() + ".png"));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
