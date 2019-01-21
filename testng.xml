@@ -7,7 +7,7 @@
         <classes>
             <class name="com.idfbins.qa.guidewire.TestClassOne"/>
             <class name="com.idfbins.qa.guidewire.TestClassTwo"/>
-            <class name="com.idfbins.qa.guidewire.TestClassThree"/>
+            <!--<class name="com.idfbins.qa.guidewire.TestClassThree"/>-->
         </classes>
     </test>
 </suite>

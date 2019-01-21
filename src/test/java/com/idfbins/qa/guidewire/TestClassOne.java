@@ -6,7 +6,6 @@ import framework.webdriver.DriverManager;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class TestClassOne extends BaseOperations {
@@ -23,7 +22,7 @@ public class TestClassOne extends BaseOperations {
         driver.quit();
     }
 
-    @Test()
+/*    @Test()
     public void failTestClassOne() {
         WebDriver driver = DriverManager.chromeDriverSupplier.get();
         driver.get("http://cc8dev.idfbins.com/cc");
@@ -43,5 +42,5 @@ public class TestClassOne extends BaseOperations {
 
         throw new Exception("Throwing This");
 
-    }
+    }*/
 }
