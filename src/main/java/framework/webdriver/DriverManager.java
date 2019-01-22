@@ -4,9 +4,12 @@ import framework.database.ConnectionManager;
 import org.apache.commons.dbutils.QueryRunner;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 
+import java.net.URL;
 import java.sql.Date;
+import java.util.Properties;
 import java.util.function.Supplier;
 
 public class DriverManager {
@@ -14,6 +17,7 @@ public class DriverManager {
     //chrome driver supplier
     public static Supplier<WebDriver> chromeDriverSupplier = () -> {
 
+        Properties properties = new Properties();
         String os = System.getProperty("os.name").toLowerCase();
         String operatingSystemName = "windows";
 
@@ -26,6 +30,29 @@ public class DriverManager {
         }
 
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver/"+operatingSystemName+"/chromedriver.exe");
+        try {
+            properties.load(DriverManager.class.getResourceAsStream("config.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String runtimeEnvironment = properties.getProperty("runtimeEnvironment");
+        String hubUrl = System.getProperty("hubUrl");
+
+        if (hubUrl == null) {
+            if (runtimeEnvironment.equalsIgnoreCase("grid")) {
+                hubUrl = properties.getProperty("hubUrl");
+            }
+        }
+
+        if (hubUrl != null) {
+            try {
+                return new RemoteWebDriver(new URL(hubUrl), null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return new ChromeDriver();
     };
 
