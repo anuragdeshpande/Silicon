@@ -38,7 +38,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>SuiteGenerator</mainClass>
+                    <mainClass>test.java.SuiteGenerator</mainClass>
                     <classpathScope>test</classpathScope>
                     <arguments>
                         <argument>com.idfbins.qa.guidewire</argument>
