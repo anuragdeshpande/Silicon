@@ -54,17 +54,32 @@
                     <reuseForks>false</reuseForks>
                     <forkCount>1</forkCount>
                     <suiteXmlFiles>
-                        <!-- TestNG suite XML files -->
-                        <!--<suiteXmlFile>testng.xml</suiteXmlFile>-->
+                        <!--TestNG suite XML files-->
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <!-- <properties>
-                        <property>
-                            <name>testnames</name>
-                            <value>Aces Regression</value>
-                        </property>
-                    </properties>-->
                     <parallel>methods</parallel>
                     <threadCount>5</threadCount>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>com.idfbins.qa.guidewire.SuiteGenerator</mainClass>
+                    <classpathScope>test</classpathScope>
+                    <arguments>
+                        <argument>com.idfbins.qa.guidewire</argument>
+                    </arguments>
                 </configuration>
             </plugin>
         </plugins>
@@ -176,6 +191,13 @@
             <groupId>com.aventstack</groupId>
             <artifactId>extentreports</artifactId>
             <version>4.0.6</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.6.32</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
