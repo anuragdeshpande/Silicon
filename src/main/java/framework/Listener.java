@@ -3,7 +3,8 @@ package framework;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import framework.webdriver.DriverManager;
+import framework.annotations.AutomatedTest;
+import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -12,12 +13,11 @@ import org.testng.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class Listener implements ISuiteListener, ITestListener {
 
     private ExtentReports extentReports;
-
-
 
     @Override
     public void onStart(ISuite iSuite) {
@@ -33,17 +33,32 @@ public class Listener implements ISuiteListener, ITestListener {
     public void onTestStart(ITestResult iTestResult) {
         ExtentTest testLogger = ReportManager.recordTest(iTestResult);
         ((BaseOperations) iTestResult.getInstance()).setLogger(testLogger);
+        AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
+        if (annotations.length == 0) {
+            testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
+            iTestResult.setStatus(ITestResult.SKIP);
+        } else {
+            AutomatedTest automatedTest = annotations[0];
+            testLogger.assignAuthor(automatedTest.Author());
+            testLogger.assignCategory(automatedTest.FeatureNumber(), automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            for (String s : automatedTest.Centers()) {
+                testLogger.assignCategory(s);
+            }
+            for (String s : automatedTest.Themes()) {
+                testLogger.assignCategory(s);
+            }
+        }
     }
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        DriverManager.recordTestResult(iTestResult, "Success");
+        ReportManager.recordTestResult(iTestResult, "Success");
         ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
     }
 
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        DriverManager.recordTestResult(iTestResult, "Failure");
+        ReportManager.recordTestResult(iTestResult, "Failure");
         ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
@@ -56,7 +71,9 @@ public class Listener implements ISuiteListener, ITestListener {
 
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        DriverManager.recordTestResult(iTestResult, "Skipped");
+        if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
+            ReportManager.recordTestResult(iTestResult, "Skipped");
+        }
         ReportManager.getTest(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
     }
 
@@ -68,7 +85,9 @@ public class Listener implements ISuiteListener, ITestListener {
     // This method handles on start for classes
     @Override
     public void onStart(ITestContext iTestContext) {
-
+        for (ITestNGMethod allTestMethod : iTestContext.getAllTestMethods()) {
+            System.out.println(Arrays.toString(allTestMethod.getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class)));
+        }
     }
 
     @Override
@@ -77,14 +96,16 @@ public class Listener implements ISuiteListener, ITestListener {
     }
 
     private String captureScreenshot(ITestResult iTestResult) {
-        WebDriver driver = ((BaseOperations) iTestResult.getInstance()).driver;
+        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {
-            FileUtils.copyFile(scrFile, new File(ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png"));
+            File destFile = new File(destinationFilePath);
+            FileUtils.copyFile(scrFile, destFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
+        return destinationFilePath;
     }
 }

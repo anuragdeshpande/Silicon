@@ -9,7 +9,7 @@ public class ConnectionManager {
     static {
         testResultsDS.setUrl("jdbc:sqlserver://FBMSGWSQL-RR01:1433;DatabaseName=Regression");
         testResultsDS.setUsername("sa");
-        testResultsDS.setPassword("password");
+        testResultsDS.setPassword("mau$2ugguidewire");
         testResultsDS.setMinIdle(5);
         testResultsDS.setMaxIdle(10);
         testResultsDS.setMaxOpenPreparedStatements(100);
