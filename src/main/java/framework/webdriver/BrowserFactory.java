@@ -49,7 +49,7 @@ public class BrowserFactory {
                 return new RemoteWebDriver(new URL(url), null);
             } catch (Exception e) {
                 e.printStackTrace();
-                Assert.fail("Could not open URL.");
+                Assert.fail("Could not open URL - " + url);
             }
             return null;
         }
