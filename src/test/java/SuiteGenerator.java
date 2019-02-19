@@ -16,6 +16,9 @@ public class SuiteGenerator {
     }
 
     public static void generateSuiteXML(String basePackage) {
+
+        System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
+
         TestNG testNG = new TestNG();
         ClassGraph graph = new ClassGraph();
         ClassInfoList classesWithAnnotation = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());

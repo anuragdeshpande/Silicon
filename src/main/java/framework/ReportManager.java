@@ -108,10 +108,10 @@ class ReportManager {
             return regressionDB
                     .update("INSERT INTO TestResults" +
                                     "(ClockMove, TestCreator, TestName, StartTime, " +
-                                    "EndTime, FailureImageURL, TestStatus, FailureReason, ClockMoveTimeUnit, ClockMoveAmount, " +
-                                    "BuildNumber, SuiteName, TestRunSource, Tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, clockMoveTimeUnit,
-                            clockMoveAmount, buildNumber, suiteName, testRunSource, tags) > 0;
+                                    "EndTime, FailureImageURL, TestStatus, FailureReason, " +
+                                    "BuildNumber, SuiteName, TestRunSource, Tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+            clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
+                            suiteName, testRunSource, tags) > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
