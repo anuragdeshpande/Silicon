@@ -49,7 +49,6 @@ class ReportManager {
         // Configurations
         extentReporter.config().setTheme(Theme.DARK);
         extentReports.attachReporter(extentReporter);
-        extentReporter.setAppendExisting(true);
         return extentReports;
     }
 
