@@ -28,7 +28,7 @@ public class TestClassOne extends BaseOperations {
     public void testTwo() {
         GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
         interact.getDriver().manage().window().maximize();
-        interact.getDriver().get("https://www.google.com");
+        interact.getDriver().get("http://cc8uat/cc/ClaimCenter.do");
         Assert.fail("Test Fail");
     }
 
