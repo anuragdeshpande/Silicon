@@ -1,15 +1,15 @@
 package framework;
 
 import com.aventstack.extentreports.ExtentTest;
-import org.openqa.selenium.WebDriver;
+import framework.webdriver.BrowserFactory;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 
 public class BaseOperations {
 
-    WebDriver driver;
     private ExtentTest logger;
     String className;
 
@@ -26,6 +26,11 @@ public class BaseOperations {
     @AfterMethod
     public void afterMethod(ITestResult iTestResult) {
         System.out.println("Test Name: " + iTestResult.getName());
+    }
+
+    @AfterClass
+    public void afterClass() {
+        BrowserFactory.closeCurrentBrowser();
     }
 
     void setLogger(ExtentTest logger) {

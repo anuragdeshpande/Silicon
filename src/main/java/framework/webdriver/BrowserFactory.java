@@ -71,9 +71,9 @@ public class BrowserFactory {
         return new GuidewireInteract(instance.pool.get());
     }
 
-    public void closeBrowser() { // Quits the pool and closes the browser
-        pool.get().quit();
-        pool.remove();
+    public static void closeCurrentBrowser() { // Quits the pool and closes the browser
+        instance.pool.get().quit();
+        instance.pool.remove();
     }
 
 }
