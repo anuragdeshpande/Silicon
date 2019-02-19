@@ -1,4 +1,4 @@
-package com.idfbins.qa.guidewire;
+package guidewire;
 
 import framework.BaseOperations;
 import framework.annotations.AutomatedTest;

@@ -47,10 +47,9 @@ class ReportManager {
         extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
 
         // Configurations
-        extentReporter.config().enableTimeline(true);
-        extentReporter.config().setAutoCreateRelativePathMedia(true);
         extentReporter.config().setTheme(Theme.DARK);
         extentReports.attachReporter(extentReporter);
+        extentReporter.setAppendExisting(true);
         return extentReports;
     }
 
