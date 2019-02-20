@@ -1,5 +1,6 @@
 package framework;
 
+import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
@@ -48,6 +49,12 @@ class ReportManager {
 
         // Configurations
         extentReporter.config().setTheme(Theme.DARK);
+        extentReporter.config().setCSS(compileCustomCSS());
+        extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
+        extentReporter.config().setDocumentTitle("ART Regression Health Report");
+        extentReporter.config().setReportName("Regression");
+                extentReporter.setAppendExisting(true);
+        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
         extentReports.attachReporter(extentReporter);
         return extentReports;
     }
@@ -140,5 +147,73 @@ class ReportManager {
         }
 
         return tags.toString();
+    }
+
+    private static String compileCustomCSS(){
+
+        return (".leaf.pass > .collapsible-header, .leaf.pass > .collapsible-body {\n" +
+                "            border: #b5d6a7;\n" +
+                "            border-left: 2px solid #b5d6a7;\n" +
+                "            }\n" +
+                "\n" +
+                "            .leaf.fail > .collapsible-header, .leaf.fail > .collapsible-body {\n" +
+                "            border: #ff9a9a;\n" +
+                "            border-left: 2px solid #ff9a9a;\n" +
+                "            }\n" +
+                "\n" +
+                "            .leaf.fatal > .collapsible-header, .leaf.fatal > .collapsible-body {\n" +
+                "            border: darkorange;\n" +
+                "            border-left: 2px solid darkorange;\n" +
+                "            }\n" +
+                "\n" +
+                "            span.node-time.label.grey.lighten-1.white-text, span.node-duration.label.grey.lighten-1.white-text {\n" +
+                "            background-color: transparent !important;\n" +
+                "            }\n" +
+                "\n" +
+                "            span.category.label.white-text {\n" +
+                "            display: table-cell;\n" +
+                "            /*    background: #444 !important; */\n" +
+                "            }\n" +
+                "\n" +
+                "            span.category.label.white-text:after {\n" +
+                "            content: '\\A' !important;\n" +
+                "            white-space: pre;\n" +
+                "            }\n" +
+                "\n" +
+                "            span.author{\n" +
+                "            display: none;\n" +
+                "            }\n" +
+                "\n" +
+                "            .collapsible-header.active > span.author{\n" +
+                "            display: table-cell;\n" +
+                "            float: right;\n" +
+                "            }\n" +
+                "\n" +
+                "            span.category.label.white-text:before, span.author.label.white-text:before {\n" +
+                "            font-family: 'material icons';\n" +
+                "            position: relative;\n" +
+                "            top: 2px;\n" +
+                "            left: -2px;\n" +
+                "            }\n" +
+                "\n" +
+                "            span.category.label.white-text:before {\n" +
+                "            content: 'local_offer';\n" +
+                "            }\n" +
+                "\n" +
+                "            span.author.label.white-text:before {\n" +
+                "            content: 'person';\n" +
+                "            }\n" +
+                "\n" +
+                "            .collapsible-header > span.label{\n" +
+                "            border-radius: 0;\n" +
+                "            }" +
+                "\n" +
+                "            a.brand-logo.blue.darken-3{\n" +
+                "            padding-left: 10px;\n" +
+                "            }" +
+                "\n" +
+                "            #nav-mobile li:last-child{\n" +
+                "            display: none;\n" +
+                "            }");
     }
 }

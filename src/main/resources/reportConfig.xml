@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <!-- report theme -->
+        <!-- standard, dark -->
+        <theme>dark</theme>
+
+        <!-- document encoding -->
+        <!-- defaults to UTF-8 -->
+        <encoding>UTF-8</encoding>
+
+        <!-- protocol for script and stylesheets -->
+        <!-- defaults to https -->
+        <protocol>https</protocol>
+
+        <!-- title of the document -->
+        <documentTitle>ART Regression Report</documentTitle>
+
+        <!-- report name - displayed at top-nav -->
+        <reportName>Regression Report</reportName>
+
+        <!-- location of charts in the test view -->
+        <!-- top, bottom -->
+        <testViewChartLocation>bottom</testViewChartLocation>
+
+        <!-- custom javascript -->
+        <scripts>
+            <![CDATA[
+                $(document).ready(function() {
+
+                });
+            ]]>
+        </scripts>
+
+        <!-- custom styles -->
+        <styles>
+            .leaf.pass > .collapsible-header, .leaf.pass > .collapsible-body {
+            border: #b5d6a7;
+            border-left: 2px solid #b5d6a7;
+            }
+
+            .leaf.fail > .collapsible-header, .leaf.fail > .collapsible-body {
+            border: #ff9a9a;
+            border-left: 2px solid #ff9a9a;
+            }
+
+            .leaf.fatal > .collapsible-header, .leaf.fatal > .collapsible-body {
+            border: darkorange;
+            border-left: 2px solid darkorange;
+            }
+
+            span.node-time.label.grey.lighten-1.white-text, span.node-duration.label.grey.lighten-1.white-text {
+            background-color: transparent !important;
+            }
+
+            span.category.label.white-text {
+            display: table-cell;
+            /*    background: #444 !important; */
+            }
+
+            span.category.label.white-text:after {
+            content: '\A' !important;
+            white-space: pre;
+            }
+
+            span.author{
+            display: none;
+            }
+
+            .collapsible-header.active > span.author{
+            display: table-cell;
+            float: right;
+            }
+
+            span.category.label.white-text:before, span.author.label.white-text:before {
+            font-family: 'material icons';
+            position: relative;
+            top: 2px;
+            left: -2px;
+            }
+
+            span.category.label.white-text:before {
+            content: 'local_offer';
+            }
+
+            span.author.label.white-text:before {
+            content: 'person';
+            }
+
+            span.label{
+            border-radius: 0;
+            }
+        </styles>
+    </configuration>
+</extentreports>
