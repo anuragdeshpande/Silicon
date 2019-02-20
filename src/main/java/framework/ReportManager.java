@@ -9,6 +9,7 @@ import framework.annotations.AutomatedTest;
 import framework.annotations.AutomationHistory;
 import framework.database.ConnectionManager;
 import org.apache.commons.dbutils.QueryRunner;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
@@ -25,6 +26,7 @@ class ReportManager {
     // Reporting Indices
     private static HashMap<String, ExtentTest> classMap;
     private static HashMap<String, ExtentTest> testMap;
+    private static HashMap<String, ExtentTest> suiteMap;
 
 
     private ExtentTest classLogger;
@@ -44,6 +46,7 @@ class ReportManager {
 
         classMap = new HashMap<>();
         testMap = new HashMap<>();
+        suiteMap = new HashMap<>();
 
         extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
 
@@ -59,27 +62,37 @@ class ReportManager {
         return extentReports;
     }
 
-    private static ExtentTest recordClass(ITestResult testClass) {
-
-        String ID = testClass.getTestClass().getRealClass().getSimpleName();
-
-        if (!classMap.containsKey(ID)) {
-            ExtentTest extentTestClass = extentReports.createTest(ID);
-            classMap.put(ID, extentTestClass);
+    static ExtentTest recordSuite(String suiteName){
+        if(!suiteMap.containsKey(suiteName)){
+            ExtentTest suite = extentReports.createTest(suiteName);
+            suiteMap.put(suiteName, suite);
         }
-        return classMap.get(ID);
+
+        return suiteMap.get(suiteName);
     }
 
-    public static ExtentTest recordTest(ITestResult test) {
+    static ExtentTest recordClass(String className, ITestContext testContext) {
+        if (!classMap.containsKey(className)) {
+            ExtentTest extentTestClass = suiteMap.get(testContext.getSuite().getName()).createNode(className);
+            classMap.put(className, extentTestClass);
+        }
+        return classMap.get(className);
+    }
 
-        ExtentTest testClass = recordClass(test);
+    static ExtentTest recordTest(ITestResult test) {
+        String className = test.getTestClass().getRealClass().getSimpleName();
+        ExtentTest testClass = recordClass(className, test.getTestContext());
         ExtentTest testNode = testClass.createNode(test.getName());
         testMap.put(test.getName(), testNode);
 
         return testNode;
     }
 
-    public static ExtentTest getTest(String ID) {
+    static void removeClass(String className){
+        extentReports.removeTest(classMap.get(className));
+    }
+
+    static ExtentTest getTest(String ID) {
         return testMap.get(ID);
     }
 

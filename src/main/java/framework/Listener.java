@@ -13,6 +13,7 @@ import org.testng.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class Listener implements ISuiteListener, ITestListener {
@@ -22,11 +23,15 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onStart(ISuite iSuite) {
         this.extentReports = ReportManager.initiate();
+        ReportManager.recordSuite(iSuite.getName());
     }
 
+
+    // This method handles on start for classes
     @Override
-    public void onFinish(ISuite iSuite) {
-        this.extentReports.flush();
+    public void onStart(ITestContext iTestContext) {
+        String className = iTestContext.getClass().getCanonicalName();
+        ReportManager.recordClass(className, iTestContext);
     }
 
     @Override
@@ -49,6 +54,7 @@ public class Listener implements ISuiteListener, ITestListener {
             }
         }
     }
+
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
@@ -82,17 +88,16 @@ public class Listener implements ISuiteListener, ITestListener {
 
     }
 
-    // This method handles on start for classes
-    @Override
-    public void onStart(ITestContext iTestContext) {
-        for (ITestNGMethod allTestMethod : iTestContext.getAllTestMethods()) {
-            System.out.println(Arrays.toString(allTestMethod.getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class)));
-        }
-    }
-
+    // On Class Finish
     @Override
     public void onFinish(ITestContext iTestContext) {
         System.out.println("After Test Test");
+    }
+
+    @Override
+    public void onFinish(ISuite iSuite) {
+        ReportManager.removeClass("org.testng.TestRunner");
+        this.extentReports.flush();
     }
 
     private String captureScreenshot(ITestResult iTestResult) {
