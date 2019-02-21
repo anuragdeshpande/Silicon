@@ -15,15 +15,15 @@ public class TestClassOne extends BaseOperations {
 
     private static final Logger _logger = LogManager.getLogger(TestClassOne.class.getName());
 
-    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "1", StoryOrDefectNumber = "US155555", Themes = {"Turkeys"})
+    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I1", StoryOrDefectNumber = "US155555", Themes = {"Turkeys"})
     @AutomationHistory(StoryOrDefectNumbers = {"US1555553", "US1555554"})
     @Test
     public void testOne() {
 
     }
 
-    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "2", StoryOrDefectNumber = "US155558", Themes = {"Chickens"})
-    @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557"})
+    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
+    @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test
     public void testTwo() {
         GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
