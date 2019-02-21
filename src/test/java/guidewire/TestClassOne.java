@@ -15,8 +15,8 @@ public class TestClassOne extends BaseOperations {
 
     private static final Logger _logger = LogManager.getLogger(TestClassOne.class.getName());
 
-    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I1", StoryOrDefectNumber = "US155555", Themes = {"Turkeys"})
-    @AutomationHistory(StoryOrDefectNumbers = {"US1555553", "US1555554"})
+//    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I1", StoryOrDefectNumber = "US155555", Themes = {"Turkeys"})
+//    @AutomationHistory(StoryOrDefectNumbers = {"US1555553", "US1555554"})
     @Test
     public void testOne() {
 

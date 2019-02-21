@@ -51,13 +51,14 @@ class ReportManager {
         extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
 
         // Configurations
+        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
         extentReporter.config().setTheme(Theme.DARK);
         extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
         extentReporter.config().setDocumentTitle("ART Regression Health Report");
         extentReporter.config().setReportName("Regression");
-                extentReporter.setAppendExisting(true);
-        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
+        extentReporter.config().setChartVisibilityOnOpen(false);
+        extentReporter.setAppendExisting(true);
         extentReports.attachReporter(extentReporter);
         return extentReports;
     }
@@ -96,7 +97,7 @@ class ReportManager {
         return testMap.get(ID);
     }
 
-    public static boolean recordTestResult(ITestResult iTestResult, String status) {
+    static boolean recordTestResult(ITestResult iTestResult, String status) {
 
         AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
         AutomationHistory[] historyAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomationHistory.class);
@@ -162,7 +163,7 @@ class ReportManager {
         return tags.toString();
     }
 
-    private static String compileCustomCSS(){
+    private static java.lang.String compileCustomCSS(){
 
         return (".leaf.pass > .collapsible-header, .leaf.pass > .collapsible-body {\n" +
                 "            border: #b5d6a7;\n" +

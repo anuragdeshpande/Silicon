@@ -3,6 +3,7 @@ package framework.webdriver;
 import framework.guidewire.GuidewireInteract;
 import framework.utils.EnvironmentUtils;
 import framework.utils.PropertiesFileLoader;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -40,7 +41,7 @@ public class BrowserFactory {
             }
 
             // Default, Local pool.
-            System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver/"+ EnvironmentUtils.getOperatingSystemName() +"/chromedriver.exe");
+            ChromeDriverManager.chromedriver().setup();
             return new ChromeDriver();
         }
 
