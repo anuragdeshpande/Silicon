@@ -80,7 +80,7 @@ class ReportManager {
     }
 
     static ExtentTest recordClass(String className, ITestContext testContext) {
-        if (!classMap.containsKey(className)) {
+        if (!classMap.containsKey(className) && !className.equalsIgnoreCase("org.testng.TestRunner")) {
             ExtentTest extentTestClass = suiteMap.get(testContext.getSuite().getName()).createNode(className);
             classMap.put(className, extentTestClass);
         }

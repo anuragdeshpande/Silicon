@@ -14,24 +14,31 @@ import org.testng.*;
 import java.io.File;
 import java.io.IOException;
 
-public class Listener implements ISuiteListener, ITestListener {
+public class Listener implements ISuiteListener, ITestListener, IExecutionListener {
 
     private ExtentReports extentReports;
 
+    // Fires before any suite starts
+    @Override
+    public void onExecutionStart() {
+        this.extentReports = ReportManager.initiate();
+    }
+
+    // Fires at the beginning of each suite
     @Override
     public void onStart(ISuite iSuite) {
-        this.extentReports = ReportManager.initiate();
         ReportManager.recordSuite(iSuite.getName());
     }
 
 
-    // This method handles on start for classes
+    // Fires at the beginning of each test class
     @Override
     public void onStart(ITestContext iTestContext) {
         String className = iTestContext.getClass().getCanonicalName();
         ReportManager.recordClass(className, iTestContext);
     }
 
+    // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
         ExtentTest testLogger = ReportManager.recordTest(iTestResult);
@@ -54,12 +61,14 @@ public class Listener implements ISuiteListener, ITestListener {
     }
 
 
+    // fires when a test is successful
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
         ReportManager.recordTestResult(iTestResult, "Success");
     }
 
+    // fires when a test fails
     @Override
     public void onTestFailure(ITestResult iTestResult) {
         ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
@@ -73,6 +82,7 @@ public class Listener implements ISuiteListener, ITestListener {
         ReportManager.recordTestResult(iTestResult, "Failure");
     }
 
+    // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         ReportManager.getTest(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
@@ -81,20 +91,26 @@ public class Listener implements ISuiteListener, ITestListener {
         }
     }
 
+    // fires when the test fails, but passes a certain test coverage percentage.
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
 
     }
 
-    // On Class Finish
+    // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
         System.out.println("After Test Test");
     }
 
+    // Fires at the end of each suite.
     @Override
     public void onFinish(ISuite iSuite) {
-        ReportManager.removeClass("org.testng.TestRunner");
+    }
+
+    // Fires at the end of all suites.
+    @Override
+    public void onExecutionFinish() {
         this.extentReports.flush();
     }
 
@@ -111,4 +127,6 @@ public class Listener implements ISuiteListener, ITestListener {
         }
         return destinationFilePath;
     }
+
+
 }
