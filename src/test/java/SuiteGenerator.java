@@ -53,6 +53,7 @@ public class SuiteGenerator {
             xmlTest.addExcludedGroup("ClockMove");
         }
 
+        System.out.println(xmlSuite.toXml());
         testNG.setXmlSuites(Collections.singletonList(xmlSuite));
         testNG.run();
 

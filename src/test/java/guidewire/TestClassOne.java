@@ -22,8 +22,8 @@ public class TestClassOne extends BaseOperations {
 
     }
 
-    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
-    @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
+//    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
+//    @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test
     public void testTwo() {
         GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();

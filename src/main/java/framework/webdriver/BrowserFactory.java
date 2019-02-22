@@ -6,6 +6,7 @@ import framework.utils.PropertiesFileLoader;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 
@@ -42,7 +43,9 @@ public class BrowserFactory {
 
             // Default, Local pool.
             ChromeDriverManager.chromedriver().setup();
-            return new ChromeDriver();
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--start-maximized");
+            return new ChromeDriver(chromeOptions);
         }
 
         private RemoteWebDriver getRemoteWebDriver(String url) {
@@ -62,6 +65,13 @@ public class BrowserFactory {
 
     public static Interact getNewChromeBrowser() {
         return new Interact(instance.pool.get());
+    }
+
+    public static Interact getNewChromeBrowser(String url){
+        Interact interact = new Interact(instance.pool.get());
+        interact.getDriver().get(url);
+
+        return interact;
     }
 
     public static GuidewireInteract getNewGuidewireChromeBrowser() {

@@ -35,7 +35,6 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestStart(ITestResult iTestResult) {
         ExtentTest testLogger = ReportManager.recordTest(iTestResult);
-        ((BaseOperations) iTestResult.getInstance()).setLogger(testLogger);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
@@ -56,13 +55,12 @@ public class Listener implements ISuiteListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ReportManager.recordTestResult(iTestResult, "Success");
         ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
+        ReportManager.recordTestResult(iTestResult, "Success");
     }
 
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        ReportManager.recordTestResult(iTestResult, "Failure");
         ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
@@ -71,14 +69,15 @@ public class Listener implements ISuiteListener, ITestListener {
         }
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
         testNode.fail(iTestResult.getThrowable());
+        ReportManager.recordTestResult(iTestResult, "Failure");
     }
 
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
+        ReportManager.getTest(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
             ReportManager.recordTestResult(iTestResult, "Skipped");
         }
-        ReportManager.getTest(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
     }
 
     @Override
