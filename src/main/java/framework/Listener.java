@@ -39,6 +39,7 @@ public class Listener implements ISuiteListener, ITestListener {
         if (annotations.length == 0) {
             testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
             iTestResult.setStatus(ITestResult.SKIP);
+            throw new SkipException("Fatal Error: @AutomatedTest annotation not found.");
         } else {
             AutomatedTest automatedTest = annotations[0];
             testLogger.assignAuthor(automatedTest.Author());

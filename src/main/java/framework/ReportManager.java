@@ -13,6 +13,8 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 class ReportManager {
 
     // Network Storage Location
-    private static String REPORT_FILE_NAME = System.getProperty("reportFileName");
+    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "Default" : System.getProperty("reportFileName");
     static String REPORT_DIRECTORY_LOCATION = "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
 
     // Reporting Indices
@@ -47,6 +49,11 @@ class ReportManager {
         classMap = new HashMap<>();
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
+
+        File file = new File(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
+        if(!file.exists()){
+            new File(REPORT_DIRECTORY_LOCATION ).mkdir();
+        }
 
         extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
 
