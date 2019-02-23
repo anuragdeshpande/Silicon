@@ -8,6 +8,7 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.annotations.AutomatedTest;
 import framework.annotations.AutomationHistory;
 import framework.database.ConnectionManager;
+import framework.enums.Environment;
 import org.apache.commons.dbutils.QueryRunner;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -52,7 +53,7 @@ class ReportManager {
 
         File file = new File(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
         if(!file.exists()){
-            new File(REPORT_DIRECTORY_LOCATION ).mkdir();
+            boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
         }
 
         extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
@@ -129,7 +130,7 @@ class ReportManager {
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
 
-        QueryRunner regressionDB = ConnectionManager.getRegressionDB();
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
 
         try {
             return regressionDB
