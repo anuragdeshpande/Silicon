@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 
 public class BaseOperations {
 
-    RegressionLogger logger;
+    protected RegressionLogger logger;
     String className;
 
 
