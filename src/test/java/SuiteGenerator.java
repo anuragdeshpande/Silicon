@@ -12,7 +12,8 @@ import java.util.LinkedList;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        generateSuiteXML(args[0]);
+        generateSuiteXML("guidewire");
+//        generateSuiteXML(args[0]);
     }
 
     public static void generateSuiteXML(String basePackage) {

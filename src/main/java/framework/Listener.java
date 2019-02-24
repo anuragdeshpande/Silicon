@@ -10,17 +10,24 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Listener implements ISuiteListener, ITestListener, IExecutionListener {
 
     private ExtentReports extentReports;
+    public static Logger logger;
 
     // Fires before any suite starts
     @Override
     public void onExecutionStart() {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
         this.extentReports = ReportManager.initiate();
     }
 
@@ -35,7 +42,9 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     @Override
     public void onStart(ITestContext iTestContext) {
         String className = iTestContext.getClass().getCanonicalName();
-        ReportManager.recordClass(className, iTestContext);
+        if(className.equalsIgnoreCase("org.testng.TestRunner")){
+            ReportManager.recordClass(className, iTestContext.getSuite().getName());
+        }
     }
 
     // Fires at the beginning of each test
@@ -85,8 +94,10 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        ReportManager.getTest(iTestResult.getName()).skip(iTestResult.getName() + ": Skipped");
+        ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
+        extentLogger.skip(iTestResult.getName() + ": Skipped");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
+            extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");
             ReportManager.recordTestResult(iTestResult, "Skipped");
         }
     }
