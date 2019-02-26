@@ -1,6 +1,7 @@
 package framework.elements.selectbox;
 
-import framework.elements.UIElement;
+import framework.elements.Identifier;
+import framework.elements.ui_element.UIElement;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.Keys;
@@ -13,9 +14,8 @@ public class UISelectBox extends UIElement implements IUISelectBox {
 
     private List<WebElement> listElements;
 
-    public UISelectBox(WebElement element, List<WebElement> listElements) {
-        super(element);
-        this.listElements = listElements;
+    public UISelectBox(Identifier identifier) {
+        super(identifier);
     }
 
     @Override

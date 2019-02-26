@@ -1,30 +1,28 @@
 package framework.elements.alertwindow;
 
-import framework.elements.UIElement;
+import framework.elements.Identifier;
+import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class UIConfirmationWindow extends UIElement implements IUIConfirmationWindow {
 
-    private WebElement element;
-
-    public UIConfirmationWindow(WebElement element) {
-        super(element);
-        this.element = element;
+    public UIConfirmationWindow(Identifier identifier) {
+        super(identifier);
     }
 
     @Override
     public void clickOkButton() {
-        this.element.findElement(By.linkText("OK")).click();
+        this.getElement().findElement(By.linkText("OK")).click();
     }
 
     @Override
     public void clickCancelButton() {
-        this.element.findElement(By.linkText("Cancel")).click();
+        this.getElement().findElement(By.linkText("Cancel")).click();
     }
 
     @Override
     public void clickButtonWithText(String buttonText) {
-        this.element.findElement(By.linkText(buttonText)).click();
+        this.getElement().findElement(By.linkText(buttonText)).click();
     }
 }

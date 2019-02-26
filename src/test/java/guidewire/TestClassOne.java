@@ -16,7 +16,7 @@ public class TestClassOne extends BaseOperations {
 
     @BeforeMethod
     public void testMethod(){
-        System.out.println("This is the before method for the test");
+        logger.info("This is the before method for the test");
     }
 
     @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
@@ -26,6 +26,12 @@ public class TestClassOne extends BaseOperations {
         GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
         interact.getDriver().manage().window().maximize();
         interact.getDriver().get("http://cc8uat/cc/ClaimCenter.do");
+        logger.trace("this is trace message");
+        logger.info("this is info message");
+        logger.warn("this is warning message");
+        logger.error("This Test is about to fail");
+        logger.fatal("this is fatal message");
+        logger.debug("this is debug message");
         Assert.fail("Test Fail");
     }
 }

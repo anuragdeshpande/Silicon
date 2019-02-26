@@ -1,4 +1,4 @@
-package framework.elements;
+package framework.elements.ui_element;
 
 import org.openqa.selenium.WebElement;
 
@@ -12,8 +12,6 @@ public interface IUIElementOperations {
     String screenGrab();
 
     boolean isPresent();
-
-    void refreshElement();
 
     WebElement getElement();
 }

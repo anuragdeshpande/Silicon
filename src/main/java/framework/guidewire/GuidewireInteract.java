@@ -1,6 +1,13 @@
 package framework.guidewire;
 
+import framework.elements.Identifier;
+import framework.elements.selectbox.UISelectBox;
+import framework.elements.ui_element.UIElement;
+import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
+import framework.guidewire.pages.GWIDs;
+import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
 public class GuidewireInteract extends Interact {
@@ -8,39 +15,27 @@ public class GuidewireInteract extends Interact {
         super(driver);
     }
 
-/*    public void withTabArrow(Identifier identifier) {
-        WebElement element = findElement(identifier);
-        Dimension size = element.getSize();
-        BrowserFactory.getCurrentBrowser().getActions().moveToElement(element, size.getWidth() - 12, 10).click().build().perform();
+    public void withTabArrow(Identifier identifier) {
+        UIElement uiElement = new UIElement(identifier);
+        Dimension size = uiElement.getElement().getSize();
+        BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
     }
 
     @Override
     public UISelectBox withSelectBox(Identifier identifier) {
-        this.findElement(CCIDs.ESCAPE_CLICKER).click();
-
-        WebElement selectBox = findElement(identifier);
-        selectBox.click();
-
-        List<WebElement> listElements = new ArrayList<>(findElement(CCIDs.LIST_OPTIONS).findElements(By.tagName("li")));
-        return new UISelectBox(selectBox, listElements);
+        new UIElement(GWIDs.ESCAPE_CLICKER).click();
+        new UIElement(identifier).click();
+        return new GWSelectBox(identifier);
     }
 
     @Override
     public UISelectBox withOptionalSelectBox(Identifier identifier) {
-        this.findElement(CCIDs.ESCAPE_CLICKER).click();
-
-        WebElement selectBox = null;
-        List<WebElement> listElements = new ArrayList<>();
-
-        try {
-            selectBox = findOptional(identifier);
-            if (selectBox != null) {
-                selectBox.click();
-                listElements = new ArrayList<>(findOptional(CCIDs.LIST_OPTIONS).findElements(By.tagName("li")));
-            }
-        } catch (TimeoutException t) {
-            System.out.println("Element Not found.  Returning shell element.");
+        new UIElement(GWIDs.ESCAPE_CLICKER).click();
+        UIElement uiElement = new UIElement(identifier, true);
+        if(uiElement.isPresent()){
+            uiElement.click();
         }
-        return new UISelectBox(selectBox, listElements);
-    }*/
+
+        return new GWSelectBox(identifier);
+    }
 }

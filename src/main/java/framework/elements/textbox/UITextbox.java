@@ -1,28 +1,26 @@
 package framework.elements.textbox;
 
-import framework.elements.UIElement;
+import framework.elements.Identifier;
+import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 public class UITextbox extends UIElement implements IUITextOperations {
 
-    private WebElement element;
-
-    public UITextbox(WebElement element) {
-        super(element);
-        this.element = element;
+    public UITextbox(Identifier identifier) {
+        super(identifier);
     }
 
     @Override
     public void fill(String value) {
-        this.element.clear();
-        this.element.sendKeys(value);
-        this.element.sendKeys(Keys.TAB);
+        this.getElement().sendKeys(Keys.chord(Keys.CONTROL + "a"));
+        this.getElement().sendKeys(value);
+        this.getElement().sendKeys(Keys.TAB);
     }
 
     @Override
     public void fillIfEmpty(String value) {
-        String fieldValue = this.element.getAttribute("value");
+        String fieldValue = this.getElement().getAttribute("value");
         if (fieldValue.equalsIgnoreCase("<none>") || fieldValue.equalsIgnoreCase("")) {
             fill(value);
         }
@@ -30,6 +28,6 @@ public class UITextbox extends UIElement implements IUITextOperations {
 
     @Override
     public String screenGrab() {
-        return this.element.getAttribute("value");
+        return this.getElement().getAttribute("value");
     }
 }

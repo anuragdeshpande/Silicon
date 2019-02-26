@@ -1,6 +1,6 @@
 package framework.elements.table;
 
-import framework.elements.UIElement;
+import framework.elements.ui_element.UIElement;
 import framework.elements.checkbox.UICheckbox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;

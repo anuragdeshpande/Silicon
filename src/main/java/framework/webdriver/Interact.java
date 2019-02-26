@@ -1,7 +1,7 @@
 package framework.webdriver;
 
 import framework.elements.Identifier;
-import framework.elements.UIElement;
+import framework.elements.ui_element.UIElement;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.selectbox.UISelectBox;
@@ -23,7 +23,6 @@ import java.util.List;
 public class Interact {
 
     private WebDriver driver;
-    private WaitUtils waitUtils;
     private boolean isGuidewire;
 
     public boolean isGuidewire() {
@@ -36,7 +35,6 @@ public class Interact {
 
     public Interact(WebDriver driver) {
         this.driver = driver;
-        this.waitUtils = new WaitUtils(this.driver);
     }
 
     public Actions getActions() {
@@ -50,16 +48,11 @@ public class Interact {
 
 
     public UITable withTable(Identifier identifier) {
-        WebElement element = findElement(identifier);
-        if (!element.getTagName().equalsIgnoreCase("table")) {
-            element = element.findElements(By.tagName("table")).get(0);
-        }
-        return new UITable(element, identifier);
+        return new UITable(identifier);
     }
 
     public UITextbox withTexbox(Identifier identifier) {
-        WebElement element = findElement(identifier);
-        return new UITextbox(element);
+        return new UITextbox(identifier);
     }
 
     public UISelectBox withSelectBox(Identifier identifier) {
@@ -70,23 +63,11 @@ public class Interact {
     }
 
     public UIElement withElement(Identifier identifier) {
-        WebElement element = null;
-        try {
-            element = findElement(identifier);
-        } catch (TimeoutException t) {
-            System.out.println("Element Not found.  Returning shell element.");
-        }
-        return new UIElement(element);
+        return new UIElement(identifier);
     }
 
     public UIElement withOptionalElement(Identifier identifier) {
-        WebElement element = null;
-        try {
-            element = findOptional(identifier);
-        } catch (TimeoutException t) {
-            System.out.println("Element Not found.  Returning shell element.");
-        }
-        return new UIElement(element);
+        return new UIElement(identifier, true);
     }
 
     public void waitUntilElementVisible(Identifier identifier, int waitSeconds) {
@@ -95,73 +76,10 @@ public class Interact {
     }
 
     public UICheckbox withCheckbox(Identifier identifier) {
-        WebElement element = findElement(identifier);
-        return new UICheckbox(element);
+        return new UICheckbox(identifier);
     }
 
     public UIConfirmationWindow withConfirmationWindow() {
-        WebElement element = findElement(new Identifier(By.cssSelector("div[id*='messagebox-']")));
-        return new UIConfirmationWindow(element);
-    }
-
-    protected WebElement findElement(Identifier identifier) {
-
-        WebElement element = null;
-
-        try {
-            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), 10);
-        } catch (TimeoutException t) {
-            try {
-                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), 20);
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-                throw e;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail("*** See Stack Trace ***");
-        }
-        if (!element.isEnabled()) {
-            System.out.println("Element is not Enabled");
-        }
-        return element;
-    }
-
-    protected WebElement findOptional(Identifier identifier) {
-
-        WebElement element = null;
-
-        try {
-            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), 1);
-        } catch (TimeoutException t) {
-            try {
-                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), 1);
-            } catch (TimeoutException e) {
-                System.out.println("Optional Element Not Found.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getLocalizedMessage());
-        }
-        return element;
-    }
-
-    protected List<WebElement> findOptionalElements(Identifier identifier) {
-
-        List<WebElement> elements = null;
-
-        try {
-            elements = waitUtils.waitUntilElementsAreVisible(identifier.getReference(), 1);
-        } catch (TimeoutException t) {
-            try {
-                elements = waitUtils.waitUntilElementsAreVisible(identifier.getReference(), 1);
-            } catch (TimeoutException e) {
-                System.out.println("Optional Element Not Found.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getLocalizedMessage());
-        }
-        return elements;
+        return new UIConfirmationWindow(new Identifier(By.cssSelector("div[id*='messagebox-']")));
     }
 }

@@ -1,21 +1,23 @@
 package framework;
 
-import com.aventstack.extentreports.ExtentTest;
 import framework.annotations.AutomatedTest;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.Interact;
 import org.testng.ITestResult;
 import org.testng.SkipException;
 import org.testng.annotations.*;
-import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
 
 public class BaseOperations {
 
+    protected Interact interact;
     protected RegressionLogger logger;
-    String className;
 
+    @BeforeClass
+    public void initialize(){
+    }
 
     @BeforeMethod(description = "BeforeMethod")
     public void beforeMethod(Method method, ITestResult iTestResult){

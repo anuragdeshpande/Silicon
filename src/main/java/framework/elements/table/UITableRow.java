@@ -1,10 +1,12 @@
 package framework.elements.table;
 
-import framework.elements.UIElement;
+import framework.elements.Identifier;
+import framework.elements.ui_element.UIElement;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UITableRow extends UIElement implements IUITableRow {
@@ -18,7 +20,13 @@ public class UITableRow extends UIElement implements IUITableRow {
 
     @Override
     public List<UITableCell> getCells() {
-        return null;
+        ArrayList<UITableCell> cells = new ArrayList<>();
+        this.element.findElements(By.tagName("td")).forEach(cell -> {
+            cells.add(new UITableCell(cell));
+        });
+
+        return cells;
+
     }
 
     @Override
@@ -65,5 +73,10 @@ public class UITableRow extends UIElement implements IUITableRow {
     @Override
     public void clickRadioWithLabel(String label) {
         this.element.findElement(By.xpath(".//td/label[contains(text(),'" + label + "')]/preceding-sibling::input")).click();
+    }
+
+    @Override
+    public WebElement getElement() {
+        return this.element;
     }
 }

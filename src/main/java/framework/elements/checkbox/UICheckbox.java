@@ -1,29 +1,27 @@
 package framework.elements.checkbox;
 
-import framework.elements.UIElement;
+import framework.elements.Identifier;
+import framework.elements.ui_element.UIElement;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Action;
 
 public class UICheckbox extends UIElement implements IUICheckbox {
 
-    private WebElement element;
-
-    public UICheckbox(WebElement element) {
-        super(element);
-        this.element = element;
+    public UICheckbox(Identifier identifier) {
+        super(identifier);
     }
 
     @Override
     public void click() {
-        Action clickCheckbox = BrowserFactory.getCurrentBrowser().getActions().clickAndHold(this.element)
+        Action clickCheckbox = BrowserFactory.getCurrentBrowser().getActions().clickAndHold(this.getElement())
                 .moveByOffset(1, 1)
-                .release(this.element)
+                .release(this.getElement())
                 .build();
         clickCheckbox.perform();
     }
 
     public boolean isChecked() {
-        return this.element.getAttribute("class").contains("checked");
+        return this.getElement().getAttribute("class").contains("checked");
     }
 }
