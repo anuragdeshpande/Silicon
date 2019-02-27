@@ -9,5 +9,5 @@ public enum ElementType {
     RADIO,
     CHECK_BOX,
     TEXT_AREA,
-    LINK
+    LINK,
 }

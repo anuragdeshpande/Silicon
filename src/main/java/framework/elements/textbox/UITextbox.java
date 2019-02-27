@@ -16,6 +16,7 @@ public class UITextbox extends UIElement implements IUITextOperations {
         this.getElement().sendKeys(Keys.chord(Keys.CONTROL + "a"));
         this.getElement().sendKeys(value);
         this.getElement().sendKeys(Keys.TAB);
+        System.out.println("Text Filled: "+value);
     }
 
     @Override
@@ -28,6 +29,8 @@ public class UITextbox extends UIElement implements IUITextOperations {
 
     @Override
     public String screenGrab() {
-        return this.getElement().getAttribute("value");
+        String clipText = this.getElement().getAttribute("value");
+        System.out.println("Clipping Text: "+clipText);
+        return clipText;
     }
 }

@@ -10,6 +10,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UISelectBox extends UIElement implements IUISelectBox {
@@ -33,6 +34,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
                 break;
             }
         }
+        System.out.println("Selected: "+selection);
     }
 
     @Override
@@ -49,9 +51,12 @@ public class UISelectBox extends UIElement implements IUISelectBox {
         }
         if (validItems.size() > 0) {
             WebElement selectionElement = validItems.get(NumberUtils.getRandomNumberInRange(0, count - 1));
+            String selectionText = selectionElement.getText();
             selectionElement.click();
-            return selectionElement.getText();
+            System.out.println("Selected: "+selectionText);
+            return selectionText;
         } else {
+            System.out.println("Could not select option at random: returning null");
             return null;
         }
     }
@@ -59,19 +64,25 @@ public class UISelectBox extends UIElement implements IUISelectBox {
     @Override
     public String select(int itemNumber) {
         WebElement selectElement = listElements.get(itemNumber);
+        String selectedText = selectElement.getText();
         selectElement.click();
         BrowserFactory.getCurrentBrowser().getActions().sendKeys(Keys.ESCAPE).perform();
-        return selectElement.getText();
+        System.out.println("Selected Item - "+itemNumber+": "+selectedText);
+        return selectedText;
     }
 
     @Override
     public String selectByPartial(String selection) {
         for (WebElement listItem : this.getElementOptions()) {
             if (listItem.getText().contains(selection)) {
+                String selectedText = listItem.getText();
                 listItem.click();
-                return listItem.getText();
+                System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
+                return selectedText;
             }
         }
+
+        System.out.println("Could not find a partial match for: "+selection);
         return null;
     }
 
@@ -79,9 +90,11 @@ public class UISelectBox extends UIElement implements IUISelectBox {
     public boolean hasOption(String selection) {
         for (WebElement listItem : this.getElementOptions()) {
             if (listItem.getText().equalsIgnoreCase(selection)) {
+                System.out.println("Found the option: "+selection);
                 return true;
             }
         }
+        System.out.println("Could not find the selection: "+selection);
         return false;
     }
 
@@ -92,6 +105,8 @@ public class UISelectBox extends UIElement implements IUISelectBox {
         for (WebElement element : this.getElementOptions()) {
             listStrings.add(element.getText());
         }
+
+        System.out.println("Returning "+listStrings.size()+" options: "+ listStrings);
         return listStrings;
     }
 
@@ -101,10 +116,13 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             for (WebElement listElement: this.getElementOptions()) {
                 if (selection.equalsIgnoreCase(listElement.getText())) {
                     this.select(selection);
+                    System.out.println("Clicked on the first matching option: "+selection);
                     return selection;
                 }
             }
         }
+
+        System.out.println("Could not find the first matching option: did not click on anything, returning null");
         return null;
     }
 }

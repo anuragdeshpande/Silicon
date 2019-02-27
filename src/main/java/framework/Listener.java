@@ -21,7 +21,7 @@ import java.util.Date;
 public class Listener implements ISuiteListener, ITestListener, IExecutionListener {
 
     private ExtentReports extentReports;
-    public static Logger logger;
+    static Logger logger;
 
     // Fires before any suite starts
     @Override

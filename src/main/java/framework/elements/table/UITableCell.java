@@ -4,6 +4,7 @@ import framework.elements.ui_element.UIElement;
 import framework.elements.checkbox.UICheckbox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -29,7 +30,10 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public void clickLink() {
-        element.findElement(By.tagName("a")).click();
+        WebElement linkElement = element.findElement(By.tagName("a"));
+        String linkText = linkElement.getText();
+        linkElement.click();
+        System.out.println("Clicked on link: "+linkText);
     }
 
     @Override
@@ -50,10 +54,13 @@ public class UITableCell extends UIElement implements IUITableCell {
             }
         }
         if (selectedTextbox != null) {
-            selectedTextbox.clear();
+            selectedTextbox.sendKeys(Keys.chord(Keys.CONTROL + "a"));
             selectedTextbox.sendKeys(text);
+            System.out.println("Text Filled: "+text);
             BrowserFactory.getCurrentBrowser().getDriver().findElement(By.id("QuickJump-inputEl")).click();
         }
+
+        System.out.println("Could not find any text boxes, not doing anything");
     }
 
     @Override
@@ -66,6 +73,7 @@ public class UITableCell extends UIElement implements IUITableCell {
     @Override
     public void clickCheckbox() {
         this.element.findElement(By.tagName("img")).click();
+        System.out.println("Clicked on the checkbox");
     }
 
 

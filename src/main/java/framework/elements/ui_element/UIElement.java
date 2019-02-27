@@ -4,13 +4,11 @@ import framework.elements.Identifier;
 import framework.elements.enums.ElementType;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.testng.Assert;
 
 public class UIElement implements IUIElementOperations {
+    protected WebElement element;
     protected By elementLocation;
     private ElementType elementType;
     protected boolean isOptional = false;
@@ -26,13 +24,14 @@ public class UIElement implements IUIElementOperations {
     }
 
     protected UIElement(WebElement element){
-
     }
 
     @Override
     public void click() {
+
         if (this.isPresent()) {
             this.getElement().click();
+            System.out.println("Clicked Element");
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -43,6 +42,7 @@ public class UIElement implements IUIElementOperations {
         if (this.isPresent()) {
             this.getElement().click();
             this.getElement().click();
+            System.out.println("Double Clicked the element");
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -51,33 +51,42 @@ public class UIElement implements IUIElementOperations {
     @Override
     public void hover() {
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(this.getElement(), 1, 1).build().perform();
+        System.out.println("Hovering on the element");
     }
 
     @Override
     public String screenGrab() {
+        String clipText = "";
         if (this.getElement() != null) {
-            return this.getElement().getText();
-        } else {
-            return "";
+            clipText = this.getElement().getText();
         }
+
+        System.out.println("Clipping Screen Text: "+ clipText);
+        return clipText;
     }
 
     @Override
     public boolean isPresent() {
-        return this.getElement() != null && this.getElement().isEnabled();
-    }
-
-    public void clickTabArrow() {
-        Dimension size = this.getElement().getSize();
-        BrowserFactory.getCurrentBrowser().getActions().moveToElement(this.getElement(), size.getWidth() - 12, 10).click().build().perform();
+        boolean isPresent = this.getElement() != null && this.getElement().isEnabled();
+        System.out.println("Element Presence: "+isPresent);
+        return isPresent;
     }
 
     @Override
     public WebElement getElement() {
-        return this.isOptional ? findOptional(this.elementLocation) : findElement(this.elementLocation);
+        System.out.println("Checking availability of element: "+element);
+        try{
+            this.element.isEnabled();
+            System.out.println("Element is available: Returning Cached element");
+            return element;
+        } catch (Exception e){
+            System.out.println("element is stale re-resolving element");
+            return this.isOptional ? findOptional(this.elementLocation) : findElement(this.elementLocation);
+        }
     }
 
     private WebElement findElement(By elementLocation) {
+        System.out.println("Resolving Element Location: "+elementLocation);
         WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
         WebElement element = null;
 
@@ -97,10 +106,13 @@ public class UIElement implements IUIElementOperations {
         if (!element.isEnabled()) {
             System.out.println("Element is not Enabled");
         }
+
+        this.element = element;
         return element;
     }
 
     private WebElement findOptional(By elementLocation) {
+        System.out.println("Resolving Optional Element: "+ elementLocation);
         WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
         WebElement element = null;
 
@@ -117,6 +129,7 @@ public class UIElement implements IUIElementOperations {
             Assert.fail(e.getLocalizedMessage());
         }
 
+        this.element = element;
         return element;
     }
 

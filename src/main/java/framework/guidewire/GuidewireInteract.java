@@ -2,8 +2,10 @@ package framework.guidewire;
 
 import framework.elements.Identifier;
 import framework.elements.selectbox.UISelectBox;
+import framework.elements.table.UITable;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
+import framework.guidewire.gw8.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
@@ -19,17 +21,18 @@ public class GuidewireInteract extends Interact {
         UIElement uiElement = new UIElement(identifier);
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
+        System.out.println("Tab Arrow Clicked: "+identifier.getReference());
     }
 
     @Override
-    public UISelectBox withSelectBox(Identifier identifier) {
+    public GWSelectBox withSelectBox(Identifier identifier) {
         new UIElement(GWIDs.ESCAPE_CLICKER).click();
         new UIElement(identifier).click();
         return new GWSelectBox(identifier);
     }
 
     @Override
-    public UISelectBox withOptionalSelectBox(Identifier identifier) {
+    public GWSelectBox withOptionalSelectBox(Identifier identifier) {
         new UIElement(GWIDs.ESCAPE_CLICKER).click();
         UIElement uiElement = new UIElement(identifier, true);
         if(uiElement.isPresent()){
@@ -37,5 +40,10 @@ public class GuidewireInteract extends Interact {
         }
 
         return new GWSelectBox(identifier);
+    }
+
+    @Override
+    public GWTable withTable(Identifier identifier) {
+        return new GWTable(identifier);
     }
 }

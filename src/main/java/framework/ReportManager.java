@@ -9,6 +9,7 @@ import framework.annotations.AutomatedTest;
 import framework.annotations.AutomationHistory;
 import framework.database.ConnectionManager;
 import framework.enums.Environment;
+import framework.logger.RegressionLogger;
 import org.apache.commons.dbutils.QueryRunner;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -20,6 +21,7 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 class ReportManager {
 

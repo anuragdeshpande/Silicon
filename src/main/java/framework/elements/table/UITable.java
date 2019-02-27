@@ -2,15 +2,17 @@ package framework.elements.table;
 
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.gw8.elements.gw_table.IGWUITable;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UITable extends UIElement implements IGWUITable {
+public class UITable extends UIElement implements IUITable {
 
     public UITable(Identifier identifier) {
         super(identifier);
@@ -20,9 +22,11 @@ public class UITable extends UIElement implements IGWUITable {
     public WebElement getElement() {
         WebElement baseElement = super.getElement();
         if (!baseElement.getTagName().equalsIgnoreCase("table")) {
+            System.out.println("Finding <table> in the current dom element "+ baseElement);
             baseElement = baseElement.findElements(By.tagName("table")).get(0);
         }
 
+        System.out.println("Found table: "+ baseElement);
         return baseElement;
     }
 
@@ -33,76 +37,53 @@ public class UITable extends UIElement implements IGWUITable {
         this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
             rows.add(new UITableRow(row));
         });
+
+        System.out.println("Found : "+rows.size()+" Rows");
         return rows;
     }
 
     @Override
     public void clickAdd() {
-
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickRemove() {
-
+        throw new NotImplementedException();
     }
 
     @Override
     public UITableRow getRowWithText(String value) {
-
-        boolean isLastPage = false;
-
-        do {
-            for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
-                for (WebElement cell : row.findElements(By.tagName("td"))) {
-                    if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
-                        return new UITableRow(row);
-                    }
-                }
-            }
-
-            if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
-                clickNextPage();
-                //this.element = driver.findElement(By.id(""+ tableID +""));
-            } else {
-                isLastPage = true;
-            }
-        } while (!isLastPage);
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickNextPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).click();
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickPreviousPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(PREVIOUS_PAGE_REFERENCE).click();
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickLastPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(LAST_PAGE_REFERENCE).click();
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickFirstPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(FIRST_PAGE_REFERENCE).click();
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickToolbarButtonWithText(String buttonText) {
-
+        throw new NotImplementedException();
     }
 
+    @Override
     public void clickRandomCheckbox() {
-        List<WebElement> checkboxes = this.getElement().findElements(By.tagName("img"));
-        WebElement checkbox = checkboxes.get(NumberUtils.getRandomNumberInRange(0, checkboxes.size() - 1));
-
-        BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-                .moveByOffset(1, 1)
-                .release(checkbox)
-                .build()
-                .perform();
+        throw new NotImplementedException();
     }
 }

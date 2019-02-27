@@ -20,4 +20,6 @@ public interface IUITable {
     void clickFirstPage();
 
     void clickToolbarButtonWithText(String buttonText);
+
+    void clickRandomCheckbox();
 }
