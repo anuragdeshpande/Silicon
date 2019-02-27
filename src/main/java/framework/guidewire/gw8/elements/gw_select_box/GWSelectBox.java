@@ -17,6 +17,11 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     }
 
     @Override
+    protected List<WebElement> getElementOptions(){
+        return new ArrayList<>(new UIElement(GWIDs.LIST_OPTIONS).getElement().findElements(By.tagName("li")));
+    }
+
+    @Override
     public List<String> getOptions() {
         ArrayList<String> listOptions = new ArrayList<>();
         new UIElement(GWIDs.LIST_OPTIONS).getElement().findElements(By.tagName("li")).forEach(element -> {
@@ -24,5 +29,41 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
         });
 
         return listOptions;
+    }
+
+    @Override
+    public void select(String selection) {
+        super.listElements = getElementOptions();
+        super.select(selection);
+    }
+
+    @Override
+    public String selectRandom() {
+        super.listElements = getElementOptions();
+        return super.selectRandom();
+    }
+
+    @Override
+    public String select(int itemNumber) {
+        super.listElements = getElementOptions();
+        return super.select(itemNumber);
+    }
+
+    @Override
+    public String selectByPartial(String selection) {
+        super.listElements = getElementOptions();
+        return super.selectByPartial(selection);
+    }
+
+    @Override
+    public boolean hasOption(String selection) {
+        super.listElements = getElementOptions();
+        return super.hasOption(selection);
+    }
+
+    @Override
+    public String selectFirstExisting(String[] selections) {
+        super.listElements = getElementOptions();
+        return super.selectFirstExisting(selections);
     }
 }
