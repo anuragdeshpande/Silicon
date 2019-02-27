@@ -4,9 +4,11 @@ import framework.guidewire.GuidewireInteract;
 import framework.utils.EnvironmentUtils;
 import framework.utils.PropertiesFileLoader;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 
@@ -45,12 +47,17 @@ public class BrowserFactory {
             ChromeDriverManager.chromedriver().setup();
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--start-maximized");
+            chromeOptions.addArguments("disable-infobars");
             return new ChromeDriver(chromeOptions);
         }
 
         private RemoteWebDriver getRemoteWebDriver(String url) {
             try {
-                return new RemoteWebDriver(new URL(url), null);
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--start-maximized");
+                chromeOptions.addArguments("disable-infobars");
+                chromeOptions.setCapability("idleTimeout", 350);
+                return new RemoteWebDriver(new URL(url), chromeOptions);
             } catch (Exception e) {
                 e.printStackTrace();
                 Assert.fail("Could not open URL - " + url);
