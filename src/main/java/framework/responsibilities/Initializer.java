@@ -6,16 +6,16 @@ public class Initializer {
     static {
         HashMap<String, String> GW8_ENVIRONMENTS = new HashMap<>();
         // CC ENVIRONMENTS
-        GW8_ENVIRONMENTS.put("CC8DEV", "http://cc8dev/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8DEV3", "http://cc8dev3/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8UAT", "http://cc8uat/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8BUAT", "http://cc8buat/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8UAT2", "http://fbmsgwccb-uat82/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8QA", "http://cc8qa/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8IT", "http://cc8it/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8STAB01", "http://fbmsgw-stab01:8080/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8STAB02", "http://fbmsgw-stab02:8080/cc/ClaimCenter.do");
-        GW8_ENVIRONMENTS.put("CC8STAB04", "http://fbmsgw-stab04:8080/cc/ClaimCenter.do");
+        GW8_ENVIRONMENTS.put("CC8DEV", "http://cc8dev/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8DEV3", "http://cc8dev3/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8UAT", "http://cc8uat/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8BUAT", "http://cc8buat/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8UAT2", "http://fbmsgwccb-uat82/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8QA", "http://cc8qa/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8IT", "http://cc8it/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8STAB01", "http://fbmsgw-stab01:8080/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8STAB02", "http://fbmsgw-stab02:8080/cc/GuidewireCenter.do");
+        GW8_ENVIRONMENTS.put("CC8STAB04", "http://fbmsgw-stab04:8080/cc/GuidewireCenter.do");
         // PC ENVIRONMENTS
         GW8_ENVIRONMENTS.put("PC8DEV", "http://pc8dev/pc/PolicyCenter.do");
         GW8_ENVIRONMENTS.put("PC8DEV3", "http://pc8dev3/pc/PolicyCenter.do");

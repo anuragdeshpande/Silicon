@@ -3,16 +3,16 @@ package framework.enums;
 public enum Environment {
 
     // CC Environment
-    CC8DEV("CC8DEV", "http://cc8dev/cc/ClaimCenter.do", "ClaimCenterDatabase8DEV"),
-    CC8DEV3("CC8DEV3", "http://cc8dev3/cc/ClaimCenter.do", "ClaimCenterDatabase8DEV3"),
-    CC8UAT("CC8UAT", "http://cc8uat/cc/ClaimCenter.do", "ClaimCenterDatabase8UAT"),
-    CC8BUAT("CC8BUAT", "http://cc8buat/cc/ClaimCenter.do", "ClaimCenterDatabase8UAT"),
-    CC8BUAT2("CC8UAT2", "http://fbmsgwccb-uat82/cc/ClaimCenter.do", "ClaimCenterDatabase8UAT2"),
-    CC8QA("CC8QA", "http://cc8qa/cc/ClaimCenter.do", "ClaimCenterDatabase8QA"),
-    CC8IT("CC8IT", "http://cc8it/cc/ClaimCenter.do", "ClaimCenterDatabase8IT"),
-    CC8STAB01("CC8STAB01", "http://fbmsgw-stab01:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8STAB01"),
-    CC8STAB02("CC8STAB02", "http://fbmsgw-stab02:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8STAB02"),
-    CC8STAB04("CC8STAB04", "http://fbmsgw-stab04:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8STAB04"),
+    CC8DEV("CC8DEV", "http://cc8dev/cc/GuidewireCenter.do", "ClaimCenterDatabase8DEV"),
+    CC8DEV3("CC8DEV3", "http://cc8dev3/cc/GuidewireCenter.do", "ClaimCenterDatabase8DEV3"),
+    CC8UAT("CC8UAT", "http://cc8uat/cc/GuidewireCenter.do", "ClaimCenterDatabase8UAT"),
+    CC8BUAT("CC8BUAT", "http://cc8buat/cc/GuidewireCenter.do", "ClaimCenterDatabase8UAT"),
+    CC8BUAT2("CC8UAT2", "http://fbmsgwccb-uat82/cc/GuidewireCenter.do", "ClaimCenterDatabase8UAT2"),
+    CC8QA("CC8QA", "http://cc8qa/cc/GuidewireCenter.do", "ClaimCenterDatabase8QA"),
+    CC8IT("CC8IT", "http://cc8it/cc/GuidewireCenter.do", "ClaimCenterDatabase8IT"),
+    CC8STAB01("CC8STAB01", "http://fbmsgw-stab01:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB01"),
+    CC8STAB02("CC8STAB02", "http://fbmsgw-stab02:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB02"),
+    CC8STAB04("CC8STAB04", "http://fbmsgw-stab04:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB04"),
 
 
     // Reporting Environment

@@ -8,77 +8,145 @@ public class RegressionLogger {
 
     private Logger logger;
     private ExtentTest extentLogger;
+    private boolean isSuite;
 
-    public RegressionLogger(Logger logger, ExtentTest extentLogger){
+    public RegressionLogger(Logger logger, ExtentTest extentLogger, boolean isSuite){
         this.logger = logger;
         this.extentLogger = extentLogger;
+        this.isSuite = isSuite;
     }
 
     public void debug(Object message){
-        logger.debug(message);
-        extentLogger.log(Status.DEBUG, message.toString());
+        if(isSuite){
+            logger.debug(message);
+            extentLogger.log(Status.DEBUG, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void debug(Object message, Throwable e){
-        logger.debug(message, e);
-        extentLogger.log(Status.DEBUG, message.toString());
-        extentLogger.log(Status.DEBUG, e);
+        if(isSuite){
+            logger.debug(message, e);
+            extentLogger.log(Status.DEBUG, message.toString());
+            extentLogger.log(Status.DEBUG, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 
 
     public void info(Object message){
-        logger.info(message);
-        extentLogger.log(Status.INFO, message.toString());
+        if(isSuite){
+            logger.info(message);
+            extentLogger.log(Status.INFO, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void info(Object message, Throwable e){
-        logger.info(message, e);
-        extentLogger.log(Status.INFO, message.toString());
-        extentLogger.log(Status.INFO, e);
+        if(isSuite){
+            logger.info(message, e);
+            extentLogger.log(Status.INFO, message.toString());
+            extentLogger.log(Status.INFO, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 
 
     public void warn(Object message){
-        logger.warn(message);
-        extentLogger.log(Status.WARNING, message.toString());
+        if(isSuite){
+            logger.warn(message);
+            extentLogger.log(Status.WARNING, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void warn(Object message, Throwable e){
-        logger.warn(message, e);
-        extentLogger.log(Status.WARNING, message.toString());
-        extentLogger.log(Status.WARNING, e);
+        if(isSuite){
+            logger.warn(message, e);
+            extentLogger.log(Status.WARNING, message.toString());
+            extentLogger.log(Status.WARNING, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 
     public void fatal(Object message){
-        logger.fatal(message);
-        extentLogger.log(Status.FATAL, message.toString());
+        if(isSuite){
+            logger.fatal(message);
+            extentLogger.log(Status.FATAL, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void fatal(Object message, Throwable e){
-        logger.fatal(message, e);
-        extentLogger.log(Status.FATAL, message.toString());
-        extentLogger.log(Status.FATAL, e);
+        if(isSuite){
+            logger.fatal(message, e);
+            extentLogger.log(Status.FATAL, message.toString());
+            extentLogger.log(Status.FATAL, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 
     public void trace(Object message){
-        logger.trace(message);
-        extentLogger.log(Status.DEBUG, message.toString());
+        if(isSuite){
+            logger.trace(message);
+            extentLogger.log(Status.DEBUG, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void trace(Object message, Throwable e){
-        logger.trace(message, e);
-        extentLogger.log(Status.DEBUG, message.toString());
-        extentLogger.log(Status.DEBUG, e);
+        if(isSuite){
+            logger.trace(message, e);
+            extentLogger.log(Status.DEBUG, message.toString());
+            extentLogger.log(Status.DEBUG, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 
     public void error(Object message){
-        logger.error(message);
-        extentLogger.log(Status.ERROR, message.toString());
+        if(isSuite){
+            logger.error(message);
+            extentLogger.log(Status.ERROR, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
     }
 
     public void error(Object message, Throwable e){
-        logger.error(message, e);
-        extentLogger.log(Status.ERROR, message.toString());
-        extentLogger.log(Status.ERROR,e);
+        if(isSuite){
+            logger.error(message, e);
+            extentLogger.log(Status.ERROR, message.toString());
+            extentLogger.log(Status.ERROR,e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
     }
 }

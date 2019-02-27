@@ -19,13 +19,13 @@ public class TestClassOne extends BaseOperations {
         logger.info("This is the before method for the test");
     }
 
-    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"ClaimCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
+    @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"GuidewireCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
     @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test
     public void testTwo() {
         GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
         interact.getDriver().manage().window().maximize();
-        interact.getDriver().get("http://cc8uat/cc/ClaimCenter.do");
+        interact.getDriver().get("http://cc8uat/cc/GuidewireCenter.do");
         logger.trace("this is trace message");
         logger.info("this is info message");
         logger.warn("this is warning message");

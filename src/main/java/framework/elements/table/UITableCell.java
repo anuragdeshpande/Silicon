@@ -65,7 +65,7 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public void clickCheckbox() {
-        new UICheckbox(this.element.findElement(By.tagName("img"))).click();
+        this.element.findElement(By.tagName("img")).click();
     }
 
 

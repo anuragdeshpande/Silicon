@@ -11,21 +11,25 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 
 public class BaseOperations {
-
-    protected Interact interact;
     protected RegressionLogger logger;
 
     @BeforeClass
     public void initialize(){
+
     }
 
     @BeforeMethod(description = "BeforeMethod")
     public void beforeMethod(Method method, ITestResult iTestResult){
-        if(ReportManager.getTest(iTestResult.getMethod().getMethodName()) == null){
-            ReportManager.recordTest(iTestResult);
+        if(!iTestResult.getMethod().getXmlTest().getSuite().getName().equalsIgnoreCase("Default Suite")){
+            if(ReportManager.getTest(iTestResult.getMethod().getMethodName()) == null){
+                ReportManager.recordTest(iTestResult);
+            }
+
+            this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(iTestResult.getMethod().getMethodName()), true);
+        } else {
+            this.logger = new RegressionLogger(null, null, false);
         }
 
-        this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(iTestResult.getMethod().getMethodName()));
         if(iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0){
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Skipping Test : "+ iTestResult.getMethod().getMethodName() + " : No @AutomatedTest annotation found.");
