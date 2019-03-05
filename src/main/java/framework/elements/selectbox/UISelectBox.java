@@ -25,7 +25,6 @@ public class UISelectBox extends UIElement implements IUISelectBox {
         return new ArrayList<>(this.getElement().findElements(By.tagName("li")));
     }
 
-
     @Override
     public void select(String selection) {
         for (WebElement listItem : this.getElementOptions()) {

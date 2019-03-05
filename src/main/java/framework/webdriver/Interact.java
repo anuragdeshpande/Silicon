@@ -1,6 +1,7 @@
 package framework.webdriver;
 
 import framework.elements.Identifier;
+import framework.elements.radiobutton.UIRadioButton;
 import framework.elements.ui_element.UIElement;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
@@ -45,7 +46,7 @@ public class Interact {
         return driver;
     }
 
-
+    public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
 
     public UITable withTable(Identifier identifier) {
         return new UITable(identifier);

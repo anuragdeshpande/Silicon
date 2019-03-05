@@ -56,6 +56,7 @@ public class SuiteGenerator {
 
         System.out.println(xmlSuite.toXml());
         testNG.setXmlSuites(Collections.singletonList(xmlSuite));
+        System.out.println(xmlSuite.toXml());
         testNG.run();
 
     }

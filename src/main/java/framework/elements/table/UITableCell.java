@@ -2,10 +2,12 @@ package framework.elements.table;
 
 import framework.elements.ui_element.UIElement;
 import framework.elements.checkbox.UICheckbox;
+import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -38,42 +40,17 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public void fillTextBox(String text) {
-        this.element.click();
-        List<WebElement> textboxes = BrowserFactory.getCurrentBrowser().getDriver().findElements(By.cssSelector("input[id*='input-']"));
-        fillText(text, textboxes);
-    }
-
-    private void fillText(String text, List<WebElement> textboxes) {
-        WebElement selectedTextbox = null;
-        int currentTextbox = 0;
-        for (WebElement textbox : textboxes) {
-            Integer idValue = Integer.valueOf(textbox.getAttribute("id").split("-")[1]);
-            if (idValue > currentTextbox) {
-                currentTextbox = idValue;
-                selectedTextbox = textbox;
-            }
-        }
-        if (selectedTextbox != null) {
-            selectedTextbox.sendKeys(Keys.chord(Keys.CONTROL + "a"));
-            selectedTextbox.sendKeys(text);
-            System.out.println("Text Filled: "+text);
-            BrowserFactory.getCurrentBrowser().getDriver().findElement(By.id("QuickJump-inputEl")).click();
-        }
-
-        System.out.println("Could not find any text boxes, not doing anything");
+        throw new NotImplementedException();
     }
 
     @Override
     public void fillTextArea(String text) {
-        this.element.click();
-        List<WebElement> textareas = BrowserFactory.getCurrentBrowser().getDriver().findElements(By.cssSelector("textarea[id*='textarea-']"));
-        fillText(text, textareas);
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickCheckbox() {
-        this.element.findElement(By.tagName("img")).click();
-        System.out.println("Clicked on the checkbox");
+        throw new NotImplementedException();
     }
 
 

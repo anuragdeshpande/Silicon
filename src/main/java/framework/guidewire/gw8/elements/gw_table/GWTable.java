@@ -3,6 +3,7 @@ package framework.guidewire.gw8.elements.gw_table;
 import framework.elements.Identifier;
 import framework.elements.table.UITable;
 import framework.elements.table.UITableRow;
+import framework.elements.ui_element.UIElement;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
@@ -62,7 +63,7 @@ public class GWTable extends UITable implements IGWUITable{
     }
 
     @Override
-    public UITableRow getRowWithText(String value) {
+    public GWRow getRowWithText(String value) {
         boolean isLastPage = false;
 
         do {
@@ -70,7 +71,7 @@ public class GWTable extends UITable implements IGWUITable{
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
                         System.out.println("Found the row with the text: "+value);
-                        return new UITableRow(row);
+                        return new GWRow(row);
                     }
                 }
             }
@@ -102,5 +103,9 @@ public class GWTable extends UITable implements IGWUITable{
                 .perform();
 
         System.out.println("Clicked on random checkbox : "+randomCheckBoxNumber);
+    }
+
+    public void clickCheckBoxWithLabel(String label) {
+        new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).clickCheckbox();
     }
 }

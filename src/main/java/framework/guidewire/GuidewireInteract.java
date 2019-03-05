@@ -4,6 +4,7 @@ import framework.elements.Identifier;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.table.UITable;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.gw8.elements.gw_radio_button.GWRadioButton;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
 import framework.guidewire.gw8.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
@@ -22,6 +23,11 @@ public class GuidewireInteract extends Interact {
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
         System.out.println("Tab Arrow Clicked: "+identifier.getReference());
+    }
+
+    @Override
+    public GWRadioButton withRadioButton(Identifier identifier) {
+        return new GWRadioButton(identifier);
     }
 
     @Override
