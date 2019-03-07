@@ -3,6 +3,7 @@ package framework.guidewire.gw8.elements.gw_table;
 import framework.elements.Identifier;
 import framework.elements.table.IUITableRow;
 import framework.elements.textbox.UITextbox;
+import framework.elements.ui_element.UIElement;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
@@ -11,10 +12,11 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GWRow implements IGWRow{
+public class GWRow extends UIElement implements IGWRow{
     private WebElement element;
 
     public GWRow(WebElement element) {
+        super(element);
         this.element = element;
     }
 
