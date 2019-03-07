@@ -7,6 +7,7 @@ import framework.elements.ui_element.UIElement;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -79,11 +80,16 @@ public class GWTable extends UIElement implements IGWUITable{
                 }
             }
 
-            if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
-                System.out.println("Multuple pages found in the table, searching on the next page");
-                clickNextPage();
-            } else {
-                System.out.println("Last Page reached");
+
+            try{
+                if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
+                    System.out.println("Multuple pages found in the table, searching on the next page");
+                    clickNextPage();
+                } else {
+                    System.out.println("Last Page reached");
+                    isLastPage = true;
+                }
+            } catch (NoSuchElementException nse){
                 isLastPage = true;
             }
         } while (!isLastPage);
