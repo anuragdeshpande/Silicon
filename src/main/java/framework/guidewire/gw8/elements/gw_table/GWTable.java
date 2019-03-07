@@ -112,7 +112,7 @@ public class GWTable extends UIElement implements IGWUITable{
         new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).clickCheckbox();
     }
 
-    public List<GWRow> getGWRows() {
+    public List<GWRow> getRows() {
         List<GWRow> rows = new ArrayList<>();
 
         this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
