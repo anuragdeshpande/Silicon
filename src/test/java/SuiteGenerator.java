@@ -28,15 +28,15 @@ public class SuiteGenerator {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName("Regression");
         xmlSuite.setVerbose(1);
-        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
-        xmlSuite.setThreadCount(45);
+//        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
+//        xmlSuite.setThreadCount(45);
         xmlSuite.setListeners(Collections.singletonList("framework.Listener"));
 
         // Add Test
         XmlTest xmlTest = new XmlTest(xmlSuite);
         xmlTest.setName("Regression");
 
-        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
+//        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
         xmlTest.setPreserveOrder(false);
 
         // Add Classes
@@ -54,7 +54,6 @@ public class SuiteGenerator {
             xmlTest.addExcludedGroup("ClockMove");
         }
 
-        System.out.println(xmlSuite.toXml());
         testNG.setXmlSuites(Collections.singletonList(xmlSuite));
         System.out.println(xmlSuite.toXml());
         testNG.run();

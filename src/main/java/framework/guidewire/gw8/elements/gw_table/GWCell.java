@@ -28,11 +28,15 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     @Override
     public void clickCheckbox() {
         WebElement checkbox = this.element.findElement(By.tagName("img"));
-        BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-                .moveByOffset(1, 1)
-                .release(checkbox)
-                .build()
-                .perform();
+        try{
+            BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
+                    .moveByOffset(1, 1)
+                    .release(checkbox)
+                    .build()
+                    .perform();
+        } catch (Exception e){
+            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
+        }
 
         System.out.println("Clicked on the checkbox");
     }
