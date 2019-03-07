@@ -1,10 +1,11 @@
 package framework.applications.gw;
 
+import framework.applications.Application;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 
-abstract public class GuidewireCenter implements GWOperations {
+abstract public class GuidewireCenter extends Application implements GWOperations {
 
     @Override
     public GuidewireInteract getInteractObject() {

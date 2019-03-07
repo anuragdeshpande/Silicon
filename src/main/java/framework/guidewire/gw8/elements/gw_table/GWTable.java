@@ -8,10 +8,12 @@ import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class GWTable extends UITable implements IGWUITable{
+public class GWTable extends UIElement implements IGWUITable{
 
     private static final By TOOLBAR_REFERENCE = By.xpath("./ancestor::div[2]/preceding-sibling::div[2]");
     private static final By FIRST_PAGE_REFERENCE = By.cssSelector("a[data-qtip='First Page']");
@@ -21,16 +23,17 @@ public class GWTable extends UITable implements IGWUITable{
 
     public GWTable(Identifier identifier) {
         super(identifier);
+
     }
 
     @Override
     public void clickAdd() {
-        super.clickAdd();
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickRemove() {
-        super.clickRemove();
+        throw new NotImplementedException();
     }
 
     @Override
@@ -59,7 +62,7 @@ public class GWTable extends UITable implements IGWUITable{
 
     @Override
     public void clickToolbarButtonWithText(String buttonText) {
-        super.clickToolbarButtonWithText(buttonText);
+        throw new NotImplementedException();
     }
 
     @Override
@@ -107,5 +110,16 @@ public class GWTable extends UITable implements IGWUITable{
 
     public void clickCheckBoxWithLabel(String label) {
         new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).clickCheckbox();
+    }
+
+    public List<GWRow> getGWRows() {
+        List<GWRow> rows = new ArrayList<>();
+
+        this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
+            rows.add(new GWRow(row));
+        });
+
+        System.out.println("Found : "+rows.size()+" Rows");
+        return rows;
     }
 }

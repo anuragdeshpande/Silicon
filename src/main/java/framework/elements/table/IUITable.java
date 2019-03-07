@@ -3,8 +3,6 @@ package framework.elements.table;
 import java.util.List;
 
 public interface IUITable {
-    List<UITableRow> getRows();
-
     void clickAdd();
 
     void clickRemove();

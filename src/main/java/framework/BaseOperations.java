@@ -4,9 +4,11 @@ import framework.annotations.AutomatedTest;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
 import org.testng.annotations.*;
+import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
 

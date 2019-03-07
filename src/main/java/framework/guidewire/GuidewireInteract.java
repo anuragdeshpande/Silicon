@@ -48,7 +48,6 @@ public class GuidewireInteract extends Interact {
         return new GWSelectBox(identifier);
     }
 
-    @Override
     public GWTable withTable(Identifier identifier) {
         return new GWTable(identifier);
     }

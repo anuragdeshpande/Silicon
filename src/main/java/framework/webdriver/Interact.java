@@ -48,9 +48,9 @@ public class Interact {
 
     public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
 
-    public UITable withTable(Identifier identifier) {
-        return new UITable(identifier);
-    }
+//    public UITable withTable(Identifier identifier) {
+////        return new UITable(identifier);
+////    }
 
     public UITextbox withTexbox(Identifier identifier) {
         return new UITextbox(identifier);

@@ -1,20 +1,28 @@
 package framework.guidewire.gw8.elements.gw_table;
 
+import framework.elements.table.IUITableCell;
 import framework.elements.table.UITableCell;
+import framework.elements.ui_element.UIElement;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
-public class GWCell extends UITableCell {
+public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
     WebElement element;
 
     public GWCell(WebElement element) {
         super(element);
         this.element = element;
+    }
+
+    @Override
+    public void click() {
+        this.element.click();
     }
 
     @Override
@@ -27,6 +35,24 @@ public class GWCell extends UITableCell {
                 .perform();
 
         System.out.println("Clicked on the checkbox");
+    }
+
+    @Override
+    public String getText() {
+        return this.element.getText();
+    }
+
+    @Override
+    public void clickSelect() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void clickLink() {
+        WebElement linkElement = element.findElement(By.tagName("a"));
+        String linkText = linkElement.getText();
+        linkElement.click();
+        System.out.println("Clicked on link: "+linkText);
     }
 
     @Override

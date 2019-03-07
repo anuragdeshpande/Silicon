@@ -3,8 +3,6 @@ package framework.elements.table;
 import java.util.List;
 
 public interface IUITableRow {
-    List<UITableCell> getCells();
-
     UITableCell getCell(int cellNum);
 
     UITableCell getCellByText(String cellText);

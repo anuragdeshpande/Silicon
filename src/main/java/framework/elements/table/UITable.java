@@ -30,7 +30,6 @@ public class UITable extends UIElement implements IUITable {
         return baseElement;
     }
 
-    @Override
     public List<UITableRow> getRows() {
         List<UITableRow> rows = new ArrayList<>();
 

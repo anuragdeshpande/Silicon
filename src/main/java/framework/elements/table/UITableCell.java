@@ -22,20 +22,22 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public String getText() {
-        return null;
+        throw new NotImplementedException();
     }
 
     @Override
     public void clickSelect() {
+        throw new NotImplementedException();
+    }
 
+    @Override
+    public void click() {
+        this.element.click();
     }
 
     @Override
     public void clickLink() {
-        WebElement linkElement = element.findElement(By.tagName("a"));
-        String linkText = linkElement.getText();
-        linkElement.click();
-        System.out.println("Clicked on link: "+linkText);
+       throw new NotImplementedException();
     }
 
     @Override
