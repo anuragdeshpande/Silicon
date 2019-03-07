@@ -16,7 +16,7 @@ public class SuiteGenerator {
         generateSuiteXML(args[0]);
     }
 
-    public static void generateSuiteXML(String basePackage) {
+    private static void generateSuiteXML(String basePackage) {
 
         System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
