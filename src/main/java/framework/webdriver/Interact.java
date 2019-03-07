@@ -56,6 +56,10 @@ public class Interact {
         return new UITextbox(identifier);
     }
 
+    public UITextbox withTextArea(Identifier identifier) {
+        return new UITextbox(identifier);
+    }
+
     public UISelectBox withSelectBox(Identifier identifier) {
         throw new NotImplementedException();
     }
