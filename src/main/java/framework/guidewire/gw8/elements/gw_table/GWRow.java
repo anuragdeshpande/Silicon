@@ -4,6 +4,7 @@ import framework.elements.Identifier;
 import framework.elements.table.IUITableRow;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.GuidewireInteract;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
@@ -18,6 +19,11 @@ public class GWRow extends UIElement implements IGWRow{
     public GWRow(WebElement element) {
         super(element);
         this.element = element;
+    }
+
+    @Override
+    public void click() {
+        this.getCell(0).click();
     }
 
     @Override
@@ -84,13 +90,35 @@ public class GWRow extends UIElement implements IGWRow{
 
     @Override
     public GWSelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
-        this.getCell(cellNumber).click();
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        if (!interact.withOptionalElement(selectBoxIdentifierByName).isPresent()) {
+            this.getCell(cellNumber).click();
+        }
         return new GWSelectBox(selectBoxIdentifierByName);
     }
 
     @Override
     public UITextbox getTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName) {
-        this.getCell(cellNumber).click();
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        if (!interact.withOptionalElement(textBoxIdentifierByName).isPresent()) {
+            this.getCell(cellNumber).click();
+        }
+        return new UITextbox(textBoxIdentifierByName);
+    }
+
+    public GWSelectBox getDoubleClickSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        if (!interact.withOptionalElement(selectBoxIdentifierByName).isPresent()) {
+            this.getCell(cellNumber).doubleClick();
+        }
+        return new GWSelectBox(selectBoxIdentifierByName);
+    }
+
+    public UITextbox getDoubleClickTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName) {
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        if (!interact.withOptionalElement(textBoxIdentifierByName).isPresent()) {
+            this.getCell(cellNumber).doubleClick();
+        }
         return new UITextbox(textBoxIdentifierByName);
     }
 }

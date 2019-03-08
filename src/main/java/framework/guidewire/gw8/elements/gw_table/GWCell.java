@@ -7,6 +7,7 @@ import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -91,5 +92,12 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         }
 
         System.out.println("Could not find any text boxes, not doing anything");
+    }
+
+    @Override
+    public void doubleClick() {
+        Actions actions = BrowserFactory.getCurrentGuidewireBrowser().getActions();
+        actions.doubleClick(this.element).perform();
+        actions.doubleClick(this.element).perform();
     }
 }

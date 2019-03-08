@@ -98,6 +98,15 @@ public class GWTable extends UIElement implements IGWUITable{
         return null;
     }
 
+    public GWRow getLastRow(){
+        List<GWRow> rows = this.getRows();
+        return rows.get(rows.size() -1);
+    }
+
+    public boolean hasRowWithText(String value){
+        return getRowWithText(value) != null;
+    }
+
     @Override
     public void clickRandomCheckbox() {
         System.out.println("Searching for all the checkboxes in the table");
