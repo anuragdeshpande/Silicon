@@ -50,7 +50,9 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        ExtentTest testLogger = ReportManager.recordTest(iTestResult);
+        String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
+        String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
+        ExtentTest testLogger = ReportManager.recordTest(testName, className);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
@@ -84,7 +86,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
-            testNode.warning(e);
+            testNode.fail(e);
         }
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
         testNode.fail(iTestResult.getThrowable());

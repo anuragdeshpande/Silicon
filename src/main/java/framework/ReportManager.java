@@ -19,17 +19,20 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
 class ReportManager {
 
     // Network Storage Location
-    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "Default" : System.getProperty("reportFileName");
-    static String REPORT_DIRECTORY_LOCATION = "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
+    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
+    static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp":"\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
 
     // Reporting Indices
+    private static HashMap<String, ExtentTest> xmlTestMap;
     private static HashMap<String, ExtentTest> classMap;
     private static HashMap<String, ExtentTest> testMap;
     private static HashMap<String, ExtentTest> suiteMap;
@@ -40,6 +43,10 @@ class ReportManager {
 
     }
 
+    static boolean isInitiated(){
+        return extentReports != null;
+    }
+
     static ExtentReports initiate() {
         extentReports = new ExtentReports();
         ExtentHtmlReporter extentReporter;
@@ -47,6 +54,7 @@ class ReportManager {
         classMap = new HashMap<>();
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
+        xmlTestMap = new HashMap<>();
 
         File file = new File(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
         if(!file.exists()){
@@ -77,27 +85,32 @@ class ReportManager {
         return suiteMap.get(suiteName);
     }
 
-    static ExtentTest recordClass(String className, String suiteName) {
-        if (!classMap.containsKey(className) && !className.equalsIgnoreCase("org.testng.TestRunner")) {
-            ExtentTest extentTestClass = suiteMap.get(suiteName).createNode(className);
+    static ExtentTest recordClass(String className, String xmlTestName) {
+        if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
+            ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
     }
 
-    static ExtentTest recordTest(ITestResult test) {
-        String testName = test.getMethod().getConstructorOrMethod().getMethod().getName();
-        if(testMap.containsKey(testName)){
-            return testMap.get(testName);
-        } else {
-            String className = test.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
-            String suiteName = test.getMethod().getXmlTest().getSuite().getName();
-            ExtentTest testClass = recordClass(className, suiteName);
-            ExtentTest testNode = testClass.createNode(testName);
-            testMap.put(testName, testNode);
-
-            return testNode;
+    @SuppressWarnings("Duplicates")
+    static ExtentTest recordXMLTest(String xmlTestName, String suiteName){
+        if(!xmlTestMap.containsKey(xmlTestName)){
+            ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
+            xmlTestMap.put(xmlTestName, extentXMLTest);
         }
+
+        return xmlTestMap.get(xmlTestName);
+    }
+
+    @SuppressWarnings("Duplicates")
+    static ExtentTest recordTest(String testName, String className) {
+        if(!testMap.containsKey(testName)){
+            ExtentTest extentTest = classMap.get(className).createNode(testName);
+            testMap.put(testName,extentTest);
+        }
+
+        return testMap.get(testName);
 
     }
 

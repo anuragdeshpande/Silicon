@@ -2,7 +2,12 @@ package framework.logger;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
 
 public class RegressionLogger {
 
@@ -12,6 +17,9 @@ public class RegressionLogger {
 
     public RegressionLogger(Logger logger, ExtentTest extentLogger, boolean isSuite){
         this.logger = logger;
+        if(this.logger == null){
+            this.logger = LogManager.getLogger("LocalRegressionLogs-"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+        }
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
     }
