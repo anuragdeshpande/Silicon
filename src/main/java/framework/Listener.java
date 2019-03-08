@@ -34,17 +34,14 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires at the beginning of each suite
     @Override
     public void onStart(ISuite iSuite) {
-        ReportManager.recordSuite(iSuite.getName());
+        //do nothing
     }
 
 
     // Fires at the beginning of each test class
     @Override
     public void onStart(ITestContext iTestContext) {
-        String className = iTestContext.getClass().getCanonicalName();
-        if(className.equalsIgnoreCase("org.testng.TestRunner")){
-            ReportManager.recordClass(className, iTestContext.getSuite().getName());
-        }
+        // do nothing
     }
 
     // Fires at the beginning of each test

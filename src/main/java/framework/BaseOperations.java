@@ -24,7 +24,6 @@ public class BaseOperations {
         }
 
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(xmlTest.getSuite().getName()), true);
-        logger.warn("BeforeSuite");
     }
 
 
@@ -32,7 +31,6 @@ public class BaseOperations {
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         ExtentTest extentLogger = ReportManager.recordXMLTest(xmlTest.getName(), xmlTest.getSuite().getName());
         logger = new RegressionLogger(Listener.logger, extentLogger, true);
-        logger.warn("BeforeTest");
     }
 
     @BeforeClass(description = "BeforeClass")
@@ -40,7 +38,6 @@ public class BaseOperations {
         if(!iTestContext.getClass().getSimpleName().equalsIgnoreCase("TestRunner")){
             ExtentTest extentLogger = ReportManager.recordClass(iTestContext.getClass().getSimpleName(), xmlTest.getName());
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
-            logger.warn("BeforeClass");
         }
     }
 
@@ -53,12 +50,10 @@ public class BaseOperations {
             String xmlTestName = iTestResult.getMethod().getTestClass().getXmlTest().getName();
             ExtentTest extentLogger = ReportManager.recordClass(className, xmlTestName);
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
-            logger.warn("BeforeClass");
         }
 
         ReportManager.recordTest(testName, className);
         this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(iTestResult.getMethod().getMethodName()), true);
-        logger.info("BeforeMethod");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0) {
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Skipping Test : " + iTestResult.getMethod().getMethodName() + " : No @AutomatedTest annotation found.");

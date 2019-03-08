@@ -9,15 +9,16 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 
 public class TestClassOne extends BaseOperations {
 
-    @BeforeMethod
-    public void testMethod(){
-        logger.info("This is the before method for the test");
-    }
+   @BeforeTest
+   public void test(){
+       logger.warn("Test");
+   }
 
     @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"GuidewireCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
     @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
