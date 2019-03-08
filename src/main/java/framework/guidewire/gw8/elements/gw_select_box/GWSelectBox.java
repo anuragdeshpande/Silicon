@@ -35,24 +35,31 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     public void select(String selection) {
         super.listElements = getElementOptions();
         super.select(selection);
+        new UIElement(GWIDs.QUICK_JUMP).click();
     }
 
     @Override
     public String selectRandom() {
         super.listElements = getElementOptions();
-        return super.selectRandom();
+        String selection = super.selectRandom();
+        new UIElement(GWIDs.QUICK_JUMP).click();
+        return selection;
     }
 
     @Override
     public String select(int itemNumber) {
         super.listElements = getElementOptions();
-        return super.select(itemNumber);
+        String selection = super.select(itemNumber);
+        new UIElement(GWIDs.QUICK_JUMP).click();
+        return selection;
     }
 
     @Override
     public String selectByPartial(String selection) {
         super.listElements = getElementOptions();
-        return super.selectByPartial(selection);
+        super.selectByPartial(selection);
+        new UIElement(GWIDs.QUICK_JUMP).click();
+        return selection;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package framework.guidewire;
 
 import framework.elements.Identifier;
-import framework.elements.selectbox.UISelectBox;
-import framework.elements.table.UITable;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.gw8.elements.gw_radio_button.GWRadioButton;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
@@ -32,14 +30,14 @@ public class GuidewireInteract extends Interact {
 
     @Override
     public GWSelectBox withSelectBox(Identifier identifier) {
-        new UIElement(GWIDs.ESCAPE_CLICKER).click();
+        new UIElement(GWIDs.QUICK_JUMP).click();
         new UIElement(identifier).click();
         return new GWSelectBox(identifier);
     }
 
     @Override
     public GWSelectBox withOptionalSelectBox(Identifier identifier) {
-        new UIElement(GWIDs.ESCAPE_CLICKER).click();
+        new UIElement(GWIDs.QUICK_JUMP).click();
         UIElement uiElement = new UIElement(identifier, true);
         if(uiElement.isPresent()){
             uiElement.click();

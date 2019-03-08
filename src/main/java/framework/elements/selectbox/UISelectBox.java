@@ -10,7 +10,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class UISelectBox extends UIElement implements IUISelectBox {
@@ -33,6 +32,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
                 break;
             }
         }
+
         System.out.println("Selected: "+selection);
     }
 
@@ -52,6 +52,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             WebElement selectionElement = validItems.get(NumberUtils.getRandomNumberInRange(0, count - 1));
             String selectionText = selectionElement.getText();
             selectionElement.click();
+
             System.out.println("Selected: "+selectionText);
             return selectionText;
         } else {
@@ -65,7 +66,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
         WebElement selectElement = listElements.get(itemNumber);
         String selectedText = selectElement.getText();
         selectElement.click();
-        BrowserFactory.getCurrentBrowser().getActions().sendKeys(Keys.ESCAPE).perform();
+
         System.out.println("Selected Item - "+itemNumber+": "+selectedText);
         return selectedText;
     }
@@ -76,6 +77,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             if (listItem.getText().contains(selection)) {
                 String selectedText = listItem.getText();
                 listItem.click();
+
                 System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
                 return selectedText;
             }
