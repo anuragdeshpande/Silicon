@@ -9,6 +9,8 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionManager {
 
@@ -45,23 +47,23 @@ public class ConnectionManager {
         return new QueryRunner(testResultsDS);
     }
 
-    public static ResultSetHandler<Object[]> getResultHandlerInstance(){
-        return new ResultSetHandler<Object[]>() {
+    public static ResultSetHandler<List<Object[]>> getResultHandlerInstance(){
+        return new ResultSetHandler<List<Object[]>>() {
             @Override
-            public Object[] handle(ResultSet rs) throws SQLException {
-                if (!rs.next()) {
-                    return null;
+            public List<Object[]> handle(ResultSet resultSet) throws SQLException {
+                ArrayList<Object[]> results = new ArrayList<>();
+                while(resultSet.next()){
+                    ResultSetMetaData meta = resultSet.getMetaData();
+                    int cols = meta.getColumnCount();
+                    Object[] RowResult = new Object[cols];
+
+                    for (int i = 0; i < cols; i++) {
+                        RowResult[i] = resultSet.getObject(i + 1);
+                    }
+
+                    results.add(RowResult);
                 }
-
-                ResultSetMetaData meta = rs.getMetaData();
-                int cols = meta.getColumnCount();
-                Object[] result = new Object[cols];
-
-                for (int i = 0; i < cols; i++) {
-                    result[i] = rs.getObject(i + 1);
-                }
-
-                return result;
+                return results;
             }
         };
     }
