@@ -83,25 +83,20 @@ public class UIElement implements IUIElementOperations {
     @Override
     public boolean isPresent() {
         boolean isPresent = this.getElement() != null && this.getElement().isEnabled();
-        System.out.println("Element Presence: " + isPresent);
         return isPresent;
     }
 
     @Override
     public WebElement getElement() {
-        System.out.println("Checking availability of element: " + element);
         try {
             this.element.isEnabled();
-            System.out.println("Element is available: Returning Cached element");
             return element;
         } catch (Exception e) {
-            System.out.println("element is stale re-resolving element");
             return this.isOptional ? findOptional(this.elementLocation) : findElement(this.elementLocation);
         }
     }
 
     private WebElement findElement(By elementLocation) {
-        System.out.println("Resolving Element Location: " + elementLocation);
         WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
         WebElement element = null;
 
@@ -127,7 +122,6 @@ public class UIElement implements IUIElementOperations {
     }
 
     private WebElement findOptional(By elementLocation) {
-        System.out.println("Resolving Optional Element: " + elementLocation);
         WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
         WebElement element = null;
 
