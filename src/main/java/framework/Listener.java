@@ -22,6 +22,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
 
     private ExtentReports extentReports;
     static Logger logger;
+    private boolean writeToDatabase;
 
     // Fires before any suite starts
     @Override
@@ -34,7 +35,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires at the beginning of each suite
     @Override
     public void onStart(ISuite iSuite) {
-        //do nothing
+        writeToDatabase = !iSuite.getName().equalsIgnoreCase("Default Suite");
     }
 
 
@@ -73,7 +74,10 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
-        ReportManager.recordTestResult(iTestResult, "Success");
+        if(writeToDatabase){
+            ReportManager.recordTestResult(iTestResult, "Success");
+        }
+
     }
 
     // fires when a test fails
@@ -87,17 +91,24 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         }
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
         testNode.fail(iTestResult.getThrowable());
-        ReportManager.recordTestResult(iTestResult, "Failure");
+        if(writeToDatabase){
+            ReportManager.recordTestResult(iTestResult, "Failure");
+        }
     }
 
     // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
+        if(extentLogger == null){
+            extentLogger = ReportManager.getClass(iTestResult.getTestClass().getRealClass().getSimpleName());
+        }
         extentLogger.skip(iTestResult.getName() + ": Skipped");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
             extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");
-            ReportManager.recordTestResult(iTestResult, "Skipped");
+            if(writeToDatabase){
+                ReportManager.recordTestResult(iTestResult, "Skipped");
+            }
         }
     }
 

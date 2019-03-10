@@ -121,6 +121,9 @@ class ReportManager {
     static ExtentTest getTest(String testName) {
         return testMap.get(testName);
     }
+    static ExtentTest getClass(String className){return classMap.get(className);}
+    static ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
+    static ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
 
     static boolean recordTestResult(ITestResult iTestResult, String status) {
 
@@ -187,6 +190,8 @@ class ReportManager {
 
         return tags.toString();
     }
+
+
 
     private static java.lang.String compileCustomCSS(){
 

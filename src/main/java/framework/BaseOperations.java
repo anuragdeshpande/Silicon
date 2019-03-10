@@ -12,6 +12,7 @@ import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 public class BaseOperations {
     protected RegressionLogger logger;
@@ -35,7 +36,7 @@ public class BaseOperations {
 
     @BeforeClass(description = "BeforeClass")
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
-        if(!iTestContext.getClass().getSimpleName().equalsIgnoreCase("TestRunner")){
+        if (!iTestContext.getClass().getSimpleName().equalsIgnoreCase("TestRunner")) {
             ExtentTest extentLogger = ReportManager.recordClass(iTestContext.getClass().getSimpleName(), xmlTest.getName());
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
         }
@@ -46,7 +47,7 @@ public class BaseOperations {
         String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
-        if(!className.equalsIgnoreCase("TestRunner")){
+        if (!className.equalsIgnoreCase("TestRunner")) {
             String xmlTestName = iTestResult.getMethod().getTestClass().getXmlTest().getName();
             ExtentTest extentLogger = ReportManager.recordClass(className, xmlTestName);
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
@@ -60,29 +61,26 @@ public class BaseOperations {
         }
     }
 
-    @AfterMethod
+    @AfterMethod(description = "AfterMethod")
     public void afterMethod(ITestResult iTestResult) {
-        System.out.println("Test Name: " + iTestResult.getName());
+        String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
+        logger = new RegressionLogger(Listener.logger, ReportManager.getTest(testName), true);
     }
 
-    @AfterClass
-    public void afterClass() {
+    @AfterClass(description = "AfterClass")
+    public void afterClass(ITestContext context, XmlTest xmlTest) {
+        String testName = context.getClass().getSimpleName();
+        logger = new RegressionLogger(Listener.logger, ReportManager.getClass(testName), true);
         BrowserFactory.closeCurrentBrowser();
     }
 
-    @AfterTest
-    public void afterTest() {
-
+    @AfterTest(description = "AfterTest")
+    public void afterTest(ITestContext context, XmlTest xmlTest) {
+        logger = new RegressionLogger(Listener.logger, ReportManager.getXMLTest(xmlTest.getName()), true);
     }
 
-    @AfterSuite
-    public void flushReports(){
-        if(System.getProperty("jenkinsBuildNumber") == null){
-            this.reports.flush();
-        }
+    @AfterSuite(description = "AfterSuite")
+    public void afterSuite(XmlTest xmlTest, ITestContext context){
+        logger = new RegressionLogger(Listener.logger, ReportManager.getSuite(xmlTest.getSuite().getName()), true);
     }
-
-
-
-
 }
