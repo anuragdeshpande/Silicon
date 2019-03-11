@@ -14,6 +14,8 @@ public enum Environment {
     CC8STAB02("CC8STAB02", "http://fbmsgw-stab02:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB02"),
     CC8STAB04("CC8STAB04", "http://fbmsgw-stab04:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB04"),
 
+    // PC Environments
+    PC8DEV("PC8DEV", "http://pc8dev/pc/PolicyCenter.do","PolicyCenterDatabase8DEV" ),
 
     // Reporting Environment
     REPORTING("Reporting", null, "Regression");
