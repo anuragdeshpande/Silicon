@@ -167,7 +167,7 @@ class ReportManager {
     }
 
     public static void recordSuiteResults(ISuite iSuite){
-//        if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
+        if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
             System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             iSuite.getResults().values().forEach(iSuiteResult -> {
                 ITestContext testContext = iSuiteResult.getTestContext();
@@ -190,9 +190,9 @@ class ReportManager {
                     Assert.fail("Could not save the suite results to the database");
                 }
             });
-//        } else {
-//            System.out.println("Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
-//        }
+        } else {
+            System.out.println("Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
+        }
 
     }
 
