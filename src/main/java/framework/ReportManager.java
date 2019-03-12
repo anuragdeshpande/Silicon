@@ -186,6 +186,7 @@ class ReportManager {
                     regressionDB.update("INSERT INTO SuiteResults(SuiteID, ApplicationName, PassPercentage, FailPercentage, SkipCount, BuildNumber, SuiteName, ReportPath) " +
                             "values (?,?,?,?,?,?,?,?)",jenkinsBuildNumber, applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath);
                 } catch (SQLException e) {
+                    e.printStackTrace();
                     Assert.fail("Could not save the suite results to the database");
                 }
             });
