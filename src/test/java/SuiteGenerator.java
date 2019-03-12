@@ -17,7 +17,7 @@ public class SuiteGenerator {
     }
 
     private static void generateSuiteXML(String basePackage) {
-
+        String suiteName = System.getProperty("ApplicationName") == null ? "Regression" : System.getProperty("ApplicationName");
         System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
         TestNG testNG = new TestNG();
@@ -26,7 +26,7 @@ public class SuiteGenerator {
 
         // Add Listener
         XmlSuite xmlSuite = new XmlSuite();
-        xmlSuite.setName("Regression");
+        xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
 //        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
 //        xmlSuite.setThreadCount(45);

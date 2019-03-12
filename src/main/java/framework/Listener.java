@@ -127,7 +127,9 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires at the end of each suite.
     @Override
     public void onFinish(ISuite iSuite) {
+        ReportManager.recordSuiteResults(iSuite);
     }
+
 
     // Fires at the end of all suites.
     @Override
