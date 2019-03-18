@@ -27,7 +27,7 @@ import java.util.HashMap;
 class ReportManager {
 
     // Network Storage Location
-    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
+    static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
     static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp":"\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
     static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
 
@@ -175,12 +175,12 @@ class ReportManager {
                 int failedTests = testContext.getFailedTests().size();
                 int skippedTests = testContext.getSkippedTests().size();
 
-                double passPercentage = (double) passedTests / (passedTests + failedTests + skippedTests);
-                double failPercentage = (double) failedTests / (passedTests + failedTests + skippedTests);
+                double passPercentage = ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
+                double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
                 String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
                 String applicationName = System.getProperty("ApplicationName");
                 String suiteName = iSuite.getName();
-                String reportPath = ReportManager.FULL_FILE_PATH;
+                String reportPath = "http://qa.idfbins.com/regression_logs/"+REPORT_FILE_NAME+"/"+REPORT_FILE_NAME+".html";
                 QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
                 try{
                     regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath) " +

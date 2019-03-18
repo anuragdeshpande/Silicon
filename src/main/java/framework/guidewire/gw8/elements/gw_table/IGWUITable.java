@@ -4,6 +4,8 @@ import framework.elements.table.IUITable;
 import framework.elements.table.UITableRow;
 import org.openqa.selenium.By;
 
+import java.util.List;
+
 public interface IGWUITable {
     void clickAdd();
 
@@ -22,4 +24,6 @@ public interface IGWUITable {
     void clickToolbarButtonWithText(String buttonText);
 
     void clickRandomCheckbox();
+
+    List<GWCell> getCells(String columnName);
 }
