@@ -9,27 +9,27 @@ import framework.annotations.AutomatedTest;
 import framework.annotations.AutomationHistory;
 import framework.database.ConnectionManager;
 import framework.enums.Environment;
-import framework.logger.RegressionLogger;
 import org.apache.commons.dbutils.QueryRunner;
+import org.testng.Assert;
+import org.testng.ISuite;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 class ReportManager {
 
     // Network Storage Location
-    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
+    static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
     static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp":"\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
+    static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
 
     // Reporting Indices
     private static HashMap<String, ExtentTest> xmlTestMap;
@@ -56,12 +56,12 @@ class ReportManager {
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
 
-        File file = new File(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
+        File file = new File(FULL_FILE_PATH);
         if(!file.exists()){
             boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
         }
 
-        extentReporter = new ExtentHtmlReporter(REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html");
+        extentReporter = new ExtentHtmlReporter(FULL_FILE_PATH);
 
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
@@ -164,6 +164,36 @@ class ReportManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static void recordSuiteResults(ISuite iSuite){
+        if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
+            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
+            iSuite.getResults().values().forEach(iSuiteResult -> {
+                ITestContext testContext = iSuiteResult.getTestContext();
+                int passedTests = testContext.getPassedTests().size();
+                int failedTests = testContext.getFailedTests().size();
+                int skippedTests = testContext.getSkippedTests().size();
+
+                double passPercentage = ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
+                double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
+                String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+                String applicationName = System.getProperty("ApplicationName");
+                String suiteName = iSuite.getName();
+                String reportPath = "http://qa.idfbins.com/regression_logs/"+REPORT_FILE_NAME+"/"+REPORT_FILE_NAME+".html";
+                QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+                try{
+                    regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath) " +
+                            "values (?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Assert.fail("Could not save the suite results to the database");
+                }
+            });
+        } else {
+            System.out.println("Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
+        }
+
     }
 
     private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {

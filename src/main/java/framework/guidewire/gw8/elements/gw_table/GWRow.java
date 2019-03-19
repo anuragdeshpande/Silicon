@@ -121,4 +121,9 @@ public class GWRow extends UIElement implements IGWRow{
         }
         return new UITextbox(textBoxIdentifierByName);
     }
+
+    @Override
+    public boolean isPresent() {
+        return this.element != null;
+    }
 }

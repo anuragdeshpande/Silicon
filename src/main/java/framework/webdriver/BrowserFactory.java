@@ -47,6 +47,7 @@ public class BrowserFactory {
             ChromeDriverManager.chromedriver().setup();
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--start-maximized");
+            chromeOptions.addArguments("--window-size=1920,1080");
             chromeOptions.addArguments("disable-infobars");
             return new ChromeDriver(chromeOptions);
         }

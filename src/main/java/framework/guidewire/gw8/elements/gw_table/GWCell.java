@@ -100,4 +100,9 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         actions.doubleClick(this.element).perform();
         actions.doubleClick(this.element).perform();
     }
+
+    @Override
+    public boolean isPresent() {
+        return this.element != null;
+    }
 }

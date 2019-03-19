@@ -17,6 +17,9 @@ public enum Environment {
     // PC Environments
     PC8DEV("PC8DEV", "http://pc8dev/pc/PolicyCenter.do","PolicyCenterDatabase8DEV" ),
 
+    // AB Environments
+    AB8DEV("AB8DEV", "http://ab8dev/ab/ContactManager.do", "ContactManagerDatabase8DEV"),
+
     // Reporting Environment
     REPORTING("Reporting", null, "Regression");
 

@@ -12,12 +12,16 @@ import java.util.LinkedList;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-//        generateSuiteXML("guidewire");
-        generateSuiteXML(args[0]);
+        if(args[0] == null){
+            System.out.println("No Package details available, running full suite at \"guidewireTests\" package");
+            generateSuiteXML("guidewireTests");
+        } else {
+            generateSuiteXML(args[0]);
+        }
     }
 
     private static void generateSuiteXML(String basePackage) {
-
+        String suiteName = System.getProperty("ApplicationName") == null ? "Regression" : System.getProperty("ApplicationName");
         System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
         TestNG testNG = new TestNG();
@@ -26,7 +30,7 @@ public class SuiteGenerator {
 
         // Add Listener
         XmlSuite xmlSuite = new XmlSuite();
-        xmlSuite.setName("Regression");
+        xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
 //        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
 //        xmlSuite.setThreadCount(45);

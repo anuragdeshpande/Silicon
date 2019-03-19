@@ -1,5 +1,6 @@
 package framework.guidewire.gw8.elements.gw_table;
 
+import framework.Listener;
 import framework.elements.Identifier;
 import framework.elements.table.UITable;
 import framework.elements.table.UITableRow;
@@ -9,9 +10,11 @@ import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GWTable extends UIElement implements IGWUITable{
@@ -22,9 +25,25 @@ public class GWTable extends UIElement implements IGWUITable{
     private static final By NEXT_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Next Page']");
     private static final By PREVIOUS_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Previous Page']");
 
+    private HashMap<String, Integer> columnLabelMap;
+
     public GWTable(Identifier identifier) {
         super(identifier);
 
+        if(!identifier.getReference().toString().endsWith("LV") && !identifier.getReference().toString().endsWith("-body")){
+            Assert.fail("Cannot parse a table if it is not ending in LV or -body");
+        }
+
+        columnLabelMap = new HashMap<>();
+        if(identifier.getReference().toString().endsWith("LV")){
+            super.elementLocation = By.id(identifier.getReference().toString().replaceAll("By.id: ", "").concat("-body"));
+        }
+        List<WebElement> labels = getElement().findElement(By.xpath("//div/parent::div")).findElements(By.className("x-column-header-text"));
+        for (int i = 0; i < labels.size(); ++i) {
+            String label = labels.get(i).getText().trim();
+            label = label.equals("") ? "blank-"+(i-1) : label;
+            columnLabelMap.put(label, i-1);
+        }
     }
 
     @Override
@@ -123,6 +142,16 @@ public class GWTable extends UIElement implements IGWUITable{
         System.out.println("Clicked on random checkbox : "+randomCheckBoxNumber);
     }
 
+    @Override
+    public List<GWCell> getCells(String columnName) {
+        ArrayList<GWCell> cells = new ArrayList<>();
+        getRows().forEach(gwRow -> {
+            cells.add(gwRow.getCell(columnLabelMap.get(columnName)));
+        });
+
+        return cells;
+    }
+
     public void clickCheckBoxWithLabel(String label) {
         new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).clickCheckbox();
     }
@@ -136,5 +165,9 @@ public class GWTable extends UIElement implements IGWUITable{
 
         System.out.println("Found : "+rows.size()+" Rows");
         return rows;
+    }
+
+    public HashMap<String, Integer> getColumnLabels(){
+        return this.columnLabelMap;
     }
 }
