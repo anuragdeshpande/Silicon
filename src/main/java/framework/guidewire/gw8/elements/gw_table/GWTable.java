@@ -16,11 +16,11 @@ import java.util.List;
 
 public class GWTable extends UIElement implements IGWUITable{
 
-    private static final By TOOLBAR_REFERENCE = By.xpath("./ancestor::div[2]/preceding-sibling::div[2]");
-    private static final By FIRST_PAGE_REFERENCE = By.cssSelector("a[data-qtip='First Page']");
-    private static final By LAST_PAGE_REFERENCE = By.cssSelector("a[data-qtip='Last Page']");
-    private static final By NEXT_PAGE_REFERENCE = By.cssSelector("a[data-qtip='Next Page']");
-    private static final By PREVIOUS_PAGE_REFERENCE = By.cssSelector("a[data-qtip='Previous Page']");
+    private static final By TOOLBAR_REFERENCE = By.xpath("//ancestor::div[2]/preceding-sibling::div[2]");
+    private static final By FIRST_PAGE_REFERENCE = By.xpath("//a[@data-qtip='First Page']");
+    private static final By LAST_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Last Page']");
+    private static final By NEXT_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Next Page']");
+    private static final By PREVIOUS_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Previous Page']");
 
     public GWTable(Identifier identifier) {
         super(identifier);
