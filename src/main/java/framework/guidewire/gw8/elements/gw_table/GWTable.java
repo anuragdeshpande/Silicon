@@ -5,6 +5,7 @@ import framework.elements.Identifier;
 import framework.elements.table.UITable;
 import framework.elements.table.UITableRow;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.pages.GWIDs;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
@@ -104,6 +105,7 @@ public class GWTable extends UIElement implements IGWUITable{
                 if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
                     System.out.println("Multuple pages found in the table, searching on the next page");
                     clickNextPage();
+                    new UIElement(GWIDs.QUICK_JUMP).click();
                 } else {
                     System.out.println("Last Page reached");
                     isLastPage = true;
@@ -165,6 +167,15 @@ public class GWTable extends UIElement implements IGWUITable{
 
         System.out.println("Found : "+rows.size()+" Rows");
         return rows;
+    }
+
+    public int getRowCount(){
+        return this.getElement().findElements(By.tagName("tr")).size();
+    }
+
+    public GWRow getRow(int rowNumber){
+        WebElement row = this.getElement().findElements(By.tagName("tr")).get(rowNumber);
+        return new GWRow(row);
     }
 
     public HashMap<String, Integer> getColumnLabels(){

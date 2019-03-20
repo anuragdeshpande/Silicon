@@ -105,4 +105,9 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     public boolean isPresent() {
         return this.element != null;
     }
+
+    @Override
+    public String screenGrab() {
+        return this.element.getText();
+    }
 }
