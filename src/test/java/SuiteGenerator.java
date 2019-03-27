@@ -32,17 +32,17 @@ public class SuiteGenerator {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
-//        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
-//        xmlSuite.setThreadCount(45);
+//        xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
+//        xmlSuite.setThreadCount(2);
         xmlSuite.setListeners(Collections.singletonList("framework.Listener"));
 
         // Add Test
         XmlTest xmlTest = new XmlTest(xmlSuite);
         xmlTest.setName("Regression");
 
-//        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
         xmlTest.setPreserveOrder(true);
-        xmlTest.setThreadCount(1);
+//        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
+//        xmlTest.setThreadCount(5);
 
         // Add Classes
         LinkedList<XmlClass> classes = new LinkedList<>();
