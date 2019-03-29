@@ -14,7 +14,7 @@ public class UIElement implements IUIElementOperations {
     protected WebElement element;
     protected By elementLocation;
     protected boolean isOptional = false;
-    private ElementType elementType;
+    protected ElementType elementType;
 
     public UIElement(Identifier identifier) {
         this.elementLocation = identifier.getReference();
@@ -35,18 +35,6 @@ public class UIElement implements IUIElementOperations {
         if (this.isPresent()) {
             this.getElement().click();
             System.out.println("Clicked Element");
-            if (this.elementType == ElementType.BUTTON) {
-                UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGE, true);
-                if (uiElement.isPresent()) {
-                    UIElement closeButton = new UIElement(new Identifier(By.linkText("Close"), ElementType.BUTTON), true);
-                    if (closeButton.isPresent()) {
-                        closeButton.click();
-                        this.getElement().click();
-                    } else {
-                        Assert.fail("Cannot go to Next Screen: " + uiElement.getElement().getText());
-                    }
-                }
-            }
         } else {
             Assert.fail("Element is not Clickable");
         }

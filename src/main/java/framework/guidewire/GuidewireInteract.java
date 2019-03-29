@@ -2,6 +2,7 @@ package framework.guidewire;
 
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.gw8.elements.GWElement;
 import framework.guidewire.gw8.elements.gw_radio_button.GWRadioButton;
 import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
 import framework.guidewire.gw8.elements.gw_table.GWTable;
@@ -44,6 +45,11 @@ public class GuidewireInteract extends Interact {
         }
 
         return new GWSelectBox(identifier);
+    }
+
+    @Override
+    public GWElement withElement(Identifier identifier) {
+        return new GWElement(identifier);
     }
 
     public GWTable withTable(Identifier identifier) {
