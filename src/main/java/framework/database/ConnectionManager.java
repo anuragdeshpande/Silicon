@@ -5,6 +5,7 @@ import framework.enums.Environment;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -25,9 +26,12 @@ public class ConnectionManager {
             case CC8BUAT2:
             case CC8BUAT:
                 return buildDataSource(Database.GWUAT, environment.getDatabaseName());
-            default:
+            case QA_WIZPRO_DATA_REPO:
+                return buildDataSource(Database.QAWIZPRO_DATA_REPO, environment.getDatabaseName());
             case REPORTING:
                 return buildDataSource(Database.REPORTING, environment.getDatabaseName());
+            default:
+                throw new NotImplementedException();
         }
     }
 

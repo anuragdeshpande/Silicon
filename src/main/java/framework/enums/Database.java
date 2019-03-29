@@ -5,7 +5,8 @@ public enum Database {
     GWUAT("fbmsgwsql-uat02.idfbins.com", "ccUserUAT", "mau$2ug"),
     GWIT("fbmsgwsql-it02.idfbins.com", "ccUserIT", "mau$2ug"),
     GWQA("fbmsgwsql-qa02.idfbins.com", "ccUserQA", "mau$2ug"),
-    REPORTING("FBMSGWSQL-RR01", "sa", "mau$2ugguidewire");
+    REPORTING("FBMSGWSQL-RR01", "sa", "mau$2ugguidewire"),
+    QAWIZPRO_DATA_REPO("fbms2048", "qawizproglobal", "test4work");
 
 
 

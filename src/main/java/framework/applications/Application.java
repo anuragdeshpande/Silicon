@@ -1,6 +1,5 @@
 package framework.applications;
 
-import com.github.javafaker.Faker;
 import framework.database.ConnectionManager;
 import framework.enums.Environment;
 import org.apache.commons.dbutils.QueryRunner;

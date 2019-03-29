@@ -21,7 +21,11 @@ public enum Environment {
     AB8DEV("AB8DEV", "http://ab8dev/ab/ContactManager.do", "ContactManagerDatabase8DEV"),
 
     // Reporting Environment
-    REPORTING("Reporting", null, "Regression");
+    REPORTING("Reporting", null, "Regression"),
+
+
+    // QA-WIZPro - Data repo
+    QA_WIZPRO_DATA_REPO("qawizpro_data_repo", null, "QAWIZPROGLOBALDATAREPOSITORY");
 
     private String environment;
     private String environmentUrl;
