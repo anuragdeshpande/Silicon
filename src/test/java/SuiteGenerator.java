@@ -42,7 +42,7 @@ public class SuiteGenerator {
 
         xmlTest.setPreserveOrder(true);
 //        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
-//        xmlTest.setThreadCount(5);
+        xmlTest.setThreadCount(1);
 
         // Add Classes
         LinkedList<XmlClass> classes = new LinkedList<>();
