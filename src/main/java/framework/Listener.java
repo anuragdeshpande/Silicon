@@ -50,6 +50,8 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     public void onTestStart(ITestResult iTestResult) {
         String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
+
+        System.out.println("Starting Test - "+ testName);
         ExtentTest testLogger = ReportManager.recordTest(testName, className);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
