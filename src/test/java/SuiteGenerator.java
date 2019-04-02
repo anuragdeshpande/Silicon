@@ -12,16 +12,16 @@ import java.util.LinkedList;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        if(args[0] == null){
+        if(args[0] != null && args[1] == null){
             System.out.println("No Package details available, running full suite at \"guidewireTests\" package");
-            generateSuiteXML("guidewireTests");
+            generateSuiteXML("1", "guidewireTests");
         } else {
-            generateSuiteXML(args[0]);
+            generateSuiteXML(args[0], args[1]);
         }
     }
 
-    private static void generateSuiteXML(String basePackage) {
-        int threadCount = 1;
+    private static void generateSuiteXML(String threadCounts, String basePackage) {
+        int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
         XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
 
 
@@ -36,7 +36,10 @@ public class SuiteGenerator {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
-        xmlSuite.setParallel(parallelMode);
+        if(threadCount > 1){
+            xmlSuite.setParallel(parallelMode);
+        }
+
         xmlSuite.setThreadCount(threadCount);
         xmlSuite.setListeners(Collections.singletonList("framework.Listener"));
 
@@ -45,7 +48,9 @@ public class SuiteGenerator {
         xmlTest.setName("Regression");
 
         xmlTest.setPreserveOrder(true);
-        xmlTest.setParallel(parallelMode);
+        if(threadCount > 1){
+            xmlTest.setParallel(parallelMode);
+        }
         xmlTest.setThreadCount(threadCount);
 
         // Add Classes
