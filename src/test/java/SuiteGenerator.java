@@ -21,7 +21,7 @@ public class SuiteGenerator {
     }
 
     private static void generateSuiteXML(String basePackage) {
-        int threadCount = 3;
+        int threadCount = 1;
         XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
 
 
