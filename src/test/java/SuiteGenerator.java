@@ -21,6 +21,10 @@ public class SuiteGenerator {
     }
 
     private static void generateSuiteXML(String basePackage) {
+        int threadCount = 3;
+        XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
+
+
         String suiteName = System.getProperty("ApplicationName") == null ? "Regression" : System.getProperty("ApplicationName");
         System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
@@ -32,8 +36,8 @@ public class SuiteGenerator {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
-//        xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
-        xmlSuite.setThreadCount(1);
+        xmlSuite.setParallel(parallelMode);
+        xmlSuite.setThreadCount(threadCount);
         xmlSuite.setListeners(Collections.singletonList("framework.Listener"));
 
         // Add Test
@@ -41,8 +45,8 @@ public class SuiteGenerator {
         xmlTest.setName("Regression");
 
         xmlTest.setPreserveOrder(true);
-//        xmlTest.setParallel(XmlSuite.ParallelMode.CLASSES);
-//        xmlTest.setThreadCount(1);
+        xmlTest.setParallel(parallelMode);
+        xmlTest.setThreadCount(threadCount);
 
         // Add Classes
         LinkedList<XmlClass> classes = new LinkedList<>();

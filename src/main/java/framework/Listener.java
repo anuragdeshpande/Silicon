@@ -94,6 +94,8 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, "Failure");
         }
+
+        BrowserFactory.closeCurrentBrowser();
     }
 
     // fires when a test is skipped

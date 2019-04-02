@@ -91,8 +91,13 @@ public class BrowserFactory {
     }
 
     public static void closeCurrentBrowser() { // Quits the pool and closes the browser
-        instance.pool.get().quit();
-        instance.pool.remove();
+
+        WebDriver driver = instance.pool.get();
+        if(driver != null){
+            driver.quit();
+            instance.pool.remove();
+        }
+
     }
 
 }
