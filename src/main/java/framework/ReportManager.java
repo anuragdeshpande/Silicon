@@ -177,7 +177,7 @@ class ReportManager {
                 double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
                 String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
                 String applicationName = System.getProperty("ApplicationName");
-                String suiteName = iSuite.getName();
+                String suiteName =iSuite.getName();
                 String reportPath = "http://qa.idfbins.com/regression_logs/"+REPORT_FILE_NAME+"/"+REPORT_FILE_NAME+".html";
                 QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
                 try{
