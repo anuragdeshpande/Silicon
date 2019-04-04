@@ -21,6 +21,7 @@ public class SuiteGenerator {
     }
 
     private static void generateSuiteXML(String threadCounts, String basePackage) {
+        basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
         int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
         XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
 
