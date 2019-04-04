@@ -48,7 +48,11 @@ public class BrowserFactory {
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--start-maximized");
             chromeOptions.addArguments("--window-size=1920,1080");
-            chromeOptions.addArguments("disable-infobars");
+            chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
+            chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
+            chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
+            chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
+            chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
             return new ChromeDriver(chromeOptions);
         }
 
@@ -56,7 +60,12 @@ public class BrowserFactory {
             try {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--start-maximized");
-                chromeOptions.addArguments("disable-infobars");
+                chromeOptions.addArguments("--window-size=1920,1080");
+                chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
+                chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
+                chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
+                chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
+                chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
                 chromeOptions.setCapability("idleTimeout", 350);
                 return new RemoteWebDriver(new URL(url), chromeOptions);
             } catch (Exception e) {
