@@ -25,7 +25,7 @@ public class SuiteGenerator {
         XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
 
 
-        String suiteName = System.getProperty("ApplicationName") == null ? "Regression" : System.getProperty("ApplicationName");
+        String suiteName = System.getProperty("SuiteName") == null ? "Regression" : System.getProperty("SuiteName");
         System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
         TestNG testNG = new TestNG();
