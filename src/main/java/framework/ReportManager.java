@@ -66,6 +66,7 @@ class ReportManager {
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
         extentReporter.config().setTheme(Theme.DARK);
+        extentReporter.config().setAutoCreateRelativePathMedia(true);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
         extentReporter.config().setDocumentTitle("ART Regression Health Report");

@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import framework.annotations.AutomatedTest;
+import framework.mailer.EMailWriter;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -96,8 +97,6 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, "Failure");
         }
-
-        BrowserFactory.closeCurrentBrowser();
     }
 
     // fires when a test is skipped
@@ -131,6 +130,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires at the end of each suite.
     @Override
     public void onFinish(ISuite iSuite) {
+//        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         ReportManager.recordSuiteResults(iSuite);
     }
 
@@ -139,6 +139,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     @Override
     public void onExecutionFinish() {
         this.extentReports.flush();
+
     }
 
     private String captureScreenshot(ITestResult iTestResult) {

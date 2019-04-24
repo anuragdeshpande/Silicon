@@ -47,7 +47,7 @@ public class BrowserFactory {
             ChromeDriverManager.chromedriver().setup();
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--start-maximized");
-            chromeOptions.addArguments("--window-size=1920,1080");
+//            chromeOptions.addArguments("--window-size=1920,1080");
             chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
             chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
             chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
@@ -60,7 +60,7 @@ public class BrowserFactory {
             try {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--start-maximized");
-                chromeOptions.addArguments("--window-size=1920,1080");
+//                chromeOptions.addArguments("--window-size=1920,1080");
                 chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
                 chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
                 chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
