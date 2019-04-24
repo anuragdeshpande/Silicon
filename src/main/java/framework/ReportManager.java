@@ -174,8 +174,8 @@ class ReportManager {
                 int failedTests = testContext.getFailedTests().size();
                 int skippedTests = testContext.getSkippedTests().size();
 
-                double passPercentage = ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
-                double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
+                double passPercentage = ((passedTests + failedTests + skippedTests) == 0) ? 0 : ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
+                double failPercentage = ((passedTests + failedTests + skippedTests) == 0) ? 100 : ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
                 String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
                 String applicationName = System.getProperty("ApplicationName");
                 String suiteName =iSuite.getName();
