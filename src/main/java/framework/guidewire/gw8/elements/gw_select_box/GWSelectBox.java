@@ -4,6 +4,7 @@ import framework.elements.Identifier;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.pages.GWIDs;
+import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -34,6 +35,7 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     @Override
     public void select(String selection) {
         super.listElements = getElementOptions();
+        BrowserFactory.getCurrentGuidewireBrowser().getActions().moveByOffset(-5, -5).build().perform();
         super.select(selection);
         new UIElement(GWIDs.QUICK_JUMP).click();
     }
@@ -41,6 +43,7 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     @Override
     public String selectRandom() {
         super.listElements = getElementOptions();
+        BrowserFactory.getCurrentGuidewireBrowser().getActions().moveByOffset(-5, -5).build().perform();
         String selection = super.selectRandom();
         new UIElement(GWIDs.QUICK_JUMP).click();
         return selection;
@@ -49,6 +52,7 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     @Override
     public String select(int itemNumber) {
         super.listElements = getElementOptions();
+        BrowserFactory.getCurrentGuidewireBrowser().getActions().moveByOffset(-5, -5).build().perform();
         String selection = super.select(itemNumber);
         new UIElement(GWIDs.QUICK_JUMP).click();
         return selection;
@@ -57,6 +61,7 @@ public class GWSelectBox extends UISelectBox implements IGWSelectBoxOperations{
     @Override
     public String selectByPartial(String selection) {
         super.listElements = getElementOptions();
+        BrowserFactory.getCurrentGuidewireBrowser().getActions().moveByOffset(-5, -5).build().perform();
         super.selectByPartial(selection);
         new UIElement(GWIDs.QUICK_JUMP).click();
         return selection;
