@@ -3,6 +3,7 @@ package framework.webdriver;
 import framework.guidewire.GuidewireInteract;
 import framework.utils.EnvironmentUtils;
 import framework.utils.PropertiesFileLoader;
+import framework.webdriver.utils.WebDriverOptionsManager;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -13,101 +14,70 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ThreadGuard;
 import org.testng.Assert;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
 public class BrowserFactory {
+    private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
+    private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
+    private static boolean isRemote = false;
+    private static String remoteHubURL = "";
+    static {
+        Properties properties = PropertiesFileLoader.load("config.properties");
 
-    private BrowserFactory() {
-        //Do-nothing..Do not allow to initialize this class from outside
+        // First priority, Jenkins Build
+        remoteHubURL = System.getProperty("hubUrl");
+        if (remoteHubURL != null) {
+            isRemote = true;
+        }
+
+        // Second Priority, Local configuration file.
+        if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
+            remoteHubURL = properties.getProperty("hubUrl");
+            if (remoteHubURL == null || remoteHubURL.trim().length() == 0) {
+                Assert.fail("Invalid HUB URL in your local config file.");
+            }
+            isRemote = true;
+        }
     }
 
-    private static BrowserFactory instance = new BrowserFactory();
+    public static synchronized void setDriver() throws MalformedURLException {
 
-    private ThreadLocal<WebDriver> pool = new ThreadLocal<WebDriver>() { // thread local pool object for webdriver
-        @Override
-        protected WebDriver initialValue() {
-            Properties properties = PropertiesFileLoader.load("config.properties");
-
-            // First priority, Jenkins Build
-            String hubUrl = System.getProperty("hubUrl");
-            if (hubUrl != null) {
-                return getRemoteWebDriver(hubUrl);
-            }
-
-            // Second Priority, Local configuration file.
-            if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
-                hubUrl = properties.getProperty("hubUrl");
-                if (hubUrl == null || hubUrl.trim().length() == 0) {
-                    Assert.fail("Invalid HUB URL in your local config file.");
-                }
-                return getRemoteWebDriver(hubUrl);
-            }
-
-            // Default, Local pool.
+        if(isRemote){
+            pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
+        } else {
             ChromeDriverManager.chromedriver().setup();
-            ChromeOptions chromeOptions = new ChromeOptions();
-            chromeOptions.addArguments("--start-maximized");
-//            chromeOptions.addArguments("--window-size=1920,1080");
-            chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
-            chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
-            chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
-            chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
-            chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
-            return ThreadGuard.protect(new ChromeDriver(chromeOptions));
+            pool.set(ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions())));
         }
+    }
 
-        private WebDriver getRemoteWebDriver(String url) {
+    public static synchronized Interact getCurrentBrowser(){
+        return new Interact(createDriver());
+    }
+
+    public static synchronized GuidewireInteract getCurrentGuidewireBrowser(){
+        return new GuidewireInteract(createDriver());
+    }
+
+    private static synchronized WebDriver createDriver() {
+        if(pool.get() == null){
             try {
-                ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("--start-maximized");
-//                chromeOptions.addArguments("--window-size=1920,1080");
-                chromeOptions.addArguments("--no-sandbox"); //https://stackoverflow.com/a/50725918/1689770
-                chromeOptions.addArguments("--disable-infobars"); //https://stackoverflow.com/a/43840128/1689770
-                chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
-                chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
-                chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
-                chromeOptions.setCapability("idleTimeout", 350);
-                return ThreadGuard.protect((WebDriver) new RemoteWebDriver(new URL(url), chromeOptions));
-            } catch (Exception e) {
+                setDriver();
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
-                Assert.fail("Could not open URL - " + url);
             }
-            return null;
-        }
-    };
-
-    public static Interact getCurrentBrowser() {
-        return new Interact(instance.pool.get());
-    }
-
-    public static Interact getNewChromeBrowser() {
-        return new Interact(instance.pool.get());
-    }
-
-    public static Interact getNewChromeBrowser(String url){
-        Interact interact = new Interact(instance.pool.get());
-        interact.getDriver().get(url);
-
-        return interact;
-    }
-
-    public static GuidewireInteract getNewGuidewireChromeBrowser() {
-        return new GuidewireInteract(instance.pool.get());
-    }
-
-    public static GuidewireInteract getCurrentGuidewireBrowser() {
-        return new GuidewireInteract(instance.pool.get());
-    }
-
-    public static void closeCurrentBrowser() { // Quits the pool and closes the browser
-
-        WebDriver driver = instance.pool.get();
-        if(driver != null){
-            driver.quit();
-            instance.pool.remove();
         }
 
+        return pool.get();
     }
+
+    public static synchronized void closeCurrentBrowser(){
+        WebDriver webDriver = pool.get();
+        if(webDriver != null){
+            webDriver.quit();
+        }
+    }
+
 
 }
