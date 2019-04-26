@@ -75,7 +75,7 @@ class ReportManager {
         return extentReports;
     }
 
-    static ExtentTest recordSuite(String suiteName){
+    static synchronized ExtentTest recordSuite(String suiteName){
         if(!suiteMap.containsKey(suiteName)){
             ExtentTest suite = extentReports.createTest(suiteName);
             suiteMap.put(suiteName, suite);
@@ -84,7 +84,7 @@ class ReportManager {
         return suiteMap.get(suiteName);
     }
 
-    static ExtentTest recordClass(String className, String xmlTestName) {
+    static synchronized ExtentTest recordClass(String className, String xmlTestName) {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
             classMap.put(className, extentTestClass);
@@ -93,7 +93,7 @@ class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordXMLTest(String xmlTestName, String suiteName){
+    static synchronized ExtentTest recordXMLTest(String xmlTestName, String suiteName){
         if(!xmlTestMap.containsKey(xmlTestName)){
             ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
@@ -103,7 +103,7 @@ class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordTest(String testName, String className) {
+    static synchronized ExtentTest recordTest(String testName, String className) {
         if(!testMap.containsKey(testName)){
             ExtentTest extentTest = classMap.get(className).createNode(testName);
             testMap.put(testName,extentTest);
@@ -117,14 +117,14 @@ class ReportManager {
         extentReports.removeTest(classMap.get(className));
     }
 
-    static ExtentTest getTest(String testName) {
+    static synchronized ExtentTest getTest(String testName) {
         return testMap.get(testName);
     }
-    static ExtentTest getClass(String className){return classMap.get(className);}
-    static ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
-    static ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
+    static synchronized ExtentTest getClass(String className){return classMap.get(className);}
+    static synchronized ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
+    static synchronized ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
 
-    static boolean recordTestResult(ITestResult iTestResult, String status) {
+    static synchronized boolean recordTestResult(ITestResult iTestResult, String status) {
 
         AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
         AutomationHistory[] historyAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomationHistory.class);
@@ -165,7 +165,7 @@ class ReportManager {
         }
     }
 
-    public static void recordSuiteResults(ISuite iSuite){
+    public synchronized static void recordSuiteResults(ISuite iSuite){
         if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
             System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             iSuite.getResults().values().forEach(iSuiteResult -> {
@@ -195,7 +195,7 @@ class ReportManager {
 
     }
 
-    private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
+    private synchronized static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
         StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.Team()).append("|");
