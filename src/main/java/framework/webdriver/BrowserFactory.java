@@ -10,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ThreadGuard;
 import org.testng.Assert;
 
 import java.net.URL;
@@ -53,10 +54,10 @@ public class BrowserFactory {
             chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
             chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
             chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
-            return new ChromeDriver(chromeOptions);
+            return ThreadGuard.protect(new ChromeDriver(chromeOptions));
         }
 
-        private RemoteWebDriver getRemoteWebDriver(String url) {
+        private WebDriver getRemoteWebDriver(String url) {
             try {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--start-maximized");
@@ -67,7 +68,7 @@ public class BrowserFactory {
                 chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
                 chromeOptions.addArguments("--disable-gpu"); //https://stackoverflow.com/questions/51959986/how-to-solve-selenium-chromedriver-timed-out-receiving-message-from-renderer-exc
                 chromeOptions.setCapability("idleTimeout", 350);
-                return new RemoteWebDriver(new URL(url), chromeOptions);
+                return ThreadGuard.protect((WebDriver) new RemoteWebDriver(new URL(url), chromeOptions));
             } catch (Exception e) {
                 e.printStackTrace();
                 Assert.fail("Could not open URL - " + url);
