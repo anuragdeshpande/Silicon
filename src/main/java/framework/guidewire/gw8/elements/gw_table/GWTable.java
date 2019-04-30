@@ -60,25 +60,25 @@ public class GWTable extends UIElement implements IGWUITable{
     @Override
     public void clickNextPage() {
         this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).click();
-        System.out.println("Next Page Clicked");
+        System.out.println(Thread.currentThread().getId() + ": Next Page Clicked");
     }
 
     @Override
     public void clickPreviousPage() {
         this.getElement().findElement(TOOLBAR_REFERENCE).findElement(PREVIOUS_PAGE_REFERENCE).click();
-        System.out.println("Previous Page Clicked");
+        System.out.println(Thread.currentThread().getId() + ": Previous Page Clicked");
     }
 
     @Override
     public void clickLastPage() {
         this.getElement().findElement(TOOLBAR_REFERENCE).findElement(LAST_PAGE_REFERENCE).click();
-        System.out.println("Last Page Clicked");
+        System.out.println(Thread.currentThread().getId() + ": Last Page Clicked");
     }
 
     @Override
     public void clickFirstPage() {
         this.getElement().findElement(TOOLBAR_REFERENCE).findElement(FIRST_PAGE_REFERENCE).click();
-        System.out.println("First Page Clicked");
+        System.out.println(Thread.currentThread().getId() + ": First Page Clicked");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class GWTable extends UIElement implements IGWUITable{
             for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
-                        System.out.println("Found the row with the text: "+value);
+                        System.out.println(Thread.currentThread().getId() + ": Found the row with the text: "+value);
                         return new GWRow(row);
                     }
                 }
@@ -103,11 +103,11 @@ public class GWTable extends UIElement implements IGWUITable{
 
             try{
                 if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
-                    System.out.println("Multuple pages found in the table, searching on the next page");
+                    System.out.println(Thread.currentThread().getId() + ": Multuple pages found in the table, searching on the next page");
                     clickNextPage();
                     new UIElement(GWIDs.QUICK_JUMP).click();
                 } else {
-                    System.out.println("Last Page reached");
+                    System.out.println(Thread.currentThread().getId() + ": Last Page reached");
                     isLastPage = true;
                 }
             } catch (NoSuchElementException nse){
@@ -115,7 +115,7 @@ public class GWTable extends UIElement implements IGWUITable{
             }
         } while (!isLastPage);
 
-        System.out.println("Could not find a match in the entire table, returning null");
+        System.out.println(Thread.currentThread().getId() + ": Could not find a match in the entire table, returning null");
         return null;
     }
 
@@ -130,7 +130,7 @@ public class GWTable extends UIElement implements IGWUITable{
 
     @Override
     public void clickRandomCheckbox() {
-        System.out.println("Searching for all the checkboxes in the table");
+        System.out.println(Thread.currentThread().getId() + ": Searching for all the checkboxes in the table");
         List<WebElement> checkboxes = this.getElement().findElements(By.tagName("img"));
         int randomCheckBoxNumber = NumberUtils.getRandomNumberInRange(0, checkboxes.size() - 1);
         WebElement checkbox = checkboxes.get(randomCheckBoxNumber);
@@ -141,7 +141,7 @@ public class GWTable extends UIElement implements IGWUITable{
                 .build()
                 .perform();
 
-        System.out.println("Clicked on random checkbox : "+randomCheckBoxNumber);
+        System.out.println(Thread.currentThread().getId() + ": Clicked on random checkbox : "+randomCheckBoxNumber);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class GWTable extends UIElement implements IGWUITable{
             rows.add(new GWRow(row));
         });
 
-        System.out.println("Found : "+rows.size()+" Rows");
+        System.out.println(Thread.currentThread().getId() + ": Found : "+rows.size()+" Rows");
         return rows;
     }
 

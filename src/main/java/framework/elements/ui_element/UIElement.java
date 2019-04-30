@@ -34,7 +34,7 @@ public class UIElement implements IUIElementOperations {
 
         if (this.isPresent()) {
             this.getElement().click();
-            System.out.println("Clicked Element");
+            System.out.println(Thread.currentThread().getId() + ": Clicked Element");
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -45,7 +45,7 @@ public class UIElement implements IUIElementOperations {
         if (this.isPresent()) {
             this.getElement().click();
             this.getElement().click();
-            System.out.println("Double Clicked the element");
+            System.out.println(Thread.currentThread().getId() + ": Double Clicked the element");
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -54,7 +54,7 @@ public class UIElement implements IUIElementOperations {
     @Override
     public void hover() {
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(this.getElement(), 1, 1).build().perform();
-        System.out.println("Hovering on the element");
+        System.out.println(Thread.currentThread().getId() + ": Hovering on the element");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UIElement implements IUIElementOperations {
             clipText = this.getElement().getText();
         }
 
-        System.out.println("Clipping Screen Text: " + clipText);
+        System.out.println(Thread.currentThread().getId() + ": Clipping Screen Text: " + clipText);
         return clipText;
     }
 
@@ -102,7 +102,7 @@ public class UIElement implements IUIElementOperations {
             Assert.fail("*** See Stack Trace ***");
         }
         if (!element.isEnabled()) {
-            System.out.println("Element is not Enabled");
+            System.out.println(Thread.currentThread().getId() + ": Element is not Enabled");
         }
 
         this.element = element;
@@ -119,7 +119,7 @@ public class UIElement implements IUIElementOperations {
             try {
                 element = waitUtils.waitUntilElementIsClickable(elementLocation, 1);
             } catch (TimeoutException e) {
-                System.out.println("Optional Element: " + elementLocation.toString() + " Not Found.");
+                System.out.println(Thread.currentThread().getId() + ": Optional Element: " + elementLocation.toString() + " Not Found.");
             }
         } catch (Exception e) {
             e.printStackTrace();

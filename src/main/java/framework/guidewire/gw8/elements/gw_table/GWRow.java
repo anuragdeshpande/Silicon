@@ -31,10 +31,10 @@ public class GWRow extends UIElement implements IGWRow{
     public GWCell getCell(int cellNum) {
         try {
             WebElement element = this.element.findElements(By.tagName("td")).get(cellNum);
-            System.out.println("Returning Cell: " + cellNum + " contains: "+ element.getText());
+            System.out.println(Thread.currentThread().getId() + ": Returning Cell: " + cellNum + " contains: "+ element.getText());
             return new GWCell(element);
         } catch (ArrayIndexOutOfBoundsException ae){
-            System.out.println("Cell "+ cellNum +" is out of bounds. returning null");
+            System.out.println(Thread.currentThread().getId() + ": Cell "+ cellNum +" is out of bounds. returning null");
             return null;
         }
     }
@@ -44,12 +44,12 @@ public class GWRow extends UIElement implements IGWRow{
         List<WebElement> cells = this.element.findElements(By.tagName("td"));
         for (WebElement cell : cells) {
             if (cell.getText().equalsIgnoreCase(cellText)) {
-                System.out.println("Returning Cell with contents: "+ cellText);
+                System.out.println(Thread.currentThread().getId() + ": Returning Cell with contents: "+ cellText);
                 return new GWCell(cell);
             }
         }
 
-        System.out.println("Could not find cell with text: "+cellText);
+        System.out.println(Thread.currentThread().getId() + ": Could not find cell with text: "+cellText);
         return null;
     }
 
@@ -61,31 +61,31 @@ public class GWRow extends UIElement implements IGWRow{
     @Override
     public void clickCheckBox() {
         this.getCell(0).clickCheckbox();
-        System.out.println("CheckBox Clicked");
+        System.out.println(Thread.currentThread().getId() + ": CheckBox Clicked");
     }
 
     @Override
     public void clickSelectButton() {
         this.element.findElement(By.linkText("Select")).click();
-        System.out.println("Select Button Clicked");
+        System.out.println(Thread.currentThread().getId() + ": Select Button Clicked");
     }
 
     @Override
     public void clickButtonWithText(String buttonText) {
         BrowserFactory.getCurrentGuidewireBrowser().getActions().click(this.element.findElement(By.linkText(buttonText))).moveByOffset(1, 1).build().perform();
-        System.out.println("Clicked button with text: "+buttonText);
+        System.out.println(Thread.currentThread().getId() + ": Clicked button with text: "+buttonText);
     }
 
     @Override
     public void clickRadioWithLabel(String label) {
         this.element.findElement(By.xpath(".//td/label[contains(text(),'" + label + "')]/preceding-sibling::input")).click();
-        System.out.println("Radio Button Clicked");
+        System.out.println(Thread.currentThread().getId() + ": Radio Button Clicked");
     }
 
     public List<GWCell> getCells() {
         ArrayList<GWCell> cells = new ArrayList<>();
         this.element.findElements(By.tagName("td")).forEach(cell -> cells.add(new GWCell(cell)));
-        System.out.println("Returning "+cells.size()+" Cells");
+        System.out.println(Thread.currentThread().getId() + ": Returning "+cells.size()+" Cells");
         return cells;
     }
 

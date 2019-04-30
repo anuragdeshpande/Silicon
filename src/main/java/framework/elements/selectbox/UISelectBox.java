@@ -33,7 +33,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             }
         }
 
-        System.out.println("Selected: "+selection);
+        System.out.println(Thread.currentThread().getId() + ": Selected: "+selection);
     }
 
     @Override
@@ -53,10 +53,10 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             String selectionText = selectionElement.getText();
             selectionElement.click();
 
-            System.out.println("Selected: "+selectionText);
+            System.out.println(Thread.currentThread().getId() + ": Selected: "+selectionText);
             return selectionText;
         } else {
-            System.out.println("Could not select option at random: returning null");
+            System.out.println(Thread.currentThread().getId() + ": Could not select option at random: returning null");
             return null;
         }
     }
@@ -67,7 +67,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
         String selectedText = selectElement.getText();
         selectElement.click();
 
-        System.out.println("Selected Item - "+itemNumber+": "+selectedText);
+        System.out.println(Thread.currentThread().getId() + ": Selected Item - "+itemNumber+": "+selectedText);
         return selectedText;
     }
 
@@ -78,12 +78,12 @@ public class UISelectBox extends UIElement implements IUISelectBox {
                 String selectedText = listItem.getText();
                 listItem.click();
 
-                System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
+                System.out.println(Thread.currentThread().getId() + ": Clicked on partial match for: "+selection+" on list option: "+selectedText);
                 return selectedText;
             }
         }
 
-        System.out.println("Could not find a partial match for: "+selection);
+        System.out.println(Thread.currentThread().getId() + ": Could not find a partial match for: "+selection);
         return null;
     }
 
@@ -91,11 +91,11 @@ public class UISelectBox extends UIElement implements IUISelectBox {
     public boolean hasOption(String selection) {
         for (WebElement listItem : this.getElementOptions()) {
             if (listItem.getText().equalsIgnoreCase(selection)) {
-                System.out.println("Found the option: "+selection);
+                System.out.println(Thread.currentThread().getId() + ": Found the option: "+selection);
                 return true;
             }
         }
-        System.out.println("Could not find the selection: "+selection);
+        System.out.println(Thread.currentThread().getId() + ": Could not find the selection: "+selection);
         return false;
     }
 
@@ -107,7 +107,7 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             listStrings.add(element.getText());
         }
 
-        System.out.println("Returning "+listStrings.size()+" options: "+ listStrings);
+        System.out.println(Thread.currentThread().getId() + ": Returning "+listStrings.size()+" options: "+ listStrings);
         return listStrings;
     }
 
@@ -117,13 +117,13 @@ public class UISelectBox extends UIElement implements IUISelectBox {
             for (WebElement listElement: this.getElementOptions()) {
                 if (selection.equalsIgnoreCase(listElement.getText())) {
                     this.select(selection);
-                    System.out.println("Clicked on the first matching option: "+selection);
+                    System.out.println(Thread.currentThread().getId() + ": Clicked on the first matching option: "+selection);
                     return selection;
                 }
             }
         }
 
-        System.out.println("Could not find the first matching option: did not click on anything, returning null");
+        System.out.println(Thread.currentThread().getId() + ": Could not find the first matching option: did not click on anything, returning null");
         return null;
     }
 }

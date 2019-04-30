@@ -1,5 +1,6 @@
 package framework.webdriver.utils;
 
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class WebDriverOptionsManager {
@@ -12,6 +13,7 @@ public class WebDriverOptionsManager {
         chromeOptions.addArguments("--disable-dev-shm-usage"); //https://stackoverflow.com/a/50725918/1689770
         chromeOptions.addArguments("--disable-browser-side-navigation"); //https://stackoverflow.com/a/49123152/1689770
         chromeOptions.addArguments("--disable-gpu");
+//        chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.ACCEPT);
 
         return chromeOptions;
     }

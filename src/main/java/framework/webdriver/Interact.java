@@ -85,6 +85,10 @@ public class Interact {
     }
 
     public UIConfirmationWindow withConfirmationWindow() {
-        return new UIConfirmationWindow(new Identifier(By.cssSelector("div[id*='messagebox-']")));
+        throw new NotImplementedException();
+    }
+
+    public UIConfirmationWindow withOptionalConfirmationWindow(){
+        throw new NotImplementedException();
     }
 }

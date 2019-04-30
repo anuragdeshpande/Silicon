@@ -1,6 +1,7 @@
 package framework.guidewire;
 
 import framework.elements.Identifier;
+import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.gw8.elements.GWElement;
 import framework.guidewire.gw8.elements.gw_radio_button.GWRadioButton;
@@ -9,6 +10,7 @@ import framework.guidewire.gw8.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
@@ -21,7 +23,7 @@ public class GuidewireInteract extends Interact {
         UIElement uiElement = new UIElement(identifier);
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
-        System.out.println("Tab Arrow Clicked: "+identifier.getReference());
+        System.out.println(Thread.currentThread().getId() + ": Tab Arrow Clicked: "+identifier.getReference());
     }
 
     @Override
@@ -54,5 +56,15 @@ public class GuidewireInteract extends Interact {
 
     public GWTable withTable(Identifier identifier) {
         return new GWTable(identifier);
+    }
+
+    @Override
+    public UIConfirmationWindow withConfirmationWindow() {
+        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, false);
+    }
+
+    @Override
+    public UIConfirmationWindow withOptionalConfirmationWindow() {
+        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, true);
     }
 }

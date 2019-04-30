@@ -25,7 +25,7 @@ public class GWElement extends UIElement {
     public void click() {
         if (this.isPresent()) {
             this.getElement().click();
-            System.out.println("Clicked Element");
+            System.out.println(Thread.currentThread().getId() + ": Clicked Element");
             if (elementType == ElementType.BUTTON) {
                 UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGE, true);
                 if (uiElement.isPresent()) {
