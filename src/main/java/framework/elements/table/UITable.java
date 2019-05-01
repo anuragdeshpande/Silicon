@@ -22,11 +22,11 @@ public class UITable extends UIElement implements IUITable {
     public WebElement getElement() {
         WebElement baseElement = super.getElement();
         if (!baseElement.getTagName().equalsIgnoreCase("table")) {
-            System.out.println(Thread.currentThread().getId() + ": Finding <table> in the current dom element "+ baseElement);
+            System.out.println("Finding <table> in the current dom element "+ baseElement);
             baseElement = baseElement.findElements(By.tagName("table")).get(0);
         }
 
-        System.out.println(Thread.currentThread().getId() + ": Found table: "+ baseElement);
+        System.out.println("Found table: "+ baseElement);
         return baseElement;
     }
 
@@ -37,7 +37,7 @@ public class UITable extends UIElement implements IUITable {
             rows.add(new UITableRow(row));
         });
 
-        System.out.println(Thread.currentThread().getId() + ": Found : "+rows.size()+" Rows");
+        System.out.println("Found : "+rows.size()+" Rows");
         return rows;
     }
 

@@ -19,12 +19,12 @@ public class UICheckbox extends UIElement implements IUICheckbox {
                 .release(this.getElement())
                 .build();
         clickCheckbox.perform();
-        System.out.println(Thread.currentThread().getId() + ": Clicking Checkbox");
+        System.out.println("Clicking Checkbox");
     }
 
     public boolean isChecked() {
         boolean isChecked = this.getElement().getAttribute("class").contains("checked");
-        System.out.println(Thread.currentThread().getId() + ": Is Checkbox Checked: "+isChecked);
+        System.out.println("Is Checkbox Checked: "+isChecked);
         return isChecked;
     }
 }

@@ -23,7 +23,7 @@ public class GuidewireInteract extends Interact {
         UIElement uiElement = new UIElement(identifier);
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
-        System.out.println(Thread.currentThread().getId() + ": Tab Arrow Clicked: "+identifier.getReference());
+        System.out.println("Tab Arrow Clicked: "+identifier.getReference());
     }
 
     @Override

@@ -28,6 +28,8 @@ public class BaseOperations {
         }
 
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(xmlTest.getSuite().getName()), true);
+        logger.info("Suite XML:");
+        logger.info(xmlTest.getSuite().toXml());
     }
 
 

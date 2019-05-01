@@ -25,28 +25,22 @@ public class BrowserFactory {
     private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
     private static boolean isRemote = false;
     private static String remoteHubURL = "";
-
     static {
-        try {
-            Properties properties = PropertiesFileLoader.load("config.properties");
+        Properties properties = PropertiesFileLoader.load("config.properties");
 
-            // First priority, Jenkins Build
-            remoteHubURL = System.getProperty("hubUrl");
-            if (remoteHubURL != null) {
-                isRemote = true;
-                System.out.println(Thread.currentThread().getId() + ": Will be opening Remote Web Drivers at: " + remoteHubURL);
-            }
+        // First priority, Jenkins Build
+        remoteHubURL = System.getProperty("hubUrl");
+        if (remoteHubURL != null) {
+            isRemote = true;
+        }
 
-            // Second Priority, Local configuration file.
-            if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
-                remoteHubURL = properties.getProperty("hubUrl");
-                if (remoteHubURL == null || remoteHubURL.trim().length() == 0) {
-                    Assert.fail("Invalid HUB URL in your local config file.");
-                }
-                isRemote = true;
+        // Second Priority, Local configuration file.
+        if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
+            remoteHubURL = properties.getProperty("hubUrl");
+            if (remoteHubURL == null || remoteHubURL.trim().length() == 0) {
+                Assert.fail("Invalid HUB URL in your local config file.");
             }
-        } catch (Exception e){
-            e.printStackTrace();
+            isRemote = true;
         }
     }
 
@@ -64,16 +58,19 @@ public class BrowserFactory {
         }
     }
 
-    public static synchronized Interact getCurrentBrowser() {
+    public static synchronized Interact getCurrentBrowser(){
         return new Interact(createDriver());
     }
 
-    public static synchronized GuidewireInteract getCurrentGuidewireBrowser() {
+    public static synchronized GuidewireInteract getCurrentGuidewireBrowser(){
+        if(pool.get() == null){
+            System.out.println("Cannot find driver: Trying to create new one");
+        }
         return new GuidewireInteract(createDriver());
     }
 
     private static synchronized WebDriver createDriver() {
-        if (pool.get() == null) {
+        if(pool.get() == null){
             try {
                 setDriver();
             } catch (MalformedURLException e) {
@@ -84,15 +81,17 @@ public class BrowserFactory {
         return pool.get();
     }
 
-    public static synchronized void closeCurrentBrowser() {
+    public static synchronized void closeCurrentBrowser(){
         WebDriver webDriver = pool.get();
-        if (webDriver != null) {
+        if(webDriver != null){
             webDriver.quit();
         }
     }
 
     public static  synchronized void closeAllBrowsers(){
-        driverSet.forEach(WebDriver::quit);
+        driverSet.forEach(webDriver -> {
+            webDriver.quit();
+        });
     }
 
 

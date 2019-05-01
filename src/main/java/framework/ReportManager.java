@@ -64,7 +64,7 @@ class ReportManager {
         extentReporter = new ExtentHtmlReporter(FULL_FILE_PATH);
 
         // Configurations
-        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
+        extentReporter.setAnalysisStrategy(AnalysisStrategy.CLASS);
         extentReporter.config().setTheme(Theme.DARK);
         extentReporter.config().setAutoCreateRelativePathMedia(true);
 //        extentReporter.config().setCSS(compileCustomCSS());
@@ -167,7 +167,7 @@ class ReportManager {
 
     public synchronized static void recordSuiteResults(ISuite iSuite){
         if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
-            System.out.println(Thread.currentThread().getId() + ": !!!!!! Recording Suite Results to the database. !!!!!!");
+            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             iSuite.getResults().values().forEach(iSuiteResult -> {
                 ITestContext testContext = iSuiteResult.getTestContext();
                 int passedTests = testContext.getPassedTests().size();
@@ -190,7 +190,7 @@ class ReportManager {
                 }
             });
         } else {
-            System.out.println(Thread.currentThread().getId() + ": Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
+            System.out.println("Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
         }
 
     }

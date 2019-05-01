@@ -12,19 +12,19 @@ public class UIConfirmationWindow extends UIElement implements IUIConfirmationWi
 
     @Override
     public void clickOkButton() {
-        System.out.println(Thread.currentThread().getId() + ": Clicking OK Button");
+        System.out.println("Clicking OK Button");
         this.getElement().findElement(By.linkText("OK")).click();
     }
 
     @Override
     public void clickCancelButton() {
-        System.out.println(Thread.currentThread().getId() + ": Clicking Cancel Button");
+        System.out.println("Clicking Cancel Button");
         this.getElement().findElement(By.linkText("Cancel")).click();
     }
 
     @Override
     public void clickButtonWithText(String buttonText) {
-        System.out.println(Thread.currentThread().getId() + ": Clicking button with text: "+buttonText);
+        System.out.println("Clicking button with text: "+buttonText);
         this.getElement().findElement(By.linkText(buttonText)).click();
     }
 }

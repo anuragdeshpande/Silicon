@@ -33,7 +33,7 @@ public class WaitUtils {
     protected int timeFixer(int time) {
     	int tmp = (time > 300 && time < 1000) ? 1000 : time;
     	tmp = tmp % 1000 == 0 ? (time / 1000 == 0 ? 1 : time / 1000) : tmp;
-//      System.out.println(Thread.currentThread().getId() + ": Wait up to: " + tmp + "s");
+//      System.out.println("Wait up to: " + tmp + "s");
     	return tmp;
     }
 
@@ -74,7 +74,7 @@ public class WaitUtils {
             }
         }
         if (timeWaited > 0) {
-//            System.out.println(Thread.currentThread().getId() + ": Waited: " + timeWaited + "ms for x-mask to be gone");
+//            System.out.println("Waited: " + timeWaited + "ms for x-mask to be gone");
         }
     }
 
@@ -98,7 +98,7 @@ public class WaitUtils {
         }
         
         if (timeWaited > 0) {
-//            System.out.println(Thread.currentThread().getId() + ": Waited: " + timeWaited + "ms for x-mask to be gone");
+//            System.out.println("Waited: " + timeWaited + "ms for x-mask to be gone");
         }
     }
 

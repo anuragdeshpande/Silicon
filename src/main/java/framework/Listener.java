@@ -53,7 +53,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
-        System.out.println(Thread.currentThread().getId() + ": Starting Test - "+ testName +" in thread ID: "+Thread.currentThread().getId());
+        System.out.println("Starting Test - "+ testName);
         ExtentTest testLogger = ReportManager.recordTest(testName, className);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
@@ -125,7 +125,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
-        System.out.println(Thread.currentThread().getId() + ": After Test Test");
+        System.out.println("After Test Test");
     }
 
     // Fires at the end of each suite.
