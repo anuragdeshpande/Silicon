@@ -16,52 +16,64 @@ import org.testng.Assert;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class BrowserFactory {
     private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
+    private static HashSet<WebDriver> driverSet = new HashSet<>();
     private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
     private static boolean isRemote = false;
     private static String remoteHubURL = "";
+
     static {
-        Properties properties = PropertiesFileLoader.load("config.properties");
+        try {
+            Properties properties = PropertiesFileLoader.load("config.properties");
 
-        // First priority, Jenkins Build
-        remoteHubURL = System.getProperty("hubUrl");
-        if (remoteHubURL != null) {
-            isRemote = true;
-        }
-
-        // Second Priority, Local configuration file.
-        if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
-            remoteHubURL = properties.getProperty("hubUrl");
-            if (remoteHubURL == null || remoteHubURL.trim().length() == 0) {
-                Assert.fail("Invalid HUB URL in your local config file.");
+            // First priority, Jenkins Build
+            remoteHubURL = System.getProperty("hubUrl");
+            if (remoteHubURL != null) {
+                isRemote = true;
+                System.out.println(Thread.currentThread().getId() + ": Will be opening Remote Web Drivers at: " + remoteHubURL);
             }
-            isRemote = true;
+
+            // Second Priority, Local configuration file.
+            if (properties.getProperty("runtimeEnvironment").equalsIgnoreCase("Grid")) {
+                remoteHubURL = properties.getProperty("hubUrl");
+                if (remoteHubURL == null || remoteHubURL.trim().length() == 0) {
+                    Assert.fail("Invalid HUB URL in your local config file.");
+                }
+                isRemote = true;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     public static synchronized void setDriver() throws MalformedURLException {
-
+        System.out.println("Trying to create New Driver");
         if(isRemote){
-            pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
+            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions());
+            pool.set(ThreadGuard.protect(remoteWebDriver));
+            driverSet.add(remoteWebDriver);
         } else {
             ChromeDriverManager.chromedriver().setup();
-            pool.set(ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions())));
+            ChromeDriver actualWebDriver = new ChromeDriver(optionsManager.getChromeOptions());
+            pool.set(ThreadGuard.protect(actualWebDriver));
+            driverSet.add(actualWebDriver);
         }
     }
 
-    public static synchronized Interact getCurrentBrowser(){
+    public static synchronized Interact getCurrentBrowser() {
         return new Interact(createDriver());
     }
 
-    public static synchronized GuidewireInteract getCurrentGuidewireBrowser(){
+    public static synchronized GuidewireInteract getCurrentGuidewireBrowser() {
         return new GuidewireInteract(createDriver());
     }
 
     private static synchronized WebDriver createDriver() {
-        if(pool.get() == null){
+        if (pool.get() == null) {
             try {
                 setDriver();
             } catch (MalformedURLException e) {
@@ -72,11 +84,15 @@ public class BrowserFactory {
         return pool.get();
     }
 
-    public static synchronized void closeCurrentBrowser(){
+    public static synchronized void closeCurrentBrowser() {
         WebDriver webDriver = pool.get();
-        if(webDriver != null){
+        if (webDriver != null) {
             webDriver.quit();
         }
+    }
+
+    public static  synchronized void closeAllBrowsers(){
+        driverSet.forEach(WebDriver::quit);
     }
 
 
