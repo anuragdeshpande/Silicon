@@ -65,6 +65,7 @@ class ReportManager {
 
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
+        extentReporter.config().setAutoCreateRelativePathMedia(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");

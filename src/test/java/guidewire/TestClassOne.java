@@ -24,7 +24,7 @@ public class TestClassOne extends BaseOperations {
     @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test
     public void testTwo() {
-        GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
         interact.getDriver().manage().window().maximize();
         interact.getDriver().get("http://cc8dev/cc/GuidewireCenter.do");
     }
@@ -33,7 +33,7 @@ public class TestClassOne extends BaseOperations {
     @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test(dependsOnMethods = "testTwo")
     public void testThree() {
-        GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
         interact.getDriver().manage().window().maximize();
         interact.getDriver().get("http://cc8uat/cc/GuidewireCenter.do");
     }
@@ -42,7 +42,7 @@ public class TestClassOne extends BaseOperations {
     @AutomationHistory(StoryOrDefectNumbers = {"US1555556", "US1555557", "US155558"})
     @Test(dependsOnMethods = "testThree")
     public void testFour() {
-        GuidewireInteract interact = BrowserFactory.getNewGuidewireChromeBrowser();
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
         interact.getDriver().manage().window().maximize();
         interact.getDriver().get("http://cc8dev3/cc/GuidewireCenter.do");
     }
