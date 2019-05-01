@@ -10,7 +10,6 @@ import framework.guidewire.gw8.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 

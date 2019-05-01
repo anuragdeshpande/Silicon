@@ -3,6 +3,7 @@ package framework.elements.alertwindow;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class UIConfirmationWindow extends UIElement implements IUIConfirmationWindow {
 

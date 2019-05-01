@@ -12,7 +12,7 @@ import java.util.LinkedList;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        if (args[0] != null && args[1] == null) {
+        if(args[0] != null && args[1] == null){
             System.out.println("No Package details available, running full suite at \"guidewireTests\" package");
             generateSuiteXML("1", "guidewireTests");
         } else {
@@ -23,7 +23,7 @@ public class SuiteGenerator {
     private static void generateSuiteXML(String threadCounts, String basePackage) {
         basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
         int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
-        XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.TESTS;
+        XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.CLASSES;
 
 
         String suiteName = System.getProperty("SuiteName") == null ? "Regression" : System.getProperty("SuiteName");
@@ -35,44 +35,46 @@ public class SuiteGenerator {
 
         // Add Listener
         XmlSuite xmlSuite = new XmlSuite();
-        xmlSuite.setName(suiteName + " Regression");
+        xmlSuite.setName(suiteName+" Regression");
         xmlSuite.setVerbose(1);
-        if (threadCount > 1) {
+        if(threadCount > 1){
             xmlSuite.setParallel(parallelMode);
         }
 
         xmlSuite.setThreadCount(threadCount);
         xmlSuite.setListeners(Collections.singletonList("framework.Listener"));
 
-        classesWithAnnotation.forEach(classInfo -> {
-            System.out.println("Building for: "+classInfo.getName());
-            // Add Test
-            XmlTest xmlTest = new XmlTest(xmlSuite);
-            xmlTest.setName(classInfo.getSimpleName());
-            xmlTest.setPreserveOrder(true);
-            if (threadCount > 1) {
-                xmlTest.setParallel(parallelMode);
-            }
-            xmlTest.setThreadCount(threadCount);
+        // Add Test
+        XmlTest xmlTest = new XmlTest(xmlSuite);
+        xmlTest.setName("Regression");
 
-            // Add Classes
-            LinkedList<XmlClass> classes = new LinkedList<>();
+        xmlTest.setPreserveOrder(true);
+        if(threadCount > 1){
+            xmlTest.setParallel(parallelMode);
+        }
+        xmlTest.setThreadCount(threadCount);
+
+        // Add Classes
+        LinkedList<XmlClass> classes = new LinkedList<>();
+        classesWithAnnotation.forEach(classInfo -> {
             XmlClass xmlClass = new XmlClass();
             xmlClass.setName(classInfo.getName());
             classes.add(xmlClass);
-            xmlTest.setClasses(classes);
-
-            if (Boolean.valueOf(System.getProperty("isClockMove"))) {
-                xmlTest.addIncludedGroup("ClockMove");
-            } else {
-                xmlTest.addExcludedGroup("ClockMove");
-            }
         });
+        xmlTest.setClasses(classes);
+
+        if (Boolean.valueOf(System.getProperty("isClockMove"))) {
+            xmlTest.addIncludedGroup("ClockMove");
+        } else {
+            xmlTest.addExcludedGroup("ClockMove");
+        }
 
         testNG.setXmlSuites(Collections.singletonList(xmlSuite));
+        System.out.println(xmlSuite.toXml());
         testNG.run();
 
     }
+
 
 
 }

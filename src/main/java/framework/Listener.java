@@ -37,7 +37,6 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     @Override
     public void onStart(ISuite iSuite) {
         writeToDatabase = !iSuite.getName().equalsIgnoreCase("Default Suite");
-
     }
 
 
@@ -98,6 +97,8 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, "Failure");
         }
+
+        BrowserFactory.closeCurrentBrowser();
     }
 
     // fires when a test is skipped

@@ -64,9 +64,8 @@ class ReportManager {
         extentReporter = new ExtentHtmlReporter(FULL_FILE_PATH);
 
         // Configurations
-        extentReporter.setAnalysisStrategy(AnalysisStrategy.CLASS);
+        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
         extentReporter.config().setTheme(Theme.DARK);
-        extentReporter.config().setAutoCreateRelativePathMedia(true);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
         extentReporter.config().setDocumentTitle("ART Regression Health Report");
@@ -75,7 +74,7 @@ class ReportManager {
         return extentReports;
     }
 
-    static synchronized ExtentTest recordSuite(String suiteName){
+    static ExtentTest recordSuite(String suiteName){
         if(!suiteMap.containsKey(suiteName)){
             ExtentTest suite = extentReports.createTest(suiteName);
             suiteMap.put(suiteName, suite);
@@ -84,7 +83,7 @@ class ReportManager {
         return suiteMap.get(suiteName);
     }
 
-    static synchronized ExtentTest recordClass(String className, String xmlTestName) {
+    static ExtentTest recordClass(String className, String xmlTestName) {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
             classMap.put(className, extentTestClass);
@@ -93,7 +92,7 @@ class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static synchronized ExtentTest recordXMLTest(String xmlTestName, String suiteName){
+    static ExtentTest recordXMLTest(String xmlTestName, String suiteName){
         if(!xmlTestMap.containsKey(xmlTestName)){
             ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
@@ -103,7 +102,7 @@ class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static synchronized ExtentTest recordTest(String testName, String className) {
+    static ExtentTest recordTest(String testName, String className) {
         if(!testMap.containsKey(testName)){
             ExtentTest extentTest = classMap.get(className).createNode(testName);
             testMap.put(testName,extentTest);
@@ -117,14 +116,14 @@ class ReportManager {
         extentReports.removeTest(classMap.get(className));
     }
 
-    static synchronized ExtentTest getTest(String testName) {
+    static ExtentTest getTest(String testName) {
         return testMap.get(testName);
     }
-    static synchronized ExtentTest getClass(String className){return classMap.get(className);}
-    static synchronized ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
-    static synchronized ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
+    static ExtentTest getClass(String className){return classMap.get(className);}
+    static ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
+    static ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
 
-    static synchronized boolean recordTestResult(ITestResult iTestResult, String status) {
+    static boolean recordTestResult(ITestResult iTestResult, String status) {
 
         AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
         AutomationHistory[] historyAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomationHistory.class);
@@ -165,7 +164,7 @@ class ReportManager {
         }
     }
 
-    public synchronized static void recordSuiteResults(ISuite iSuite){
+    public static void recordSuiteResults(ISuite iSuite){
         if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
             System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             iSuite.getResults().values().forEach(iSuiteResult -> {
@@ -174,8 +173,8 @@ class ReportManager {
                 int failedTests = testContext.getFailedTests().size();
                 int skippedTests = testContext.getSkippedTests().size();
 
-                double passPercentage = ((passedTests + failedTests + skippedTests) == 0) ? 0 : ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
-                double failPercentage = ((passedTests + failedTests + skippedTests) == 0) ? 100 : ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
+                double passPercentage = ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
+                double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
                 String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
                 String applicationName = System.getProperty("ApplicationName");
                 String suiteName =iSuite.getName();
@@ -195,7 +194,7 @@ class ReportManager {
 
     }
 
-    private synchronized static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
+    private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
         StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.Team()).append("|");

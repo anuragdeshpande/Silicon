@@ -26,7 +26,9 @@ public class FileParserTest {
             // interpreted object parsing
             Text2BeanConverter<Employee> converter = new Text2BeanConverter<>(schema);
             converter.convert(fileReader, beanEvent -> {
-                Employee employee = beanEvent.getBean();
+                System.out.println(beanEvent.getBean().getName());
+                System.out.println(beanEvent.getBean().getBirthDate());
+                System.out.println(beanEvent.getBean().getAddress().getStreet());
             });
 
         } catch (IOException e) {

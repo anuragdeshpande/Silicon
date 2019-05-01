@@ -28,8 +28,6 @@ public class BaseOperations {
         }
 
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(xmlTest.getSuite().getName()), true);
-        logger.info("Suite XML:");
-        logger.info(xmlTest.getSuite().toXml());
     }
 
 
@@ -76,6 +74,7 @@ public class BaseOperations {
     public void afterClass(ITestContext context, XmlTest xmlTest) {
         String testName = context.getClass().getSimpleName();
         logger = new RegressionLogger(Listener.logger, ReportManager.getClass(testName), true);
+        BrowserFactory.closeCurrentBrowser();
     }
 
     @AfterTest(description = "AfterTest")
@@ -86,6 +85,5 @@ public class BaseOperations {
     @AfterSuite(description = "AfterSuite")
     public void afterSuite(XmlTest xmlTest, ITestContext context){
         logger = new RegressionLogger(Listener.logger, ReportManager.getSuite(xmlTest.getSuite().getName()), true);
-        BrowserFactory.closeAllBrowsers();
     }
 }
