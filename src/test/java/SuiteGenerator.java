@@ -1,19 +1,22 @@
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
+import org.assertj.core.util.Arrays;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        if(args[0] != null && args[1] == null){
-            System.out.println("No Package details available, running full suite at \"guidewireTests\" package");
+        if (args[0] != null && args[1] == null) {
+            System.out.println(Thread.currentThread().getId() + ": No Package details available, running full suite at \"guidewireTests\" package");
             generateSuiteXML("1", "guidewireTests");
         } else {
             generateSuiteXML(args[0], args[1]);
@@ -27,7 +30,7 @@ public class SuiteGenerator {
 
 
         String suiteName = System.getProperty("SuiteName") == null ? "Regression" : System.getProperty("SuiteName");
-        System.out.println("!!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
+        System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
         TestNG testNG = new TestNG();
         ClassGraph graph = new ClassGraph();
