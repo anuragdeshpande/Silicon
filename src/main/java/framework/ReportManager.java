@@ -194,8 +194,8 @@ class ReportManager {
             });
 
 
-            double passPercentage = ((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
-            double failPercentage = ((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
+            double passPercentage = Math.round((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
+            double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String suiteName = iSuite.getName();
