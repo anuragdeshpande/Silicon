@@ -131,8 +131,8 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onFinish(ISuite iSuite) {
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
-        ReportManager.recordSuiteResults(iSuite);
         this.extentReports.flush();
+        ReportManager.recordSuiteResults(iSuite);
     }
 
     private String captureScreenshot(ITestResult iTestResult) {
