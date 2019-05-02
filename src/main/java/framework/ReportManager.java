@@ -65,13 +65,14 @@ class ReportManager {
         extentReporter = new ExtentHtmlReporter(FULL_FILE_PATH);
 
         // Configurations
-        extentReporter.setAnalysisStrategy(AnalysisStrategy.SUITE);
+        extentReporter.setAnalysisStrategy(AnalysisStrategy.TEST);
         extentReporter.config().setAutoCreateRelativePathMedia(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
-        extentReporter.config().setDocumentTitle("ART Regression Health Report");
-        extentReporter.config().setReportName("Regression");
+        String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
+        extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
+        extentReporter.config().setReportName(applicationName + " Regression Report");
         extentReports.attachReporter(extentReporter);
         return extentReports;
     }
