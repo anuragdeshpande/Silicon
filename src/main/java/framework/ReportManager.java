@@ -3,6 +3,7 @@ package framework;
 import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.annotations.AutomatedTest;
@@ -79,7 +80,8 @@ class ReportManager {
 
     static ExtentTest recordSuite(String suiteName) {
         if (!suiteMap.containsKey(suiteName)) {
-            ExtentTest suite = extentReports.createTest(suiteName);
+            ExtentTest suite = extentReports.createTest("SuiteLogger - " + suiteName);
+            suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
             suiteMap.put(suiteName, suite);
         }
 
@@ -97,7 +99,7 @@ class ReportManager {
     @SuppressWarnings("Duplicates")
     static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
         if (!xmlTestMap.containsKey(xmlTestName)) {
-            ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
+            ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
         }
 
@@ -180,9 +182,9 @@ class ReportManager {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
             System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
 
-            AtomicInteger passedTests = new AtomicInteger();
-            AtomicInteger failedTests = new AtomicInteger();
-            AtomicInteger skippedTests = new AtomicInteger();
+            AtomicInteger passedTests = new AtomicInteger(0);
+            AtomicInteger failedTests = new AtomicInteger(0);
+            AtomicInteger skippedTests = new AtomicInteger(0);
 
             iSuite.getResults().values().forEach(iSuiteResult -> {
                 ITestContext testContext = iSuiteResult.getTestContext();
@@ -192,8 +194,8 @@ class ReportManager {
             });
 
 
-            double passPercentage = ((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
-            double failPercentage = ((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
+            double passPercentage = Math.round((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
+            double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String suiteName = iSuite.getName();
@@ -202,7 +204,7 @@ class ReportManager {
             QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
             try {
                 regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
-                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Date());
+                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
             } catch (SQLException e) {
                 e.printStackTrace();
                 Assert.fail("Could not save the suite results to the database");
