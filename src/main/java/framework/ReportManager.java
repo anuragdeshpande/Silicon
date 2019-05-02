@@ -23,12 +23,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class ReportManager {
 
     // Network Storage Location
-    static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun"+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
-    static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp":"\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
+    static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
+    static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp" : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
     static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
 
     // Reporting Indices
@@ -43,7 +44,7 @@ class ReportManager {
 
     }
 
-    static boolean isInitiated(){
+    static boolean isInitiated() {
         return extentReports != null;
     }
 
@@ -57,7 +58,7 @@ class ReportManager {
         xmlTestMap = new HashMap<>();
 
         File file = new File(FULL_FILE_PATH);
-        if(!file.exists()){
+        if (!file.exists()) {
             boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
         }
 
@@ -75,8 +76,8 @@ class ReportManager {
         return extentReports;
     }
 
-    static ExtentTest recordSuite(String suiteName){
-        if(!suiteMap.containsKey(suiteName)){
+    static ExtentTest recordSuite(String suiteName) {
+        if (!suiteMap.containsKey(suiteName)) {
             ExtentTest suite = extentReports.createTest(suiteName);
             suiteMap.put(suiteName, suite);
         }
@@ -93,8 +94,8 @@ class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordXMLTest(String xmlTestName, String suiteName){
-        if(!xmlTestMap.containsKey(xmlTestName)){
+    static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
+        if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
         }
@@ -104,25 +105,34 @@ class ReportManager {
 
     @SuppressWarnings("Duplicates")
     static ExtentTest recordTest(String testName, String className) {
-        if(!testMap.containsKey(testName)){
+        if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(className).createNode(testName);
-            testMap.put(testName,extentTest);
+            testMap.put(testName, extentTest);
         }
 
         return testMap.get(testName);
 
     }
 
-    static void removeClass(String className){
+    static void removeClass(String className) {
         extentReports.removeTest(classMap.get(className));
     }
 
     static ExtentTest getTest(String testName) {
         return testMap.get(testName);
     }
-    static ExtentTest getClass(String className){return classMap.get(className);}
-    static ExtentTest getXMLTest(String xmlTestName){return xmlTestMap.get(xmlTestName);}
-    static ExtentTest getSuite(String suiteName){return suiteMap.get(suiteName);}
+
+    static ExtentTest getClass(String className) {
+        return classMap.get(className);
+    }
+
+    static ExtentTest getXMLTest(String xmlTestName) {
+        return xmlTestMap.get(xmlTestName);
+    }
+
+    static ExtentTest getSuite(String suiteName) {
+        return suiteMap.get(suiteName);
+    }
 
     static boolean recordTestResult(ITestResult iTestResult, String status) {
 
@@ -157,7 +167,7 @@ class ReportManager {
                                     "(ClockMove, TestCreator, TestName, StartTime, " +
                                     "EndTime, FailureImageURL, TestStatus, FailureReason, " +
                                     "BuildNumber, SuiteName, TestRunSource, Tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-            clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
+                            clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
                             suiteName, testRunSource, tags) > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,32 +175,39 @@ class ReportManager {
         }
     }
 
-    public static void recordSuiteResults(ISuite iSuite){
-        if(!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")){
+    public static void recordSuiteResults(ISuite iSuite) {
+        if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
             System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
+
+            AtomicInteger passedTests = new AtomicInteger();
+            AtomicInteger failedTests = new AtomicInteger();
+            AtomicInteger skippedTests = new AtomicInteger();
+
             iSuite.getResults().values().forEach(iSuiteResult -> {
                 ITestContext testContext = iSuiteResult.getTestContext();
-                int passedTests = testContext.getPassedTests().size();
-                int failedTests = testContext.getFailedTests().size();
-                int skippedTests = testContext.getSkippedTests().size();
-
-                double passPercentage = ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
-                double failPercentage = ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
-                String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
-                String applicationName = System.getProperty("ApplicationName");
-                String suiteName =iSuite.getName();
-                String reportPath = "http://qa.idfbins.com/regression_logs/"+REPORT_FILE_NAME+"/"+REPORT_FILE_NAME+".html";
-                QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
-                try{
-                    regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath) " +
-                            "values (?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    Assert.fail("Could not save the suite results to the database");
-                }
+                passedTests.set(passedTests.get() + testContext.getPassedTests().size());
+                failedTests.set(failedTests.get() + testContext.getFailedTests().size());
+                skippedTests.set(skippedTests.get() + testContext.getSkippedTests().size());
             });
+
+
+            double passPercentage = ((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
+            double failPercentage = ((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get())) * 100;
+            String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+            String applicationName = System.getProperty("ApplicationName");
+            String suiteName = iSuite.getName();
+            String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + REPORT_FILE_NAME + ".html";
+
+            QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+            try {
+                regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
+                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Date());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Assert.fail("Could not save the suite results to the database");
+            }
         } else {
-            System.out.println("Could not Record Suite: " + iSuite.getName() +" with report path: " + ReportManager.FULL_FILE_PATH);
+            System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
         }
 
     }
@@ -221,8 +238,7 @@ class ReportManager {
     }
 
 
-
-    private static java.lang.String compileCustomCSS(){
+    private static java.lang.String compileCustomCSS() {
 
         return (".leaf.pass > .collapsible-header, .leaf.pass > .collapsible-body {\n" +
                 "            border: #b5d6a7;\n" +
