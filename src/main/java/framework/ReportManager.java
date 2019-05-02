@@ -3,6 +3,7 @@ package framework;
 import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.annotations.AutomatedTest;
@@ -79,7 +80,8 @@ class ReportManager {
 
     static ExtentTest recordSuite(String suiteName) {
         if (!suiteMap.containsKey(suiteName)) {
-            ExtentTest suite = extentReports.createTest(suiteName);
+            ExtentTest suite = extentReports.createTest("SuiteLogger - " + suiteName);
+            suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
             suiteMap.put(suiteName, suite);
         }
 
@@ -97,7 +99,7 @@ class ReportManager {
     @SuppressWarnings("Duplicates")
     static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
         if (!xmlTestMap.containsKey(xmlTestName)) {
-            ExtentTest extentXMLTest = suiteMap.get(suiteName).createNode(xmlTestName);
+            ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
         }
 

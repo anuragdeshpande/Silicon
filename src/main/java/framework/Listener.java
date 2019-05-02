@@ -19,23 +19,19 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Listener implements ISuiteListener, ITestListener, IExecutionListener {
+public class Listener implements ISuiteListener, ITestListener{
 
     private ExtentReports extentReports;
     static Logger logger;
     private boolean writeToDatabase;
 
-    // Fires before any suite starts
-    @Override
-    public void onExecutionStart() {
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-        logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
-        this.extentReports = ReportManager.initiate();
-    }
 
     // Fires at the beginning of each suite
     @Override
     public void onStart(ISuite iSuite) {
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
+        this.extentReports = ReportManager.initiate();
         writeToDatabase = !iSuite.getName().equalsIgnoreCase("Default Suite");
     }
 
@@ -44,11 +40,13 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     @Override
     public void onStart(ITestContext iTestContext) {
         // do nothing
+        System.out.println("In Test Start");
     }
 
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
+        System.out.println("In onTestStart");
         String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
@@ -134,14 +132,7 @@ public class Listener implements ISuiteListener, ITestListener, IExecutionListen
     public void onFinish(ISuite iSuite) {
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         ReportManager.recordSuiteResults(iSuite);
-    }
-
-
-    // Fires at the end of all suites.
-    @Override
-    public void onExecutionFinish() {
         this.extentReports.flush();
-
     }
 
     private String captureScreenshot(ITestResult iTestResult) {
