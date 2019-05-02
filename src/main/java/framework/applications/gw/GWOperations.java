@@ -18,4 +18,6 @@ public interface GWOperations {
     boolean hasErrorMessageOnScreen();
 
     String getErrorMessageOnScreen();
+
+    void overrideEnvironmentURL(String url);
 }

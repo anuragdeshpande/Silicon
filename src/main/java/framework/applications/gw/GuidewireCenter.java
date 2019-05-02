@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
+    protected String overrideEnvironmentURL;
+
     @Override
     public GuidewireInteract getInteractObject() {
         return BrowserFactory.getCurrentGuidewireBrowser();
@@ -23,5 +25,10 @@ abstract public class GuidewireCenter extends Application implements GWOperation
     @Override
     public String getErrorMessageOnScreen() {
         return BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE).screenGrab();
+    }
+
+    @Override
+    public void overrideEnvironmentURL(String url) {
+        this.overrideEnvironmentURL = url;
     }
 }
