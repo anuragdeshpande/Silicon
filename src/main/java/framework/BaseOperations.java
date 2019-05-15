@@ -14,11 +14,13 @@ import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class BaseOperations {
     protected RegressionLogger logger;
     protected ExtentReports reports;
+    protected HashMap<String, String> storage = new HashMap<>();
     protected Faker faker = new Faker(new Locale("en-us"));
 
     @BeforeSuite
