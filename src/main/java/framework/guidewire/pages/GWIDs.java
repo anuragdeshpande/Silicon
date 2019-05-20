@@ -1,6 +1,7 @@
 package framework.guidewire.pages;
 
 import framework.elements.Identifier;
+import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
 
 public class GWIDs {
@@ -8,4 +9,17 @@ public class GWIDs {
     public static final Identifier QUICK_JUMP = new Identifier(By.id("QuickJump-inputEl"));
     public static final Identifier ERROR_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='error_icon']/parent::div"));
     public static final Identifier CONFIRMATION_WINDOW = new Identifier(By.cssSelector("div[id*='messagebox-']"));
+
+    public static final class ServerPages{
+        public static final class ServerTools{
+            public static final Identifier SET_LOG_LEVEL = new Identifier(By.id("ServerTools:MenuLinks:ServerTools_SetLogLevel"), ElementType.LINK);
+
+            public static final class LogLevel{
+                public static final Identifier LOGGERS = new Identifier(By.id("SetLogLevel:SetLogLevelScreen:Categories-inputEl"), ElementType.LINK);
+                public static final Identifier LEVELS = new Identifier(By.id("SetLogLevel:SetLogLevelScreen:CategoriesLevels-inputEl"), ElementType.LINK);
+                public static final Identifier SET_LEVEL = new Identifier(By.id("SetLogLevel:SetLogLevelScreen:CategorySetLevel-btnInnerEl"), ElementType.LINK);
+                public static final Identifier CURRENT_LEVEL = new Identifier(By.id("SetLogLevel:SetLogLevelScreen:CategoryOldLevel-inputEl"), ElementType.ELEMENT);
+            }
+        }
+    }
 }

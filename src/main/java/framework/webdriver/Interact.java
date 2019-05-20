@@ -9,10 +9,7 @@ import framework.elements.selectbox.UISelectBox;
 import framework.elements.table.UITable;
 import framework.elements.textbox.UITextbox;
 import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -90,5 +87,14 @@ public class Interact {
 
     public UIConfirmationWindow withOptionalConfirmationWindow(){
         throw new NotImplementedException();
+    }
+
+    public void pressKeys(CharSequence... keys){
+        Actions actions = BrowserFactory.getCurrentGuidewireBrowser().getActions();
+        if(this.driver != null){
+           actions = new Actions(this.driver);
+        }
+
+        actions.sendKeys(Keys.chord(keys)).perform();
     }
 }
