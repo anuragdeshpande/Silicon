@@ -57,4 +57,19 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         interact.pressKeys(Keys.ALT, Keys.SHIFT, "t");
         return new ServerPages(this);
     }
+
+    @Override
+    public void login(String userName, String password) {
+        GuidewireInteract interact = getInteractObject();
+        interact.withTexbox(GWIDs.Login.USER_NAME).fill(userName);
+        interact.withTexbox(GWIDs.Login.PASSWORD).fill(password);
+        interact.withElement(GWIDs.Login.LOGIN).click();
+    }
+
+    @Override
+    public void logout() {
+        GuidewireInteract interact = getInteractObject();
+        interact.withElement(GWIDs.SETTINGS_COG).click();
+        interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+    }
 }

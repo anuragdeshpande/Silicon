@@ -8,6 +8,8 @@ import framework.webdriver.BrowserFactory;
 public interface GWOperations {
     void login(String userName, String password);
 
+    void logout();
+
     void openBatchServer();
 
     void startBatch(String batchName);
