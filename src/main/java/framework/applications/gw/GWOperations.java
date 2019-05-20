@@ -1,6 +1,7 @@
 package framework.applications.gw;
 
 import framework.enums.Environment;
+import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 
@@ -20,4 +21,8 @@ public interface GWOperations {
     String getErrorMessageOnScreen();
 
     void overrideEnvironmentURL(String url);
+
+    void setLogLevel(String loggerName, LogLevel logLevel);
+
+    ServerPages openServerPages();
 }

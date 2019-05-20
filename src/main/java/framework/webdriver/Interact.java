@@ -4,6 +4,7 @@ import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.radiobutton.UIRadioButton;
+import org.openqa.selenium.Keys;
 import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
@@ -80,5 +81,14 @@ public class Interact {
 
     public UIConfirmationWindow withOptionalConfirmationWindow(){
         throw new NotImplementedException();
+    }
+
+    public void pressKeys(CharSequence... keys){
+        Actions actions = BrowserFactory.getCurrentGuidewireBrowser().getActions();
+        if(this.driver != null){
+           actions = new Actions(this.driver);
+        }
+
+        actions.sendKeys(Keys.chord(keys)).build().perform();
     }
 }

@@ -1,9 +1,11 @@
 package framework.applications.gw;
 
 import framework.applications.Application;
+import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
+import org.openqa.selenium.Keys;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
@@ -28,5 +30,30 @@ abstract public class GuidewireCenter extends Application implements GWOperation
     @Override
     public void overrideEnvironmentURL(String url) {
         this.overrideEnvironmentURL = url;
+    }
+
+    @Override
+    public void setLogLevel(String loggerName, LogLevel logLevel){
+        ServerPages serverPages = openServerPages();
+        serverPages.clickSetLogLevel();
+        GuidewireInteract interact = getInteractObject();
+        interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LOGGERS).select(loggerName);
+        interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LEVELS).select(logLevel.name());
+        if(interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).isPresent()){
+            interact.withElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).click();
+        } else {
+            System.out.println("System already at "+logLevel.name()+" for Logger: "+ loggerName);
+        }
+
+        serverPages.returnToCenter();
+
+    }
+
+    @Override
+    public ServerPages openServerPages() {
+        GuidewireInteract interact = getInteractObject();
+        interact.withElement(GWIDs.QUICK_JUMP).click();
+        interact.pressKeys(Keys.ALT, Keys.SHIFT, "t");
+        return new ServerPages(this);
     }
 }
