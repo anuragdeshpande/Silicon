@@ -60,8 +60,8 @@ abstract public class GuidewireCenter extends Application implements GWOperation
     @Override
     public void login(String userName, String password) {
         GuidewireInteract interact = getInteractObject();
-        interact.withTexbox(GWIDs.Login.USER_NAME).fill(userName);
-        interact.withTexbox(GWIDs.Login.PASSWORD).fill(password);
+        interact.withTextbox(GWIDs.Login.USER_NAME).fill(userName);
+        interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
     }
 
