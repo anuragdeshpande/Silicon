@@ -11,6 +11,13 @@ public class GWIDs {
     public static final Identifier CONFIRMATION_WINDOW = new Identifier(By.cssSelector("div[id*='messagebox-']"));
 
     public static final class ServerPages{
+        public static final Identifier ACTIONS_MENU = new Identifier(By.id("ServerTools:InternalToolsMenuActions-btnInnerEl"), ElementType.LINK);
+
+        public static final class ActionsMenu{
+            public static final Identifier RETURN_TO_APP = new Identifier(By.id("ServerTools:InternalToolsMenuActions:ReturnToApp-textEl"), ElementType.LINK);
+        }
+
+
         public static final class ServerTools{
             public static final Identifier SET_LOG_LEVEL = new Identifier(By.id("ServerTools:MenuLinks:ServerTools_SetLogLevel"), ElementType.LINK);
 

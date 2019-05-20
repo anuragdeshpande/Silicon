@@ -14,4 +14,9 @@ public class ServerPages {
     public void clickSetLogLevel(){
         interact.withElement(GWIDs.ServerPages.ServerTools.SET_LOG_LEVEL).click();
     }
+
+    public void returnToCenter(){
+        interact.withElement(GWIDs.ServerPages.ACTIONS_MENU).click();
+        interact.withElement(GWIDs.ServerPages.ActionsMenu.RETURN_TO_APP).click();
+    }
 }

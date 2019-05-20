@@ -47,12 +47,14 @@ abstract public class GuidewireCenter extends Application implements GWOperation
             System.out.println("System already at "+logLevel.name()+" for Logger: "+ loggerName);
         }
 
+        serverPages.returnToCenter();
+
     }
 
     @Override
     public ServerPages openServerPages() {
         GuidewireInteract interact = getInteractObject();
-        interact.pressKeys(Keys.LEFT_ALT, Keys.LEFT_SHIFT, "T");
+        interact.pressKeys(Keys.ALT, Keys.SHIFT, "T");
         return new ServerPages(this);
     }
 }
