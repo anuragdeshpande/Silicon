@@ -1,25 +1,19 @@
 package framework.webdriver;
 
 import framework.elements.Identifier;
-import framework.elements.radiobutton.UIRadioButton;
-import framework.elements.ui_element.UIElement;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
+import framework.elements.radiobutton.UIRadioButton;
+import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
-import framework.elements.table.UITable;
 import framework.elements.textbox.UITextbox;
-import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
+import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.List;
 
 public class Interact {
 
@@ -48,10 +42,6 @@ public class Interact {
 
     public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
 
-//    public UITable withTable(Identifier identifier) {
-////        return new UITable(identifier);
-////    }
-
     public UITextbox withTexbox(Identifier identifier) {
         return new UITextbox(identifier);
     }
@@ -60,11 +50,11 @@ public class Interact {
         return new UITextbox(identifier);
     }
 
-    public UISelectBox withSelectBox(Identifier identifier) {
-        throw new NotImplementedException();
+    public UISelect withSelectBox(Identifier identifier) {
+        return new UISelectBox(identifier);
     }
-    public UISelectBox withOptionalSelectBox(Identifier identifier) {
-        throw new NotImplementedException();
+    public UISelect withOptionalSelectBox(Identifier identifier) {
+        return new UISelectBox(identifier);
     }
 
     public UIElement withElement(Identifier identifier) {
