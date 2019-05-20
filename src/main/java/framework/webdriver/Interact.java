@@ -4,10 +4,11 @@ import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.radiobutton.UIRadioButton;
+import org.openqa.selenium.Keys;
+import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -42,10 +43,6 @@ public class Interact {
 
     public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
 
-//    public UITable withTable(Identifier identifier) {
-////        return new UITable(identifier);
-////    }
-
     public UITextbox withTexbox(Identifier identifier) {
         return new UITextbox(identifier);
     }
@@ -54,11 +51,11 @@ public class Interact {
         return new UITextbox(identifier);
     }
 
-    public UISelectBox withSelectBox(Identifier identifier) {
-        throw new NotImplementedException();
+    public UISelect withSelectBox(Identifier identifier) {
+        return new UISelectBox(identifier);
     }
-    public UISelectBox withOptionalSelectBox(Identifier identifier) {
-        throw new NotImplementedException();
+    public UISelect withOptionalSelectBox(Identifier identifier) {
+        return new UISelectBox(identifier);
     }
 
     public UIElement withElement(Identifier identifier) {
