@@ -1,22 +1,19 @@
 package framework.webdriver;
 
 import framework.elements.Identifier;
-import framework.elements.radiobutton.UIRadioButton;
-import framework.elements.ui_element.UIElement;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
+import framework.elements.radiobutton.UIRadioButton;
 import framework.elements.selectbox.UISelectBox;
-import framework.elements.table.UITable;
 import framework.elements.textbox.UITextbox;
-import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.*;
+import framework.elements.ui_element.UIElement;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.List;
 
 public class Interact {
 
@@ -95,6 +92,6 @@ public class Interact {
            actions = new Actions(this.driver);
         }
 
-        actions.sendKeys(Keys.chord(keys)).perform();
+        actions.sendKeys(Keys.chord(keys)).build().perform();
     }
 }
