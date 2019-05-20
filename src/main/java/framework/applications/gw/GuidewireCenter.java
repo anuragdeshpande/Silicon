@@ -41,8 +41,8 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         GuidewireInteract interact = getInteractObject();
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LOGGERS).select(loggerName);
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LEVELS).select(logLevel.name());
-        if(interact.withOptionalElement(GWIDs.ServerPages.ServerTools.SET_LOG_LEVEL).isPresent()){
-            interact.withElement(GWIDs.ServerPages.ServerTools.SET_LOG_LEVEL).click();
+        if(interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).isPresent()){
+            interact.withElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).click();
         } else {
             System.out.println("System already at "+logLevel.name()+" for Logger: "+ loggerName);
         }
@@ -54,7 +54,7 @@ abstract public class GuidewireCenter extends Application implements GWOperation
     @Override
     public ServerPages openServerPages() {
         GuidewireInteract interact = getInteractObject();
-        interact.pressKeys(Keys.ALT, Keys.SHIFT, "T");
+        interact.pressKeys(Keys.ALT, Keys.SHIFT, "t");
         return new ServerPages(this);
     }
 }
