@@ -43,7 +43,7 @@ public class Interact {
 
     public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
 
-    public UITextbox withTexbox(Identifier identifier) {
+    public UITextbox withTextbox(Identifier identifier) {
         return new UITextbox(identifier);
     }
 
