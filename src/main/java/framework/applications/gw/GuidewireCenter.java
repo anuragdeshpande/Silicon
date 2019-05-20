@@ -4,8 +4,6 @@ import framework.applications.Application;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
