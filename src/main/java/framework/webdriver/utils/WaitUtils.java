@@ -191,6 +191,12 @@ public class WaitUtils {
         return driver.findElements(locator);
     }
 
+    public List<WebElement> waitUntilElementsAreClickable(By locator, int waitInSeconds) {
+        waitForPageLoad();
+        newWait(waitInSeconds).until(ExpectedConditions.elementToBeClickable(locator));
+        return driver.findElements(locator);
+    }
+
     public WebElement waitUntilElementIsVisible(WebElement ele, int waitInSeconds) {
         waitForPageLoad();
         newWait(waitInSeconds).until(ExpectedConditions.visibilityOf(ele));
