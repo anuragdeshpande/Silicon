@@ -10,4 +10,5 @@ public enum ElementType {
     CHECK_BOX,
     TEXT_AREA,
     LINK,
+    MULTIPLE_VALUE_ELEMENT
 }
