@@ -14,6 +14,8 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.concurrent.TimeUnit;
+
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
         super(driver);
@@ -30,7 +32,9 @@ public class GuidewireInteract extends Interact {
         try{
             GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
             WebDriver driver = interact.getDriver();
+            driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
             WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             return errorElement != null && errorElement.isEnabled();
         } catch (Exception e){
             return false;
