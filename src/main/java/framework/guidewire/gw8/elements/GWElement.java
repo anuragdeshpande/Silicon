@@ -3,6 +3,7 @@ package framework.guidewire.gw8.elements;
 import framework.elements.Identifier;
 import framework.elements.enums.ElementType;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -26,17 +27,17 @@ public class GWElement extends UIElement {
         if (this.isPresent()) {
             this.getElement().click();
             System.out.println("Clicked Element");
-            if (elementType == ElementType.BUTTON) {
-                UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGE, true);
-                if (uiElement.isPresent()) {
+            if (GuidewireInteract.hasErrorMessageOnScreen()) {
+                if (identifier.shouldCheckForWarning()) {
                     UIElement closeButton = new UIElement(new Identifier(By.linkText("Close"), ElementType.BUTTON), true);
                     if (closeButton.isPresent()) {
                         closeButton.click();
                         this.getElement().click();
-                    } else {
-                        Assert.fail("Cannot go to Next Screen: " + uiElement.getElement().getText());
                     }
+                } else {
+                    Assert.fail("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
                 }
+
             }
         } else {
             Assert.fail("Element is not Clickable");

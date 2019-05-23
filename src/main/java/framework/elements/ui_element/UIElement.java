@@ -14,16 +14,19 @@ public class UIElement implements IUIElementOperations {
     protected WebElement element;
     protected By elementLocation;
     protected boolean isOptional = false;
+    protected Identifier identifier;
     protected ElementType elementType;
 
     public UIElement(Identifier identifier) {
         this.elementLocation = identifier.getReference();
         this.elementType = identifier.getElementType();
+        this.identifier = identifier;
     }
 
     public UIElement(Identifier identifier, boolean isOptional) {
         this.elementLocation = identifier.getReference();
         this.isOptional = isOptional;
+        this.identifier = identifier;
     }
 
     protected UIElement(WebElement element) {

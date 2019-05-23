@@ -12,6 +12,7 @@ import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -23,6 +24,22 @@ public class GuidewireInteract extends Interact {
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
         System.out.println("Tab Arrow Clicked: "+identifier.getReference());
+    }
+
+    public static boolean hasErrorMessageOnScreen(){
+        try{
+            GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+            WebDriver driver = interact.getDriver();
+            WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
+            return errorElement != null && errorElement.isEnabled();
+        } catch (Exception e){
+            return false;
+        }
+
+    }
+
+    public static String getErrorMessageFromScreen(){
+        return BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(GWIDs.ERROR_MESSAGE.getReference()).getText();
     }
 
     @Override
