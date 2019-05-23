@@ -28,11 +28,15 @@ public class GuidewireInteract extends Interact {
         System.out.println("Tab Arrow Clicked: "+identifier.getReference());
     }
 
+    /**
+     * this is designed to catch the error messages immediately after clicking.
+     * if the error message is shown on the screen with in 10 Milliseconds from the click, the function returns false.
+     */
     public static boolean hasErrorMessageOnScreen(){
         try{
             GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
             WebDriver driver = interact.getDriver();
-            driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
             WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             return errorElement != null && errorElement.isEnabled();
