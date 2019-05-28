@@ -1,14 +1,10 @@
 package guidewire;
 
+import annotations.AutomatedTest;
+import annotations.AutomationHistory;
 import framework.BaseOperations;
-import framework.annotations.AutomatedTest;
-import framework.annotations.AutomationHistory;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
