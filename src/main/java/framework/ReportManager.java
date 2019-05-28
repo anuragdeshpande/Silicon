@@ -203,8 +203,8 @@ class ReportManager {
 
             QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
             try {
-                regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath) " +
-                        "values (?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, suiteName, reportPath);
+                regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
+                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
             } catch (SQLException e) {
                 e.printStackTrace();
                 Assert.fail("Could not save the suite results to the database");
