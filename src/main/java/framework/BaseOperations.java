@@ -1,9 +1,9 @@
 package framework;
 
+import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.github.javafaker.Faker;
-import framework.annotations.AutomatedTest;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.testng.ITestContext;
@@ -13,7 +13,6 @@ import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 
