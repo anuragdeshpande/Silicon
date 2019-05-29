@@ -19,9 +19,14 @@ public class Identifier {
         canThrowWarning = false;
     }
 
-    public Identifier setPossibleWarningMessage(boolean value){
-        this.canThrowWarning = value;
-        return this;
+    public Identifier(By reference, ElementType elementType, boolean checkForWarning) {
+        this.reference = reference;
+        this.elementType = elementType;
+        canThrowWarning = checkForWarning;
+    }
+
+    public boolean shouldCheckForWarning() {
+        return canThrowWarning;
     }
 
     public By getReference() {

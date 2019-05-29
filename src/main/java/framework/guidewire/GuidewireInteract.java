@@ -12,6 +12,9 @@ import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.concurrent.TimeUnit;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -23,6 +26,28 @@ public class GuidewireInteract extends Interact {
         Dimension size = uiElement.getElement().getSize();
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
         System.out.println("Tab Arrow Clicked: "+identifier.getReference());
+    }
+
+    /**
+     * this is designed to catch the error messages immediately after clicking.
+     * if the error message is shown on the screen with in 10 Milliseconds from the click, the function returns false.
+     */
+    public static boolean hasErrorMessageOnScreen(){
+        try{
+            GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+            WebDriver driver = interact.getDriver();
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
+            WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
+            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            return errorElement != null && errorElement.isEnabled();
+        } catch (Exception e){
+            return false;
+        }
+
+    }
+
+    public static String getErrorMessageFromScreen(){
+        return BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(GWIDs.ERROR_MESSAGE.getReference()).getText();
     }
 
     @Override

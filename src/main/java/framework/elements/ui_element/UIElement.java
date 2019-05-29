@@ -1,8 +1,6 @@
 package framework.elements.ui_element;
 
 import framework.elements.Identifier;
-import framework.elements.enums.ElementType;
-import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.By;
@@ -11,22 +9,28 @@ import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
 public class UIElement implements IUIElementOperations {
-    protected WebElement element;
+    private WebElement element;
+    private boolean isOptional = false;
+    protected Identifier identifier;
+    
+    // although reference is part of identifier, declaring again for child classes to override if there is a need.
     protected By elementLocation;
-    protected boolean isOptional = false;
-    protected ElementType elementType;
 
     public UIElement(Identifier identifier) {
+        this.identifier = identifier;
         this.elementLocation = identifier.getReference();
-        this.elementType = identifier.getElementType();
+        this.element = findElement(elementLocation);
     }
 
     public UIElement(Identifier identifier, boolean isOptional) {
-        this.elementLocation = identifier.getReference();
         this.isOptional = isOptional;
+        this.identifier = identifier;
+        this.elementLocation = identifier.getReference();
+        this.element = isOptional ? findOptional(elementLocation) : findElement(elementLocation);
     }
 
     protected UIElement(WebElement element) {
+        this.element = element;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class UIElement implements IUIElementOperations {
 
         if (this.isPresent()) {
             this.getElement().click();
-            System.out.println("Clicked Element");
+            System.out.println("Clicked Element: " + this.elementLocation);
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -45,7 +49,7 @@ public class UIElement implements IUIElementOperations {
         if (this.isPresent()) {
             this.getElement().click();
             this.getElement().click();
-            System.out.println("Double Clicked the element");
+            System.out.println("Double Clicked the element: " + elementLocation);
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -54,14 +58,21 @@ public class UIElement implements IUIElementOperations {
     @Override
     public void hover() {
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(this.getElement(), 1, 1).build().perform();
-        System.out.println("Hovering on the element");
+        System.out.println("Hovering on the element: " + elementLocation);
     }
 
     @Override
     public String screenGrab() {
         String clipText = "";
         if (this.getElement() != null) {
-            clipText = this.getElement().getText();
+            switch (this.element.getTagName().toLowerCase()){
+                case "input":
+                case "textarea":
+                    clipText = this.element.getAttribute("value");
+                    break;
+                    default:
+                        clipText = this.element.getText();
+            }
         }
 
         System.out.println("Clipping Screen Text: " + clipText);
@@ -70,8 +81,7 @@ public class UIElement implements IUIElementOperations {
 
     @Override
     public boolean isPresent() {
-        boolean isPresent = this.getElement() != null && this.getElement().isEnabled();
-        return isPresent;
+        return this.getElement() != null;
     }
 
     @Override
@@ -80,7 +90,7 @@ public class UIElement implements IUIElementOperations {
             this.element.isEnabled();
             return element;
         } catch (Exception e) {
-            return this.isOptional ? findOptional(this.elementLocation) : findElement(this.elementLocation);
+            return this.isOptional ? findOptional(elementLocation) : findElement(elementLocation);
         }
     }
 
