@@ -56,21 +56,21 @@ public class WaitUtils {
     }
 
     public void waitForPostBack() {
-        try {
-            Thread.sleep(400); // initial pause to make sure postback kicks off.
-        } catch (Exception e) {
-        }
+//        try {
+//            Thread.sleep(150); // initial pause to make sure postback kicks off.
+//        } catch (Exception e) {
+//        }
         
         int timeWaited = 0;
         newWait().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("body")));
         if (driver.findElement(By.cssSelector("body")).getAttribute("class").contains("x-mask")) {
         	long timeToWait = new Date().getTime() + (120 * 1000);
             while (driver.findElement(By.xpath("//body")).getAttribute("class").contains("x-mask") && (new Date().getTime() < timeToWait)) {
-                try {
-                    Thread.sleep(100); // loop to check until xmask is gone, every 100 milliseconds.
-                    timeWaited += 100;
-                } catch (Exception e) {
-                }
+//                try {
+//                    Thread.sleep(100); // loop to check until xmask is gone, every 100 milliseconds.
+//                    timeWaited += 100;
+//                } catch (Exception e) {
+//                }
             }
         }
         if (timeWaited > 0) {
