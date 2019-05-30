@@ -1,5 +1,6 @@
 package framework.webdriver;
 
+import framework.constants.ReactionTime;
 import framework.guidewire.GuidewireInteract;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.utils.WebDriverOptionsManager;
@@ -81,6 +82,12 @@ public class BrowserFactory {
             webDriver.quit();
             pool.remove();
         }
+    }
+
+    public static synchronized void reloadDriver(){
+        WebDriver driver = getCurrentBrowser().getDriver();
+        ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
+        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
     }
 
 
