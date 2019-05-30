@@ -3,6 +3,8 @@ package framework.elements.alertwindow;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.pages.GWIDs;
+import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 
 public class UIConfirmationWindow extends UIElement implements IUIConfirmationWindow {
@@ -37,5 +39,10 @@ public class UIConfirmationWindow extends UIElement implements IUIConfirmationWi
     public void clickButtonWithText(String buttonText) {
         System.out.println("Clicking button with text: "+buttonText);
         this.getElement().findElement(By.linkText(buttonText)).click();
+    }
+
+    @Override
+    public boolean isPresent() {
+        return super.isPresent() && !BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.Login.LOGIN, ReactionTime.MOMENTARY).isPresent();
     }
 }
