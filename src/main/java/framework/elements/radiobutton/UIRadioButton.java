@@ -1,5 +1,6 @@
 package framework.elements.radiobutton;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -12,8 +13,18 @@ public class UIRadioButton extends UIElement implements IUIRadioButton {
         super(identifier);
     }
 
-    public UIRadioButton(Identifier identifier, boolean isOptional) {
-        super(identifier, isOptional);
+    /**\
+     *
+     * Use of this constructor automatically assumes the Radio Button in question is
+     * optional and will wait upto the reaction time passed as parameter
+     *
+     * @param identifier element Identifier
+     * @param reactionTime time to wait
+     *
+     *
+     */
+    public UIRadioButton(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
     }
 
     @Override

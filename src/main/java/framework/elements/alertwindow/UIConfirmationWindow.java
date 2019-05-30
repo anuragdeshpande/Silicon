@@ -1,14 +1,24 @@
 package framework.elements.alertwindow;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 public class UIConfirmationWindow extends UIElement implements IUIConfirmationWindow {
 
-    public UIConfirmationWindow(Identifier identifier, boolean isOptional) {
-        super(identifier, isOptional);
+    /**\
+     *
+     * Use of this constructor automatically assumes the Confirmation Window in question is
+     * optional and will wait upto the reaction time passed as parameter
+     *
+     * @param identifier element Identifier
+     * @param reactionTime time to wait
+     *
+     *
+     */
+    public UIConfirmationWindow(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
     }
 
     @Override

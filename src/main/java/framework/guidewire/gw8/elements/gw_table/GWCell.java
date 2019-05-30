@@ -1,7 +1,6 @@
 package framework.guidewire.gw8.elements.gw_table;
 
 import framework.elements.table.IUITableCell;
-import framework.elements.table.UITableCell;
 import framework.elements.ui_element.UIElement;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
@@ -23,7 +22,7 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
     @Override
     public void click() {
-        this.element.click();
+        element.click();
     }
 
     @Override

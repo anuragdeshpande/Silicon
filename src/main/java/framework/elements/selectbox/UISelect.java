@@ -1,5 +1,6 @@
 package framework.elements.selectbox;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 
@@ -8,7 +9,18 @@ public abstract class UISelect extends UIElement implements IUISelectBox {
         super(identifier);
     }
 
-    public UISelect(Identifier identifier, boolean isOptional) {
-        super(identifier, isOptional);
+
+    /**\
+     *
+     * Use of this constructor automatically assumes the Select Box in question is
+     * optional and will wait upto the reaction time passed as parameter
+     *
+     * @param identifier element Identifier
+     * @param reactionTime time to wait
+     *
+     *
+     */
+    public UISelect(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
     }
 }

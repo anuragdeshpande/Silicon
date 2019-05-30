@@ -1,21 +1,20 @@
 package framework.webdriver;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.radiobutton.UIRadioButton;
-import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.Keys;
 import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
+import framework.webdriver.utils.WaitUtils;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -60,16 +59,16 @@ public class Interact {
     public UISelect withSelectBox(Identifier identifier) {
         return new UISelectBox(identifier);
     }
-    public UISelect withOptionalSelectBox(Identifier identifier) {
-        return new UISelectBox(identifier);
+    public UISelect withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
+        return new UISelectBox(identifier, reactionTime);
     }
 
     public UIElement withElement(Identifier identifier) {
         return new UIElement(identifier);
     }
 
-    public UIElement withOptionalElement(Identifier identifier) {
-        return new UIElement(identifier, true);
+    public UIElement withOptionalElement(Identifier identifier, ReactionTime reactionTime) {
+        return new UIElement(identifier, reactionTime);
     }
 
     public UICheckbox withCheckbox(Identifier identifier) {
@@ -80,7 +79,7 @@ public class Interact {
         throw new NotImplementedException();
     }
 
-    public UIConfirmationWindow withOptionalConfirmationWindow(){
+    public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime){
         throw new NotImplementedException();
     }
 
