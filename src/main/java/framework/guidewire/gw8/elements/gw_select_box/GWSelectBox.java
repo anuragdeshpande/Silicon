@@ -7,8 +7,10 @@ import framework.elements.selectbox.UISelect;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.gw8.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
+import framework.webdriver.PauseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +40,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         Optional<WebElement> webElement = listElements.parallelStream()
                 .filter(li -> li.getText().equalsIgnoreCase(selection)).findFirst();
         if (webElement.isPresent()) {
-
-            webElement.get().click();
+            selectElement(webElement.get());
             System.out.println("Selected: " + selection);
         } else {
             System.out.println("Could not find the selection, cancelling select operation");
@@ -51,13 +52,14 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
     @Override
     public String selectRandom() {
         listElements = getElementOptions().parallelStream()
-                .filter(we -> we.getText().equalsIgnoreCase("New...") && we.getText().equalsIgnoreCase("<none>"))
+                .filter(we -> !we.getText().equalsIgnoreCase("New...") && !we.getText().equalsIgnoreCase("<none>"))
                 .collect(Collectors.toList());
 
         if (!listElements.isEmpty()) {
-            WebElement element = listElements.get(new Faker().number().numberBetween(0, listElements.size()));
+            WebElement element = listElements.get(new Faker().number().numberBetween(0, listElements.size()-1));
             String selectionText = element.getText();
-            element.click();
+            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
+            selectElement(element);
             System.out.println("Selected: " + selectionText);
             return selectionText;
         } else {
@@ -73,7 +75,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         listElements = getElementOptions();
         WebElement selectElement = listElements.get(itemNumber);
         String selectedText = selectElement.getText();
-        selectElement.click();
+        selectElement(selectElement);
 
         System.out.println("Selected Item - " + itemNumber + ": " + selectedText);
         return selectedText;
@@ -86,7 +88,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         if (!collect.isEmpty()) {
             WebElement element = collect.get(0);
             String selectedText = element.getText();
-            element.click();
+            selectElement(element);
             System.out.println("Clicked on partial match for: " + selection + " on list option: " + selectedText);
             return selectedText;
         }
@@ -115,7 +117,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         if (!filteredList.isEmpty()) {
             WebElement element = filteredList.get(0);
             String selection = element.getText();
-            element.click();
+            selectElement(element);
             System.out.println("Clicked on the first matching option: " + selection);
             new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
             return selection;
@@ -124,6 +126,12 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         new GWElement(GWIDs.QUICK_JUMP).click();
         System.out.println("Could not find the first matching option: did not click on anything, returning null");
         return null;
+    }
+
+    private void selectElement(WebElement element){
+        PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
+        element.click();
+        new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
     }
 
 }
