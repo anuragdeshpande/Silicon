@@ -1,5 +1,6 @@
 package framework.guidewire;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.ui_element.UIElement;
@@ -13,8 +14,6 @@ import framework.webdriver.Interact;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import java.util.concurrent.TimeUnit;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -36,9 +35,11 @@ public class GuidewireInteract extends Interact {
         try{
             GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
             WebDriver driver = interact.getDriver();
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
+            ReactionTime reactionTime = ReactionTime.MOMENTARY;
+            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
             WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+            reactionTime = ReactionTime.STANDARD_WAIT_TIME;
+            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
             return errorElement != null && errorElement.isEnabled();
         } catch (Exception e){
             return false;
@@ -57,15 +58,13 @@ public class GuidewireInteract extends Interact {
 
     @Override
     public GWSelectBox withSelectBox(Identifier identifier) {
-        new UIElement(GWIDs.QUICK_JUMP).click();
-        new UIElement(identifier).click();
+        new GWElement(identifier).click();
         return new GWSelectBox(identifier);
     }
 
     @Override
-    public GWSelectBox withOptionalSelectBox(Identifier identifier) {
-        new UIElement(GWIDs.QUICK_JUMP).click();
-        UIElement uiElement = new UIElement(identifier, true);
+    public GWSelectBox withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
+        GWElement uiElement = new GWElement(identifier, reactionTime);
         if(uiElement.isPresent()){
             uiElement.click();
         }
@@ -78,17 +77,22 @@ public class GuidewireInteract extends Interact {
         return new GWElement(identifier);
     }
 
+    @Override
+    public UIElement withOptionalElement(Identifier identifier, ReactionTime reactionTime) {
+        return new GWElement(identifier, reactionTime);
+    }
+
     public GWTable withTable(Identifier identifier) {
         return new GWTable(identifier);
     }
 
     @Override
     public UIConfirmationWindow withConfirmationWindow() {
-        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, false);
+        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, ReactionTime.IMMEDIATE);
     }
 
     @Override
-    public UIConfirmationWindow withOptionalConfirmationWindow() {
-        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, true);
+    public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime) {
+        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, reactionTime);
     }
 }
