@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
-    WebElement element;
+    private WebElement  element;
 
     public GWCell(WebElement element) {
         super(element);
