@@ -10,6 +10,8 @@ import org.openqa.selenium.Keys;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
+    private String overrideEnvironmentURL = null;
+
     @Override
     public GuidewireInteract getInteractObject() {
         return BrowserFactory.getCurrentGuidewireBrowser();
@@ -28,6 +30,7 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     @Override
     public void overrideEnvironmentURL(String url) {
+        this.overrideEnvironmentURL = url;
     }
 
     @Override
@@ -68,5 +71,9 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+    }
+
+    public String getOverrideEnvironmentURL() {
+        return overrideEnvironmentURL;
     }
 }
