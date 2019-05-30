@@ -129,7 +129,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
     }
 
     private void selectElement(WebElement element){
-        PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
+        PauseTest.createSpecialInstance(1, 5).until(ExpectedConditions.visibilityOf(element));
         element.click();
         new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
     }
