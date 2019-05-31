@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
@@ -25,19 +26,25 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         super(identifier);
     }
 
+    private Stream<WebElement> getElementStream() {
+        return new UIElement(GWIDs.LIST_OPTIONS).getElement()
+                .findElements(By.tagName("li")).stream()
+                .filter(we -> !we.getText().equalsIgnoreCase("New...") && !we.getText().equalsIgnoreCase("<none>"));
+    }
+
     public List<WebElement> getElementOptions() {
-        return new UIElement(GWIDs.LIST_OPTIONS).getElement().findElements(By.tagName("li"));
+        return getElementStream().collect(Collectors.toList());
     }
 
     @Override
     public List<String> getOptions() {
-        return getElementOptions().parallelStream().map(WebElement::getText).collect(Collectors.toList());
+        return getElementStream().map(WebElement::getText).collect(Collectors.toList());
     }
 
     @Override
     public void select(String selection) {
-        listElements = getElementOptions();
-        Optional<WebElement> webElement = listElements.parallelStream()
+//        listElements = getElementOptions();
+        Optional<WebElement> webElement = getElementStream()
                 .filter(li -> li.getText().equalsIgnoreCase(selection)).findFirst();
         if (webElement.isPresent()) {
             selectElement(webElement.get());
@@ -51,12 +58,9 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     @Override
     public String selectRandom() {
-        listElements = getElementOptions().parallelStream()
-                .filter(we -> !we.getText().equalsIgnoreCase("New...") && !we.getText().equalsIgnoreCase("<none>"))
-                .collect(Collectors.toList());
-
+        listElements = getElementOptions();
         if (!listElements.isEmpty()) {
-            WebElement element = listElements.get(new Faker().number().numberBetween(0, listElements.size()-1));
+            WebElement element = listElements.get(new Faker().number().numberBetween(0, listElements.size() - 1));
             String selectionText = element.getText();
             PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
             selectElement(element);
@@ -83,8 +87,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     @Override
     public String selectByPartial(String selection) {
-        listElements = getElementOptions();
-        List<WebElement> collect = listElements.parallelStream().filter(we -> we.getText().contains(selection)).collect(Collectors.toList());
+        List<WebElement> collect = getElementStream().filter(we -> we.getText().contains(selection)).collect(Collectors.toList());
         if (!collect.isEmpty()) {
             WebElement element = collect.get(0);
             String selectedText = element.getText();
@@ -100,8 +103,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     @Override
     public boolean hasOption(String selection) {
-        listElements = getElementOptions();
-        boolean anyMatch = listElements.parallelStream().anyMatch(e -> e.getText().equalsIgnoreCase(selection));
+        boolean anyMatch = getElementStream().anyMatch(e -> e.getText().equalsIgnoreCase(selection));
         if (!anyMatch) {
             System.out.println("Could not find the selection: " + selection);
         }
@@ -111,8 +113,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     @Override
     public String selectFirstExisting(String[] selections) {
-        listElements = getElementOptions();
-        List<WebElement> filteredList = listElements.parallelStream().filter(e -> Arrays.stream(selections).anyMatch(s -> e.getText().equalsIgnoreCase(s))).collect(Collectors.toList());
+        List<WebElement> filteredList = getElementStream().filter(e -> Arrays.stream(selections).anyMatch(s -> e.getText().equalsIgnoreCase(s))).collect(Collectors.toList());
 
         if (!filteredList.isEmpty()) {
             WebElement element = filteredList.get(0);
@@ -128,7 +129,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         return null;
     }
 
-    private void selectElement(WebElement element){
+    private void selectElement(WebElement element) {
         PauseTest.createSpecialInstance(1, 5).until(ExpectedConditions.visibilityOf(element));
         element.click();
         new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
