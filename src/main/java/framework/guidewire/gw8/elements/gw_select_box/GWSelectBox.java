@@ -56,6 +56,14 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     }
 
+    public String selectFirst(){
+
+        // list options filter out the "New..." and the "<none>" options
+        // although the actual needed option is at index 1, the filtered list starts at 0.
+        // hence passing 0 as the select item
+        return select(0);
+    }
+
     @Override
     public String selectRandom() {
         listElements = getElementOptions();
