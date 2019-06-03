@@ -14,7 +14,6 @@ import org.testng.Assert;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 public class BrowserFactory {
     private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
@@ -49,12 +48,12 @@ public class BrowserFactory {
     public static synchronized void setDriver() throws MalformedURLException {
         if (isRemote) {
             pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
-            pool.get().manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         } else {
             ChromeDriverManager.chromedriver().setup();
             pool.set(ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions())));
-            pool.get().manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         }
+        ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
+        pool.get().manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
     }
 
     public static synchronized Interact getCurrentBrowser() {
