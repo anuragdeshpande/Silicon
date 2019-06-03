@@ -4,6 +4,7 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
@@ -89,8 +90,16 @@ public class Listener implements ISuiteListener, ITestListener{
         } catch (Exception e) {
             testNode.fail(e);
         }
+
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
         testNode.fail(iTestResult.getThrowable());
+
+        // Special Guidewire check - will be moved at a later date to the DOM listener functionality
+        if(GuidewireInteract.hasErrorMessageOnScreen()){
+            testNode.log(Status.FATAL, iTestResult.getName()+"Failed with critical system failure");
+            testNode.fatal(GuidewireInteract.getErrorMessageFromScreen());
+        }
+
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, "Failure");
         }
