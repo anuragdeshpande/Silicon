@@ -31,7 +31,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
 
     }
 
-    private Stream<WebElement> getFilteredElementStream(boolean filter_None_Element, boolean filter_NewElement) {
+    public Stream<WebElement> getFilteredElementStream(boolean filter_None_Element, boolean filter_NewElement) {
         Stream<WebElement> stream = getUnfilteredStream();
 
         if(filter_None_Element){
