@@ -63,9 +63,15 @@ public class GWElement extends UIElement {
 
             // closing the warning window if Identifier is marked to check it
             if (identifier.shouldCheckForWarning()) {
-                GWElement closeButton = new GWElement(new Identifier(By.linkText("Close"), ElementType.BUTTON), ReactionTime.THREE_SECONDS);
+                GWElement closeButton = new GWElement(new Identifier(By.linkText("Close"), ElementType.BUTTON), ReactionTime.ONE_SECOND);
+                GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear"), ElementType.BUTTON), ReactionTime.IMMEDIATE);
                 if (closeButton.isPresent()) {
                     closeButton.getElement().click();
+                    this.getElement().click();
+                }
+
+                if(clearButton.isPresent()){
+                    clearButton.getElement().click();
                     this.getElement().click();
                 }
             }
