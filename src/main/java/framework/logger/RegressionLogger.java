@@ -2,12 +2,20 @@ package framework.logger;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import framework.ReportManager;
+import framework.webdriver.BrowserFactory;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.Optional;
 
 public class RegressionLogger {
 
@@ -156,5 +164,30 @@ public class RegressionLogger {
             e.printStackTrace();
         }
 
+    }
+
+    public void captureScreenshot(String screenShotTitle){
+        try{
+            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(),screenShotTitle);
+        } catch (IOException e) {
+            warn(screenShotTitle);
+            warn("Could not save on demand screen shot", e);
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    private String getScreenshotPath(){
+        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDate.now() + ".png";
+        try {
+            File destFile = new File(destinationFilePath);
+            FileUtils.copyFile(scrFile, destFile);
+            FileUtils.deleteQuietly(scrFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return destinationFilePath;
     }
 }
