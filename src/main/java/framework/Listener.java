@@ -143,13 +143,14 @@ public class Listener implements ISuiteListener, ITestListener{
         ReportManager.recordSuiteResults(iSuite);
     }
 
+    @SuppressWarnings("Duplicates")
     private String captureScreenshot(ITestResult iTestResult) {
         WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {
             File destFile = new File(destinationFilePath);
-            FileUtils.copyFile(scrFile, destFile);
+            FileUtils.moveFile(scrFile, destFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
