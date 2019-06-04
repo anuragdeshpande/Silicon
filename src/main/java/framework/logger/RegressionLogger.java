@@ -14,7 +14,7 @@ import org.openqa.selenium.WebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class RegressionLogger {
@@ -180,7 +180,7 @@ public class RegressionLogger {
     private String getScreenshotPath() {
         WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDate.now() + ".png";
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now()+"_"+Thread.currentThread().getId() + ".png";
         try {
             File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
