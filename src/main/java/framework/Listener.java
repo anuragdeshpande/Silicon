@@ -143,6 +143,7 @@ public class Listener implements ISuiteListener, ITestListener{
         ReportManager.recordSuiteResults(iSuite);
     }
 
+    @SuppressWarnings("Duplicates")
     private String captureScreenshot(ITestResult iTestResult) {
         WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -150,6 +151,7 @@ public class Listener implements ISuiteListener, ITestListener{
         try {
             File destFile = new File(destinationFilePath);
             FileUtils.copyFile(scrFile, destFile);
+            FileUtils.deleteQuietly(scrFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
