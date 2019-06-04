@@ -150,8 +150,7 @@ public class Listener implements ISuiteListener, ITestListener{
         String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {
             File destFile = new File(destinationFilePath);
-            FileUtils.copyFile(scrFile, destFile);
-            FileUtils.deleteQuietly(scrFile);
+            FileUtils.moveFile(scrFile, destFile);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
