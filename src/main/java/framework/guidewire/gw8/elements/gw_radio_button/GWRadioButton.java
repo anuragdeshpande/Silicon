@@ -1,12 +1,12 @@
 package framework.guidewire.gw8.elements.gw_radio_button;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.radiobutton.UIRadioButton;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 public class GWRadioButton extends UIRadioButton implements IGWRadioButton {
 
@@ -14,8 +14,8 @@ public class GWRadioButton extends UIRadioButton implements IGWRadioButton {
         super(identifier);
     }
 
-    public GWRadioButton(Identifier identifier, boolean isOptional) {
-        super(identifier, isOptional);
+    public GWRadioButton(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
     }
 
     @Override

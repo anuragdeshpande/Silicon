@@ -1,5 +1,6 @@
 package framework.elements.selectbox;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -18,8 +19,8 @@ public class UISelectBox extends UISelect {
         this.select = new Select(this.getElement());
     }
 
-    public UISelectBox(Identifier identifier, boolean isOptional) {
-        super(identifier, isOptional);
+    public UISelectBox(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
         if (this.isPresent()) {
             this.select = new Select(this.getElement());
         }

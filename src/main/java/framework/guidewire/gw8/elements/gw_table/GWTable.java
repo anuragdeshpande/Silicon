@@ -1,10 +1,8 @@
 package framework.guidewire.gw8.elements.gw_table;
 
-import framework.Listener;
 import framework.elements.Identifier;
-import framework.elements.table.UITable;
-import framework.elements.table.UITableRow;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.gw8.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
@@ -59,25 +57,29 @@ public class GWTable extends UIElement implements IGWUITable{
 
     @Override
     public void clickNextPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).click();
+        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE);
+        element.click();
         System.out.println("Next Page Clicked");
     }
 
     @Override
     public void clickPreviousPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(PREVIOUS_PAGE_REFERENCE).click();
+        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(PREVIOUS_PAGE_REFERENCE);
+        element.click();
         System.out.println("Previous Page Clicked");
     }
 
     @Override
     public void clickLastPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(LAST_PAGE_REFERENCE).click();
+        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(LAST_PAGE_REFERENCE);
+        element.click();
         System.out.println("Last Page Clicked");
     }
 
     @Override
     public void clickFirstPage() {
-        this.getElement().findElement(TOOLBAR_REFERENCE).findElement(FIRST_PAGE_REFERENCE).click();
+        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(FIRST_PAGE_REFERENCE);
+        element.click();
         System.out.println("First Page Clicked");
     }
 
@@ -105,7 +107,7 @@ public class GWTable extends UIElement implements IGWUITable{
                 if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
                     System.out.println("Multuple pages found in the table, searching on the next page");
                     clickNextPage();
-                    new UIElement(GWIDs.QUICK_JUMP).click();
+                    new GWElement(GWIDs.QUICK_JUMP).click();
                 } else {
                     System.out.println("Last Page reached");
                     isLastPage = true;

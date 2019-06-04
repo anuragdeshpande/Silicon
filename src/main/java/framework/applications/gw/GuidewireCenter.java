@@ -1,6 +1,7 @@
 package framework.applications.gw;
 
 import framework.applications.Application;
+import framework.constants.ReactionTime;
 import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
@@ -9,7 +10,7 @@ import org.openqa.selenium.Keys;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
-    protected String overrideEnvironmentURL;
+    private String overrideEnvironmentURL = null;
 
     @Override
     public GuidewireInteract getInteractObject() {
@@ -18,13 +19,13 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     @Override
     public boolean hasErrorMessageOnScreen() {
-        String errorMessage = BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE).screenGrab();
+        String errorMessage = BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
         return !errorMessage.equalsIgnoreCase("");
     }
 
     @Override
     public String getErrorMessageOnScreen() {
-        return BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE).screenGrab();
+        return BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
     }
 
     @Override
@@ -39,7 +40,7 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         GuidewireInteract interact = getInteractObject();
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LOGGERS).select(loggerName);
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LEVELS).select(logLevel.name());
-        if(interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).isPresent()){
+        if(interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL, ReactionTime.MOMENTARY).isPresent()){
             interact.withElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).click();
         } else {
             System.out.println("System already at "+logLevel.name()+" for Logger: "+ loggerName);
@@ -70,5 +71,9 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+    }
+
+    public String getOverrideEnvironmentURL() {
+        return overrideEnvironmentURL;
     }
 }

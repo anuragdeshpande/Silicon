@@ -1,10 +1,12 @@
 package framework.elements.ui_element;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
@@ -12,7 +14,7 @@ public class UIElement implements IUIElementOperations {
     private WebElement element;
     private boolean isOptional = false;
     protected Identifier identifier;
-    
+
     // although reference is part of identifier, declaring again for child classes to override if there is a need.
     protected By elementLocation;
 
@@ -22,11 +24,11 @@ public class UIElement implements IUIElementOperations {
         this.element = findElement(elementLocation);
     }
 
-    public UIElement(Identifier identifier, boolean isOptional) {
-        this.isOptional = isOptional;
+    public UIElement(Identifier identifier, ReactionTime reactionTime) {
+        this.isOptional = true;
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
-        this.element = isOptional ? findOptional(elementLocation) : findElement(elementLocation);
+        this.element = findOptional(elementLocation, reactionTime);
     }
 
     protected UIElement(WebElement element) {
@@ -65,13 +67,13 @@ public class UIElement implements IUIElementOperations {
     public String screenGrab() {
         String clipText = "";
         if (this.getElement() != null) {
-            switch (this.element.getTagName().toLowerCase()){
+            switch (this.element.getTagName().toLowerCase()) {
                 case "input":
                 case "textarea":
                     clipText = this.element.getAttribute("value");
                     break;
-                    default:
-                        clipText = this.element.getText();
+                default:
+                    clipText = this.element.getText();
             }
         }
 
@@ -140,5 +142,20 @@ public class UIElement implements IUIElementOperations {
         return element;
     }
 
+    private WebElement findOptional(By elementLocation, ReactionTime reactionTime) {
+        try {
+            WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
+            WebElement element = driver.findElement(elementLocation);
+            reactionTime = ReactionTime.STANDARD_WAIT_TIME;
+            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
 
+            System.out.println("Optional Element found: " + elementLocation);
+            this.element = element;
+            return element;
+        } catch (Exception e) {
+            System.out.println("Optional Element not found at location: " + elementLocation + " (Exception: " + e.getLocalizedMessage() + ")");
+            return null;
+        }
+    }
 }
