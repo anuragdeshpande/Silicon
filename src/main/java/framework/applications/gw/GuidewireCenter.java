@@ -5,27 +5,35 @@ import framework.constants.ReactionTime;
 import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.Keys;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
+    protected GuidewireInteract interact;
+
+    public GuidewireCenter(RegressionLogger logger){
+        super(logger);
+        this.interact = BrowserFactory.getCurrentGuidewireBrowser();
+    }
+
     private String overrideEnvironmentURL = null;
 
     @Override
     public GuidewireInteract getInteractObject() {
-        return BrowserFactory.getCurrentGuidewireBrowser();
+        return this.interact;
     }
 
     @Override
     public boolean hasErrorMessageOnScreen() {
-        String errorMessage = BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
+        String errorMessage = this.interact.withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
         return !errorMessage.equalsIgnoreCase("");
     }
 
     @Override
     public String getErrorMessageOnScreen() {
-        return BrowserFactory.getCurrentGuidewireBrowser().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
+        return this.interact.withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
     }
 
     @Override
