@@ -2,6 +2,8 @@ package framework.elements.ui_element;
 
 import org.openqa.selenium.WebElement;
 
+import java.time.LocalDate;
+
 public interface IUIElementOperations {
     void click();
 
@@ -14,4 +16,8 @@ public interface IUIElementOperations {
     boolean isPresent();
 
     WebElement getElement();
+
+
+    // translators
+    LocalDate toDate(String pattern);
 }
