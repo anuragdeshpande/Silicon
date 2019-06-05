@@ -10,6 +10,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class UIElement implements IUIElementOperations {
     private WebElement element;
     private boolean isOptional = false;
@@ -157,5 +160,10 @@ public class UIElement implements IUIElementOperations {
             System.out.println("Optional Element not found at location: " + elementLocation + " (Exception: " + e.getLocalizedMessage() + ")");
             return null;
         }
+    }
+
+    @Override
+    public LocalDate toDate(String pattern) {
+        return LocalDate.parse(screenGrab(), DateTimeFormatter.ofPattern(pattern));
     }
 }
