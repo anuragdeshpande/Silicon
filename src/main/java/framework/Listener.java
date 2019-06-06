@@ -23,7 +23,7 @@ public class Listener implements ISuiteListener, ITestListener{
 
     private ExtentReports extentReports;
     static Logger logger;
-    private boolean writeToDatabase;
+    public boolean writeToDatabase;
 
 
     // Fires at the beginning of each suite

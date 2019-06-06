@@ -22,6 +22,8 @@ public class RegressionLogger {
     private Logger logger;
     private ExtentTest extentLogger;
     private boolean isSuite;
+    private String testName;
+    private String testClassName;
 
     public RegressionLogger(Logger logger, ExtentTest extentLogger, boolean isSuite) {
         this.logger = logger;
@@ -167,13 +169,34 @@ public class RegressionLogger {
     }
 
     public void captureScreenshot(String screenShotTitle) {
-        try {
-            info("Screen shot Captured:" + screenShotTitle);
-            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
-        } catch (IOException e) {
-            warn(screenShotTitle);
-            warn("Could not save on demand screen shot", e);
+        if(this.isSuite){
+            try {
+                info("Screen shot Captured:" + screenShotTitle);
+                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+            } catch (IOException e) {
+                warn(screenShotTitle);
+                warn("Could not save on demand screen shot", e);
+            }
+        } else {
+            System.out.println("Skipping screen shot capture as Running test locally");
         }
+
+    }
+
+    public void setTestName(String testName){
+        this.testName = testName;
+    }
+
+    public void setTestClassName(String className){
+        this.testClassName = className;
+    }
+
+    public String getTestName(){
+        return this.testName;
+    }
+
+    public String getTestClassName(){
+        return this.testClassName;
     }
 
     @SuppressWarnings("Duplicates")

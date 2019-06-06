@@ -27,22 +27,30 @@ public class BaseOperations {
         if (!ReportManager.isInitiated()) {
             this.reports = ReportManager.initiate();
         }
-
-        logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(xmlTest.getSuite().getName()), true);
+        String suiteName = xmlTest.getSuite().getName();
+        logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(suiteName), true);
+        logger.setTestName(suiteName);
+        logger.setTestClassName(suiteName);
     }
 
 
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
-        ExtentTest extentLogger = ReportManager.recordXMLTest(xmlTest.getName(), xmlTest.getSuite().getName());
+        String xmlTestName = xmlTest.getName();
+        ExtentTest extentLogger = ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
         logger = new RegressionLogger(Listener.logger, extentLogger, true);
+        logger.setTestClassName(xmlTestName);
+        logger.setTestName(xmlTestName);
     }
 
     @BeforeClass(description = "BeforeClass")
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
-        if (!iTestContext.getClass().getSimpleName().equalsIgnoreCase("TestRunner")) {
-            ExtentTest extentLogger = ReportManager.recordClass(iTestContext.getClass().getSimpleName(), xmlTest.getName());
+        String testClassName = iTestContext.getClass().getSimpleName();
+        if (!testClassName.equalsIgnoreCase("TestRunner")) {
+            ExtentTest extentLogger = ReportManager.recordClass(testClassName, xmlTest.getName());
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
+            logger.setTestName(testClassName);
+            logger.setTestClassName(testClassName);
         }
     }
 
@@ -55,6 +63,8 @@ public class BaseOperations {
             String xmlTestName = iTestResult.getMethod().getTestClass().getXmlTest().getName();
             ExtentTest extentLogger = ReportManager.recordClass(className, xmlTestName);
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
+            logger.setTestClassName(className);
+            logger.setTestName(testName);
         }
 
         ReportManager.recordTest(testName, className);

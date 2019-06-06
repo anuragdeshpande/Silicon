@@ -6,10 +6,7 @@ import framework.elements.enums.ElementType;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementClickInterceptedException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -48,8 +45,12 @@ public class GWElement extends UIElement {
                 WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
                 ReactionTime reactionTime = ReactionTime.IMMEDIATE;
                 driver.manage().timeouts().implicitlyWait(reactionTime.getTime(),reactionTime.getTimeUnit());
-                new WebDriverWait(driver, 1)
-                        .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
+                try{
+                    new WebDriverWait(driver, 3)
+                            .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
+                } catch (TimeoutException e){
+                    Assert.fail("Guidewire Application is taking over 3 seconds to respond to click: Aborting tests");
+                }
 
                 reactionTime = ReactionTime.STANDARD_WAIT_TIME;
                 driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
