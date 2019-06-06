@@ -19,6 +19,7 @@ public enum Environment {
 
     // PC Environments
     PC8DEV("PC8DEV", "http://pc8dev/pc/PolicyCenter.do","PolicyCenterDatabase8DEV" ),
+    PC8UAT("PC8UAT", "http://pc8uat/pc/PolicyCenter.do","PolicyCenterDatabase8UAT" ),
 
     // AB Environments
     AB8DEV("AB8DEV", "http://ab8dev/ab/ContactManager.do", "ContactManagerDatabase8DEV"),
