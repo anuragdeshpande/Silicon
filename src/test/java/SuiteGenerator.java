@@ -1,44 +1,66 @@
+import annotations.SmokeTest;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
-import org.assertj.core.util.Arrays;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SuiteGenerator {
 
     public static void main(String[] args) {
         if (args[0] != null && args[1] == null) {
             System.out.println(Thread.currentThread().getId() + ": No Package details available, running full suite at \"guidewireTests\" package");
-            generateSuiteXML("1", "guidewireTests");
+            startTests("1", "guidewireTests");
         } else {
-            generateSuiteXML(args[0], args[1]);
+            startTests(args[0], args[1]);
         }
     }
 
-    private static void generateSuiteXML(String threadCounts, String basePackage) {
+    private static void startTests(String threadCounts, String basePackage) {
         basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
         int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
-        XmlSuite.ParallelMode parallelMode = XmlSuite.ParallelMode.TESTS;
-
-
         String suiteName = System.getProperty("SuiteName") == null ? "Regression" : System.getProperty("SuiteName");
         System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
-        TestNG testNG = new TestNG();
+
         ClassGraph graph = new ClassGraph();
         ClassInfoList classesWithAnnotation = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        ClassInfoList regressionTests = classesWithAnnotation;
 
-        // Add Listener
+        List<XmlSuite> suitesToRun = new ArrayList<>();
+        boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null;
+        boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null;
+
+        if(shouldRunSmokeTests){
+            ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()));
+            regressionTests = regressionTests.exclude(smokeTests);
+            suitesToRun.add(createSuite("Smoke Tests", smokeTests, threadCount));
+        }
+
+        if(shouldRunRegressionTests){
+            suitesToRun.add(createSuite(suiteName,regressionTests, threadCount));
+        }
+
+        if(!suitesToRun.isEmpty()){
+            TestNG testNG = new TestNG();
+            testNG.setXmlSuites(suitesToRun);
+            testNG.run();
+        }
+    }
+
+
+    private static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount){
         XmlSuite xmlSuite = new XmlSuite();
-        xmlSuite.setName(suiteName + " Regression");
+        xmlSuite.setName(suiteName);
         xmlSuite.setVerbose(1);
         if (threadCount > 1) {
-            xmlSuite.setParallel(parallelMode);
+            xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
         }
 
         xmlSuite.setThreadCount(threadCount);
@@ -46,13 +68,13 @@ public class SuiteGenerator {
         listeners.add("framework.Listener");
         xmlSuite.setListeners(listeners);
 
-        classesWithAnnotation.forEach(classInfo -> {
+        testClasses.forEach(classInfo -> {
             // Add Test
             XmlTest xmlTest = new XmlTest(xmlSuite);
             xmlTest.setName(classInfo.getSimpleName());
             xmlTest.setPreserveOrder(true);
             if (threadCount > 1) {
-                xmlTest.setParallel(parallelMode);
+                xmlTest.setParallel(XmlSuite.ParallelMode.TESTS);
             }
             xmlTest.setThreadCount(threadCount);
 
@@ -70,11 +92,7 @@ public class SuiteGenerator {
             }
         });
 
-        testNG.setXmlSuites(Collections.singletonList(xmlSuite));
-        System.out.println(xmlSuite.toXml());
-        testNG.run();
+        return xmlSuite;
 
     }
-
-
 }
