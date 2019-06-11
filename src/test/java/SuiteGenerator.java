@@ -38,12 +38,14 @@ public class SuiteGenerator {
         boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null;
 
         if(shouldRunSmokeTests){
-            ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()));
+            ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
+            System.out.println("Adding smoke tests: "+smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
             suitesToRun.add(createSuite("Smoke Tests", smokeTests, threadCount));
         }
 
         if(shouldRunRegressionTests){
+            System.out.println("Adding Regression Tests: "+regressionTests.size());
             suitesToRun.add(createSuite(suiteName,regressionTests, threadCount));
         }
 
@@ -51,6 +53,8 @@ public class SuiteGenerator {
             TestNG testNG = new TestNG();
             testNG.setXmlSuites(suitesToRun);
             testNG.run();
+        } else {
+            System.out.println("No Suites to run.");
         }
     }
 
@@ -92,6 +96,7 @@ public class SuiteGenerator {
             }
         });
 
+        System.out.println(xmlSuite.toXml());;
         return xmlSuite;
 
     }
