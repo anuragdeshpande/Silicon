@@ -25,7 +25,7 @@ public class BaseOperations {
     @BeforeSuite
     public void beforeSuite(XmlTest xmlTest, ITestContext context) {
         if (!ReportManager.isInitiated()) {
-            this.reports = ReportManager.initiate();
+            this.reports = ReportManager.initiate("BO Init_"+context.getSuite().getName());
         }
         String suiteName = xmlTest.getSuite().getName();
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(suiteName), true);
