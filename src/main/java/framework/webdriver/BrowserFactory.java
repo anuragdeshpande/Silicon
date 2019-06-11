@@ -89,5 +89,10 @@ public class BrowserFactory {
         driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
     }
 
+    public static synchronized void changeImplicitWaitTo(ReactionTime reactionTime){
+        WebDriver driver = getCurrentBrowser().getDriver();
+        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
+    }
+
 
 }
