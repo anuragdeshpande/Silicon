@@ -41,7 +41,7 @@ public class SuiteGenerator {
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
             System.out.println("Adding smoke tests: "+smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
-            suitesToRun.add(createSuite("Smoke Tests", smokeTests, threadCount));
+            suitesToRun.add(createSuite("SmokeTests", smokeTests, threadCount));
         }
 
         if(shouldRunRegressionTests){
