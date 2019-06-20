@@ -49,7 +49,7 @@ public class ReportManager {
         return extentReports != null;
     }
 
-    static ExtentReports initiate() {
+    static ExtentReports initiate(String sutieName) {
         extentReports = new ExtentReports();
         ExtentHtmlReporter extentReporter;
 
@@ -57,7 +57,7 @@ public class ReportManager {
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
-
+        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + sutieName + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();

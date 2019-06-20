@@ -30,9 +30,10 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onStart(ISuite iSuite) {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String suiteName = iSuite.getName();
         logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
-        this.extentReports = ReportManager.initiate();
-        writeToDatabase = !iSuite.getName().equalsIgnoreCase("Default Suite");
+        this.extentReports = ReportManager.initiate(suiteName+"_"+timeStamp);
+        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite");
     }
 
 
