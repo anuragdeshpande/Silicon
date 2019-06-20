@@ -95,7 +95,7 @@ public class UIElement implements IUIElementOperations {
             this.element.isEnabled();
             return element;
         } catch (Exception e) {
-            return this.isOptional ? findOptional(elementLocation) : findElement(elementLocation);
+            return this.isOptional ? findOptional(elementLocation, ReactionTime.MOMENTARY) : findElement(elementLocation);
         }
     }
 
