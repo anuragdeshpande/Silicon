@@ -2,7 +2,6 @@ package framework.guidewire.gw8.elements;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
-import framework.elements.enums.ElementType;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
@@ -64,16 +63,18 @@ public class GWElement extends UIElement {
 
             // closing the warning window if Identifier is marked to check it
             if (identifier.shouldCheckForWarning()) {
-                GWElement closeButton = new GWElement(new Identifier(By.linkText("Close"), ElementType.BUTTON), ReactionTime.ONE_SECOND);
-                GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear"), ElementType.BUTTON), ReactionTime.IMMEDIATE);
-                if (closeButton.isPresent()) {
-                    closeButton.getElement().click();
-                    this.getElement().click();
-                }
+                if(GuidewireInteract.hasErrorMessageOnScreen()) {
+                    GWElement closeButton = new GWElement(new Identifier(By.linkText("Close")), ReactionTime.IMMEDIATE);
+                    GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear")), ReactionTime.IMMEDIATE);
+                    if (closeButton.isPresent()) {
+                        closeButton.getElement().click();
+                        this.getElement().click();
+                    }
 
-                if(clearButton.isPresent()){
-                    clearButton.getElement().click();
-                    this.getElement().click();
+                    if (clearButton.isPresent()) {
+                        clearButton.getElement().click();
+                        this.getElement().click();
+                    }
                 }
             }
 
