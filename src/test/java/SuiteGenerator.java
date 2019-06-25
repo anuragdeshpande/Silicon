@@ -1,3 +1,4 @@
+import annotations.APITest;
 import annotations.SmokeTest;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
@@ -30,19 +31,29 @@ public class SuiteGenerator {
 
 
         ClassGraph graph = new ClassGraph();
-        ClassInfoList classesWithAnnotation = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
-        ClassInfoList regressionTests = classesWithAnnotation;
+        ClassInfoList regressionTests = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
 
         List<XmlSuite> suitesToRun = new ArrayList<>();
         boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null;
         boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null;
+        boolean shouldRunAPITests = System.getProperty("EnableAPITests") != null;
 
+        /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
         if(shouldRunSmokeTests){
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
             System.out.println("Adding smoke tests: "+smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
             suitesToRun.add(createSuite("SmokeTests", smokeTests, threadCount));
         }
+
+        if(shouldRunAPITests){
+            ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
+            System.out.println("Adding API Tests: " + apiTests.size());
+            regressionTests = regressionTests.exclude(apiTests);
+            suitesToRun.add(createSuite("APITests", apiTests, threadCount));
+        }
+
+        /*  End Filtering and start main regression tests */
 
         if(shouldRunRegressionTests){
             System.out.println("Adding Regression Tests: "+regressionTests.size());
@@ -96,7 +107,7 @@ public class SuiteGenerator {
             }
         });
 
-        System.out.println(xmlSuite.toXml());;
+        System.out.println(xmlSuite.toXml());
         return xmlSuite;
 
     }
