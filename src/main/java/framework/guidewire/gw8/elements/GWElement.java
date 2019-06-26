@@ -64,34 +64,42 @@ public class GWElement extends UIElement {
 
             // closing the warning window if Identifier is marked to check it
             if (identifier.shouldCheckForWarning()) {
+                closeWarningWindow();
                 try{
                     PauseTest.createSpecialInstance(3, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("southPanel")));
                 } catch (Exception e){
                     // do nothing. just the south panel did not show up. so no warning windows.
                 }
-                if(GuidewireInteract.hasErrorMessageOnScreen()) {
-                    GWElement closeButton = new GWElement(new Identifier(By.linkText("Close")), ReactionTime.IMMEDIATE);
-                    GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear")), ReactionTime.IMMEDIATE);
-                    if (closeButton.isPresent()) {
-                        closeButton.getElement().click();
-                        this.getElement().click();
-                    }
 
-                    if (clearButton.isPresent()) {
-                        clearButton.getElement().click();
-                        this.getElement().click();
-                    }
-                }
             }
 
             // checking for error messages after clicking
             if (GuidewireInteract.hasErrorMessageOnScreen()) {
+                if(identifier.shouldCheckForWarning()){
+                    closeWarningWindow();
+                }
                 Assert.fail("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
             }
 
 
         } else {
             Assert.fail("Element is not Clickable");
+        }
+    }
+
+    private void closeWarningWindow(){
+        if(GuidewireInteract.hasErrorMessageOnScreen()) {
+            GWElement closeButton = new GWElement(new Identifier(By.linkText("Close")), ReactionTime.IMMEDIATE);
+            GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear")), ReactionTime.IMMEDIATE);
+            if (closeButton.isPresent()) {
+                closeButton.getElement().click();
+                this.getElement().click();
+            }
+
+            if (clearButton.isPresent()) {
+                clearButton.getElement().click();
+                this.getElement().click();
+            }
         }
     }
 }
