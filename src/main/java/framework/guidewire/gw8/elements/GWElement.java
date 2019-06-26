@@ -78,8 +78,9 @@ public class GWElement extends UIElement {
                 // double checking if there is still a warning window to close
                 if(identifier.shouldCheckForWarning()){
                     closeWarningWindow();
+                } else {
+                    Assert.fail("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
                 }
-                Assert.fail("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
             }
         } else {
             Assert.fail("Element is not Clickable");
