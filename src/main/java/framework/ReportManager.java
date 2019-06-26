@@ -32,6 +32,7 @@ public class ReportManager {
     private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
     public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp" : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
     private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
+    private static String INIT_SUITE_NAME;
 
     // Reporting Indices
     private static HashMap<String, ExtentTest> xmlTestMap;
@@ -50,6 +51,7 @@ public class ReportManager {
     }
 
     static ExtentReports initiate(String suiteName) {
+        INIT_SUITE_NAME = suiteName;
         extentReports = new ExtentReports();
         ExtentHtmlReporter extentReporter;
 
@@ -57,7 +59,7 @@ public class ReportManager {
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
-        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + suiteName + "_" + REPORT_FILE_NAME + ".html";
+        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
@@ -198,13 +200,12 @@ public class ReportManager {
             double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
-            String suiteName = iSuite.getName();
-            String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + suiteName + "_" + REPORT_FILE_NAME + ".html";
+            String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
 
             QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
             try {
                 regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
-                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
+                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, INIT_SUITE_NAME, reportPath, new Timestamp(System.currentTimeMillis()));
             } catch (SQLException e) {
                 e.printStackTrace();
                 Assert.fail("Could not save the suite results to the database");
