@@ -64,13 +64,13 @@ public class GWElement extends UIElement {
 
             // closing the warning window if Identifier is marked to check it
             if (identifier.shouldCheckForWarning()) {
-                closeWarningWindow();
                 try{
                     PauseTest.createSpecialInstance(3, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("southPanel")));
                 } catch (Exception e){
                     // do nothing. just the south panel did not show up. so no warning windows.
                 }
 
+                closeWarningWindow();
             }
 
             // checking for error messages after clicking
