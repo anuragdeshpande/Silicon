@@ -49,7 +49,7 @@ public class FTPConnection {
         return this;
     }
 
-    public FTPConnection chagneWorkingDirectory(String relativeDestinationPath) {
+    public FTPConnection changeWorkingDirectory(String relativeDestinationPath) {
         try {
             String currentLocation = _ftpClient.printWorkingDirectory();
             this._ftpClient.changeWorkingDirectory(relativeDestinationPath);
@@ -63,7 +63,12 @@ public class FTPConnection {
 
     public boolean hasFileWithName(String fileNameToSearch) {
         try {
-            return Arrays.stream(this._ftpClient.listFiles()).anyMatch(ftpFile -> ftpFile.getName().equalsIgnoreCase(fileNameToSearch));
+            boolean isFound = Arrays.stream(this._ftpClient.listFiles()).anyMatch(ftpFile -> ftpFile.getName().toLowerCase().contains(fileNameToSearch.toLowerCase()));
+            if (!isFound) {
+                logger.fatal("Cannot find the file: " + fileNameToSearch);
+                Arrays.stream(this._ftpClient.listFiles()).forEach(ff -> System.out.println(ff.getName()));
+            }
+            return isFound;
         } catch (IOException e) {
             logger.error("Could not search for the file with name: " + fileNameToSearch + " encountered error: " + e.getLocalizedMessage(), e);
             Assert.fail("Cannot try searching for file", e);
@@ -94,7 +99,7 @@ public class FTPConnection {
         }
     }
 
-    public FTPClient get_ftpClient(){
+    public FTPClient get_ftpClient() {
         return this._ftpClient;
     }
 
