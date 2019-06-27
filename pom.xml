@@ -140,6 +140,19 @@
       <artifactId>RegressionAnnotations</artifactId>
       <version>1.02</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jasypt/jasypt -->
+    <dependency>
+      <groupId>org.jasypt</groupId>
+      <artifactId>jasypt</artifactId>
+      <version>1.9.3</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+      <version>3.6</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
