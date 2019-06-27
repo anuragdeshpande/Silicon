@@ -109,9 +109,9 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordTest(String testName, String className) {
+    static ExtentTest recordTest(String testName, String className, String description) {
         if (!testMap.containsKey(testName)) {
-            ExtentTest extentTest = classMap.get(className).createNode(testName);
+            ExtentTest extentTest = classMap.get(className).createNode(testName, description);
             testMap.put(testName, extentTest);
         }
 
