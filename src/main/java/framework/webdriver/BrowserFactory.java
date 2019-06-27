@@ -49,7 +49,8 @@ public class BrowserFactory {
         if (isRemote) {
             pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
         } else {
-            ChromeDriverManager.chromedriver().setup();
+            ChromeDriverManager.chromedriver().clearPreferences();
+            ChromeDriverManager.chromedriver().version("74.0.3729.6").setup();
             pool.set(ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions())));
         }
         ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;

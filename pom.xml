@@ -6,8 +6,8 @@
   <artifactId>Lithium</artifactId>
   <version>3.0.0</version>
   <properties>
-    <jre.level>1.8</jre.level>
     <jdk.level>1.8</jdk.level>
+    <jre.level>1.8</jre.level>
   </properties>
   <dependencies>
     <dependency>
