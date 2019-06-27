@@ -17,4 +17,8 @@ abstract public class Application {
     protected QueryRunner connectToDB() {
         return ConnectionManager.getDBConnectionTo(this.environment);
     }
+
+    public RegressionLogger getLogger() {
+        return logger;
+    }
 }
