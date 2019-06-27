@@ -25,7 +25,7 @@ public class FTPConnection {
     private FTPClient _ftpClient;
     private RegressionLogger logger;
 
-    FTPConnection(Application application, String serverName, String username, String password) {
+    public FTPConnection(Application application, String serverName, String username, String password) {
         this.serverName = serverName;
         this.username = username;
         this.password = password;
