@@ -67,7 +67,8 @@ public class BaseOperations {
             logger.setTestName(testName);
         }
 
-        ReportManager.recordTest(testName, className);
+        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
+        ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
         this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(iTestResult.getMethod().getMethodName()), true);
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0) {
             iTestResult.setStatus(ITestResult.SKIP);

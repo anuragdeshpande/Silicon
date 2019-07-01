@@ -13,6 +13,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.*;
+import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +53,8 @@ public class Listener implements ISuiteListener, ITestListener{
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
         System.out.println("Starting Test - "+ testName);
-        ExtentTest testLogger = ReportManager.recordTest(testName, className);
+        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
+        ExtentTest testLogger = ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
