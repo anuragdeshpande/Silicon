@@ -152,7 +152,12 @@
       <artifactId>commons-net</artifactId>
       <version>3.6</version>
     </dependency>
-
+    <!--Includes ALL basic dependencies (recommended) -->
+    <dependency>
+      <groupId>systems.manifold</groupId>
+      <artifactId>manifold-all</artifactId>
+      <version>RELEASE</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
