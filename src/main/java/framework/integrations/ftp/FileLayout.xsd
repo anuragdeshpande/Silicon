@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://www.w3schools.com"
+           xmlns="https://www.w3schools.com"
+           elementFormDefault="qualified">
+    <xs:element name="LayoutFile">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="FixedWidthLayout">
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:element name="Line">
+                                <xs:complexType>
+                                    <xs:sequence maxOccurs="unbounded">
+                                        <xs:element ref="FixedWidthField"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+                                    <xs:attribute name="mustEndWith" type="xs:string"/>
+                                    <xs:attribute name="mustStartWith" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="MasterDetail">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="master">
+                                            <xs:complexType>
+                                                <xs:sequence maxOccurs="unbounded">
+                                                    <xs:element ref="FixedWidthField"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="mustStartWith" type="xs:string" use="required"/>
+                                                <xs:attribute name="mustEndWith" type="xs:string"/>
+                                                <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="detail">
+                                            <xs:complexType>
+                                                <xs:sequence maxOccurs="unbounded">
+                                                    <xs:element ref="FixedWidthField"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="mustStartWith" type="xs:string" use="required"/>
+                                                <xs:attribute name="mustEndWith" type="xs:string"/>
+                                                <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="DelimitedLayout">
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:element name="DelimitedLine">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="DelimitedField"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                        <xs:attribute name="delimiter" type="xs:string" use="required"/>
+                        <xs:attribute name="mustEndWith" type="xs:string"/>
+                        <xs:attribute name="mustStartWith" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="FieldTypes">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ALPHA"/>
+            <xs:enumeration value="NUMERIC"/>
+            <xs:enumeration value="ALPHA_NUMERIC"/>
+            <xs:enumeration value="BLANK"/>
+            <xs:enumeration value="DATE"/>
+            <xs:enumeration value="STRING"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="DelimitedField">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="FieldTypes" use="required" />
+            <xs:attribute name="pattern" type="xs:string"/>
+            <xs:attribute name="validationPattern" type="xs:string"/>
+            <xs:attribute name="dateFormat" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="FixedWidthField">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="FieldTypes" use="required"/>
+            <xs:attribute name="length" type="xs:positiveInteger" use="required"/>
+            <xs:attribute name="validationPattern" type="xs:string"/>
+            <xs:attribute name="dateFormat" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
