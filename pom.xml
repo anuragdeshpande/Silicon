@@ -6,8 +6,8 @@
   <artifactId>Lithium</artifactId>
   <version>3.0.0</version>
   <properties>
-    <jdk.level>1.8</jdk.level>
     <jre.level>1.8</jre.level>
+    <jdk.level>1.8</jdk.level>
   </properties>
   <dependencies>
     <dependency>
@@ -140,19 +140,16 @@
       <artifactId>RegressionAnnotations</artifactId>
       <version>1.02</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.jasypt/jasypt -->
     <dependency>
       <groupId>org.jasypt</groupId>
       <artifactId>jasypt</artifactId>
       <version>1.9.3</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
       <version>3.6</version>
     </dependency>
-    <!--Includes ALL basic dependencies (recommended) -->
     <dependency>
       <groupId>systems.manifold</groupId>
       <artifactId>manifold-all</artifactId>
