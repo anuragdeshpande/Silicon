@@ -7,6 +7,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.testng.Assert;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
@@ -61,6 +62,12 @@ public class FTPConnection {
         return this;
     }
 
+    /**
+     * Returns boolean value to check if there is a file with name passed.
+     * This method performs a fuzzy name match - you can pass parts of file names too.
+     * @param fileNameToSearch Full file name or partial file name to search at current location
+     * @return boolean value if there is a file with the name passed.
+     */
     public boolean hasFileWithName(String fileNameToSearch) {
         try {
             boolean isFound = Arrays.stream(this._ftpClient.listFiles()).anyMatch(ftpFile -> ftpFile.getName().toLowerCase().contains(fileNameToSearch.toLowerCase()));
@@ -77,15 +84,18 @@ public class FTPConnection {
         return false;
     }
 
-    public Optional<FTPFile> openFile(String fileName) {
+    public RemoteFTPFile getFile(String fileName) throws FileNotFoundException {
         try {
-            return Arrays.stream(this._ftpClient.listFiles()).filter(ftpFile -> ftpFile.getName().equalsIgnoreCase(fileName)).findFirst();
+            Optional<FTPFile> file = Arrays.stream(this._ftpClient.listFiles()).filter(ftpFile -> ftpFile.getName().equalsIgnoreCase(fileName)).findFirst();
+            if (file.isPresent()) {
+                return new RemoteFTPFile(file.get().getName(),this._ftpClient, logger);
+            }
         } catch (IOException e) {
             logger.error("Could not open file with name: " + fileName + " encountered error: " + e.getLocalizedMessage(), e);
             Assert.fail("Failed to open file", e);
         }
 
-        return Optional.empty();
+        throw new FileNotFoundException();
     }
 
 
@@ -93,6 +103,7 @@ public class FTPConnection {
         try {
             this._ftpClient.logout();
             this._ftpClient.disconnect();
+            logger.info("FTP Connection Closed Successfully");
         } catch (IOException e) {
             Assert.fail("Could not logout of the FTP Server: " + serverName + " with user: " + username);
             logger.warn("Could not logout of the FTP Server. Please consider closing the connection manually");

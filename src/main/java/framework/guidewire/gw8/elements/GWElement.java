@@ -46,7 +46,7 @@ public class GWElement extends UIElement {
                 ReactionTime reactionTime = ReactionTime.IMMEDIATE;
                 driver.manage().timeouts().implicitlyWait(reactionTime.getTime(),reactionTime.getTimeUnit());
                 try{
-                    new WebDriverWait(driver, 3)
+                    new WebDriverWait(driver, 5)
                             .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
                 } catch (TimeoutException e){
                     Assert.fail("Guidewire Application is taking over 3 seconds to respond to click: Aborting tests");
