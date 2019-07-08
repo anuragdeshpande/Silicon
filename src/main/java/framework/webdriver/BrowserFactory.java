@@ -13,11 +13,13 @@ import org.testng.Assert;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.Properties;
 
 public class BrowserFactory {
     private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
     private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
+    private static LinkedList<WebDriver> cache = new LinkedList<>();
     private static boolean isRemote = false;
     private static String remoteHubURL = "";
 
@@ -45,13 +47,15 @@ public class BrowserFactory {
         }
     }
 
-    public static synchronized void setDriver() throws MalformedURLException {
+    private static synchronized void setDriver() throws MalformedURLException {
         if (isRemote) {
             pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
         } else {
             ChromeDriverManager.chromedriver().clearPreferences();
             ChromeDriverManager.chromedriver().version("74.0.3729.6").setup();
-            pool.set(ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions())));
+            WebDriver driver = ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions()));
+            pool.set(driver);
+            cache.add(driver);
         }
         ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
         pool.get().manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
@@ -81,7 +85,15 @@ public class BrowserFactory {
         if (webDriver != null) {
             webDriver.quit();
             pool.remove();
+            cache.remove(getCurrentBrowser().getDriver());
         }
+    }
+
+    public static void closeAllOpenBrowsers(){
+        cache.forEach(webDriver -> {
+            webDriver.quit();
+            pool.remove();
+        });
     }
 
     public static synchronized void reloadDriver(){
