@@ -3,6 +3,7 @@ package framework.guidewire.gw8.elements;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
@@ -49,7 +50,7 @@ public class GWElement extends UIElement {
                     new WebDriverWait(driver, 5)
                             .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
                 } catch (TimeoutException e){
-                    Assert.fail("Guidewire Application is taking over 3 seconds to respond to click: Aborting tests");
+                    Assert.fail("Guidewire Application is taking over 5 seconds to respond to click: Aborting tests");
                 }
 
                 reactionTime = ReactionTime.STANDARD_WAIT_TIME;
@@ -79,7 +80,7 @@ public class GWElement extends UIElement {
                 if(identifier.shouldCheckForWarning()){
                     closeWarningWindow();
                 } else {
-                    Assert.fail("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
+                    throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
                 }
             }
         } else {
