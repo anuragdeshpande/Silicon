@@ -79,8 +79,6 @@ public class FixedWidthTokenizer implements ITokenizer {
                     case ALPHA_NUMERIC:
                         assertThat(isAlphanumericSpace(token)).withFailMessage("Alpha Numeric Value expected: "+token).isTrue();
                         break;
-                    case STRING:
-                        assertThat(isNotEmpty(token) && isNotBlank(token)).withFailMessage("Expected String but got: "+token).isTrue();
                 }
 
                 // validating token if there is a regular expression

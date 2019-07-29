@@ -2,6 +2,7 @@ package framework.integrations.ftp.layoutReader;
 
 import framework.integrations.ftp.layoutReader.layout.LayoutFile;
 import framework.logger.RegressionLogger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -17,6 +18,6 @@ public class DelimitedLayoutReader extends LayoutReader {
 
     @Override
     public boolean verifyLine(String line) {
-        return false;
+        throw new NotImplementedException();
     }
 }

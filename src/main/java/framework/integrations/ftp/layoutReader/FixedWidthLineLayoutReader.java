@@ -1,6 +1,7 @@
 package framework.integrations.ftp.layoutReader;
 
 import framework.integrations.ftp.layoutReader.layout.LayoutFile;
+import framework.integrations.ftp.layoutReader.models.tokenizer.FixedWidthTokenizer;
 import framework.logger.RegressionLogger;
 
 import javax.xml.bind.JAXBException;
@@ -16,6 +17,7 @@ public class FixedWidthLineLayoutReader extends LayoutReader {
 
     @Override
     public boolean verifyLine(String line) {
-        return false;
+        FixedWidthTokenizer tokenizer = new FixedWidthTokenizer(lineLayout, logger);
+        return tokenizer.validateTokens(line);
     }
 }
