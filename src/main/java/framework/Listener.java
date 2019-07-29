@@ -144,7 +144,6 @@ public class Listener implements ISuiteListener, ITestListener{
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
         ReportManager.recordSuiteResults(iSuite);
-        BrowserFactory.closeAllOpenBrowsers();
     }
 
     @SuppressWarnings("Duplicates")

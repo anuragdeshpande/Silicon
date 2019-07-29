@@ -13,13 +13,11 @@ import org.testng.Assert;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.Properties;
 
 public class BrowserFactory {
     private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
     private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
-    private static LinkedList<WebDriver> cache = new LinkedList<>();
     private static boolean isRemote = false;
     private static String remoteHubURL = "";
 
@@ -55,7 +53,6 @@ public class BrowserFactory {
             ChromeDriverManager.chromedriver().version("74.0.3729.6").setup();
             WebDriver driver = ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions()));
             pool.set(driver);
-            cache.add(driver);
         }
         ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
         pool.get().manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
@@ -85,15 +82,7 @@ public class BrowserFactory {
         if (webDriver != null) {
             webDriver.quit();
             pool.remove();
-            cache.remove(getCurrentBrowser().getDriver());
         }
-    }
-
-    public static void closeAllOpenBrowsers(){
-        cache.forEach(webDriver -> {
-            webDriver.quit();
-            pool.remove();
-        });
     }
 
     public static synchronized void reloadDriver(){
