@@ -23,7 +23,7 @@ public class GuidewireInteract extends Interact {
     public void withTabArrow(Identifier identifier) {
         UIElement uiElement = new UIElement(identifier);
         Dimension size = uiElement.getElement().getSize();
-        BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), size.getWidth() - 12, 10).click().build().perform();
+        BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), (size.getWidth())/2 - 6, 10).click().build().perform();
         System.out.println("Tab Arrow Clicked: "+identifier.getReference());
     }
 
@@ -64,12 +64,12 @@ public class GuidewireInteract extends Interact {
 
     @Override
     public GWSelectBox withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
-        GWElement uiElement = new GWElement(identifier, reactionTime);
+        GWSelectBox uiElement = new GWSelectBox(identifier, reactionTime);
         if(uiElement.isPresent()){
             uiElement.click();
         }
 
-        return new GWSelectBox(identifier);
+        return uiElement;
     }
 
     @Override
