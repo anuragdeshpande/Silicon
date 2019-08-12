@@ -25,6 +25,10 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         super(identifier);
     }
 
+    public GWSelectBox(Identifier identifier, ReactionTime reactionTime){
+        super(identifier, reactionTime);
+    }
+
     private Stream<WebElement> getUnfilteredStream(){
         return new UIElement(GWIDs.LIST_OPTIONS).getElement()
                 .findElements(By.tagName("li")).stream();
