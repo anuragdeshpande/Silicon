@@ -13,10 +13,12 @@ import org.testng.Assert;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class BrowserFactory {
     private static WebDriverOptionsManager optionsManager = new WebDriverOptionsManager();
+    public static HashSet<WebDriver> driverPool = new HashSet<>();
     private static ThreadLocal<WebDriver> pool = new ThreadLocal<>();
     private static boolean isRemote = false;
     private static String remoteHubURL = "";
@@ -50,9 +52,10 @@ public class BrowserFactory {
             pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
         } else {
             ChromeDriverManager.chromedriver().clearPreferences();
-            ChromeDriverManager.chromedriver().version("74.0.3729.6").setup();
+            ChromeDriverManager.chromedriver().setup();
             WebDriver driver = ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions()));
             pool.set(driver);
+            driverPool.add(driver);
         }
         ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
         pool.get().manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
@@ -82,6 +85,12 @@ public class BrowserFactory {
         if (webDriver != null) {
             webDriver.quit();
             pool.remove();
+        }
+    }
+
+    public static synchronized void closeAllWindows(){
+        if(driverPool.size() > 0){
+            driverPool.iterator().forEachRemaining(WebDriver::quit);
         }
     }
 
