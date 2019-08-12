@@ -42,17 +42,17 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onStart(ITestContext iTestContext) {
         // do nothing
-        System.out.println("In Test Start");
+//        System.out.println("In Test Start");
     }
 
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        System.out.println("In onTestStart");
+//        System.out.println("In onTestStart");
         String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
-        System.out.println("Starting Test - "+ testName);
+//        System.out.println("Starting Test - "+ testName);
         Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
         ExtentTest testLogger = ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
@@ -135,7 +135,7 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
-        System.out.println("After Test Test");
+//        System.out.println("After Test Test");
     }
 
     // Fires at the end of each suite.

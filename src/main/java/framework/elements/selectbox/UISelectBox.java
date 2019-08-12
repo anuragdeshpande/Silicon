@@ -55,11 +55,11 @@ public class UISelectBox extends UISelect {
             if (listItem.getText().contains(selection)) {
                 String selectedText = listItem.getText();
                 this.select.selectByVisibleText(selectedText);
-                System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
+//                System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
                 return selectedText;
             }
         }
-        System.out.println("Could not find a partial match for: "+selection);
+//        System.out.println("Could not find a partial match for: "+selection);
         return null;
     }
 
@@ -76,7 +76,7 @@ public class UISelectBox extends UISelect {
             listStrings.add(element.getText());
         }
 
-        System.out.println("Returning "+listStrings.size()+" options: "+ listStrings);
+//        System.out.println("Returning "+listStrings.size()+" options: "+ listStrings);
         return listStrings;
     }
 
@@ -88,7 +88,7 @@ public class UISelectBox extends UISelect {
                 return selection;
             }
         }
-        System.out.println("No selected options exist, returning null.");
+//        System.out.println("No selected options exist, returning null.");
         return null;
     }
 }

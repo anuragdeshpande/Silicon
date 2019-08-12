@@ -2,9 +2,6 @@ package framework.elements.table;
 
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.gw8.elements.gw_table.IGWUITable;
-import framework.utils.NumberUtils;
-import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -22,11 +19,11 @@ public class UITable extends UIElement implements IUITable {
     public WebElement getElement() {
         WebElement baseElement = super.getElement();
         if (!baseElement.getTagName().equalsIgnoreCase("table")) {
-            System.out.println("Finding <table> in the current dom element "+ baseElement);
+//            System.out.println("Finding <table> in the current dom element "+ baseElement);
             baseElement = baseElement.findElements(By.tagName("table")).get(0);
         }
 
-        System.out.println("Found table: "+ baseElement);
+//        System.out.println("Found table: "+ baseElement);
         return baseElement;
     }
 
@@ -37,7 +34,7 @@ public class UITable extends UIElement implements IUITable {
             rows.add(new UITableRow(row));
         });
 
-        System.out.println("Found : "+rows.size()+" Rows");
+//        System.out.println("Found : "+rows.size()+" Rows");
         return rows;
     }
 

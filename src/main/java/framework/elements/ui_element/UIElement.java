@@ -43,7 +43,7 @@ public class UIElement implements IUIElementOperations {
 
         if (this.isPresent()) {
             this.getElement().click();
-            System.out.println("Clicked Element: " + this.elementLocation);
+//            System.out.println("Clicked Element: " + this.elementLocation);
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -54,7 +54,7 @@ public class UIElement implements IUIElementOperations {
         if (this.isPresent()) {
             this.getElement().click();
             this.getElement().click();
-            System.out.println("Double Clicked the element: " + elementLocation);
+//            System.out.println("Double Clicked the element: " + elementLocation);
         } else {
             Assert.fail("Element is not Clickable");
         }
@@ -63,7 +63,7 @@ public class UIElement implements IUIElementOperations {
     @Override
     public void hover() {
         BrowserFactory.getCurrentBrowser().getActions().moveToElement(this.getElement(), 1, 1).build().perform();
-        System.out.println("Hovering on the element: " + elementLocation);
+//        System.out.println("Hovering on the element: " + elementLocation);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class UIElement implements IUIElementOperations {
             }
         }
 
-        System.out.println("Clipping Screen Text: " + clipText);
+//        System.out.println("Clipping Screen Text: " + clipText);
         return clipText;
     }
 
@@ -134,7 +134,7 @@ public class UIElement implements IUIElementOperations {
             try {
                 element = waitUtils.waitUntilElementIsClickable(elementLocation, 1);
             } catch (TimeoutException e) {
-                System.out.println("Optional Element: " + elementLocation.toString() + " Not Found.");
+//                System.out.println("Optional Element: " + elementLocation.toString() + " Not Found.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +153,7 @@ public class UIElement implements IUIElementOperations {
             reactionTime = ReactionTime.STANDARD_WAIT_TIME;
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
 
-            System.out.println("Optional Element found: " + elementLocation);
+//            System.out.println("Optional Element found: " + elementLocation);
             this.element = element;
             return element;
         } catch (Exception e) {

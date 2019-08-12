@@ -31,7 +31,7 @@ public class BrowserFactory {
             remoteHubURL = System.getProperty("hubUrl");
             if (remoteHubURL != null) {
                 isRemote = true;
-                System.out.println(Thread.currentThread().getId() + ": Will be opening Remote Web Drivers at: " + remoteHubURL);
+//                System.out.println(Thread.currentThread().getId() + ": Will be opening Remote Web Drivers at: " + remoteHubURL);
             }
 
             // Second Priority, Local configuration file.

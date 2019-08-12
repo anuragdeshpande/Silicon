@@ -65,9 +65,9 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
                 .filter(li -> li.getText().equalsIgnoreCase(selection)).findFirst();
         if (webElement.isPresent()) {
             selectElement(webElement.get());
-            System.out.println("Selected: " + selection);
+//            System.out.println("Selected: " + selection);
         } else {
-            System.out.println("Could not find the selection, cancelling select operation");
+//            System.out.println("Could not find the selection, cancelling select operation");
             new UIElement(GWIDs.QUICK_JUMP).click();
         }
 
@@ -82,7 +82,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         String selectedText = selectElement.getText();
         selectElement(selectElement);
 
-        System.out.println("Selected Item - " + itemNumber + ": " + selectedText);
+//        System.out.println("Selected Item - " + itemNumber + ": " + selectedText);
         return selectedText;
     }
 
@@ -94,10 +94,10 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
             String selectionText = element.getText();
             PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
             selectElement(element);
-            System.out.println("Selected: " + selectionText);
+//            System.out.println("Selected: " + selectionText);
             return selectionText;
         } else {
-            System.out.println("No items other than new choice: returning null");
+//            System.out.println("No items other than new choice: returning null");
             new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
             return null;
         }
@@ -112,11 +112,11 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
             WebElement element = collect.get(0);
             String selectedText = element.getText();
             selectElement(element);
-            System.out.println("Clicked on partial match for: " + selection + " on list option: " + selectedText);
+//            System.out.println("Clicked on partial match for: " + selection + " on list option: " + selectedText);
             return selectedText;
         }
 
-        System.out.println("Could not find a partial match for: " + selection);
+//        System.out.println("Could not find a partial match for: " + selection);
         new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
         return null;
     }
@@ -126,7 +126,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         boolean anyMatch = getUnfilteredStream()
                 .anyMatch(e -> e.getText().equalsIgnoreCase(selection));
         if (!anyMatch) {
-            System.out.println("Could not find the selection: " + selection);
+//            System.out.println("Could not find the selection: " + selection);
         }
         return anyMatch;
 
@@ -141,13 +141,13 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
             WebElement element = filteredList.get(0);
             String selection = element.getText();
             selectElement(element);
-            System.out.println("Clicked on the first matching option: " + selection);
+//            System.out.println("Clicked on the first matching option: " + selection);
             new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
             return selection;
         }
 
         new GWElement(GWIDs.QUICK_JUMP).click();
-        System.out.println("Could not find the first matching option: did not click on anything, returning null");
+//        System.out.println("Could not find the first matching option: did not click on anything, returning null");
         return null;
     }
 

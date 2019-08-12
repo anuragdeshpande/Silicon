@@ -35,10 +35,10 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
                     .build()
                     .perform();
         } catch (Exception e){
-            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
+//            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
         }
 
-        System.out.println("Clicked on the checkbox");
+//        System.out.println("Clicked on the checkbox");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         WebElement linkElement = element.findElement(By.tagName("a"));
         String linkText = linkElement.getText();
         linkElement.click();
-        System.out.println("Clicked on link: "+linkText);
+//        System.out.println("Clicked on link: "+linkText);
     }
 
     @Override
@@ -86,11 +86,11 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         if (selectedTextbox != null) {
             selectedTextbox.sendKeys(Keys.chord(Keys.CONTROL + "a"));
             selectedTextbox.sendKeys(text);
-            System.out.println("Text Filled: "+text);
+//            System.out.println("Text Filled: "+text);
             BrowserFactory.getCurrentBrowser().getDriver().findElement(By.id("QuickJump-inputEl")).click();
         }
 
-        System.out.println("Could not find any text boxes, not doing anything");
+//        System.out.println("Could not find any text boxes, not doing anything");
     }
 
     @Override

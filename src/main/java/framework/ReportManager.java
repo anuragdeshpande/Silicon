@@ -182,7 +182,7 @@ public class ReportManager {
 
     static void recordSuiteResults(ISuite iSuite) {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
-            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
+//            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
 
             AtomicInteger passedTests = new AtomicInteger(0);
             AtomicInteger failedTests = new AtomicInteger(0);
