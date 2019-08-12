@@ -104,11 +104,21 @@ public class Interact {
     }
 
     public void pressKeys(CharSequence... keys){
-        Actions actions = BrowserFactory.getCurrentGuidewireBrowser().getActions();
-        if(this.driver != null){
-           actions = new Actions(this.driver);
-        }
+        final Actions actions = BrowserFactory.getCurrentGuidewireBrowser().getActions();
+        ArrayList<CharSequence> controlModifiers = new ArrayList<>();
+        ArrayList<CharSequence> nonModifiers = new ArrayList<>();
 
-        actions.sendKeys(Keys.chord(keys)).build().perform();
+        for(CharSequence keyChar: keys){
+            if(Keys.ALT == keyChar || Keys.CONTROL == keyChar || Keys.SHIFT == keyChar){
+                controlModifiers.add(keyChar);
+            } else {
+                nonModifiers.add(keyChar);
+            }
+        }
+        controlModifiers.forEach(actions:: keyDown);
+        nonModifiers.forEach(actions::sendKeys);
+        controlModifiers.forEach(actions:: keyUp);
+        actions.build().perform();
+
     }
 }
