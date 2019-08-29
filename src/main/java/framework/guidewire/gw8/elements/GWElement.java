@@ -5,6 +5,7 @@ import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
+import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import org.openqa.selenium.*;
@@ -41,7 +42,6 @@ public class GWElement extends UIElement {
                 this.getElement().click();
             } catch (ElementClickInterceptedException cie){
 
-                System.out.println("Overlay element found. Waiting for a second or less for overlay to clear.");
                 // there is a temporary overlay, wait for the overlay to disappear and then click again.
                 WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
                 ReactionTime reactionTime = ReactionTime.IMMEDIATE;
@@ -56,12 +56,11 @@ public class GWElement extends UIElement {
                 reactionTime = ReactionTime.STANDARD_WAIT_TIME;
                 driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
 
-                // clicking again
+                // overlay element is gone - clicking again
                 this.getElement().click();
 
             }
 
-            System.out.println("Clicked Element" + identifier.getReference());
 
             // closing the warning window if Identifier is marked to check it
             if (identifier.shouldCheckForWarning()) {
@@ -79,7 +78,20 @@ public class GWElement extends UIElement {
                 // double checking if there is still a warning window to close
                 if(identifier.shouldCheckForWarning()){
                     closeWarningWindow();
-                } else {
+                }
+
+                // Race Condition Check
+                else if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().startsWith("Your data change could not be made because another user already changed the data")){
+                  int timeoutCounter = 10;
+                    while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0){
+                      this.getElement().click();
+                      PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
+                      timeoutCounter--;
+                  }
+                }
+
+                // Unknown Error - fail the test at Fatal Level
+                else {
                     throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
                 }
             }
