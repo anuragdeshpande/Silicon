@@ -84,7 +84,7 @@ public class GWElement extends UIElement {
             }
 
             // Race Condition Check
-            else if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().startsWith("Your data change could not be made because another user already changed the data")) {
+            if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().startsWith("Your data change could not be made because another user already changed the data")) {
                 System.out.println("#################### Race Condition: Retrying the click #########################");
                 int timeoutCounter = 10;
                 while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0) {
@@ -92,12 +92,12 @@ public class GWElement extends UIElement {
                     this.getElement().click();
                     PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
                 }
-            }
-
-            // Unknown Error - fail the test at Fatal Level
-            else {
+            } else {
+                // Unknown Error - fail the test at Fatal Level
                 throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
             }
+
+
         }
 
     }
