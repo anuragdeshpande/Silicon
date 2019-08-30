@@ -7,6 +7,7 @@ public class Identifier {
     private By reference;
     private ElementType elementType;
     private boolean canThrowWarning;
+    private boolean shouldGuardAgainstRaceCondition;
 
     public Identifier(By reference) {
         canThrowWarning = false;
@@ -27,6 +28,24 @@ public class Identifier {
 
     public boolean shouldCheckForWarning() {
         return canThrowWarning;
+    }
+
+
+    /**
+     *  this is not a good approach for resolving race conditions.
+     *  Please contact GW developer to take a look at the object in question and
+     *  add safeguards against threading in the system.
+     *
+     *  The intent of this method is only for temporary safeguard.
+     */
+    @Deprecated
+    public Identifier  guardAgainstRaceCondition(){
+        this.shouldGuardAgainstRaceCondition = true;
+        return this;
+    }
+
+    public boolean shouldGuardRaceCondition(){
+        return this.shouldGuardAgainstRaceCondition;
     }
 
     public By getReference() {

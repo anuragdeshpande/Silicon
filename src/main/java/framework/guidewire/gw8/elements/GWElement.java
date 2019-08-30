@@ -44,65 +44,38 @@ public class GWElement extends UIElement {
         try {
             this.getElement().click();
         } catch (ElementClickInterceptedException cie) {
-
-            // there is a temporary overlay, wait for the overlay to disappear and then click again.
-            WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-            ReactionTime reactionTime = ReactionTime.IMMEDIATE;
-            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-            try {
-                new WebDriverWait(driver, 5)
-                        .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
-            } catch (TimeoutException e) {
-                Assert.fail("Guidewire Application is taking over 5 seconds to respond to click: Aborting tests");
-            }
-
-            reactionTime = ReactionTime.STANDARD_WAIT_TIME;
-            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-
-            // overlay element is gone - clicking again
-            this.getElement().click();
-
+            retryClickAfterOverlayIsCleared();
         }
 
 
         // closing the warning window if Identifier is marked to check it
         if (identifier.shouldCheckForWarning()) {
-            try {
-                PauseTest.createSpecialInstance(3, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("southPanel")));
-            } catch (Exception e) {
-                // do nothing. just the south panel did not show up. so no warning windows.
-            }
-
             closeWarningWindow();
+        }
+
+        if (identifier.shouldGuardRaceCondition()) {
+            braceForRaceCondition();
         }
 
         // checking for error messages after clicking
         if (GuidewireInteract.hasErrorMessageOnScreen()) {
-            // double checking if there is still a warning window to close
-            if (identifier.shouldCheckForWarning()) {
-                closeWarningWindow();
-            }
-
-            // Race Condition Check
-            if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().startsWith("Your data change could not be made because another user already changed the data")) {
-                System.out.println("#################### Race Condition: Retrying the click #########################");
-                int timeoutCounter = 10;
-                while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0) {
-                    timeoutCounter--;
-                    this.getElement().click();
-                    PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
-                }
-            } else {
-                // Unknown Error - fail the test at Fatal Level
-                throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
-            }
-
-
+            // Unknown Error - fail the test at Fatal Level
+            throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
         }
 
     }
 
     private void closeWarningWindow() {
+        // Making sure page is ready for taking input
+        GuidewireInteract.clickQuickJump();
+
+        // Checking if warning window appears
+        try {
+            PauseTest.createSpecialInstance(2, 10).until(ExpectedConditions.visibilityOfElementLocated(By.id("southPanel")));
+        } catch (Exception e) {
+            // do nothing. just the south panel did not show up. so no warning windows.
+        }
+
         if (GuidewireInteract.hasErrorMessageOnScreen()) {
             GWElement closeButton = new GWElement(new Identifier(By.linkText("Close")), ReactionTime.IMMEDIATE);
             GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear")), ReactionTime.IMMEDIATE);
@@ -116,5 +89,49 @@ public class GWElement extends UIElement {
                 this.getElement().click();
             }
         }
+    }
+
+    private void braceForRaceCondition() {
+        GuidewireInteract.clickQuickJump();
+        try{
+            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
+            // Race Condition Check
+            if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().trim().equalsIgnoreCase("Your data change could not be made because another user already changed the data. Please cancel out of the wizard and create your check again.")) {
+                System.out.println("#################### Race Condition: Retrying the click #########################");
+                int timeoutCounter = 10;
+                while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0) {
+                    timeoutCounter--;
+                    this.getElement().click();
+                    PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
+                }
+            }
+        } catch (TimeoutException tme){
+            // no error message - did not run into race condition
+        }
+
+
+    }
+
+    private void retryClickAfterOverlayIsCleared() {
+        // there is a temporary overlay, wait for the overlay to disappear and then click again.
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ReactionTime reactionTime = ReactionTime.IMMEDIATE;
+        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
+        try {
+            new WebDriverWait(driver, 5)
+                    .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
+        } catch (TimeoutException e) {
+            Assert.fail("Guidewire Application is taking over 5 seconds to respond to click: Aborting tests");
+        }
+
+        reactionTime = ReactionTime.STANDARD_WAIT_TIME;
+        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
+
+        // overlay element is gone - clicking again
+        this.getElement().click();
+    }
+
+    private void closeWarningWindowWhenAppears() {
+
     }
 }
