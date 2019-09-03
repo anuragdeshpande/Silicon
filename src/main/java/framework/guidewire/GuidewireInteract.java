@@ -47,6 +47,14 @@ public class GuidewireInteract extends Interact {
 
     }
 
+    /**
+     * Exercise caution while using this method. As soon as the QuickJump is clicked, the focus on the current
+     * element is lost.
+     */
+    public static void clickQuickJump(){
+        new GWElement(GWIDs.QUICK_JUMP).getElement().click();
+    }
+
     public static String getErrorMessageFromScreen(){
         return BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(GWIDs.ERROR_MESSAGE.getReference()).getText();
     }
