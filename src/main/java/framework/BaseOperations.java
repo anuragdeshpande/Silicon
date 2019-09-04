@@ -3,6 +3,7 @@ package framework;
 import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.github.javafaker.Faker;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.testng.ITestContext;
@@ -12,10 +13,23 @@ import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class BaseOperations {
     protected RegressionLogger logger;
     protected ExtentReports reports;
+
+    /**
+     * @deprecated  this variable will be no longer supported in the next release.
+     * Refactor the code to use the storage object from the application instance
+     */
+    @Deprecated protected HashMap<String, String> storage = new HashMap<>();
+    /**
+     * @deprecated  this variable will be no longer supported in the next release.
+     * Refactor the code to use the faker object from the application instance
+     */
+    @Deprecated protected Faker faker = new Faker(Locale.US);
 
     @BeforeSuite
     public void beforeSuite(XmlTest xmlTest, ITestContext context) {
