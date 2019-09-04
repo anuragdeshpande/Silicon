@@ -3,7 +3,6 @@ package framework;
 import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.github.javafaker.Faker;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.testng.ITestContext;
@@ -13,14 +12,10 @@ import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Locale;
 
 public class BaseOperations {
     protected RegressionLogger logger;
     protected ExtentReports reports;
-    protected HashMap<String, String> storage = new HashMap<>();
-    protected Faker faker = new Faker(new Locale("en-us"));
 
     @BeforeSuite
     public void beforeSuite(XmlTest xmlTest, ITestContext context) {
