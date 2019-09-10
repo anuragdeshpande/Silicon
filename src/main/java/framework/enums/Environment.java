@@ -13,6 +13,13 @@ public enum Environment {
     CC8STAB01("CC8STAB01", "http://fbmsgw-stab01:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB01"),
     CC8STAB02("CC8STAB02", "http://fbmsgw-stab02:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB02"),
     CC8STAB04("CC8STAB04", "http://fbmsgw-stab04:8080/cc/GuidewireCenter.do", "ClaimCenterDatabase8STAB04"),
+    CCREGR01("CCREGR01", "http://fbmsgw-regr01:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR01"),
+    CCREGR02("CCREGR02", "http://fbmsgw-regr02:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR02"),
+    CCREGR03("CCREGR03", "http://fbmsgw-regr03:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR03"),
+    CCREGR04("CCREGR04", "http://fbmsgw-regr04:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR04"),
+    CCREGR05("CCREGR05", "http://fbmsgw-regr05:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR05"),
+    CCREGR06("CCREGR06", "http://fbmsgw-regr06:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR06"),
+    CCREGR07("CCREGR07", "http://fbmsgw-regr07:8080/cc/ClaimCenter.do", "ClaimCenterDatabase8REGR07"),
 
     // CC Claim Portal
     CLAIMPORTAL("CLAIMPORTAL", "https://dev.my.idfbins.com/v5/claim/", "ClaimCenterDatabase8DEV"),

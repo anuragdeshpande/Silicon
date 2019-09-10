@@ -26,6 +26,20 @@ public class ConnectionManager {
             case CC8BUAT2:
             case CC8BUAT:
                 return buildDataSource(Database.GWUAT, environment.getDatabaseName());
+            case CCREGR01:
+                return buildDataSource(Database.REGR01, environment.getDatabaseName());
+            case CCREGR02:
+                return buildDataSource(Database.REGR02, environment.getDatabaseName());
+            case CCREGR03:
+                return buildDataSource(Database.REGR03, environment.getDatabaseName());
+            case CCREGR04:
+                return buildDataSource(Database.REGR04, environment.getDatabaseName());
+            case CCREGR05:
+                return buildDataSource(Database.REGR05, environment.getDatabaseName());
+            case CCREGR06:
+                return buildDataSource(Database.REGR06, environment.getDatabaseName());
+            case CCREGR07:
+                return buildDataSource(Database.REGR07, environment.getDatabaseName());
             case QA_WIZPRO_DATA_REPO:
                 return buildDataSource(Database.QAWIZPRO_DATA_REPO, environment.getDatabaseName());
             case REPORTING:

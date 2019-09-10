@@ -25,7 +25,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         super(identifier);
     }
 
-    public GWSelectBox(Identifier identifier, ReactionTime reactionTime){
+    public GWSelectBox(Identifier identifier, ReactionTime reactionTime) {
         super(identifier, reactionTime);
     }
 

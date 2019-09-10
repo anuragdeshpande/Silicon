@@ -4,6 +4,7 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
@@ -99,8 +100,10 @@ public class Listener implements ISuiteListener, ITestListener{
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if(GuidewireInteract.hasErrorMessageOnScreen()){
-            testNode.log(Status.FATAL, iTestResult.getName()+"Failed with critical system failure");
-            testNode.fatal(GuidewireInteract.getErrorMessageFromScreen());
+            String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
+            testNode.log(Status.FATAL, iTestResult.getName()+" Failed with critical system failure");
+            testNode.fatal(errorMessageFromScreen);
+            iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
         }
 
         if(writeToDatabase){

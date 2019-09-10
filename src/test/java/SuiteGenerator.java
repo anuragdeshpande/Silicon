@@ -15,12 +15,7 @@ import java.util.List;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        if (args[0] != null && args[1] == null) {
-            System.out.println(Thread.currentThread().getId() + ": No Package details available, running full suite at \"guidewireTests\" package");
-            startTests("1", "guidewireTests");
-        } else {
-            startTests(args[0], args[1]);
-        }
+        startTests(System.getProperty("ThreadCount"), System.getProperty("RunPackage"));
     }
 
     private static void startTests(String threadCounts, String basePackage) {

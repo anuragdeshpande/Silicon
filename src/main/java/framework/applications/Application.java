@@ -32,4 +32,12 @@ abstract public class Application {
     public FTPConnection openFTPConnection(String host, String username, String password){
         return new FTPConnection(this, host,username,password).openConnection();
     }
+
+    public HashMap<String, String> getStorage() {
+        return storage;
+    }
+
+    public Faker getFaker() {
+        return faker;
+    }
 }
