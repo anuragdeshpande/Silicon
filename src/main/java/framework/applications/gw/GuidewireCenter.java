@@ -79,6 +79,10 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+
+        if (interact.withOptionalConfirmationWindow(ReactionTime.IMMEDIATE).isPresent()) {
+            interact.withOptionalConfirmationWindow(ReactionTime.ONE_SECOND).clickOkButton();
+        }
     }
 
     public String getOverrideEnvironmentURL() {
