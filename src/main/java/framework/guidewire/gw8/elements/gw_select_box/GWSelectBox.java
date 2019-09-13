@@ -11,6 +11,7 @@ import framework.webdriver.PauseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 
 import java.util.Arrays;
 import java.util.List;
@@ -67,8 +68,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
             selectElement(webElement.get());
 //            System.out.println("Selected: " + selection);
         } else {
-//            System.out.println("Could not find the selection, cancelling select operation");
-            new UIElement(GWIDs.QUICK_JUMP).click();
+            Assert.fail("No Such option found: "+selection);
         }
 
     }
