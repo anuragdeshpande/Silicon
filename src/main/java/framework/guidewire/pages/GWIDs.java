@@ -8,6 +8,7 @@ public class GWIDs {
     public static final Identifier LIST_OPTIONS = new Identifier(By.cssSelector("div.x-boundlist.x-boundlist-floating.x-boundlist-default.x-layer.x-border-box:not([style*='display: none'])"));
     public static final Identifier QUICK_JUMP = new Identifier(By.id("QuickJump-inputEl"));
     public static final Identifier ERROR_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='error_icon']/parent::div"));
+    public static final Identifier WARNING_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='warning_icon']/parent::div"));
     public static final Identifier CONFIRMATION_WINDOW = new Identifier(By.cssSelector("div[id*='messagebox-']"));
     public static final Identifier SETTINGS_COG = new Identifier(By.id(":TabLinkMenuButton-btnIconEl"), ElementType.ELEMENT);
 
