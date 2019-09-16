@@ -24,17 +24,17 @@ public class StockVINNumbers implements Serializable {
     }
 
     public static String getRealVIN(){
-//        String vinToReturn = getVIN("Real");
-//        if(vinToReturn == null){
+        String vinToReturn = getVIN("Real");
+        if(vinToReturn == null){
             List<String> vins = readVins();
-            String vinToReturn = vins.get(new Random().nextInt(vins.size()));
+            vinToReturn = vins.get(new Random().nextInt(vins.size()));
             vins.remove(vinToReturn);
             if(vins.size() < 50){
                 reloadVINs();
             } else {
                 writeVins(vins);
             }
-//        }
+        }
 
 
         return vinToReturn;
