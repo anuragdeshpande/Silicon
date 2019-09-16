@@ -28,6 +28,10 @@ public class DOMManipulator {
 
 
     private void injectBannerMessage(String message, String backgroundColor, String textColor){
+        // Clearing any existing banner messages.
+        clearBannerMessage();
+
+        // Adding the New Banner Message
         StringBuilder builder = new StringBuilder();
         builder.append("let node = document.createElement('div');");
         builder.append("node.id = 'BannerMessage';");
@@ -41,7 +45,7 @@ public class DOMManipulator {
     public void clearBannerMessage(){
         StringBuilder builder = new StringBuilder();
         builder.append("let banner = document.getElementById('BannerMessage');");
-        builder.append("banner.parentNode.removeChild(banner)");
+        builder.append("if(banner !== null)banner.parentNode.removeChild(banner)");
         ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder.toString());
     }
 }
