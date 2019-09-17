@@ -31,7 +31,6 @@ public class FTPConnection {
         this.username = username;
         this.password = password;
         this.application = application;
-        this.logger = application.getLogger();
     }
 
 
