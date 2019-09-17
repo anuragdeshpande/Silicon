@@ -39,7 +39,7 @@ public class BaseOperations {
             this.reports = ReportManager.initiate("BO Init_"+context.getSuite().getName());
         }
         String suiteName = xmlTest.getSuite().getName();
-        BrowserStorageAccess.storeData(StringConstants.SUITE_NAME, suiteName);
+        BrowserStorageAccess.getInstance().store(StringConstants.SUITE_NAME, suiteName);
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(suiteName), true);
         logger.setTestName(suiteName);
         logger.setTestClassName(suiteName);
@@ -50,7 +50,7 @@ public class BaseOperations {
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
         ExtentTest extentLogger = ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
-        BrowserStorageAccess.storeData(StringConstants.XML_TEST_NAME, xmlTestName);
+        BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
         logger = new RegressionLogger(Listener.logger, extentLogger, true);
         logger.setTestClassName(xmlTestName);
         logger.setTestName(xmlTestName);
@@ -60,7 +60,7 @@ public class BaseOperations {
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
         String testClassName = iTestContext.getClass().getSimpleName();
         if (!testClassName.equalsIgnoreCase("TestRunner")) {
-            BrowserStorageAccess.storeData(StringConstants.TEST_CLASS_NAME, testClassName);
+            BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, testClassName);
             ExtentTest extentLogger = ReportManager.recordClass(testClassName, xmlTest.getName());
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
             logger.setTestName(testClassName);
@@ -85,7 +85,7 @@ public class BaseOperations {
         ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
         String methodName = iTestResult.getMethod().getMethodName();
         this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(methodName), true);
-        BrowserStorageAccess.storeData(StringConstants.TEST_NAME, methodName);
+        BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, methodName);
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0 && testAnnotations.length > 0) {
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Skipping Test : " + methodName + " : No @AutomatedTest annotation found.");
