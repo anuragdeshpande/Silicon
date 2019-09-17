@@ -4,8 +4,10 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.github.javafaker.Faker;
+import framework.constants.StringConstants;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.utils.BrowserStorageAccess;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
@@ -37,6 +39,7 @@ public class BaseOperations {
             this.reports = ReportManager.initiate("BO Init_"+context.getSuite().getName());
         }
         String suiteName = xmlTest.getSuite().getName();
+        BrowserStorageAccess.storeData(StringConstants.SUITE_NAME, suiteName);
         logger = new RegressionLogger(Listener.logger, ReportManager.recordSuite(suiteName), true);
         logger.setTestName(suiteName);
         logger.setTestClassName(suiteName);
@@ -47,6 +50,7 @@ public class BaseOperations {
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
         ExtentTest extentLogger = ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
+        BrowserStorageAccess.storeData(StringConstants.XML_TEST_NAME, xmlTestName);
         logger = new RegressionLogger(Listener.logger, extentLogger, true);
         logger.setTestClassName(xmlTestName);
         logger.setTestName(xmlTestName);
@@ -56,6 +60,7 @@ public class BaseOperations {
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
         String testClassName = iTestContext.getClass().getSimpleName();
         if (!testClassName.equalsIgnoreCase("TestRunner")) {
+            BrowserStorageAccess.storeData(StringConstants.TEST_CLASS_NAME, testClassName);
             ExtentTest extentLogger = ReportManager.recordClass(testClassName, xmlTest.getName());
             logger = new RegressionLogger(Listener.logger, extentLogger, true);
             logger.setTestName(testClassName);
@@ -78,10 +83,12 @@ public class BaseOperations {
 
         Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
         ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
-        this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(iTestResult.getMethod().getMethodName()), true);
+        String methodName = iTestResult.getMethod().getMethodName();
+        this.logger = new RegressionLogger(Listener.logger, ReportManager.getTest(methodName), true);
+        BrowserStorageAccess.storeData(StringConstants.TEST_NAME, methodName);
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0 && testAnnotations.length > 0) {
             iTestResult.setStatus(ITestResult.SKIP);
-            throw new SkipException("Skipping Test : " + iTestResult.getMethod().getMethodName() + " : No @AutomatedTest annotation found.");
+            throw new SkipException("Skipping Test : " + methodName + " : No @AutomatedTest annotation found.");
         }
     }
 
