@@ -13,7 +13,6 @@ public class TestClassOne extends BaseOperations {
 
    @BeforeTest
    public void test(){
-       logger.warn("Test");
    }
 
     @AutomatedTest(Author = "Denver Hysell", Team = "ACES", Centers = {"GuidewireCenter"}, FeatureNumber = "F42", PI = "PI5", Iteration = "I2", StoryOrDefectNumber = "US155559", Themes = {"Chickens"})
