@@ -10,7 +10,7 @@ import org.openqa.selenium.Keys;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
-    private GuidewireInteract interact;
+    protected GuidewireInteract interact;
 
     public GuidewireCenter(){
         super();

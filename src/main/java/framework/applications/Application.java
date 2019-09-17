@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import framework.database.ConnectionManager;
 import framework.enums.Environment;
 import framework.integrations.ftp.FTPConnection;
+import framework.logger.RegressionLogger;
 import org.apache.commons.dbutils.QueryRunner;
 
 import java.util.HashMap;
@@ -33,5 +34,21 @@ abstract public class Application {
 
     public Faker getFaker() {
         return faker;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public RegressionLogger testLogger(){
+        return RegressionLogger.getTestLogger();
+    }
+
+    public RegressionLogger testClassLogger(){
+        return RegressionLogger.getTestClassLogger();
+    }
+
+    public RegressionLogger xmlTestLogger(){
+        return RegressionLogger.getXMLTestLogger();
     }
 }
