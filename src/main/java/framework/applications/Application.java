@@ -12,21 +12,16 @@ import java.util.Locale;
 
 
 abstract public class Application {
-    protected Environment environment;
-    protected RegressionLogger logger;
-    protected HashMap<String, String> storage = new HashMap<>();
-    protected Faker faker = new Faker(Locale.US);
+    private Environment environment;
+    private HashMap<String, String> storage = new HashMap<>();
+    private Faker faker = new Faker(Locale.US);
 
-    public Application(RegressionLogger logger){
-        this.logger = logger;
+    public Application(){
+
     }
 
     protected QueryRunner connectToDB() {
         return ConnectionManager.getDBConnectionTo(this.environment);
-    }
-
-    public RegressionLogger getLogger() {
-        return logger;
     }
 
     public FTPConnection openFTPConnection(String host, String username, String password){
@@ -39,5 +34,21 @@ abstract public class Application {
 
     public Faker getFaker() {
         return faker;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public RegressionLogger testLogger(){
+        return RegressionLogger.getTestLogger();
+    }
+
+    public RegressionLogger testClassLogger(){
+        return RegressionLogger.getTestClassLogger();
+    }
+
+    public RegressionLogger xmlTestLogger(){
+        return RegressionLogger.getXMLTestLogger();
     }
 }

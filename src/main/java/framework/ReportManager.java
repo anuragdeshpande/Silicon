@@ -8,8 +8,10 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
 import framework.enums.Environment;
+import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
 import org.testng.Assert;
 import org.testng.ISuite;
@@ -46,7 +48,7 @@ public class ReportManager {
 
     }
 
-    static boolean isInitiated() {
+    public static boolean isInitiated() {
         return extentReports != null;
     }
 
@@ -93,6 +95,7 @@ public class ReportManager {
     static ExtentTest recordClass(String className, String xmlTestName) {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
+            BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
@@ -103,6 +106,7 @@ public class ReportManager {
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
+            BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
         }
 
         return xmlTestMap.get(xmlTestName);
@@ -113,29 +117,30 @@ public class ReportManager {
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(className).createNode(testName, description);
             testMap.put(testName, extentTest);
+            BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
         }
 
         return testMap.get(testName);
 
     }
 
-    static void removeClass(String className) {
+    public static void removeClass(String className) {
         extentReports.removeTest(classMap.get(className));
     }
 
-    static ExtentTest getTest(String testName) {
+    public static ExtentTest getTest(String testName) {
         return testMap.get(testName);
     }
 
-    static ExtentTest getClass(String className) {
+    public static ExtentTest getClass(String className) {
         return classMap.get(className);
     }
 
-    static ExtentTest getXMLTest(String xmlTestName) {
+    public static ExtentTest getXMLTest(String xmlTestName) {
         return xmlTestMap.get(xmlTestName);
     }
 
-    static ExtentTest getSuite(String suiteName) {
+    public static ExtentTest getSuite(String suiteName) {
         return suiteMap.get(suiteName);
     }
 
