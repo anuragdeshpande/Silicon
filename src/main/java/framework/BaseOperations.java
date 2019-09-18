@@ -3,9 +3,7 @@ package framework;
 import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.github.javafaker.Faker;
-import framework.constants.StringConstants;
 import framework.webdriver.BrowserFactory;
-import framework.webdriver.utils.BrowserStorageAccess;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
@@ -41,6 +39,7 @@ public class BaseOperations {
 
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
+        String xmlTestName = xmlTest.getName();
         ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
     }
 
