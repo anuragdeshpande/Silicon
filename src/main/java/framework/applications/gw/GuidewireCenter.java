@@ -5,7 +5,6 @@ import framework.constants.ReactionTime;
 import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
-import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.Keys;
 
@@ -13,8 +12,8 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     protected GuidewireInteract interact;
 
-    public GuidewireCenter(RegressionLogger logger){
-        super(logger);
+    public GuidewireCenter(){
+        super();
         this.interact = BrowserFactory.getCurrentGuidewireBrowser();
     }
 

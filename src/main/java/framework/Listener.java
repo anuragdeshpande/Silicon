@@ -24,7 +24,7 @@ import java.util.Date;
 public class Listener implements ISuiteListener, ITestListener{
 
     private ExtentReports extentReports;
-    static Logger logger;
+    public static Logger logger;
     public boolean writeToDatabase;
 
 
