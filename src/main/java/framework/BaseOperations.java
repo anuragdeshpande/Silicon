@@ -36,13 +36,11 @@ public class BaseOperations {
         if (!ReportManager.isInitiated()) {
             this.reports = ReportManager.initiate("BO Init_"+ suiteName);
         }
-        BrowserStorageAccess.getInstance().store(StringConstants.SUITE_NAME, suiteName);
     }
 
 
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
-        String xmlTestName = xmlTest.getName();
         ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
     }
 
@@ -66,7 +64,6 @@ public class BaseOperations {
 
         Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
         ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
-
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0 && testAnnotations.length > 0) {
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Skipping Test : " + testName + " : No @AutomatedTest annotation found.");
