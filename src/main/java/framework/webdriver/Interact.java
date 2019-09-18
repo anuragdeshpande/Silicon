@@ -9,6 +9,8 @@ import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
+import framework.webdriver.utils.BrowserStorageAccess;
+import framework.webdriver.utils.DOMManipulator;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
@@ -81,6 +83,14 @@ public class Interact {
 
     public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime){
         throw new NotImplementedException();
+    }
+
+    public DOMManipulator withDOM(){
+        return new DOMManipulator();
+    }
+
+    public BrowserStorageAccess withBrowserStorage(){
+        return new BrowserStorageAccess();
     }
 
     public List<WebElement> withMultiValuedElement(Identifier identifier){

@@ -2,8 +2,11 @@ package framework.logger;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import framework.Listener;
 import framework.ReportManager;
+import framework.constants.StringConstants;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -183,20 +186,13 @@ public class RegressionLogger {
 
     }
 
-    public void setTestName(String testName){
-        this.testName = testName;
-    }
-
-    public void setTestClassName(String className){
-        this.testClassName = className;
-    }
 
     public String getTestName(){
-        return this.testName;
+        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
     }
 
     public String getTestClassName(){
-        return this.testClassName;
+        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME);
     }
 
     @SuppressWarnings("Duplicates")
@@ -212,5 +208,20 @@ public class RegressionLogger {
             e.printStackTrace();
         }
         return destinationFilePath;
+    }
+
+    public synchronized static RegressionLogger getTestLogger(){
+        ExtentTest extentTest = ReportManager.getTest(BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME));
+        return new RegressionLogger(Listener.logger, extentTest, ReportManager.isInitiated());
+    }
+
+    public synchronized static RegressionLogger getTestClassLogger(){
+        ExtentTest extentClassTest = ReportManager.getClass(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+        return new RegressionLogger(Listener.logger, extentClassTest, ReportManager.isInitiated());
+    }
+
+    public synchronized static RegressionLogger getXMLTestLogger(){
+        ExtentTest extentXMLTest = ReportManager.getXMLTest(BrowserStorageAccess.getInstance().get(StringConstants.XML_TEST_NAME));
+        return new RegressionLogger(Listener.logger, extentXMLTest, ReportManager.isInitiated());
     }
 }
