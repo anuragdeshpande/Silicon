@@ -3,9 +3,13 @@ package framework.webdriver.utils;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.JavascriptExecutor;
 
+import java.util.HashMap;
+
 public class BrowserStorageAccess {
 
     private JavascriptExecutor executor;
+    private boolean isStorageReady;
+    private static HashMap<Long, HashMap<String, String>> cache = new HashMap<>();;
 
     public BrowserStorageAccess(){
         this.executor = ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver());
@@ -30,7 +34,11 @@ public class BrowserStorageAccess {
      * @param value value associated with the key
      */
     public synchronized void store(String key, String value){
-        executor.executeScript("window.localStorage.setItem('"+ key+"', '"+value+"')");
+//        if(isStorageReady){
+//            executor.executeScript("window.sessionStorage.setItem('"+ key+"', '"+value+"')");
+//        } else {
+            cache(key, value);
+//        }
     }
 
     /**
@@ -39,7 +47,11 @@ public class BrowserStorageAccess {
      * deserialize the data being returned.
      */
     public synchronized String get(String key){
-        return (String)executor.executeScript("window.localStorage.getItem('"+key+"')");
+//        if(isStorageReady){
+//            return (String)executor.executeScript("window.sessionStorage.getItem('"+key+"')");
+//        } else {
+            return cache.get(Thread.currentThread().getId()).get(key);
+//        }
     }
 
     /**
@@ -47,10 +59,29 @@ public class BrowserStorageAccess {
      * @param key
      */
     public synchronized void remove(String key){
-        executor.executeScript("window.localStorage.removeItem('"+key+"')");
+//        executor.executeScript("window.sessionStorage.removeItem('"+key+"')");
+        long currentThread = Thread.currentThread().getId();
+        if(cache.containsKey(currentThread)){
+            cache.get(currentThread).remove(key);
+        }
+
     }
 
     public static BrowserStorageAccess getInstance(){
         return new BrowserStorageAccess();
     }
+
+    private void cache(String key, String value){
+        long threadID = Thread.currentThread().getId();
+        if(cache.containsKey(threadID)){
+            cache.get(threadID).put(key, value);
+        } else {
+            HashMap<String, String> valueMap = new HashMap<>();
+            valueMap.put(key, value);
+            cache.put(threadID, valueMap);
+        }
+    }
+
+
+
 }
