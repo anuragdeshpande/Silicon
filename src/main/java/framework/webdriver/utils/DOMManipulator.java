@@ -9,43 +9,59 @@ public class DOMManipulator {
 
     }
 
-    public void injectInfoMessage(String message){
+    /* message injections */
+
+    /**
+     * Creates a info bar message at the top of the browser page
+     * @param message String text to show in the message bar
+     */
+    public synchronized void injectInfoMessage(String message){
         injectBannerMessage(message, "#cce5ff", "#004085");
     }
 
-    public void injectDangerMessage(String message){
+    /**
+     * Creates a Danger bar message at the top of the browser page
+     * @param message String text to show in the message bar
+     */
+    public synchronized void injectDangerMessage(String message){
         injectBannerMessage(message, "#721c24", "#f8d7da");
     }
 
-    public void injectWarningMessage(String message){
+    /**
+     * Creates a Warning bar message at the top of the browser page
+     * @param message String text to show in the message bar
+     */
+    public synchronized void injectWarningMessage(String message){
         injectBannerMessage(message, "#856404", "#fff3cd");
     }
 
-    public void injectSuccessMessage(String message){
+    /**
+     * Creates a Success bar message at the top of the browser page
+     * @param message String text to show in the message bar
+     */
+    public synchronized void injectSuccessMessage(String message){
         injectBannerMessage(message, "#155724", "#d4edda");
     }
 
+    /* end message injections */
 
-
-    private void injectBannerMessage(String message, String backgroundColor, String textColor){
+    private synchronized void injectBannerMessage(String message, String backgroundColor, String textColor){
         // Clearing any existing banner messages.
         clearBannerMessage();
 
         // Adding the New Banner Message
-        StringBuilder builder = new StringBuilder();
-        builder.append("let node = document.createElement('div');");
-        builder.append("node.id = 'BannerMessage';");
-        builder.append("node.innerText = '").append(message).append("';");
-        builder.append("node.setAttribute('style', 'text-align: center;text-transform: uppercase;padding: 5px 0; color: ").append(textColor).append("; background: ").append(backgroundColor).append("; letter-spacing: 5px; font-weight: bold;');");
-        builder.append("let body = document.getElementsByTagName('Body')[0];");
-        builder.append("body.insertBefore(node, body.childNodes[0]);");
-        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder.toString());
+        String builder = "let node = document.createElement('div');" +
+                "node.id = 'BannerMessage';" +
+                "node.innerText = '" + message + "';" +
+                "node.setAttribute('style', 'text-align: center;text-transform: uppercase;padding: 5px 0; color: " + textColor + "; background: " + backgroundColor + "; letter-spacing: 5px; font-weight: bold;');" +
+                "let body = document.getElementsByTagName('Body')[0];" +
+                "body.insertBefore(node, body.childNodes[0]);";
+        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder);
     }
 
-    public void clearBannerMessage(){
-        StringBuilder builder = new StringBuilder();
-        builder.append("let banner = document.getElementById('BannerMessage');");
-        builder.append("if(banner !== null)banner.parentNode.removeChild(banner)");
-        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder.toString());
+    public synchronized void clearBannerMessage(){
+        String builder = "let banner = document.getElementById('BannerMessage');" +
+                "if(banner !== null)banner.parentNode.removeChild(banner)";
+        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder);
     }
 }
