@@ -1,4 +1,4 @@
-package framework.guidewire.gw8.elements;
+package framework.guidewire.elements;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;

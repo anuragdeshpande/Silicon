@@ -1,4 +1,4 @@
-package framework.guidewire.gw8.elements.gw_table;
+package framework.guidewire.elements.gw_table;
 
 import framework.elements.table.IUITableCell;
 import framework.elements.ui_element.UIElement;

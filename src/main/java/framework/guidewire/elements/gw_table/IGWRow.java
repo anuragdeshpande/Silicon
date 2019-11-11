@@ -1,11 +1,8 @@
-package framework.guidewire.gw8.elements.gw_table;
+package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
-import framework.elements.table.UITableCell;
 import framework.elements.textbox.UITextbox;
-import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
-
-import java.util.List;
+import framework.guidewire.elements.gw_select_box.GWSelectBox;
 
 public interface IGWRow {
     GWSelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName);

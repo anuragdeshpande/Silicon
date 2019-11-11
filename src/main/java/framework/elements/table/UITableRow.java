@@ -1,13 +1,9 @@
 package framework.elements.table;
 
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.gw8.elements.gw_table.GWCell;
-import framework.webdriver.BrowserFactory;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UITableRow extends UIElement implements IUITableRow {

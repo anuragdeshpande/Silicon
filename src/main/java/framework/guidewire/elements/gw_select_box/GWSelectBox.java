@@ -1,11 +1,11 @@
-package framework.guidewire.gw8.elements.gw_select_box;
+package framework.guidewire.elements.gw_select_box;
 
 import com.github.javafaker.Faker;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.selectbox.UISelect;
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.gw8.elements.GWElement;
+import framework.guidewire.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.PauseTest;
 import org.openqa.selenium.By;

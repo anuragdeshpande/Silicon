@@ -1,8 +1,4 @@
-package framework.guidewire.gw8.elements.gw_table;
-
-import framework.elements.table.IUITable;
-import framework.elements.table.UITableRow;
-import org.openqa.selenium.By;
+package framework.guidewire.elements.gw_table;
 
 import java.util.List;
 

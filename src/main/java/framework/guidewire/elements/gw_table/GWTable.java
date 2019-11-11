@@ -1,8 +1,8 @@
-package framework.guidewire.gw8.elements.gw_table;
+package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.gw8.elements.GWElement;
+import framework.guidewire.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;

@@ -1,10 +1,10 @@
-package framework.guidewire.gw8.elements.gw_table;
+package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.GuidewireInteract;
-import framework.guidewire.gw8.elements.gw_select_box.GWSelectBox;
+import framework.guidewire.elements.gw_select_box.GWSelectBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

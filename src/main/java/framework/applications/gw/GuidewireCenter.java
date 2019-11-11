@@ -2,6 +2,7 @@ package framework.applications.gw;
 
 import framework.applications.Application;
 import framework.constants.ReactionTime;
+import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.enums.LogLevel;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
@@ -79,8 +80,9 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         interact.withElement(GWIDs.SETTINGS_COG).click();
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
 
-        if (interact.withOptionalConfirmationWindow(ReactionTime.IMMEDIATE).isPresent()) {
-            interact.withOptionalConfirmationWindow(ReactionTime.ONE_SECOND).clickOkButton();
+        UIConfirmationWindow uiConfirmationWindow = interact.withOptionalConfirmationWindow(ReactionTime.ONE_SECOND);
+        if (uiConfirmationWindow.isPresent() && !uiConfirmationWindow.getElement().getAttribute("class").endsWith("x-hide-offsets")) {
+            uiConfirmationWindow.clickOkButton();
         }
     }
 
