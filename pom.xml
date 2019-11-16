@@ -33,12 +33,6 @@
       <version>LATEST</version>
     </dependency>
     <dependency>
-      <groupId>com.idfbins</groupId>
-      <artifactId>GWClockMover</artifactId>
-      <version>1.35</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.7</version>
@@ -138,7 +132,7 @@
     <dependency>
       <groupId>com.idfbins</groupId>
       <artifactId>RegressionAnnotations</artifactId>
-      <version>1.02</version>
+      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>

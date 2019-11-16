@@ -2,6 +2,7 @@ package framework;
 
 import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -26,6 +27,9 @@ public class BaseOperations {
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
+        // Making sure there is only one thread at any given point of time
+        Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
+        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
         ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
     }
 
