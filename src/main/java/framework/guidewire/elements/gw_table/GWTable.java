@@ -96,7 +96,7 @@ public class GWTable extends UIElement implements IGWUITable{
             for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
-                        System.out.println("Found the row with the text: "+value);
+//                        System.out.println("Found the row with the text: "+value);
                         return new GWRow(row);
                     }
                 }
@@ -167,7 +167,7 @@ public class GWTable extends UIElement implements IGWUITable{
             rows.add(new GWRow(row));
         });
 
-        System.out.println("Found : "+rows.size()+" Rows");
+//        System.out.println("Found : "+rows.size()+" Rows");
         return rows;
     }
 
