@@ -27,10 +27,10 @@ public class BaseOperations {
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
-        // Making sure there is only one thread at any given point of time
+        // Making sure there is only one thread per test at any given point of time
         Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
-        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
         ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
+        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
     }
 
     @BeforeClass(description = "BeforeClass")
