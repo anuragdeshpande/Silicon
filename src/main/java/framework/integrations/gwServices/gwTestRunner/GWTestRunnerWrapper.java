@@ -50,6 +50,6 @@ public class GWTestRunnerWrapper {
         GWTestRunnerWrapper testRunner = new GWTestRunnerWrapper();
         GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
         gwTestRunResults.generateHTMLReport();
-        gwTestRunResults.recordResultsInReportsDb();
+//        gwTestRunResults.recordResultsInReportsDb();
     }
 }
