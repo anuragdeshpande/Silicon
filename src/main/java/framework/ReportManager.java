@@ -52,7 +52,7 @@ public class ReportManager {
         return extentReports != null;
     }
 
-    static ExtentReports initiate(String suiteName) {
+    public static ExtentReports initiate(String suiteName) {
         INIT_SUITE_NAME = suiteName;
         extentReports = new ExtentReports();
         ExtentHtmlReporter extentReporter;
@@ -169,8 +169,16 @@ public class ReportManager {
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
 
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        return insertIntoTestResults(clockMove, testCreator, testName, startDate, endDate, failureImageURL, status,
+                failureReason, buildNumber, suiteName, testRunSource, tags);
 
+    }
+
+    public static boolean insertIntoTestResults(boolean clockMove, String testCreator, String testName,
+                                                Timestamp startDate, Timestamp endDate,  String failureImageURL,
+                                                String status, String failureReason, String buildNumber,
+                                                String suiteName, String testRunSource, String tags){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
         try {
             return regressionDB
                     .update("INSERT INTO TestResults" +
@@ -207,18 +215,24 @@ public class ReportManager {
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
 
-            QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
-            try {
-                regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
-                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath, new Timestamp(System.currentTimeMillis()));
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Assert.fail("Could not save the suite results to the database");
-            }
+            insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath);
         } else {
             System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
         }
 
+    }
+
+    public static boolean insertIntoSuiteResults(String applicationName, double passPercentage, double failPercentage, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        try {
+            regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
+                    "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Assert.fail("Could not save the suite results to the database");
+            return false;
+        }
     }
 
     private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
