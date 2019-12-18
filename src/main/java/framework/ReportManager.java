@@ -213,7 +213,7 @@ public class ReportManager {
             double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
-            String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
+            String reportPath = getReportPath();
 
             insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath);
         } else {
@@ -327,5 +327,9 @@ public class ReportManager {
                 "            #nav-mobile li:last-child{\n" +
                 "            display: none;\n" +
                 "            }");
+    }
+
+    public static String getReportPath(){
+        return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
     }
 }
