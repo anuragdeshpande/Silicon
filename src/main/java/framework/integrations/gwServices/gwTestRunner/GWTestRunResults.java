@@ -50,7 +50,8 @@ public class GWTestRunResults {
     }
 
     public boolean recordResultsInReportsDb(){
-        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+//        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+        String jenkinsBuildNumber = "9999999";
         String startedByUser = System.getProperty("startedByUser");
 
         AtomicReference<String> failureReason = new AtomicReference<>();
