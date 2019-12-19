@@ -42,7 +42,7 @@ public class SuiteGenerator {
             startGWUnitTests();
         }
 
-        if(runGWSystemIntegrationTests){
+        if(runGWIntegrationTests){
             startGWIntegrationTests();
         }
 
