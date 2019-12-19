@@ -10,9 +10,11 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
+import framework.database.models.TestResultsDTO;
 import framework.enums.Environment;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.testng.Assert;
 import org.testng.ISuite;
 import org.testng.ITestContext;
@@ -20,12 +22,14 @@ import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReportManager {
@@ -181,13 +185,24 @@ public class ReportManager {
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
         try {
             return regressionDB
-                    .update("INSERT INTO TestResults" +
-                                    "(ClockMove, TestCreator, TestName, StartTime, " +
-                                    "EndTime, FailureImageURL, TestStatus, FailureReason, " +
-                                    "BuildNumber, SuiteName, TestRunSource, Tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                    .update(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
                             clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
                             suiteName, testRunSource, tags) > 0;
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
+        for (int i = 0; i < resultsDTOS.size(); i++) {
+            params[i] = resultsDTOS.get(i).getValuesAsObjectArray();
+        }
+        try {
+            return regressionDB.batch(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
