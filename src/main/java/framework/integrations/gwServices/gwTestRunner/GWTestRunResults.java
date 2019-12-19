@@ -4,8 +4,13 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import framework.ReportManager;
+import framework.database.models.TestResultsDTO;
+import framework.database.models.TestStatus;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
+import org.apache.commons.lang3.time.DateUtils;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -62,12 +67,21 @@ public class GWTestRunResults {
 
         if(this.testsuiteResults.getTestcase().size() > 0){
             String finalStartedByUser = startedByUser;
-
+            ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
             // Recording to the TestResults Table
             this.testsuiteResults.getTestcase().forEach(testcase -> {
-                String status = "Success";
+                TestStatus status = TestStatus.SUCCESS;
+                // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
+                int testRunTimeInMilliSeconds = (int)Double.parseDouble(testcase.getTime())*1000;
+                Timestamp startTimeStamp = new Timestamp(DateUtils.addMilliseconds(new Date(), -testRunTimeInMilliSeconds).getTime());
+                Timestamp endTimeStamp = new Timestamp(new Date().getTime());
+
                 if(testcase.getFailure().size() > 0 && testcase.getError().size() > 0){
-                    status = "Failure";
+                    status = TestStatus.FAILURE;
+                }
+
+                if(testcase.getSkipped() != null){
+                    status = TestStatus.SKIPPED;
                 }
 
                 if(testcase.getFailure().size() > 0){
@@ -78,12 +92,18 @@ public class GWTestRunResults {
                     failureReason.set(testcase.getError().get(0).getType());
                 }
 
-                ReportManager.insertIntoTestResults(false, "Guidewire", testcase.getName(),
-                        null, null, null, status, failureReason.get(), jenkinsBuildNumber, testsuiteResults.getName(), finalStartedByUser, "");
+                TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
+                        startTimeStamp, endTimeStamp, null, status, failureReason.get(), jenkinsBuildNumber, testsuiteResults.getName(), finalStartedByUser, "");
+
+                resultsDTOS.add(resultsDTO);
             });
+            ReportManager.bulkInsertIntoTestResults(resultsDTOS);
 
             // Recording to the SuiteResults Table
             String applicationName = System.getProperty("ApplicationName");
+            if(applicationName == null){
+                applicationName = "Local Run";
+            }
             String reportPath = ReportManager.getReportPath();
             AtomicInteger totalTests = new AtomicInteger(0);
             AtomicInteger passingTests = new AtomicInteger(0);
