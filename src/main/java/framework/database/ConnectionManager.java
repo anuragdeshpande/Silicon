@@ -7,6 +7,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -54,6 +55,11 @@ public class ConnectionManager {
     }
 
     private static QueryRunner buildDataSource(Database database, String databaseName){
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Cannot find Drivers");
+        }
         BasicDataSource testResultsDS = new BasicDataSource();
         testResultsDS.setUrl(buildConnectionString(database.getServerName(), databaseName));
         testResultsDS.setUsername(database.getUsername());
