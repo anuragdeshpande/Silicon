@@ -10,6 +10,7 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
+import framework.database.models.SuiteResultsDTO;
 import framework.database.models.TestResultsDTO;
 import framework.enums.Environment;
 import framework.webdriver.utils.BrowserStorageAccess;
@@ -240,8 +241,7 @@ public class ReportManager {
     public static boolean insertIntoSuiteResults(String applicationName, double passPercentage, double failPercentage, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
         try {
-            regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
-                    "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
+            regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
