@@ -42,14 +42,14 @@ public class GWTestRunnerWrapper {
 
 
     public static void main(String[] args) {
-        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "false");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "false");
-        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "false");
-        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "false");
+//        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+//        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+//        System.setProperty("com.sun.xml.internal.ws.transporthttp.HttpAdapter.dump", "true");
 //        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
         GWTestRunnerWrapper testRunner = new GWTestRunnerWrapper();
         GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
         gwTestRunResults.generateHTMLReport();
-//        gwTestRunResults.recordResultsInReportsDb();
+        gwTestRunResults.recordResultsInReportsDb();
     }
 }
