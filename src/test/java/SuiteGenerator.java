@@ -19,7 +19,6 @@ import java.util.List;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        System.setProperty("gwUnitTestPackage", "framework.integrations.gwServices.gwTestRunner");
         boolean runUITests =
                 System.getProperty("EnableRegressionTests") != null ||
                 System.getProperty("EnableAPITests") != null ||
