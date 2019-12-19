@@ -1,12 +1,13 @@
 package framework.integrations.gwServices.gwTestRunner;
 
+import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
 import framework.enums.Environment;
 import framework.integrations.gwServices.gwTestRunner.com.waysysweb.*;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 
 import javax.xml.ws.BindingProvider;
 
-public class GWTestRunnerWrapper {
+public class GWTestRunnerWrapper implements IGWUnitTestRunner {
 
     private RunTestPortType port;
 
@@ -41,12 +42,17 @@ public class GWTestRunnerWrapper {
     }
 
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
 //        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
 //        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
 //        System.setProperty("com.sun.xml.internal.ws.transporthttp.HttpAdapter.dump", "true");
 //        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+
+//    }
+
+    @Override
+    public void runTests() {
         GWTestRunnerWrapper testRunner = new GWTestRunnerWrapper();
         GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
         gwTestRunResults.generateHTMLReport();
