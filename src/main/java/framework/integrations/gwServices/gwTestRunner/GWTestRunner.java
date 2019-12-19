@@ -7,7 +7,7 @@ import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 
 import javax.xml.ws.BindingProvider;
 
-public class GWTestRunner implements IGWUnitTestRunner {
+public class GWTestRunner {
 
     private RunTestPortType port;
 
@@ -51,7 +51,6 @@ public class GWTestRunner implements IGWUnitTestRunner {
 
 //    }
 
-    @Override
     public void runTests() {
         GWTestRunner testRunner = new GWTestRunner();
         GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
