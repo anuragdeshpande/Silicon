@@ -54,7 +54,9 @@ public class SuiteGenerator {
 
     private static void startGWUnitTests(){
         ClassGraph graph = new ClassGraph();
-        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(System.getProperty("gwUnitTestPackage")).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
+        String gwUnitTestPackage = System.getProperty("gwUnitTestPackage");
+        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(gwUnitTestPackage).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwUnitTestRunners.size()+" Unit Test Runners in the package: "+gwUnitTestPackage);
         gwUnitTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWUnitTestRunner.class).getConstructor().newInstance().runTests();
@@ -67,8 +69,10 @@ public class SuiteGenerator {
 
     private static void startGWIntegrationTests(){
         ClassGraph graph = new ClassGraph();
-        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(System.getProperty("gwIntegrationTestPackage")).enableAllInfo().scan().getClassesImplementing(IGWIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        gwUnitTestRunners.forEach(classInfo -> {
+        String gwIntegrationTestPackage = System.getProperty("gwIntegrationTestPackage");
+        ClassInfoList gwIntegrationTestRunners = graph.whitelistPackages(gwIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwIntegrationTestPackage);
+        gwIntegrationTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWIntegrationTestRunner.class).getConstructor().newInstance().runTests();
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
@@ -78,9 +82,11 @@ public class SuiteGenerator {
     }
 
     private static void startGWSystemIntegrationTests(){
+        String gwSystemIntegrationTestPackage = System.getProperty("gwSystemIntegrationTestPackage");
         ClassGraph graph = new ClassGraph();
-        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(System.getProperty("gwSystemIntegrationTestPackage")).enableAllInfo().scan().getClassesImplementing(IGWSystemIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        gwUnitTestRunners.forEach(classInfo -> {
+        ClassInfoList gwSystemIntegrationTestRunners = graph.whitelistPackages(gwSystemIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWSystemIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwSystemIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwSystemIntegrationTestPackage);
+        gwSystemIntegrationTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWSystemIntegrationTestRunner.class).getConstructor().newInstance().runTests();
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
