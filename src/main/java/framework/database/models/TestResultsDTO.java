@@ -20,7 +20,7 @@ public class TestResultsDTO {
     private String testRunSource;
     private String[] tags;
 
-    public TestResultsDTO(boolean isClockMove, String testCreator, String testName, Timestamp startTimeStamp, Timestamp endTimestamp, String failureImageURL, framework.database.models.TestStatus testStatus, String failureReason, String buildNumber, String suiteName, String testRunSource, String... tags) {
+    private TestResultsDTO(boolean isClockMove, String testCreator, String testName, Timestamp startTimeStamp, Timestamp endTimestamp, String failureImageURL, framework.database.models.TestStatus testStatus, String failureReason, String buildNumber, String suiteName, String testRunSource, String... tags) {
         this.isClockMove = isClockMove;
         this.testCreator = testCreator;
         this.testName = testName;
