@@ -38,8 +38,8 @@ public interface RunTestPortType {
      */
     @WebMethod
     @WebResult(targetNamespace = "http://waysysweb.com")
-    @RequestWrapper(localName = "runTest", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunTest")
-    @ResponseWrapper(localName = "runTestResponse", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunTestResponse")
+    @RequestWrapper(localName = "runTest", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTest")
+    @ResponseWrapper(localName = "runTestResponse", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTestResponse")
     public TestCaseResult runTest(
         @WebParam(name = "testName", targetNamespace = "http://waysysweb.com")
         String testName,
@@ -57,8 +57,8 @@ public interface RunTestPortType {
      */
     @WebMethod
     @WebResult(targetNamespace = "http://waysysweb.com")
-    @RequestWrapper(localName = "runTestAsJUnit", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunTestAsJUnit")
-    @ResponseWrapper(localName = "runTestAsJUnitResponse", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunTestAsJUnitResponse")
+    @RequestWrapper(localName = "runTestAsJUnit", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTestAsJUnit")
+    @ResponseWrapper(localName = "runTestAsJUnitResponse", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTestAsJUnitResponse")
     public RunTestAsJUnitResponse.Return runTestAsJUnit(
         @WebParam(name = "testName", targetNamespace = "http://waysysweb.com")
         String testName)
@@ -76,8 +76,8 @@ public interface RunTestPortType {
      */
     @WebMethod
     @WebResult(targetNamespace = "http://waysysweb.com")
-    @RequestWrapper(localName = "runGeneratedPackageSuiteAsJUnit", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunGeneratedPackageSuiteAsJUnit")
-    @ResponseWrapper(localName = "runGeneratedPackageSuiteAsJUnitResponse", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.RunGeneratedPackageSuiteAsJUnitResponse")
+    @RequestWrapper(localName = "runGeneratedPackageSuiteAsJUnit", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunGeneratedPackageSuiteAsJUnit")
+    @ResponseWrapper(localName = "runGeneratedPackageSuiteAsJUnitResponse", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunGeneratedPackageSuiteAsJUnitResponse")
     public RunGeneratedPackageSuiteAsJUnitResponse.Return runGeneratedPackageSuiteAsJUnit(
         @WebParam(name = "suiteName", targetNamespace = "http://waysysweb.com")
         String suiteName,
@@ -94,8 +94,8 @@ public interface RunTestPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "delete", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.Delete")
-    @ResponseWrapper(localName = "deleteResponse", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.DeleteResponse")
+    @RequestWrapper(localName = "delete", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.Delete")
+    @ResponseWrapper(localName = "deleteResponse", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.DeleteResponse")
     public void delete(
         @WebParam(name = "fileName", targetNamespace = "http://waysysweb.com")
         String fileName)
@@ -111,8 +111,8 @@ public interface RunTestPortType {
      */
     @WebMethod
     @WebResult(targetNamespace = "http://waysysweb.com")
-    @RequestWrapper(localName = "createInitialMessage", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.CreateInitialMessage")
-    @ResponseWrapper(localName = "createInitialMessageResponse", targetNamespace = "http://waysysweb.com", className = "com.waysysweb.CreateInitialMessageResponse")
+    @RequestWrapper(localName = "createInitialMessage", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.CreateInitialMessage")
+    @ResponseWrapper(localName = "createInitialMessageResponse", targetNamespace = "http://waysysweb.com", className = "framework.integrations.gwServices.gwTestRunner.com.waysysweb.CreateInitialMessageResponse")
     public String createInitialMessage(
         @WebParam(name = "testName", targetNamespace = "http://waysysweb.com")
         String testName)
