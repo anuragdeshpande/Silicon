@@ -51,7 +51,7 @@ public class GWTestRunner {
 
 //    }
 
-    public void runTests() {
+    private void runTests() {
         GWTestRunner testRunner = new GWTestRunner();
         GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
         gwTestRunResults.generateHTMLReport();
