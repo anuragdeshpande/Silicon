@@ -1,5 +1,8 @@
 import annotations.APITest;
 import annotations.SmokeTest;
+import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
+import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
+import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.testng.TestNG;
@@ -8,6 +11,7 @@ import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +19,79 @@ import java.util.List;
 public class SuiteGenerator {
 
     public static void main(String[] args) {
-        startTests(System.getProperty("ThreadCount"), System.getProperty("RunPackage"));
+        boolean runUITests =
+                System.getProperty("EnableRegressionTests") != null ||
+                System.getProperty("EnableAPITests") != null ||
+                System.getProperty("EnableSmokeTests") != null;
+
+        boolean runGWUnitTests =
+                System.getProperty("gwUnitTestPackage") != null;
+
+        boolean runGWIntegrationTests =
+                System.getProperty("gwIntegrationTestPackage") != null;
+
+        boolean runGWSystemIntegrationTests =
+                System.getProperty("gwSystemIntegrationTestPackage") != null;
+
+        if(runUITests){
+            startTests(System.getProperty("ThreadCount"), System.getProperty("RunPackage"));
+        }
+
+        if(runGWUnitTests){
+            startGWUnitTests();
+        }
+
+        if(runGWIntegrationTests){
+            startGWIntegrationTests();
+        }
+
+        if(runGWSystemIntegrationTests){
+            startGWSystemIntegrationTests();
+        }
+
+    }
+
+    private static void startGWUnitTests(){
+        ClassGraph graph = new ClassGraph();
+        String gwUnitTestPackage = System.getProperty("gwUnitTestPackage");
+        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(gwUnitTestPackage).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwUnitTestRunners.size()+" Unit Test Runners in the package: "+gwUnitTestPackage);
+        gwUnitTestRunners.forEach(classInfo -> {
+            try {
+                classInfo.loadClass(IGWUnitTestRunner.class).getConstructor().newInstance().runTests();
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+    private static void startGWIntegrationTests(){
+        ClassGraph graph = new ClassGraph();
+        String gwIntegrationTestPackage = System.getProperty("gwIntegrationTestPackage");
+        ClassInfoList gwIntegrationTestRunners = graph.whitelistPackages(gwIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwIntegrationTestPackage);
+        gwIntegrationTestRunners.forEach(classInfo -> {
+            try {
+                classInfo.loadClass(IGWIntegrationTestRunner.class).getConstructor().newInstance().runTests();
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private static void startGWSystemIntegrationTests(){
+        String gwSystemIntegrationTestPackage = System.getProperty("gwSystemIntegrationTestPackage");
+        ClassGraph graph = new ClassGraph();
+        ClassInfoList gwSystemIntegrationTestRunners = graph.whitelistPackages(gwSystemIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWSystemIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
+        System.out.println("Found "+gwSystemIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwSystemIntegrationTestPackage);
+        gwSystemIntegrationTestRunners.forEach(classInfo -> {
+            try {
+                classInfo.loadClass(IGWSystemIntegrationTestRunner.class).getConstructor().newInstance().runTests();
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private static void startTests(String threadCounts, String basePackage) {

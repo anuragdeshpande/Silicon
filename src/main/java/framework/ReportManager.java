@@ -10,9 +10,12 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
+import framework.database.models.SuiteResultsDTO;
+import framework.database.models.TestResultsDTO;
 import framework.enums.Environment;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.testng.Assert;
 import org.testng.ISuite;
 import org.testng.ITestContext;
@@ -20,12 +23,14 @@ import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReportManager {
@@ -52,7 +57,7 @@ public class ReportManager {
         return extentReports != null;
     }
 
-    static ExtentReports initiate(String suiteName) {
+    public static ExtentReports initiate(String suiteName) {
         INIT_SUITE_NAME = suiteName;
         extentReports = new ExtentReports();
         ExtentHtmlReporter extentReporter;
@@ -169,17 +174,36 @@ public class ReportManager {
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
 
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        return insertIntoTestResults(clockMove, testCreator, testName, startDate, endDate, failureImageURL, status,
+                failureReason, buildNumber, suiteName, testRunSource, tags);
 
+    }
+
+    public static boolean insertIntoTestResults(boolean clockMove, String testCreator, String testName,
+                                                Timestamp startDate, Timestamp endDate,  String failureImageURL,
+                                                String status, String failureReason, String buildNumber,
+                                                String suiteName, String testRunSource, String tags){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
         try {
             return regressionDB
-                    .update("INSERT INTO TestResults" +
-                                    "(ClockMove, TestCreator, TestName, StartTime, " +
-                                    "EndTime, FailureImageURL, TestStatus, FailureReason, " +
-                                    "BuildNumber, SuiteName, TestRunSource, Tags) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                    .update(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
                             clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
                             suiteName, testRunSource, tags) > 0;
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
+        for (int i = 0; i < resultsDTOS.size(); i++) {
+            params[i] = resultsDTOS.get(i).getValuesAsObjectArray();
+        }
+        try {
+            return regressionDB.batch(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -205,20 +229,25 @@ public class ReportManager {
             double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
-            String reportPath = "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
+            String reportPath = getReportPath();
 
-            QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
-            try {
-                regressionDB.update("INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) " +
-                        "values (?,?,?,?,?,?,?,?)", applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath, new Timestamp(System.currentTimeMillis()));
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Assert.fail("Could not save the suite results to the database");
-            }
+            insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath);
         } else {
             System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
         }
 
+    }
+
+    public static boolean insertIntoSuiteResults(String applicationName, double passPercentage, double failPercentage, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(Environment.REPORTING);
+        try {
+            regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Assert.fail("Could not save the suite results to the database");
+            return false;
+        }
     }
 
     private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
@@ -313,5 +342,9 @@ public class ReportManager {
                 "            #nav-mobile li:last-child{\n" +
                 "            display: none;\n" +
                 "            }");
+    }
+
+    public static String getReportPath(){
+        return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
     }
 }

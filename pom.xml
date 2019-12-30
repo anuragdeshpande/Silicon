@@ -6,8 +6,8 @@
   <artifactId>Lithium</artifactId>
   <version>3.0.0</version>
   <properties>
-    <jre.level>1.8</jre.level>
     <jdk.level>1.8</jdk.level>
+    <jre.level>1.8</jre.level>
   </properties>
   <dependencies>
     <dependency>
@@ -31,12 +31,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
       <version>LATEST</version>
-    </dependency>
-    <dependency>
-      <groupId>com.idfbins</groupId>
-      <artifactId>GWClockMover</artifactId>
-      <version>1.35</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -69,12 +63,14 @@
       <artifactId>poi-ooxml</artifactId>
       <version>4.0.1</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>7.0.0.jre8</version>
+      <version>7.4.1.jre8</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.github.javafaker</groupId>
       <artifactId>javafaker</artifactId>
@@ -138,7 +134,7 @@
     <dependency>
       <groupId>com.idfbins</groupId>
       <artifactId>RegressionAnnotations</artifactId>
-      <version>1.02</version>
+      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>

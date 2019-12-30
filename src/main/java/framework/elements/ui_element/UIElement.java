@@ -157,7 +157,7 @@ public class UIElement implements IUIElementOperations {
             this.element = element;
             return element;
         } catch (Exception e) {
-            System.out.println("Optional Element not found at location: " + elementLocation + " (Exception: " + e.getLocalizedMessage() + ")");
+            System.out.println("Optional Element not found at location: " + elementLocation);
             return null;
         }
     }
