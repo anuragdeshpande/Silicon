@@ -1,0 +1,339 @@
+<wsdl:definitions xmlns:gwsoap="http://guidewire.com/ws/soapheaders" xmlns:gwwsdl="http://guidewire.com/pl/wsdl" xmlns:pogo="http://example.com/unittestcase" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://waysysweb.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://waysysweb.com" name="RunTest">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://waysysweb.com" elementFormDefault="qualified">
+            <xs:import namespace="http://guidewire.com/ws/soapheaders" schemaLocation="../schema/soapheaders.xsd"/>
+            <xs:import schemaLocation="../schema/JUnit.xsd"/>
+            <xs:import namespace="http://example.com/unittestcase"/>
+            <!--  runTest(String, String) : TestCaseResult  -->
+            <xs:element name="runTest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="testName" type="xs:string" minOccurs="0"/>
+                        <xs:element name="reportName" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="runTestResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" minOccurs="0" type="pogo:TestCaseResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="WsiAuthenticationException">
+                <xs:complexType/>
+            </xs:element>
+            <!--  runTestAsJUnit(String) : Testsuite  -->
+            <xs:element name="runTestAsJUnit">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="testName" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="runTestAsJUnitResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="testsuite"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--
+             runGeneratedPackageSuiteAsJUnit(String, String[], String) : Testsuite
+            -->
+            <xs:element name="runGeneratedPackageSuiteAsJUnit">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="suiteName" type="xs:string" minOccurs="0"/>
+                        <xs:element xmlns:gw="http://guidewire.com/xsd" name="tests" minOccurs="0" gw:viewas="array">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Entry" type="xs:string" nillable="true"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="packageStr" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="runGeneratedPackageSuiteAsJUnitResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="testsuite"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  delete(String)  -->
+            <xs:element name="delete">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="fileName" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  createInitialMessage(String) : String  -->
+            <xs:element name="createInitialMessage">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="testName" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createInitialMessageResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://example.com/unittestcase" elementFormDefault="qualified">
+            <xs:complexType name="TestCaseResult">
+                <xs:sequence>
+                    <xs:element name="errorMessage" type="xs:string" minOccurs="0"/>
+                    <xs:element name="errorNum" type="xs:int" minOccurs="0"/>
+                    <xs:element name="errors" type="xs:int" minOccurs="0"/>
+                    <xs:element name="failed" type="xs:int" minOccurs="0"/>
+                    <xs:element name="succeeded" type="xs:int" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:portType name="RunTestPortType">
+        <wsdl:operation name="runTest">
+            <wsdl:input name="runTest" message="tns:runTest"/>
+            <wsdl:output name="runTestResponse" message="tns:runTestResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runTestAsJUnit">
+            <wsdl:input name="runTestAsJUnit" message="tns:runTestAsJUnit"/>
+            <wsdl:output name="runTestAsJUnitResponse" message="tns:runTestAsJUnitResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runGeneratedPackageSuiteAsJUnit">
+            <wsdl:input name="runGeneratedPackageSuiteAsJUnit" message="tns:runGeneratedPackageSuiteAsJUnit"/>
+            <wsdl:output name="runGeneratedPackageSuiteAsJUnitResponse" message="tns:runGeneratedPackageSuiteAsJUnitResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="delete">
+            <wsdl:input name="delete" message="tns:delete"/>
+            <wsdl:output name="deleteResponse" message="tns:deleteResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="createInitialMessage">
+            <wsdl:input name="createInitialMessage" message="tns:createInitialMessage"/>
+            <wsdl:output name="createInitialMessageResponse" message="tns:createInitialMessageResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="RunTestSoap12Binding" type="tns:RunTestPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="runTest">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runTest">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runTestResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runTestAsJUnit">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runTestAsJUnit">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runTestAsJUnitResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runGeneratedPackageSuiteAsJUnit">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runGeneratedPackageSuiteAsJUnit">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runGeneratedPackageSuiteAsJUnitResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="delete">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="delete">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="deleteResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createInitialMessage">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="createInitialMessage">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="createInitialMessageResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="RunTestSoap11Binding" type="tns:RunTestPortType">
+        <soap11:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="runTest">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runTest">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runTestResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runTestAsJUnit">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runTestAsJUnit">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runTestAsJUnitResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runGeneratedPackageSuiteAsJUnit">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runGeneratedPackageSuiteAsJUnit">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runGeneratedPackageSuiteAsJUnitResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="delete">
+            <soap11:operation style="document"/>
+            <wsdl:input name="delete">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="deleteResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createInitialMessage">
+            <soap11:operation style="document"/>
+            <wsdl:input name="createInitialMessage">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-locale" part="gw-locale" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="createInitialMessageResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="RunTest">
+        <wsdl:port name="RunTestSoap12Port" binding="tns:RunTestSoap12Binding">
+            <soap12:address location="http://cc8dev/cc/ws/unittestcase/RunTest"/>
+            <gwwsdl:address location="${cc}/ws/unittestcase/RunTest"/>
+        </wsdl:port>
+        <wsdl:port name="RunTestSoap11Port" binding="tns:RunTestSoap11Binding">
+            <soap11:address location="http://cc8dev/cc/ws/unittestcase/RunTest/soap11"/>
+            <gwwsdl:address location="${cc}/ws/unittestcase/RunTest/soap11"/>
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:message name="runTest">
+        <wsdl:part name="parameters" element="tns:runTest"/>
+    </wsdl:message>
+    <wsdl:message name="runTestResponse">
+        <wsdl:part name="parameters" element="tns:runTestResponse"/>
+    </wsdl:message>
+    <wsdl:message name="WsiAuthenticationException">
+        <wsdl:part name="WsiAuthenticationException" element="tns:WsiAuthenticationException"/>
+    </wsdl:message>
+    <wsdl:message name="runTestAsJUnit">
+        <wsdl:part name="parameters" element="tns:runTestAsJUnit"/>
+    </wsdl:message>
+    <wsdl:message name="runTestAsJUnitResponse">
+        <wsdl:part name="parameters" element="tns:runTestAsJUnitResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runGeneratedPackageSuiteAsJUnit">
+        <wsdl:part name="parameters" element="tns:runGeneratedPackageSuiteAsJUnit"/>
+    </wsdl:message>
+    <wsdl:message name="runGeneratedPackageSuiteAsJUnitResponse">
+        <wsdl:part name="parameters" element="tns:runGeneratedPackageSuiteAsJUnitResponse"/>
+    </wsdl:message>
+    <wsdl:message name="delete">
+        <wsdl:part name="parameters" element="tns:delete"/>
+    </wsdl:message>
+    <wsdl:message name="deleteResponse">
+        <wsdl:part name="parameters" element="tns:deleteResponse"/>
+    </wsdl:message>
+    <wsdl:message name="createInitialMessage">
+        <wsdl:part name="parameters" element="tns:createInitialMessage"/>
+    </wsdl:message>
+    <wsdl:message name="createInitialMessageResponse">
+        <wsdl:part name="parameters" element="tns:createInitialMessageResponse"/>
+    </wsdl:message>
+    <wsdl:message name="gw-authentication">
+        <wsdl:part name="gw-authentication" element="gwsoap:authentication"/>
+    </wsdl:message>
+    <wsdl:message name="gw-locale">
+        <wsdl:part name="gw-locale" element="gwsoap:locale"/>
+    </wsdl:message>
+</wsdl:definitions>
