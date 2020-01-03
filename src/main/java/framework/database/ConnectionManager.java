@@ -1,69 +1,45 @@
 package framework.database;
 
-import framework.enums.Database;
-import framework.enums.Environment;
+import framework.database.models.DBConnectionDTO;
+import framework.environmentResolution.Environment;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.Validate;
 
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectionManager {
 
-    public static QueryRunner getDBConnectionTo(Environment environment){
-        switch (environment){
-            case CC8IT: return buildDataSource(Database.GWIT, environment.getDatabaseName());
-            case CC8QA: return buildDataSource(Database.GWQA, environment.getDatabaseName());
-            case CC8DEV:
-            case CC8DEV3:
-                return buildDataSource(Database.GWDEV, environment.getDatabaseName());
-            case CC8UAT:
-            case CC8BUAT2:
-            case CC8BUAT:
-                return buildDataSource(Database.GWUAT, environment.getDatabaseName());
-            case CCREGR01:
-                return buildDataSource(Database.REGR01, environment.getDatabaseName());
-            case CCREGR02:
-                return buildDataSource(Database.REGR02, environment.getDatabaseName());
-            case CCREGR03:
-                return buildDataSource(Database.REGR03, environment.getDatabaseName());
-            case CCREGR04:
-                return buildDataSource(Database.REGR04, environment.getDatabaseName());
-            case CCREGR05:
-                return buildDataSource(Database.REGR05, environment.getDatabaseName());
-            case CCREGR06:
-                return buildDataSource(Database.REGR06, environment.getDatabaseName());
-            case CCREGR07:
-                return buildDataSource(Database.REGR07, environment.getDatabaseName());
-            case QA_WIZPRO_DATA_REPO:
-                return buildDataSource(Database.QAWIZPRO_DATA_REPO, environment.getDatabaseName());
-            case REPORTING:
-                return buildDataSource(Database.REPORTING, environment.getDatabaseName());
-            default:
-                throw new NotImplementedException();
-        }
+    public static QueryRunner getDBConnectionTo(Environment environment) {
+        return buildDataSource(environment.getDbConnectionDetails());
     }
 
-    private static String buildConnectionString(String serverName, String databaseName){
-        return "jdbc:sqlserver://"+serverName+":1433;DatabaseName="+databaseName;
+    public static QueryRunner getDBConnectionTo(DBConnectionDTO connectionDetails) {
+        return buildDataSource(connectionDetails);
     }
 
-    private static QueryRunner buildDataSource(Database database, String databaseName){
+    private static String buildConnectionString(String serverName, String databaseName) {
+        return "jdbc:sqlserver://" + serverName + ":1433;DatabaseName=" + databaseName;
+    }
+
+    private static QueryRunner buildDataSource(DBConnectionDTO dbConnectionDetails) {
+        // Only proceed to connection if all the necessary details are present
+        Validate.notNull(dbConnectionDetails.getDbName());
+        Validate.notNull(dbConnectionDetails.getDbServer());
+        Validate.notNull(dbConnectionDetails.getDbUsername());
+        Validate.notNull(dbConnectionDetails.getDbPassword());
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Cannot find Drivers");
         }
         BasicDataSource testResultsDS = new BasicDataSource();
-        testResultsDS.setUrl(buildConnectionString(database.getServerName(), databaseName));
-        testResultsDS.setUsername(database.getUsername());
-        testResultsDS.setPassword(database.getPassword());
+        testResultsDS.setUrl(buildConnectionString(dbConnectionDetails.getDbServer(), dbConnectionDetails.getDbName()));
+        testResultsDS.setUsername(dbConnectionDetails.getDbUsername());
+        testResultsDS.setPassword(dbConnectionDetails.getDbPassword());
         testResultsDS.setMinIdle(5);
         testResultsDS.setMaxIdle(10);
         testResultsDS.setMaxOpenPreparedStatements(100);
@@ -71,24 +47,21 @@ public class ConnectionManager {
         return new QueryRunner(testResultsDS);
     }
 
-    public static ResultSetHandler<List<Object[]>> getResultHandlerInstance(){
-        return new ResultSetHandler<List<Object[]>>() {
-            @Override
-            public List<Object[]> handle(ResultSet resultSet) throws SQLException {
-                ArrayList<Object[]> results = new ArrayList<>();
-                while(resultSet.next()){
-                    ResultSetMetaData meta = resultSet.getMetaData();
-                    int cols = meta.getColumnCount();
-                    Object[] RowResult = new Object[cols];
+    public static ResultSetHandler<List<Object[]>> getResultHandlerInstance() {
+        return resultSet -> {
+            ArrayList<Object[]> results = new ArrayList<>();
+            while (resultSet.next()) {
+                ResultSetMetaData meta = resultSet.getMetaData();
+                int cols = meta.getColumnCount();
+                Object[] RowResult = new Object[cols];
 
-                    for (int i = 0; i < cols; i++) {
-                        RowResult[i] = resultSet.getObject(i + 1);
-                    }
-
-                    results.add(RowResult);
+                for (int i = 0; i < cols; i++) {
+                    RowResult[i] = resultSet.getObject(i + 1);
                 }
-                return results;
+
+                results.add(RowResult);
             }
+            return results;
         };
     }
 }

@@ -2,7 +2,7 @@ package framework.applications;
 
 import com.github.javafaker.Faker;
 import framework.database.ConnectionManager;
-import framework.enums.Environment;
+import framework.environmentResolution.Environment;
 import framework.integrations.ftp.FTPConnection;
 import framework.logger.RegressionLogger;
 import org.apache.commons.dbutils.QueryRunner;

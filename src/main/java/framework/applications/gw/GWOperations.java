@@ -1,9 +1,8 @@
 package framework.applications.gw;
 
-import framework.enums.Environment;
 import framework.enums.LogLevel;
+import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
-import framework.webdriver.BrowserFactory;
 
 public interface GWOperations {
     void login(String userName, String password);
