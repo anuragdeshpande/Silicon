@@ -52,7 +52,10 @@ public class WaitUtils {
 
         waitForPostBack();
 
-        return newWait().until(jQueryLoad) && newWait().until(jsLoad);
+        ExpectedCondition<Boolean> xMaskNotPresent = ExpectedConditions.not(ExpectedConditions.attributeContains(driver.findElement(By.cssSelector("body")), "class", "x-mask"));
+
+
+        return newWait().until(jQueryLoad) && newWait().until(jsLoad) && newWait().until(xMaskNotPresent);
     }
 
     public void waitForPostBack() {
