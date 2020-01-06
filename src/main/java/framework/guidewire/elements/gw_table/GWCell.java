@@ -29,16 +29,11 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     public void clickCheckbox() {
         WebElement checkbox = this.element.findElement(By.tagName("img"));
         try{
-            checkbox.click();
-            // As of Selenium 3.141 we were able to click the image checkbox in GW8 using just the click method on the
-            // element. This code is fallback code which uses selenium actions.
-            // This code is retired as of this writing as there is no way to work around the lost focus with actions class
-            // in threaded runs
-//            BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-//                    .moveByOffset(1, 1)
-//                    .release(checkbox)
-//                    .build()
-//                    .perform();
+            BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
+                    .moveByOffset(1, 1)
+                    .release(checkbox)
+                    .build()
+                    .perform();
         } catch (Exception e){
 //            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
         }
