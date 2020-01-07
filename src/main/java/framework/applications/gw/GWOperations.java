@@ -7,6 +7,8 @@ import framework.guidewire.GuidewireInteract;
 public interface GWOperations {
     void login(String userName, String password);
 
+    void tempLogin(String userName, String password);
+
     void logout();
 
     void openBatchServer();
@@ -14,6 +16,8 @@ public interface GWOperations {
     void startBatch(String batchName);
 
     void openEnvironment(Environment environment);
+
+    void openDefaultEnvironment();
 
     GuidewireInteract getInteractObject();
 
