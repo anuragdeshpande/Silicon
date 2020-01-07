@@ -212,8 +212,7 @@ public class RegressionLogger {
 
     public synchronized static RegressionLogger getTestLogger(){
         String testName = BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
-        String className = BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME);
-        ExtentTest extentTest = ReportManager.getTest(className+"_"+testName);
+        ExtentTest extentTest = ReportManager.getTest(testName);
         return new RegressionLogger(Listener.logger, extentTest, ReportManager.isInitiated());
     }
 

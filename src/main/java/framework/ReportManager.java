@@ -117,13 +117,13 @@ public class ReportManager {
 
     @SuppressWarnings("Duplicates")
     static ExtentTest recordTest(String testName, String className, String description) {
-        if (!testMap.containsKey(className+"_"+testName)) {
+        if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(className).createNode(testName, description);
-            testMap.put(className+"_"+testName, extentTest);
+            testMap.put(testName, extentTest);
             BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
         }
 
-        return testMap.get(className+"_"+testName);
+        return testMap.get(testName);
 
     }
 
