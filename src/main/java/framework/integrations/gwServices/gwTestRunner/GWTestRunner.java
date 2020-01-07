@@ -29,7 +29,7 @@ public class GWTestRunner {
         this.port = runnerService.getRunTestSoap11Port();
         BindingProvider bindingProvider = (BindingProvider) this.port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                environmentURL.replaceAll("GuidewireCenter.do", "")+"ws/unittestcase/RunTest/soap11");
+                environmentURL+"ws/unittestcase/RunTest/soap11");
         bindingProvider.getRequestContext().put(BindingProvider.USERNAME_PROPERTY, userName);
         bindingProvider.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, password);
         try {
