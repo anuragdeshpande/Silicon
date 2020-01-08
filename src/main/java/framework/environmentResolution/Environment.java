@@ -7,6 +7,7 @@ import framework.enums.Environments;
 import org.junit.Assert;
 
 import java.sql.SQLException;
+import java.util.Base64;
 
 /**
  * Control class designed to resolve environments from the repo, and return a standard interface object for accessing
@@ -104,7 +105,7 @@ public class Environment {
             DBConnectionDTO connectionDTO = new DBConnectionDTO();
             connectionDTO.setDbName(String.valueOf(result[5]));
             connectionDTO.setDbUsername(String.valueOf(result[6]));
-            connectionDTO.setDbPassword(String.valueOf(result[7]));
+            connectionDTO.setDbPassword(new String(Base64.getDecoder().decode(String.valueOf(result[7]))));
             connectionDTO.setDbServer(String.valueOf(result[8]));
             resolvedEnvironment.setDbConnectionDetails(connectionDTO);
 
