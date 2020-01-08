@@ -1,6 +1,6 @@
 package framework.integrations.gwServices.gwTestRunner;
 
-import framework.enums.Environment;
+import framework.environmentResolution.Environment;
 import framework.integrations.gwServices.gwTestRunner.com.waysysweb.*;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 
