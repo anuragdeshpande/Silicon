@@ -1,41 +1,41 @@
 package framework.integrations.gwServices.gwTestRunner;
 
-import framework.enums.Environment;
+import framework.environmentResolution.Environment;
 import framework.integrations.gwServices.gwTestRunner.com.waysysweb.*;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 
 import javax.xml.ws.BindingProvider;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class GWTestRunner {
 
     private RunTestPortType port;
 
-    public GWTestRunResults startGWTestsOn(Environment environment, GWTestBean bean){
+    public GWTestRunResults startGWTestsOn(Environment environment, GWTestBean bean) {
         return new GWTestRunResults(startTests(environment.getEnvironmentUrl(), bean, "su", "gw"));
     }
 
-    public GWTestRunResults startGWTestsOnGWInstance(String instanceURL, GWTestBean bean, String username, String password){
+    public GWTestRunResults startGWTestsOnGWInstance(String instanceURL, GWTestBean bean, String username, String password) {
         return new GWTestRunResults(startTests(instanceURL, bean, username, password));
     }
 
-    public GWTestRunResults startGWTestsWithCustomUserOn(Environment environment, GWTestBean bean, String username, String password){
+    public GWTestRunResults startGWTestsWithCustomUserOn(Environment environment, GWTestBean bean, String username, String password) {
         return new GWTestRunResults(startTests(environment.getEnvironmentUrl(), bean, username, password));
     }
 
 
-
-    private Testsuite startTests(String environmentURL, GWTestBean bean, String userName, String password){
-        RunTest_Service runnerService = new RunTest_Service();
-        this.port = runnerService.getRunTestSoap11Port();
-        BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                environmentURL.replaceAll("GuidewireCenter.do", "")+"ws/unittestcase/RunTest/soap11");
-        bindingProvider.getRequestContext().put(BindingProvider.USERNAME_PROPERTY, userName);
-        bindingProvider.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, password);
+    private Testsuite startTests(String environmentURL, GWTestBean bean, String userName, String password) {
         try {
+            RunTest_Service runnerService = new RunTest_Service(new URL(environmentURL + "ws/unittestcase/RunTest?wsdl"));
+            this.port = runnerService.getRunTestSoap11Port();
+            BindingProvider bindingProvider = (BindingProvider) this.port;
+            bindingProvider.getRequestContext().put(BindingProvider.USERNAME_PROPERTY, userName);
+            bindingProvider.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, password);
+
             RunGeneratedPackageSuiteAsJUnitResponse.Return aReturn = this.port.runGeneratedPackageSuiteAsJUnit(bean.getSuiteName(), null, bean.getPackageString());
             return aReturn.getTestsuite();
-        } catch (WsiAuthenticationException_Exception e) {
+        } catch (WsiAuthenticationException_Exception | MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }

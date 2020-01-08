@@ -1,6 +1,11 @@
 package framework.enums;
 
-public enum Environment {
+/**
+ * @deprecated Use {@link framework.environmentResolution.Environment} instead.
+ */
+
+@Deprecated()
+enum Environment {
 
     // CC Environment
     CC8DEV("CC8DEV", "http://cc8dev/cc/GuidewireCenter.do", "ClaimCenterDatabase8DEV"),

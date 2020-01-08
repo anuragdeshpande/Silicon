@@ -2,23 +2,39 @@ package framework.applications.gw;
 
 import framework.applications.Application;
 import framework.constants.ReactionTime;
+import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
+import framework.enums.ApplicationNames;
+import framework.enums.Environments;
 import framework.enums.LogLevel;
+import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
+
+import java.util.Properties;
 
 abstract public class GuidewireCenter extends Application implements GWOperations {
 
-    protected GuidewireInteract interact;
+    private String overrideEnvironmentURL = null;
 
-    public GuidewireCenter(){
+    protected GuidewireInteract interact;
+    protected Environment environment;
+    protected QueryRunner queryRunner;
+    protected String currentUsername;
+    protected String currentPassword;
+
+    public GuidewireCenter() {
         super();
         this.interact = BrowserFactory.getCurrentGuidewireBrowser();
     }
-
-    private String overrideEnvironmentURL = null;
 
     @Override
     public GuidewireInteract getInteractObject() {
@@ -68,10 +84,14 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     @Override
     public void login(String userName, String password) {
-        GuidewireInteract interact = getInteractObject();
-        interact.withTextbox(GWIDs.Login.USER_NAME).fill(userName);
-        interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
-        interact.withElement(GWIDs.Login.LOGIN).click();
+        _login(userName, password);
+        this.currentUsername = userName;
+        this.currentPassword = password;
+    }
+
+    @Override
+    public void tempLogin(String userName, String password) {
+        _login(userName, password);
     }
 
     @Override
@@ -88,5 +108,36 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     public String getOverrideEnvironmentURL() {
         return overrideEnvironmentURL;
+    }
+
+    @Override
+    public void openEnvironment(Environment environment) {
+        if(!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")){
+            /* flushing out browser */
+
+            // refresh browser
+            interact.getDriver().navigate().refresh();
+            // logging out of the current environment if it is logged in
+            if(interact.withOptionalElement(GWIDs.SETTINGS_COG, ReactionTime.IMMEDIATE).isPresent()){
+                logout();
+            }
+
+            /* end flush */
+        }
+
+        this.environment = environment;
+        this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
+        String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
+        // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
+        interact.getDriver().get(url);
+    }
+
+    private void _login(String username, String password){
+        if(this.environment == null){
+            Assert.fail("Please call openDefaultEnvironment() or openEnvironment() to open the application");
+        }
+        interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
+        interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
+        interact.withElement(GWIDs.Login.LOGIN).click();
     }
 }

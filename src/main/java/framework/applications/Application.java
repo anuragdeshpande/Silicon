@@ -2,7 +2,7 @@ package framework.applications;
 
 import com.github.javafaker.Faker;
 import framework.database.ConnectionManager;
-import framework.enums.Environment;
+import framework.environmentResolution.Environment;
 import framework.integrations.ftp.FTPConnection;
 import framework.logger.RegressionLogger;
 import org.apache.commons.dbutils.QueryRunner;
@@ -12,7 +12,7 @@ import java.util.Locale;
 
 
 abstract public class Application {
-    private Environment environment;
+    protected Environment environment;
     private HashMap<String, String> storage = new HashMap<>();
     private Faker faker = new Faker(Locale.US);
 
@@ -34,10 +34,6 @@ abstract public class Application {
 
     public Faker getFaker() {
         return faker;
-    }
-
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
     }
 
     public RegressionLogger testLogger(){

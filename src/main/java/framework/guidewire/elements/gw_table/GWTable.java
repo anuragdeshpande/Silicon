@@ -117,7 +117,7 @@ public class GWTable extends UIElement implements IGWUITable{
             }
         } while (!isLastPage);
 
-        System.out.println("Could not find a match in the entire table, returning null");
+        System.out.println("Could not find a match in the entire table for "+value+", returning null");
         return null;
     }
 
