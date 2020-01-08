@@ -1,5 +1,9 @@
 package framework.enums;
 
+/**
+ * @deprecated Use {@link framework.environmentResolution.Environment} instead.
+ */
+
 @Deprecated()
 enum Environment {
 
