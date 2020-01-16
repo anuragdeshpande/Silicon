@@ -28,10 +28,10 @@ public class GWTable extends UIElement implements IGWUITable{
 
     public GWTable(Identifier identifier) {
         super(identifier);
-
-        if(!identifier.getReference().toString().endsWith("LV") && !identifier.getReference().toString().endsWith("-body")){
-            Assert.fail("Cannot parse a table if it is not ending in LV or -body");
-        }
+//
+//        if(!identifier.getReference().toString().endsWith("LV") && !identifier.getReference().toString().endsWith("-body")){
+//            Assert.fail("Cannot parse a table if it is not ending in LV or -body");
+//        }
 
         columnLabelMap = new HashMap<>();
         if(identifier.getReference().toString().endsWith("LV")){
