@@ -11,6 +11,10 @@ public interface IUITableCell {
 
     void fillTextBox(String text);
 
+    /**
+     * @deprecated use mark/unmark checkbox instead
+     */
+    @Deprecated
     void clickCheckbox();
 
     void markCheckBox();

@@ -95,6 +95,9 @@ public class UIElement implements IUIElementOperations {
             this.element.isEnabled();
             return element;
         } catch (Exception e) {
+            if(this.elementLocation == null){
+                throw new RuntimeException("The original element was a WebElement. Please change implementation to use Identifer from the framework");
+            }
             return this.isOptional ? findOptional(elementLocation, ReactionTime.MOMENTARY) : findElement(elementLocation);
         }
     }

@@ -3,8 +3,10 @@ package framework.guidewire;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
+import framework.elements.checkbox.UICheckbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
+import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
 import framework.guidewire.elements.gw_select_box.GWSelectBox;
 import framework.guidewire.elements.gw_table.GWTable;
@@ -102,5 +104,10 @@ public class GuidewireInteract extends Interact {
     @Override
     public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime) {
         return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, reactionTime);
+    }
+
+    @Override
+    public GWCheckBox withCheckbox(Identifier identifier) {
+        return new GWCheckBox(identifier);
     }
 }
