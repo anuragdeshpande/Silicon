@@ -2,6 +2,7 @@ package framework.guidewire.elements.gw_table;
 
 import framework.elements.table.IUITableCell;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -27,41 +28,22 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
     @Override
     public void clickCheckbox() {
-        WebElement checkbox = resolveCheckBox();
-        try{
-            BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-                    .moveByOffset(1, 1)
-                    .release(checkbox)
-                    .build()
-                    .perform();
-        } catch (Exception e){
-//            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
-        }
-
-//        System.out.println("Clicked on the checkbox");
+        new GWCheckBox(this.element).click();
     }
 
     @Override
     public void markCheckBox() {
-        WebElement checkBox = resolveCheckBox();
-        if(!checkBox.getAttribute("class").contains("x-grid-checkcolumn-checked")){
-            // this function call will re-resolve the checkbox element
-            clickCheckbox();
-        }
+        new GWCheckBox(this.element).mark();
     }
 
     @Override
     public void unMarkCheckBox() {
-        WebElement checkBox = resolveCheckBox();
-        if(checkBox.getAttribute("class").contains("x-grid-checkcolumn-checked")){
-            // this function call will re-resolve the checkbox element
-            clickCheckbox();
-        }
+        new GWCheckBox(this.element).unmark();
     }
 
     @Override
     public boolean isMarked() {
-        return false;
+        return new GWCheckBox(this.element).isChecked();
     }
 
     @Override
@@ -131,9 +113,5 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     @Override
     public String screenGrab() {
         return this.element.getText();
-    }
-
-    private WebElement resolveCheckBox(){
-        return this.element.findElement(By.tagName("img"));
     }
 }
