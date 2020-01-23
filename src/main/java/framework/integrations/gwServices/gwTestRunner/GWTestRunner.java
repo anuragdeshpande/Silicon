@@ -3,10 +3,16 @@ package framework.integrations.gwServices.gwTestRunner;
 import framework.environmentResolution.Environment;
 import framework.integrations.gwServices.gwTestRunner.com.waysysweb.*;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
+import org.apache.commons.io.IOUtils;
 
-import javax.xml.ws.BindingProvider;
-import java.net.MalformedURLException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class GWTestRunner {
 
@@ -27,15 +33,17 @@ public class GWTestRunner {
 
     private Testsuite startTests(String environmentURL, GWTestBean bean, String userName, String password) {
         try {
-            RunTest_Service runnerService = new RunTest_Service(new URL(environmentURL + "ws/unittestcase/RunTest?wsdl"));
-            this.port = runnerService.getRunTestSoap11Port();
-            BindingProvider bindingProvider = (BindingProvider) this.port;
-            bindingProvider.getRequestContext().put(BindingProvider.USERNAME_PROPERTY, userName);
-            bindingProvider.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, password);
-
-            RunGeneratedPackageSuiteAsJUnitResponse.Return aReturn = this.port.runGeneratedPackageSuiteAsJUnit(bean.getSuiteName(), null, bean.getPackageString());
-            return aReturn.getTestsuite();
-        } catch (WsiAuthenticationException_Exception | MalformedURLException e) {
+            URLConnection con = new URL(environmentURL+"service/rununittests?username="+userName+"&password="+password+"&testpackage=com.idfbins.cc.unitTests").openConnection();
+            InputStream inputStream = con.getInputStream();
+            String encoding = con.getContentEncoding();
+            encoding = encoding == null ? "UTF-8" : encoding;
+            String body = IOUtils.toString(inputStream, encoding);
+            JAXBContext jaxbContext = JAXBContext.newInstance(RunTestAsJUnitResponse.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            Testsuite testsuite = (Testsuite) unmarshaller.unmarshal(new StringReader(body));
+            testsuite.setName(bean.getSuiteName());
+            return testsuite;
+        } catch (IOException | JAXBException e) {
             throw new RuntimeException(e);
         }
     }
@@ -52,9 +60,8 @@ public class GWTestRunner {
 
 //    public static void main(String[] args) {
 //        GWTestRunner testRunner = new GWTestRunner();
-//        GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://cc8dev.idfbins.com/cc/", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
+//        GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
 //        gwTestRunResults.generateHTMLReport();
-//        gwTestRunResults.recordResultsInReportsDb();
 //    }
 
     private void runTests() {
