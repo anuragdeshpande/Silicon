@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
-    private WebElement  element;
+    private WebElement element;
 
     public GWCell(WebElement element) {
         super(element);
@@ -27,7 +27,7 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
     @Override
     public void clickCheckbox() {
-        WebElement checkbox = this.element.findElement(By.tagName("img"));
+        WebElement checkbox = resolveCheckBox();
         try{
             BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
                     .moveByOffset(1, 1)
@@ -39,6 +39,29 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         }
 
 //        System.out.println("Clicked on the checkbox");
+    }
+
+    @Override
+    public void markCheckBox() {
+        WebElement checkBox = resolveCheckBox();
+        if(!checkBox.getAttribute("class").contains("x-grid-checkcolumn-checked")){
+            // this function call will re-resolve the checkbox element
+            clickCheckbox();
+        }
+    }
+
+    @Override
+    public void unMarkCheckBox() {
+        WebElement checkBox = resolveCheckBox();
+        if(checkBox.getAttribute("class").contains("x-grid-checkcolumn-checked")){
+            // this function call will re-resolve the checkbox element
+            clickCheckbox();
+        }
+    }
+
+    @Override
+    public boolean isMarked() {
+        return false;
     }
 
     @Override
@@ -108,5 +131,9 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     @Override
     public String screenGrab() {
         return this.element.getText();
+    }
+
+    private WebElement resolveCheckBox(){
+        return this.element.findElement(By.tagName("img"));
     }
 }

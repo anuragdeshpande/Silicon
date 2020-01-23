@@ -104,7 +104,7 @@
     <dependency>
       <groupId>io.github.bonigarcia</groupId>
       <artifactId>webdrivermanager</artifactId>
-      <version>LATEST</version>
+      <version>3.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -134,7 +134,7 @@
     <dependency>
       <groupId>com.idfbins</groupId>
       <artifactId>RegressionAnnotations</artifactId>
-      <version>1.11</version>
+      <version>1.13</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>

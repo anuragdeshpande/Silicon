@@ -13,7 +13,7 @@ public interface IGWRow {
 
     boolean hasValueAtCell(String whatToSearch, int cellNumber);
 
-    void clickCheckBox();
+    void clickCheckBox(int cellNumber);
 
     void clickSelectButton();
 

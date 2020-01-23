@@ -58,8 +58,8 @@ public class GWRow extends UIElement implements IGWRow{
     }
 
     @Override
-    public void clickCheckBox() {
-        this.getCell(0).clickCheckbox();
+    public void clickCheckBox(int cellNumber) {
+        this.getCell(cellNumber).clickCheckbox();
 //        System.out.println("CheckBox Clicked");
     }
 

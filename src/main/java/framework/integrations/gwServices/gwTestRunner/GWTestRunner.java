@@ -50,10 +50,14 @@ public class GWTestRunner {
 
 //    }
 
+//    public static void main(String[] args) {
+//        GWTestRunner testRunner = new GWTestRunner();
+//        GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://cc8dev.idfbins.com/cc/", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
+//        gwTestRunResults.generateHTMLReport();
+//        gwTestRunResults.recordResultsInReportsDb();
+//    }
+
     private void runTests() {
-        GWTestRunner testRunner = new GWTestRunner();
-        GWTestRunResults gwTestRunResults = testRunner.startGWTestsOnGWInstance("http://localhost:8080/cc/GuidewireCenter.do", GWTestBean.getInstance("UnitTests", "com.idfbins.cc.unitTests"), "su", "gw");
-        gwTestRunResults.generateHTMLReport();
-        gwTestRunResults.recordResultsInReportsDb();
+
     }
 }

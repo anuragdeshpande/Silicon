@@ -12,4 +12,10 @@ public interface IUITableCell {
     void fillTextBox(String text);
 
     void clickCheckbox();
+
+    void markCheckBox();
+
+    void unMarkCheckBox();
+
+    boolean isMarked();
 }
