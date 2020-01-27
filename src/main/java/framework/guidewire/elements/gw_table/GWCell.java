@@ -26,7 +26,11 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         element.click();
     }
 
+    /**
+     * @deprecated Use mark/unmark methods instead.
+     */
     @Override
+    @Deprecated
     public void clickCheckbox() {
         new GWCheckBox(this.element).click();
     }

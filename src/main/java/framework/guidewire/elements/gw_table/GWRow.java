@@ -57,7 +57,12 @@ public class GWRow extends UIElement implements IGWRow{
         return this.element.findElements(By.tagName("td")).get(cellNumber).getText().equalsIgnoreCase(whatToSearch);
     }
 
+    /**
+     * @deprecated use mark/unmark methods instead
+     * @param cellNumber Cell Number at which the checkbox can be located.
+     */
     @Override
+    @Deprecated
     public void clickCheckBox(int cellNumber) {
         this.getCell(cellNumber).clickCheckbox();
 //        System.out.println("CheckBox Clicked");

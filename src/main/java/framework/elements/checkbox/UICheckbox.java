@@ -27,9 +27,8 @@ public class UICheckbox extends UIElement implements IUICheckbox {
     }
 
     public boolean isChecked() {
-        boolean isChecked = this.getElement().getAttribute("class").contains("checked");
-//        System.out.println("Is Checkbox Checked: "+isChecked);
-        return isChecked;
+        //        System.out.println("Is Checkbox Checked: "+isChecked);
+        return this.getElement().getAttribute("class").contains("checked");
     }
 
     @Override

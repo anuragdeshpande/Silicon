@@ -33,7 +33,7 @@ public class GWTestRunner {
 
     private Testsuite startTests(String environmentURL, GWTestBean bean, String userName, String password) {
         try {
-            URLConnection con = new URL(environmentURL+"service/rununittests?username="+userName+"&password="+password+"&testpackage=com.idfbins.cc.unitTests").openConnection();
+            URLConnection con = new URL(environmentURL+"service/rununittests?username="+userName+"&password="+password+"&testpackage="+bean.getPackageString()).openConnection();
             InputStream inputStream = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
