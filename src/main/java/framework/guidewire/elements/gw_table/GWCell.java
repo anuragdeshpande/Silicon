@@ -2,6 +2,7 @@ package framework.guidewire.elements.gw_table;
 
 import framework.elements.table.IUITableCell;
 import framework.elements.ui_element.UIElement;
+import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class GWCell extends UIElement implements IGWCell, IUITableCell {
 
-    private WebElement  element;
+    private WebElement element;
 
     public GWCell(WebElement element) {
         super(element);
@@ -25,20 +26,28 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
         element.click();
     }
 
+    /**
+     * @deprecated Use mark/unmark methods instead.
+     */
     @Override
+    @Deprecated
     public void clickCheckbox() {
-        WebElement checkbox = this.element.findElement(By.tagName("img"));
-        try{
-            BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-                    .moveByOffset(1, 1)
-                    .release(checkbox)
-                    .build()
-                    .perform();
-        } catch (Exception e){
-//            System.out.println("Clicked on the checkbox - but got an exception: "+e.getLocalizedMessage());
-        }
+        new GWCheckBox(this.element).click();
+    }
 
-//        System.out.println("Clicked on the checkbox");
+    @Override
+    public void markCheckBox() {
+        new GWCheckBox(this.element).mark();
+    }
+
+    @Override
+    public void unMarkCheckBox() {
+        new GWCheckBox(this.element).unmark();
+    }
+
+    @Override
+    public boolean isMarked() {
+        return new GWCheckBox(this.element).isChecked();
     }
 
     @Override

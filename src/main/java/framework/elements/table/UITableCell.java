@@ -55,5 +55,20 @@ public class UITableCell extends UIElement implements IUITableCell {
         throw new NotImplementedException();
     }
 
+    @Override
+    public void markCheckBox() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void unMarkCheckBox() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isMarked() {
+        throw new NotImplementedException();
+    }
+
 
 }

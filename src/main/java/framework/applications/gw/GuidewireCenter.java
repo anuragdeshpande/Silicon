@@ -4,24 +4,16 @@ import framework.applications.Application;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
-import framework.enums.ApplicationNames;
-import framework.enums.Environments;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
-import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
-import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 
-import java.util.Properties;
-
-abstract public class GuidewireCenter extends Application implements GWOperations {
+abstract public class GuidewireCenter extends Application implements GWOperations, IClockMove {
 
     private String overrideEnvironmentURL = null;
 
@@ -34,6 +26,7 @@ abstract public class GuidewireCenter extends Application implements GWOperation
     public GuidewireCenter() {
         super();
         this.interact = BrowserFactory.getCurrentGuidewireBrowser();
+
     }
 
     @Override
