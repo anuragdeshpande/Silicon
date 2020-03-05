@@ -13,7 +13,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.openqa.selenium.Keys;
 import org.testng.Assert;
 
-abstract public class GuidewireCenter extends Application implements GWOperations, IClockMove {
+abstract public class GuidewireCenter extends Application implements GWOperations {
 
     private String overrideEnvironmentURL = null;
 
