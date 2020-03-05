@@ -105,6 +105,8 @@ abstract public class GuidewireCenter extends Application implements GWOperation
 
     @Override
     public void openEnvironment(Environment environment) {
+        // Clearing any existing Banner Messages
+        interact.withDOM().clearBannerMessage();
         if(!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")){
             /* flushing out browser */
 
