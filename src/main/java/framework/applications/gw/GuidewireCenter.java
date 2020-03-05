@@ -8,6 +8,7 @@ import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.dbutils.QueryRunner;
 import org.openqa.selenium.Keys;
@@ -125,6 +126,10 @@ abstract public class GuidewireCenter extends Application implements GWOperation
         String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
         // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
         interact.getDriver().get(url);
+    }
+
+    public RegressionLogger getLogger(){
+        return RegressionLogger.getTestLogger();
     }
 
     private void _login(String username, String password){
