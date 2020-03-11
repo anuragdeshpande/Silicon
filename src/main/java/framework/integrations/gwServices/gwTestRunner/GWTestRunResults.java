@@ -106,7 +106,7 @@ public class GWTestRunResults {
                 TestStatus status = TestStatus.SUCCESS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
                 DecimalFormat format = new DecimalFormat("000000.000");
-                int testRunTimeInMilliSeconds = (int)(Double.parseDouble(format.format(Double.parseDouble(testcase.getTime()))))*1000;
+                int testRunTimeInMilliSeconds = (int)((Double.parseDouble(format.format(Double.parseDouble(testcase.getTime()))))*1000);
                 Timestamp startTimeStamp = new Timestamp(testSuiteTimeStamp.getTime());
                 Timestamp endTimeStamp = new Timestamp(DateUtils.addMilliseconds(testSuiteTimeStamp, testRunTimeInMilliSeconds).getTime());
                 testSuiteTimeStamp = endTimeStamp;
