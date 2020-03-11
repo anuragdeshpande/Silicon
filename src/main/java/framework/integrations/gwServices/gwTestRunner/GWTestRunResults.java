@@ -9,6 +9,8 @@ import framework.database.models.TestStatus;
 import framework.integrations.gwServices.gwTestRunner.generated.Testcase;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.net.ntp.TimeStamp;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -75,6 +77,15 @@ public class GWTestRunResults {
     }
 
     public boolean recordResultsInReportsDb() {
+        DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
+        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date testSuiteTimeStamp;
+        try {
+            testSuiteTimeStamp = utcFormat.parse(testsuiteResults.getTimestamp());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
         String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
         String startedByUser = System.getProperty("startedByUser");
 
@@ -94,9 +105,11 @@ public class GWTestRunResults {
                 String failureReason = null;
                 TestStatus status = TestStatus.SUCCESS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
-                int testRunTimeInMilliSeconds = (int) Double.parseDouble(testcase.getTime()) * 1000;
-                Timestamp startTimeStamp = new Timestamp(DateUtils.addMilliseconds(new Date(), -testRunTimeInMilliSeconds).getTime());
-                Timestamp endTimeStamp = new Timestamp(new Date().getTime());
+                DecimalFormat format = new DecimalFormat("000000.000");
+                int testRunTimeInMilliSeconds = (int)(Double.parseDouble(format.format(Double.parseDouble(testcase.getTime()))))*1000;
+                Timestamp startTimeStamp = new Timestamp(testSuiteTimeStamp.getTime());
+                Timestamp endTimeStamp = new Timestamp(DateUtils.addMilliseconds(testSuiteTimeStamp, testRunTimeInMilliSeconds).getTime());
+                testSuiteTimeStamp = endTimeStamp;
 
                 if (testcase.getSkipped() != null) {
                     status = TestStatus.SKIPPED;
