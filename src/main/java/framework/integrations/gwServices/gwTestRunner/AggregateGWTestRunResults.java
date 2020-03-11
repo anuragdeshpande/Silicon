@@ -14,6 +14,7 @@ public class AggregateGWTestRunResults {
         this.testsuites = testsuites;
         this.aggregatedTestSuite = aggregateTestSuites();
     }
+
     /**
      * Parses the suite of suites and generates a single cumulative report for of all suites.
      */

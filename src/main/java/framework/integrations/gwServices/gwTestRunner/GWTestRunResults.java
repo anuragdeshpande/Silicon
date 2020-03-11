@@ -104,24 +104,18 @@ public class GWTestRunResults {
                 Timestamp startTimeStamp = new Timestamp(DateUtils.addMilliseconds(new Date(), -testRunTimeInMilliSeconds).getTime());
                 Timestamp endTimeStamp = new Timestamp(new Date().getTime());
 
-                if (testcase.getFailure().size() > 0) {
-                    status = TestStatus.FAILURE;
-                }
-
-                if(testcase.getError().size() > 0){
-                    status = TestStatus.FATAL;
-                }
-
                 if (testcase.getSkipped() != null) {
                     status = TestStatus.SKIPPED;
                 }
 
                 if (testcase.getFailure().size() > 0) {
                     failureReason.set(testcase.getFailure().get(0).getType());
+                    status = TestStatus.FAILURE;
                 }
 
                 if (testcase.getError().size() > 0) {
                     failureReason.set(testcase.getError().get(0).getType());
+                    status = TestStatus.FATAL;
                 }
 
                 TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
@@ -129,7 +123,7 @@ public class GWTestRunResults {
 
                 resultsDTOS.add(resultsDTO);
             });
-            ReportManager.bulkInsertIntoTestResults(resultsDTOS);
+//            ReportManager.bulkInsertIntoTestResults(resultsDTOS);
 
             // Recording to the SuiteResults Table
             String applicationName = System.getProperty("ApplicationName");
