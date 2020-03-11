@@ -121,10 +121,6 @@ public class GWTestRunResults {
 
                 resultsDTOS.add(resultsDTO);
             }
-
-            this.testsuiteResults.getTestcase().forEach(testcase -> {
-
-            });
             ReportManager.bulkInsertIntoTestResults(resultsDTOS);
 
             // Recording to the SuiteResults Table
