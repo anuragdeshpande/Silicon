@@ -89,6 +89,7 @@ public class GWTestRunResults {
 
         if(jenkinsBuildNumber == null){
             jenkinsBuildNumber = "9999999";
+            System.out.println("No Jenkins Build Number Received. Using default Build Number: 9999999");
         }
 
         if (this.testsuiteResults.getTestcase().size() > 0) {
