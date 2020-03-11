@@ -82,7 +82,6 @@ public class GWTestRunResults {
         String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
         String startedByUser = System.getProperty("startedByUser");
 
-        AtomicReference<String> failureReason = new AtomicReference<>();
         if (startedByUser == null) {
             startedByUser = "Local";
         }
@@ -93,11 +92,10 @@ public class GWTestRunResults {
         }
 
         if (this.testsuiteResults.getTestcase().size() > 0) {
-            String finalStartedByUser = startedByUser;
             ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
             // Recording to the TestResults Table
-            String finalJenkinsBuildNumber = jenkinsBuildNumber;
-            this.testsuiteResults.getTestcase().forEach(testcase -> {
+            for (Testcase testcase : this.testsuiteResults.getTestcase()) {
+                String failureReason = "";
                 TestStatus status = TestStatus.SUCCESS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
                 int testRunTimeInMilliSeconds = (int) Double.parseDouble(testcase.getTime()) * 1000;
@@ -109,19 +107,23 @@ public class GWTestRunResults {
                 }
 
                 if (testcase.getFailure().size() > 0) {
-                    failureReason.set(testcase.getFailure().get(0).getType());
+                    failureReason = testcase.getFailure().get(0).getType();
                     status = TestStatus.FAILURE;
                 }
 
                 if (testcase.getError().size() > 0) {
-                    failureReason.set(testcase.getError().get(0).getType());
+                    failureReason = testcase.getError().get(0).getType();
                     status = TestStatus.FATAL;
                 }
 
                 TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
-                        startTimeStamp, endTimeStamp, null, status, failureReason.get(), finalJenkinsBuildNumber, testsuiteResults.getName(), finalStartedByUser, "");
+                        startTimeStamp, endTimeStamp, null, status, failureReason, jenkinsBuildNumber, testsuiteResults.getName(), startedByUser, "");
 
                 resultsDTOS.add(resultsDTO);
+            }
+
+            this.testsuiteResults.getTestcase().forEach(testcase -> {
+
             });
             ReportManager.bulkInsertIntoTestResults(resultsDTOS);
 
