@@ -75,4 +75,8 @@ public class AggregateGWTestRunResults {
 
         return testsuite;
     }
+
+    public Testsuite getAggregatedTestSuite() {
+        return aggregatedTestSuite;
+    }
 }
