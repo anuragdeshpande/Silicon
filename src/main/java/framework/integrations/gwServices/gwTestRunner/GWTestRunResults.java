@@ -123,7 +123,7 @@ public class GWTestRunResults {
 
                 resultsDTOS.add(resultsDTO);
             });
-//            ReportManager.bulkInsertIntoTestResults(resultsDTOS);
+            ReportManager.bulkInsertIntoTestResults(resultsDTOS);
 
             // Recording to the SuiteResults Table
             String applicationName = System.getProperty("ApplicationName");
