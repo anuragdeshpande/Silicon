@@ -95,7 +95,7 @@ public class GWTestRunResults {
             ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
             // Recording to the TestResults Table
             for (Testcase testcase : this.testsuiteResults.getTestcase()) {
-                String failureReason = "";
+                String failureReason = null;
                 TestStatus status = TestStatus.SUCCESS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
                 int testRunTimeInMilliSeconds = (int) Double.parseDouble(testcase.getTime()) * 1000;
