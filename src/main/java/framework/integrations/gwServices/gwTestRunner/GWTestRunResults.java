@@ -3,15 +3,12 @@ package framework.integrations.gwServices.gwTestRunner;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.aventstack.extentreports.model.Test;
 import framework.ReportManager;
 import framework.database.models.TestResultsDTO;
 import framework.database.models.TestStatus;
 import framework.integrations.gwServices.gwTestRunner.generated.Testcase;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
-import framework.integrations.gwServices.gwTestRunner.generated.Testsuites;
 import org.apache.commons.lang3.time.DateUtils;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -21,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GWTestRunResults {
 
@@ -34,7 +30,7 @@ public class GWTestRunResults {
     public void generateHTMLReport() {
         DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
         utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date testSuiteTimeStamp = null;
+        Date testSuiteTimeStamp;
         try {
             testSuiteTimeStamp = utcFormat.parse(testsuiteResults.getTimestamp());
         } catch (ParseException e) {
@@ -150,5 +146,9 @@ public class GWTestRunResults {
             ReportManager.insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
         }
         return false;
+    }
+
+    public Testsuite getTestSuiteResults() {
+        return testsuiteResults;
     }
 }
