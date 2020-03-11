@@ -79,8 +79,7 @@ public class GWTestRunResults {
     }
 
     public boolean recordResultsInReportsDb() {
-//        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
-        String jenkinsBuildNumber = "9999999";
+        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
         String startedByUser = System.getProperty("startedByUser");
 
         AtomicReference<String> failureReason = new AtomicReference<>();
@@ -88,11 +87,15 @@ public class GWTestRunResults {
             startedByUser = "Local";
         }
 
+        if(jenkinsBuildNumber == null){
+            jenkinsBuildNumber = "9999999";
+        }
 
         if (this.testsuiteResults.getTestcase().size() > 0) {
             String finalStartedByUser = startedByUser;
             ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
             // Recording to the TestResults Table
+            String finalJenkinsBuildNumber = jenkinsBuildNumber;
             this.testsuiteResults.getTestcase().forEach(testcase -> {
                 TestStatus status = TestStatus.SUCCESS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
@@ -117,7 +120,7 @@ public class GWTestRunResults {
                 }
 
                 TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
-                        startTimeStamp, endTimeStamp, null, status, failureReason.get(), jenkinsBuildNumber, testsuiteResults.getName(), finalStartedByUser, "");
+                        startTimeStamp, endTimeStamp, null, status, failureReason.get(), finalJenkinsBuildNumber, testsuiteResults.getName(), finalStartedByUser, "");
 
                 resultsDTOS.add(resultsDTO);
             });
