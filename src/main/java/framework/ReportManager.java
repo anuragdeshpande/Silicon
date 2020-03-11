@@ -7,6 +7,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
@@ -58,6 +59,7 @@ public class ReportManager {
     public static ExtentReports initiate(String suiteName) {
         INIT_SUITE_NAME = suiteName;
         extentReports = new ExtentReports();
+        extentReports.setReportUsesManualConfiguration(true);
         ExtentHtmlReporter extentReporter;
 
         classMap = new HashMap<>();
@@ -74,7 +76,7 @@ public class ReportManager {
 
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.TEST);
-        extentReporter.config().setAutoCreateRelativePathMedia(true);
+        extentReporter.config().enableTimeline(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
