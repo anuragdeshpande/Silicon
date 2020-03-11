@@ -104,8 +104,12 @@ public class GWTestRunResults {
                 Timestamp startTimeStamp = new Timestamp(DateUtils.addMilliseconds(new Date(), -testRunTimeInMilliSeconds).getTime());
                 Timestamp endTimeStamp = new Timestamp(new Date().getTime());
 
-                if (testcase.getFailure().size() > 0 || testcase.getError().size() > 0) {
+                if (testcase.getFailure().size() > 0) {
                     status = TestStatus.FAILURE;
+                }
+
+                if(testcase.getError().size() > 0){
+                    status = TestStatus.FATAL;
                 }
 
                 if (testcase.getSkipped() != null) {

@@ -4,5 +4,6 @@ public enum TestStatus {
     SUCCESS,
     FAILURE,
     SKIPPED,
+    FATAL
 
 }
