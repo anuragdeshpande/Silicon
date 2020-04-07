@@ -105,9 +105,9 @@ public class SuiteGenerator {
         ClassInfoList regressionTests = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
 
         List<XmlSuite> suitesToRun = new ArrayList<>();
-        boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null;
-        boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null;
-        boolean shouldRunAPITests = System.getProperty("EnableAPITests") != null;
+        boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null && System.getProperty("EnableSmokeTests").equalsIgnoreCase("true");
+        boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null && System.getProperty("EnableRegressionTests").equalsIgnoreCase("true");
+        boolean shouldRunAPITests = System.getProperty("EnableAPITests") != null && System.getProperty("EnableAPITests").equalsIgnoreCase("true");
 
         /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
         if(shouldRunSmokeTests){
