@@ -241,7 +241,10 @@ public class ReportManager {
     public static boolean insertIntoSuiteResults(String applicationName, double passPercentage, double failPercentage, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.REPORTING_SERVER);
         try {
-            regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()));
+            boolean shouldShowSuiteInPowerBI = System.getProperty("MarkAsTestBuild") != null && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
+            boolean shouldMarkSuiteAsTest = !shouldShowSuiteInPowerBI;
+            regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
+                    applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()), shouldMarkSuiteAsTest, shouldShowSuiteInPowerBI);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -96,6 +96,6 @@ public class SuiteResultsDTO {
     }
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
-        return "INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) values (?,?,?,?,?,?,?,?)";
+        return "INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date, IsTestBuild, ShowInPowerBIDashboard) values (?,?,?,?,?,?,?,?,?,?)";
     }
 }
