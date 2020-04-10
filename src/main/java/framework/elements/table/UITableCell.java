@@ -7,7 +7,7 @@ import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
@@ -22,12 +22,12 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public String getText() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickSelect() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
@@ -37,37 +37,37 @@ public class UITableCell extends UIElement implements IUITableCell {
 
     @Override
     public void clickLink() {
-       throw new NotImplementedException();
+       throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void fillTextBox(String text) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void fillTextArea(String text) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickCheckbox() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void markCheckBox() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void unMarkCheckBox() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public boolean isMarked() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
 

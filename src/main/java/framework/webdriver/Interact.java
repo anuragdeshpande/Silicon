@@ -18,7 +18,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +78,11 @@ public class Interact {
     }
 
     public UIConfirmationWindow withConfirmationWindow() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime){
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     public DOMManipulator withDOM(){

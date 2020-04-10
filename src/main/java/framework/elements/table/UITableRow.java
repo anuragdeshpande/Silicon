@@ -2,7 +2,7 @@ package framework.elements.table;
 
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.WebElement;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
@@ -16,42 +16,42 @@ public class UITableRow extends UIElement implements IUITableRow {
     }
 
     public List<UITableCell> getCells() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public UITableCell getCell(int cellNum) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public UITableCell getCellByText(String cellText) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public boolean hasValueAtCell(String whatToSearch, int cellNumber) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickCheckBox() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickSelectButton() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickButtonWithText(String buttonText) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickRadioWithLabel(String label) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override

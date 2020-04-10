@@ -4,7 +4,7 @@ import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,46 +40,46 @@ public class UITable extends UIElement implements IUITable {
 
     @Override
     public void clickAdd() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickRemove() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public UITableRow getRowWithText(String value) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickNextPage() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickPreviousPage() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickLastPage() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickFirstPage() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickToolbarButtonWithText(String buttonText) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public void clickRandomCheckbox() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 }
