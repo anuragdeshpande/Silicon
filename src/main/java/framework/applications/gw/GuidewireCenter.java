@@ -1,6 +1,7 @@
 package framework.applications.gw;
 
 import framework.applications.Application;
+import framework.applications.gw.responsibilities.*;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
@@ -14,7 +15,8 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.openqa.selenium.Keys;
 import org.testng.Assert;
 
-abstract public class GuidewireCenter extends Application implements GWOperations {
+abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
+        IBatchServer, ITempLogin, IErrorHandling, IGWPages {
 
     private String overrideEnvironmentURL = null;
 

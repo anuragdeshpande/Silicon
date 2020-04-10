@@ -1,19 +1,14 @@
-package framework.applications.gw;
+package framework.applications.gw.responsibilities;
 
+import framework.applications.gw.ServerPages;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 
-public interface GWOperations {
+public interface IGWOperations {
     void login(String userName, String password);
 
-    void tempLogin(String userName, String password);
-
     void logout();
-
-    void openBatchServer();
-
-    void startBatch(String batchName);
 
     void openEnvironment(Environment environment);
 
@@ -21,13 +16,5 @@ public interface GWOperations {
 
     GuidewireInteract getInteractObject();
 
-    boolean hasErrorMessageOnScreen();
-
-    String getErrorMessageOnScreen();
-
     void overrideEnvironmentURL(String url);
-
-    void setLogLevel(String loggerName, LogLevel logLevel);
-
-    ServerPages openServerPages();
 }

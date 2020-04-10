@@ -1,4 +1,4 @@
-package framework.applications.gw;
+package framework.applications.gw.responsibilities;
 
 import java.time.LocalTime;
 
