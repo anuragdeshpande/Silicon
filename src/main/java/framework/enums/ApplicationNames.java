@@ -5,5 +5,6 @@ public enum ApplicationNames {
     BC,
     PC,
     AB,
+    ACCOUNT_MANAGEMENT_PORTAL,
     FINANCE_CORE;
 }

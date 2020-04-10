@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UITable extends UIElement implements IUITable {
@@ -29,6 +30,7 @@ public class UITable extends UIElement implements IUITable {
 
     public List<UITableRow> getRows() {
         List<UITableRow> rows = new ArrayList<>();
+
 
         this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
             rows.add(new UITableRow(row));

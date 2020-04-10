@@ -13,7 +13,7 @@ import java.util.Base64;
  * Control class designed to resolve environments from the repo, and return a standard interface object for accessing
  * environment details
  */
-public class Environment {
+public class Environment extends GenericEnvironment {
     private String environmentUrl;
     private boolean hasRoundTripDocumentSupport;
     private boolean canMoveClock;

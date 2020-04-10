@@ -2,6 +2,7 @@ package framework.webdriver;
 
 import framework.constants.ReactionTime;
 import framework.guidewire.GuidewireInteract;
+import framework.guidewire.PortalInteract;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.utils.WebDriverOptionsManager;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
@@ -67,6 +68,10 @@ public class BrowserFactory {
 
     public static synchronized GuidewireInteract getCurrentGuidewireBrowser() {
         return new GuidewireInteract(createDriver());
+    }
+
+    public static synchronized PortalInteract getCurrentPortalsBrowser(){
+        return new PortalInteract(createDriver());
     }
 
     private static synchronized WebDriver createDriver() {

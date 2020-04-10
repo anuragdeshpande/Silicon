@@ -1,4 +1,4 @@
-package framework.applications.gw.responsibilities;
+package framework.applications.gw.responsibilities.gwCenter;
 
 import framework.applications.gw.ServerPages;
 

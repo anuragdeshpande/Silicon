@@ -3,7 +3,7 @@ package framework.elements;
 import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
 
-public class Identifier {
+public class Identifier extends GenericIdentifier {
     private By reference;
     private ElementType elementType;
     private boolean canThrowWarning;

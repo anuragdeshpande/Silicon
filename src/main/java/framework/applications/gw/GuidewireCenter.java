@@ -1,7 +1,7 @@
 package framework.applications.gw;
 
 import framework.applications.Application;
-import framework.applications.gw.responsibilities.*;
+import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
