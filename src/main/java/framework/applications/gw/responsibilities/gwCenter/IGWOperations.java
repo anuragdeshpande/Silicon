@@ -1,7 +1,5 @@
 package framework.applications.gw.responsibilities.gwCenter;
 
-import framework.applications.gw.ServerPages;
-import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 

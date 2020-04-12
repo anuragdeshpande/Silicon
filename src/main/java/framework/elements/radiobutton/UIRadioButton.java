@@ -28,18 +28,14 @@ public class UIRadioButton extends UIElement implements IUIRadioButton {
     }
 
     @Override
-    public void clickByLabel(String label) {
-        this.label = label;
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+    public void select() {
+        if(!isSelected()){
+            getElement().click();
+        }
     }
 
     @Override
-    public void clickYes() {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
-    }
-
-    @Override
-    public void clickNo() {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+    public boolean isSelected() {
+        return getElement().getAttribute("checked") != null;
     }
 }

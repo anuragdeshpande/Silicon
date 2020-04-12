@@ -20,7 +20,6 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     private String overrideEnvironmentURL = null;
 
-    protected GuidewireInteract interact;
     protected Environment environment;
     protected QueryRunner queryRunner;
     protected String currentUsername;
@@ -28,24 +27,22 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public GuidewireCenter() {
         super();
-        this.interact = BrowserFactory.getCurrentGuidewireBrowser();
-
     }
 
     @Override
     public GuidewireInteract getInteractObject() {
-        return this.interact;
+        return BrowserFactory.getCurrentGuidewireBrowser();
     }
 
     @Override
     public boolean hasErrorMessageOnScreen() {
-        String errorMessage = this.interact.withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
+        String errorMessage = getInteractObject().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
         return !errorMessage.equalsIgnoreCase("");
     }
 
     @Override
     public String getErrorMessageOnScreen() {
-        return this.interact.withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
+        return getInteractObject().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
     }
 
     @Override
@@ -102,12 +99,14 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         }
     }
 
+
     public String getOverrideEnvironmentURL() {
         return overrideEnvironmentURL;
     }
 
     @Override
     public void openEnvironment(Environment environment) {
+        GuidewireInteract interact = getInteractObject();
         // Clearing any existing Banner Messages
         interact.withDOM().clearBannerMessage();
         if(!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")){
@@ -135,6 +134,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     private void _login(String username, String password){
+        GuidewireInteract interact = getInteractObject();
         if(this.environment == null){
             Assert.fail("Please call openDefaultEnvironment() or openEnvironment() to open the application");
         }

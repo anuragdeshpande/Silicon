@@ -1,6 +1,5 @@
 package framework.guidewire.elements.gw_table;
 
-import framework.elements.table.IUITableCell;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.webdriver.BrowserFactory;
@@ -12,7 +11,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
-public class GWCell extends UIElement implements IGWCell, IUITableCell {
+public class GWCell extends UIElement  {
 
     private WebElement element;
 
@@ -29,38 +28,31 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
     /**
      * @deprecated Use mark/unmark methods instead.
      */
-    @Override
     @Deprecated
     public void clickCheckbox() {
         new GWCheckBox(this.element).click();
     }
 
-    @Override
     public void markCheckBox() {
         new GWCheckBox(this.element).mark();
     }
 
-    @Override
     public void unMarkCheckBox() {
         new GWCheckBox(this.element).unmark();
     }
 
-    @Override
     public boolean isMarked() {
         return new GWCheckBox(this.element).isChecked();
     }
 
-    @Override
     public String getText() {
         return this.element.getText();
     }
 
-    @Override
     public void clickSelect() {
         throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
-    @Override
     public void clickLink() {
         WebElement linkElement = element.findElement(By.tagName("a"));
         String linkText = linkElement.getText();
@@ -68,14 +60,12 @@ public class GWCell extends UIElement implements IGWCell, IUITableCell {
 //        System.out.println("Clicked on link: "+linkText);
     }
 
-    @Override
     public void fillTextArea(String text) {
         this.element.click();
         List<WebElement> textareas = BrowserFactory.getCurrentBrowser().getDriver().findElements(By.cssSelector("textarea[id*='textarea-']"));
         fillText(text, textareas);
     }
 
-    @Override
     public void fillTextBox(String text) {
         this.element.click();
         List<WebElement> textboxes = BrowserFactory.getCurrentBrowser().getDriver().findElements(By.cssSelector("input[id*='input-']"));

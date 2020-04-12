@@ -14,7 +14,12 @@ import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.*;
+import org.testng.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -118,6 +123,26 @@ public class GuidewireInteract extends Interact {
 
     public GWMultiSelect withMultiSelect(Identifier identifier, ReactionTime reactionTime){
         return new GWMultiSelect(identifier, reactionTime);
+    }
+
+    public List<WebElement> withMultiValuedElement(Identifier identifier){
+        List<WebElement> elements = new ArrayList<>();
+        WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
+        try {
+            elements = waitUtils.waitUntilElementsAreVisible(identifier.getReference(), 10);
+        } catch (TimeoutException t) {
+            try {
+                elements = waitUtils.waitUntilElementsAreClickable(identifier.getReference(), 20);
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("*** See Stack Trace ***");
+        }
+
+        return elements;
     }
 
 }

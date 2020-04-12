@@ -6,12 +6,15 @@ import framework.elements.ui_element.UIElement;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+
+import java.util.Properties;
 
 public class GWElement extends UIElement {
     public GWElement(Identifier identifier) {
@@ -113,12 +116,18 @@ public class GWElement extends UIElement {
     }
 
     private void retryClickAfterOverlayIsCleared() {
+        Properties configProperties = PropertiesFileLoader.load("config.properties");
+        String timeoutStr = configProperties.getProperty("GWPageTimeout");
+        int timeout = 5;
+        if(timeoutStr != null){
+            timeout = Integer.parseInt(timeoutStr);
+        }
         // there is a temporary overlay, wait for the overlay to disappear and then click again.
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
         ReactionTime reactionTime = ReactionTime.IMMEDIATE;
         driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         try {
-            new WebDriverWait(driver, 5)
+            new WebDriverWait(driver, timeout)
                     .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
         } catch (TimeoutException e) {
             Assert.fail("Guidewire Application is taking over 5 seconds to respond to click: Aborting tests");
