@@ -7,7 +7,9 @@ import framework.enums.Environments;
 import org.junit.Assert;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 /**
  * Control class designed to resolve environments from the repo, and return a standard interface object for accessing
@@ -96,24 +98,10 @@ public class Environment extends GenericEnvironment {
         try{
             Object[] result = ConnectionManager.getDBConnectionTo(DBConnectionDTO.QA_DATA_REPO)
                     .query(ENVIRONMENT_RESOLVER_QUERY, ConnectionManager.getResultHandlerInstance()).get(0);
-            Environment resolvedEnvironment = new Environment();
-            resolvedEnvironment.setApplicationName(applicationName);
-            resolvedEnvironment.setEnvironmentUrl(String.valueOf(result[0]));
-            resolvedEnvironment.setCanMoveClock(Boolean.parseBoolean(String.valueOf(result[1])));
-            resolvedEnvironment.setHasRoundTripDocumentSupport(Boolean.parseBoolean(String.valueOf(result[4])));
-            resolvedEnvironment.setEnvironmentName(environment);
-            DBConnectionDTO connectionDTO = new DBConnectionDTO();
-            connectionDTO.setDbName(String.valueOf(result[5]));
-            connectionDTO.setDbUsername(String.valueOf(result[6]));
-            connectionDTO.setDbPassword(new String(Base64.getDecoder().decode(String.valueOf(result[7]))));
-            connectionDTO.setDbServer(String.valueOf(result[8]));
-            resolvedEnvironment.setDbConnectionDetails(connectionDTO);
 
-            return resolvedEnvironment;
-
+            return buildFor(result);
         } catch (SQLException e) {
             Assert.fail("Cannot connect to the data repo to get environment details"+ e.getLocalizedMessage());
-
         } catch (NullPointerException npe){
             Assert.fail("No Matching Results found for the given details: Application:"+applicationName.name()+" Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
         }
@@ -121,5 +109,48 @@ public class Environment extends GenericEnvironment {
         return null;
     }
 
+    public List<Environment> resolvePortalEnvironment(Environments environment){
+        String ENVIRONMENT_RESOLVER_QUERY = "select * from " +
+                "(SELECT url.Url as ApplicationUrl, url.JenkinsDeployJobUrl as JenkinsJobUrl, env.ClockMove as MoveClock," +
+                "url.LogPath as ApplicationLogPath, url.RoundtripDocuments as DocumentRoundTrip, " +
+                "url.DBName as DatabaseName, url.DBUser as DBUserName, url.DBUserCred as DBPassword, " +
+                "env.DBServer as DatabaseServer, urlType.Name as ApplicationName, env.Name as EnvironmentName " +
+                "FROM GWEnvs_Urls url " +
+                "INNER JOIN GWEnvs_UrlTypes urlType ON url.UrlTypesID = urlType.UrlTypesID " +
+                "INNER JOIN GWEnvs_Envs env ON url.EnvsID = env.EnvsID) as a " +
+                "where a.ApplicationName in ('CC', 'PC', 'BC', 'AB')" +
+                "and a.EnvironmentName = '"+environment.name().toUpperCase()+"'";
+        try{
+            List<Object[]> results = ConnectionManager.getDBConnectionTo(DBConnectionDTO.QA_DATA_REPO)
+                    .query(ENVIRONMENT_RESOLVER_QUERY, ConnectionManager.getResultHandlerInstance());
+            ArrayList<Environment> resolvedEnvironments = new ArrayList<>();
+            results.forEach(resultRow -> {
+                resolvedEnvironments.add(buildFor(resultRow));
+            });
+            return resolvedEnvironments;
+        } catch (SQLException e) {
+            Assert.fail("Cannot connect to the data repo to get environment details"+ e.getLocalizedMessage());
+        } catch (NullPointerException npe){
+            Assert.fail("No Matching Results found for the given details: Application:"+applicationName.name()+" Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
+        }
 
+        return null;
+    }
+
+    private static Environment buildFor(Object[] rowResultFromDB){
+        Environment resolvedEnvironment = new Environment();
+        resolvedEnvironment.setEnvironmentUrl(String.valueOf(rowResultFromDB[0]));
+        resolvedEnvironment.setCanMoveClock(Boolean.parseBoolean(String.valueOf(rowResultFromDB[1])));
+        resolvedEnvironment.setHasRoundTripDocumentSupport(Boolean.parseBoolean(String.valueOf(rowResultFromDB[4])));
+        DBConnectionDTO connectionDTO = new DBConnectionDTO();
+        connectionDTO.setDbName(String.valueOf(rowResultFromDB[5]));
+        connectionDTO.setDbUsername(String.valueOf(rowResultFromDB[6]));
+        connectionDTO.setDbPassword(new String(Base64.getDecoder().decode(String.valueOf(rowResultFromDB[7]))));
+        connectionDTO.setDbServer(String.valueOf(rowResultFromDB[8]));
+        resolvedEnvironment.setApplicationName(ApplicationNames.valueOf(String.valueOf(rowResultFromDB[9])));
+        resolvedEnvironment.setEnvironmentName(Environments.valueOf(String.valueOf(rowResultFromDB[10])));
+        resolvedEnvironment.setDbConnectionDetails(connectionDTO);
+
+        return resolvedEnvironment;
+    }
 }
