@@ -109,7 +109,7 @@ public class Environment extends GenericEnvironment {
         return null;
     }
 
-    public List<Environment> resolvePortalEnvironment(Environments environment){
+    public List<Environment> resolveGWInstancesForPortalEnvironment(Environments environment){
         String ENVIRONMENT_RESOLVER_QUERY = "select * from " +
                 "(SELECT url.Url as ApplicationUrl, url.JenkinsDeployJobUrl as JenkinsJobUrl, env.ClockMove as MoveClock," +
                 "url.LogPath as ApplicationLogPath, url.RoundtripDocuments as DocumentRoundTrip, " +
