@@ -11,6 +11,8 @@ public class GWIDs {
     public static final Identifier WARNING_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='warning_icon']/parent::div"));
     public static final Identifier CONFIRMATION_WINDOW = new Identifier(By.cssSelector("div[id*='messagebox-']"));
     public static final Identifier SETTINGS_COG = new Identifier(By.id(":TabLinkMenuButton-btnIconEl"), ElementType.ELEMENT);
+    public static final Identifier VACATION_STATUS_UPDATE = new Identifier(By.id("UserVacationWorksheet:UserVacationScreen:Update-btnInnerEl"), ElementType.BUTTON);
+    public static final Identifier VACATION_STATUS_DROPDOWN = new Identifier(By.id("UserVacationWorksheet:UserVacationScreen:UserVacationDV:VacationStatus-inputEl"), ElementType.SELECT_BOX);
 
 
     public static class Login{

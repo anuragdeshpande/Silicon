@@ -5,14 +5,20 @@ import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
+import framework.elements.enums.ElementType;
+import framework.elements.ui_element.UIElement;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.PauseTest;
 import org.apache.commons.dbutils.QueryRunner;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
@@ -80,6 +86,15 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         _login(userName, password);
         this.currentUsername = userName;
         this.currentPassword = password;
+
+        // Making sure the current user is not on vacation
+        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
+        GuidewireInteract interact = getInteractObject();
+        UIElement uiElement = interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE);
+        if(uiElement.isPresent()){
+            interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
+        }
+
     }
 
     @Override
