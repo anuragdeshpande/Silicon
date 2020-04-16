@@ -93,7 +93,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
         if(interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()){
             interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
+            interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
         }
+        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
+
 
     }
 
