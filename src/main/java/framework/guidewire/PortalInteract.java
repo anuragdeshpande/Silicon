@@ -92,7 +92,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
 
     public static void closeErrorMessage(){
         PortalInteract interact = BrowserFactory.getCurrentPortalsBrowser();
-        interact.withElement(PortalElements.button("Close")).click();
+        interact.withElement(new Identifier(By.xpath("//div[contains(@class, 'gw-modal-footer')]//button[contains(@class, 'gw-btn-primary')]"))).click();
         try{
             PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[contains(@class, 'gw-modal-body')]//i[contains(@class, 'gw-modal-state-error-circle')]")));
         } catch (Exception e){
