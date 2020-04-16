@@ -90,8 +90,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         // Making sure the current user is not on vacation
         PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
         GuidewireInteract interact = getInteractObject();
-        UIElement uiElement = interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE);
-        if(uiElement.isPresent()){
+
+        if(interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()){
             interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
         }
 
