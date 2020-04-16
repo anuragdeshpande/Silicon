@@ -1,9 +1,10 @@
 package framework.environmentResolution;
 
-import framework.enums.ApplicationNames;
 import framework.enums.Environments;
 import framework.guidewire.PortalInteract;
 import framework.webdriver.BrowserFactory;
+
+import java.util.List;
 
 public class PortalEnvironment extends GenericEnvironment {
     private String environmentUrl;
@@ -13,31 +14,41 @@ public class PortalEnvironment extends GenericEnvironment {
     private Environment bcEnvironment;
     private Environment abEnvironment;
 
-    private PortalEnvironment(String environmentURL, Environments gwEnvironmentPortalUses){
+    private PortalEnvironment(String environmentURL, Environments gwEnvironmentPortalUses) {
         this.environmentUrl = environmentURL;
         this.gwEnvironmentPortalUses = gwEnvironmentPortalUses;
         PortalInteract interact = BrowserFactory.getCurrentPortalsBrowser();
 
         // Resolving CC
-        interact.withDOM().injectInfoMessage("Making sure CC on ("+gwEnvironmentPortalUses.name()+") is ready to use");
-        this.ccEnvironment = Environment.resolve(ApplicationNames.CC, gwEnvironmentPortalUses);
-
-        // Resolving PC
-        interact.withDOM().injectInfoMessage("Making sure PC on ("+gwEnvironmentPortalUses.name()+") is ready to use");
-        this.pcEnvironment = Environment.resolve(ApplicationNames.PC, gwEnvironmentPortalUses);
-
-        // Resolving BC
-        interact.withDOM().injectInfoMessage("Making sure BC on ("+gwEnvironmentPortalUses.name()+") is ready to use");
-        this.bcEnvironment = Environment.resolve(ApplicationNames.BC, gwEnvironmentPortalUses);
-
-        // Resolving AB
-        interact.withDOM().injectInfoMessage("Making sure AB on ("+gwEnvironmentPortalUses.name()+") is ready to use");
-        this.abEnvironment = Environment.resolve(ApplicationNames.AB, gwEnvironmentPortalUses);
+        interact.withDOM().injectInfoMessage("Fetching GW Connection details for Portals " + gwEnvironmentPortalUses.name() + " Environment");
+        List<Environment> environments = Environment.resolveGWInstancesForPortalEnvironment(Environments.DEV);
+        assert environments != null;
+        for (Environment environment : environments) {
+            switch (environment.getApplicationName()) {
+                case AB:
+                    interact.withDOM().injectInfoMessage("Making sure AB on (" + gwEnvironmentPortalUses.name() + ") is ready to use");
+                    this.abEnvironment = environment;
+                    continue;
+                case CC:
+                    interact.withDOM().injectInfoMessage("Making sure CC on (" + gwEnvironmentPortalUses.name() + ") is ready to use");
+                    this.ccEnvironment = environment;
+                    continue;
+                case BC:
+                    interact.withDOM().injectInfoMessage("Making sure BC on (" + gwEnvironmentPortalUses.name() + ") is ready to use");
+                    this.bcEnvironment = environment;
+                    continue;
+                case PC:
+                    interact.withDOM().injectInfoMessage("Making sure PC on (" + gwEnvironmentPortalUses.name() + ") is ready to use");
+                    this.pcEnvironment = environment;
+                    continue;
+                default: // do nothing
+            }
+        }
     }
 
     public static PortalEnvironment DEV = new PortalEnvironment("http://fbmsdkr-dev1.idfbins.com/amp/html/#/auth/login", Environments.DEV);
 
-    public static PortalEnvironment resolveCustomEnvironment(String portalUrl, Environments gwEnvironmentPortalUses){
+    public static PortalEnvironment resolveCustomEnvironment(String portalUrl, Environments gwEnvironmentPortalUses) {
         return new PortalEnvironment(portalUrl, gwEnvironmentPortalUses);
     }
 
