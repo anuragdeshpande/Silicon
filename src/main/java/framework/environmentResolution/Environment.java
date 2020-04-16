@@ -109,7 +109,7 @@ public class Environment extends GenericEnvironment {
         return null;
     }
 
-    public List<Environment> resolveGWInstancesForPortalEnvironment(Environments environment){
+    public static List<Environment> resolveGWInstancesForPortalEnvironment(Environments environment){
         String ENVIRONMENT_RESOLVER_QUERY = "select * from " +
                 "(SELECT url.Url as ApplicationUrl, url.JenkinsDeployJobUrl as JenkinsJobUrl, env.ClockMove as MoveClock," +
                 "url.LogPath as ApplicationLogPath, url.RoundtripDocuments as DocumentRoundTrip, " +
@@ -131,7 +131,7 @@ public class Environment extends GenericEnvironment {
         } catch (SQLException e) {
             Assert.fail("Cannot connect to the data repo to get environment details"+ e.getLocalizedMessage());
         } catch (NullPointerException npe){
-            Assert.fail("No Matching Results found for the given details: Application:"+applicationName.name()+" Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
+            Assert.fail("No Matching Results found for the given details: Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
         }
 
         return null;
