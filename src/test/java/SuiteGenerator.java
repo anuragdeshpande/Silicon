@@ -151,7 +151,11 @@ public class SuiteGenerator {
 
         xmlSuite.setThreadCount(threadCount);
         ArrayList<String> listeners = new ArrayList<>();
-        listeners.add("framework.Listener");
+        String listener = "framework.Listener";
+        if(System.getProperty("TestNGListener") != null){
+            listener = System.getProperty("TestNGListener");
+        }
+        listeners.add(listener);
         xmlSuite.setListeners(listeners);
 
         testClasses.forEach(classInfo -> {
