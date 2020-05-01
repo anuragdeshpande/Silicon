@@ -9,6 +9,7 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
 import framework.database.models.DBConnectionDTO;
@@ -23,6 +24,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -150,10 +152,7 @@ public class ReportManager {
     }
 
     static boolean recordTestResult(ITestResult iTestResult, String status) {
-
         AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
-        AutomationHistory[] historyAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomationHistory.class);
-        Test[] testAnnotation = iTestResult.getClass().getAnnotationsByType(Test.class);
 
         Timestamp startDate = new Timestamp(iTestResult.getStartMillis());
         Timestamp endDate = new Timestamp(iTestResult.getEndMillis());
@@ -167,7 +166,7 @@ public class ReportManager {
         String testRunSource = System.getProperty("startedByUser");
         String clockMoveTimeUnit = null;
         int clockMoveAmount = 0;
-        String tags = flattenTags(automatedAnnotation, historyAnnotation);
+        String tags = flattenTags(iTestResult);
 
         if (status.equalsIgnoreCase("Failure")) {
             failureImageURL = REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
@@ -253,7 +252,11 @@ public class ReportManager {
         }
     }
 
-    private static String flattenTags(AutomatedTest automatedAnnotation, AutomationHistory[] historyAnnotations) {
+    private static String flattenTags(ITestResult iTestResult) {
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        AutomationHistory[] historyAnnotations = testMethod.getAnnotationsByType(AutomationHistory.class);
+        AutomatedTest automatedAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class)[0];
+
         StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.Team()).append("|");
@@ -261,18 +264,12 @@ public class ReportManager {
         tags.append(automatedAnnotation.FeatureNumber()).append("|");
         tags.append(automatedAnnotation.Iteration()).append("|");
         tags.append(automatedAnnotation.StoryOrDefectNumber()).append("|");
-        for (String center : automatedAnnotation.Centers()) {
-            tags.append(center).append("|");
-        }
-        for (String theme : automatedAnnotation.Themes()) {
-            tags.append(theme).append("|");
-        }
+        tags.append(Joiner.on("|").join(automatedAnnotation.Centers())).append("|");
+        tags.append(Joiner.on("|").join(automatedAnnotation.Themes())).append("|");
 
         if (historyAnnotations.length > 0) {
             AutomationHistory historyAnnotation = historyAnnotations[0];
-            for (String storyDefectNumber : historyAnnotation.StoryOrDefectNumbers()) {
-                tags.append(storyDefectNumber).append("|");
-            }
+            tags.append(Joiner.on("|").join(historyAnnotation.StoryOrDefectNumbers())).append("|");
         }
 
         return tags.toString();
