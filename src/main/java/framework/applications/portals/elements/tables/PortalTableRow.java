@@ -57,4 +57,14 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
         }
     }
 
+    public List<PortalTableCell> getCellsWithTitle(String title){
+        ArrayList<PortalTableCell> cells = new ArrayList<>();
+        List<WebElement> elements = getElement().findElements(By.xpath(".//td[@title='" + title + "']/i[not(contains(@class, 'ng-hide'))]"));
+        for (WebElement element : elements){
+            cells.add(new PortalTableCell(element));
+        }
+
+        return cells;
+    }
+
 }
