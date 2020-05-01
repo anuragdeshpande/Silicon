@@ -120,7 +120,7 @@ public class PortalTable extends UIElement
     public List<PortalTableRow> getRows() {
         ArrayList<PortalTableRow> tableRows = new ArrayList<>();
         try{
-            getElement().findElements(By.tagName("tr")).forEach(element -> {
+            getElement().findElements(By.xpath(".//tbody/tr")).forEach(element -> {
                 tableRows.add(new PortalTableRow(element));
             });
             return tableRows;
