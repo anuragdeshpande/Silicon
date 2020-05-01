@@ -21,6 +21,11 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Service;
+import java.time.LocalDate;
+import java.util.Map;
+
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
         IBatchServer, ITempLogin, IErrorHandling, IGWPages {
 
@@ -160,4 +165,32 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
     }
+
+    protected void initiateService(BindingProvider provider, String userName, String password){
+        Map<String, Object> context = provider.getRequestContext();
+        context.put("com.sun.xml.internal.ws.connect.timeout", 10000);
+        context.put("com.sun.xml.internal.ws.request.timeout", 5000);
+        context.put("javax.xml.ws.security.auth.username", userName);
+        context.put("javax.xml.ws.security.auth.password", password);
+    }
+
+    public boolean canMoveClock() {
+        if(this.environment == null){
+            Assert.fail("Please call openDefaultEnvironment() or openEnvironment() to open the application");
+        }
+
+        return this.environment.canMoveClock();
+    }
+
+    protected static String getComputerName() {
+        String hostOrComputerName;
+        if (System.getenv("COMPUTERNAME") != null)
+            hostOrComputerName = System.getenv("COMPUTERNAME") + ".idfbins.com";
+        else if (System.getenv("HOSTNAME") != null)
+            hostOrComputerName = System.getenv("HOSTNAME") + ".idfbins.com";
+        else
+            hostOrComputerName = "UNKNOWN.idfbins.com";
+        return System.getenv("username") == null ? hostOrComputerName : hostOrComputerName.concat("/:ASCII:" + new StringBuilder(System.getenv("username")).reverse().toString()); // Doing this so that no one points finger looking at logs.
+    }
+
 }

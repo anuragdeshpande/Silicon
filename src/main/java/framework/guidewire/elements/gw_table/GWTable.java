@@ -24,7 +24,7 @@ public class GWTable extends UIElement implements IGWUITable{
     private static final By NEXT_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Next Page']");
     private static final By PREVIOUS_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Previous Page']");
 
-    private HashMap<String, Integer> columnLabelMap;
+    private HashMap<String, String> columnLabelMap;
 
     public GWTable(Identifier identifier) {
         super(identifier);
@@ -37,11 +37,12 @@ public class GWTable extends UIElement implements IGWUITable{
         if(identifier.getReference().toString().endsWith("LV")){
             super.elementLocation = By.id(identifier.getReference().toString().replaceAll("By.id: ", "").concat("-body"));
         }
-        List<WebElement> labels = getElement().findElement(By.xpath("//div/parent::div")).findElements(By.className("x-column-header-text"));
+        List<WebElement> labels = getElement().findElement(By.xpath("./preceding-sibling::div[1]"))
+                .findElements(By.xpath(".//*[@class='x-column-header-text']/parent::div[contains(@id, 'gridcolumn') and not(contains(@class, 'x-column-header-inner-empty'))]/parent::div"));
         for (int i = 0; i < labels.size(); ++i) {
             String label = labels.get(i).getText().trim();
             label = label.equals("") ? "blank-"+(i-1) : label;
-            columnLabelMap.put(label, i-1);
+            columnLabelMap.put(label, labels.get(i).getAttribute("id"));
         }
     }
 
@@ -180,7 +181,7 @@ public class GWTable extends UIElement implements IGWUITable{
         return new GWRow(row, columnLabelMap);
     }
 
-    public HashMap<String, Integer> getColumnLabels(){
+    public HashMap<String, String> getColumnLabels(){
         return this.columnLabelMap;
     }
 }
