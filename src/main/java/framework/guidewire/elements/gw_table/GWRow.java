@@ -11,14 +11,17 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GWRow extends UIElement implements IGWRow{
     private WebElement element;
+    private HashMap<String, Integer> columnLabelMap;
 
-    public GWRow(WebElement element) {
+    public GWRow(WebElement element, HashMap<String, Integer> columnLabelMap) {
         super(element);
         this.element = element;
+        this.columnLabelMap = columnLabelMap;
     }
 
     @Override
@@ -84,6 +87,11 @@ public class GWRow extends UIElement implements IGWRow{
     public void clickRadioWithLabel(String label) {
         this.element.findElement(By.xpath(".//td/label[contains(text(),'" + label + "')]/preceding-sibling::input")).click();
 //        System.out.println("Radio Button Clicked");
+    }
+
+    @Override
+    public GWCell getCellAtColumnLabel(String columnLabel) {
+        return this.getCell(columnLabelMap.get(columnLabel));
     }
 
     public List<GWCell> getCells() {

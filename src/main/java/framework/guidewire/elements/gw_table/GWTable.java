@@ -97,7 +97,7 @@ public class GWTable extends UIElement implements IGWUITable{
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
 //                        System.out.println("Found the row with the text: "+value);
-                        return new GWRow(row);
+                        return new GWRow(row, columnLabelMap);
                     }
                 }
             }
@@ -164,7 +164,7 @@ public class GWTable extends UIElement implements IGWUITable{
         List<GWRow> rows = new ArrayList<>();
 
         this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
-            rows.add(new GWRow(row));
+            rows.add(new GWRow(row, columnLabelMap));
         });
 
 //        System.out.println("Found : "+rows.size()+" Rows");
@@ -177,7 +177,7 @@ public class GWTable extends UIElement implements IGWUITable{
 
     public GWRow getRow(int rowNumber){
         WebElement row = this.getElement().findElements(By.tagName("tr")).get(rowNumber);
-        return new GWRow(row);
+        return new GWRow(row, columnLabelMap);
     }
 
     public HashMap<String, Integer> getColumnLabels(){

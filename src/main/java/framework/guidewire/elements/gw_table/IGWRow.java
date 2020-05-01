@@ -6,8 +6,10 @@ import framework.guidewire.elements.gw_select_box.GWSelectBox;
 
 public interface IGWRow {
     GWSelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName);
+
     UITextbox getTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName);
-   GWCell getCell(int cellNum);
+
+    GWCell getCell(int cellNum);
 
     GWCell getCellByText(String cellText);
 
@@ -20,4 +22,6 @@ public interface IGWRow {
     void clickButtonWithText(String buttonText);
 
     void clickRadioWithLabel(String label);
+
+    GWCell getCellAtColumnLabel(String columnLabel);
 }
