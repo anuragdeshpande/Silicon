@@ -47,7 +47,7 @@ public class GWRow extends UIElement implements IGWRow{
         try {
             List<WebElement> elements = this.element.findElements(By.tagName("td"));
             for (WebElement element : elements) {
-                if(element.getAttribute("id").equalsIgnoreCase(id)){
+                if(element.getAttribute("class").contains(id)){
                     return new GWCell(element);
                 }
             }
