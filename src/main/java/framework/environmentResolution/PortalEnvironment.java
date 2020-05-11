@@ -1,5 +1,6 @@
 package framework.environmentResolution;
 
+import framework.database.models.DBConnectionDTO;
 import framework.enums.Environments;
 import framework.guidewire.PortalInteract;
 import framework.webdriver.BrowserFactory;
@@ -13,11 +14,13 @@ public class PortalEnvironment extends GenericEnvironment {
     private Environment pcEnvironment;
     private Environment bcEnvironment;
     private Environment abEnvironment;
+    private DBConnectionDTO uaaServerDetails;
 
-    private PortalEnvironment(String environmentURL, Environments gwEnvironmentPortalUses) {
+    private PortalEnvironment(String environmentURL, Environments gwEnvironmentPortalUses, DBConnectionDTO uaaServerDetails) {
         this.environmentUrl = environmentURL;
         this.gwEnvironmentPortalUses = gwEnvironmentPortalUses;
         PortalInteract interact = BrowserFactory.getCurrentPortalsBrowser();
+        this.uaaServerDetails = uaaServerDetails;
 
         // Resolving CC
         interact.withDOM().injectInfoMessage("Fetching GW Connection details for Portals " + gwEnvironmentPortalUses.name() + " Environment");
@@ -46,10 +49,10 @@ public class PortalEnvironment extends GenericEnvironment {
         }
     }
 
-    public static PortalEnvironment DEV = new PortalEnvironment("http://fbmsdkr-dev1.idfbins.com/amp/html/#/auth/login", Environments.DEV);
+    public static PortalEnvironment DEV = new PortalEnvironment("http://fbmsdkr-dev1.idfbins.com/amp/html/#/auth/login", Environments.DEV, new DBConnectionDTO("fbmsdkr-dev1.idfbins.com", "uaa", "password", ""));
 
-    public static PortalEnvironment resolveCustomEnvironment(String portalUrl, Environments gwEnvironmentPortalUses) {
-        return new PortalEnvironment(portalUrl, gwEnvironmentPortalUses);
+    public static PortalEnvironment resolveCustomEnvironment(String portalUrl, Environments gwEnvironmentPortalUses, DBConnectionDTO uaaServerDetails) {
+        return new PortalEnvironment(portalUrl, gwEnvironmentPortalUses, uaaServerDetails);
     }
 
     public Environments getGwEnvironmentPortalUses() {
@@ -74,5 +77,9 @@ public class PortalEnvironment extends GenericEnvironment {
 
     public Environment getAbEnvironment() {
         return abEnvironment;
+    }
+
+    public DBConnectionDTO getUaaServerDetails() {
+        return uaaServerDetails;
     }
 }
