@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class UISelectBox extends UISelect {
 
@@ -23,6 +24,7 @@ public class UISelectBox extends UISelect {
         super(identifier, reactionTime);
         if (this.isPresent()) {
             this.select = new Select(this.getElement());
+            this.listElements = this.select.getOptions();
         }
     }
 
@@ -70,14 +72,7 @@ public class UISelectBox extends UISelect {
 
     @Override
     public List<String> getOptions() {
-        List<String> listStrings = new ArrayList<>();
-
-        for (WebElement element : this.listElements) {
-            listStrings.add(element.getText());
-        }
-
-//        System.out.println("Returning "+listStrings.size()+" options: "+ listStrings);
-        return listStrings;
+        return this.listElements.stream().map(WebElement::getText).collect(Collectors.toList());
     }
 
     @Override
