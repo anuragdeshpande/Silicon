@@ -26,7 +26,7 @@ public class UISelectBox extends UISelect {
         }
     }
 
-    public List<WebElement> getElementOptions(){
+    public List<WebElement> getElementOptions() {
         return this.select.getOptions();
     }
 
@@ -82,7 +82,7 @@ public class UISelectBox extends UISelect {
 
     @Override
     public String selectFirstExisting(String[] selections) {
-        for (String selection: selections) {
+        for (String selection : selections) {
             if (this.hasOption(selection)) {
                 this.select.selectByVisibleText(selection);
                 return selection;
@@ -90,5 +90,23 @@ public class UISelectBox extends UISelect {
         }
 //        System.out.println("No selected options exist, returning null.");
         return null;
+    }
+
+    // These methods handle "MultiSelect" boxes
+
+    public void multipleSelect(List<String> selections) {
+        for (String selection : selections) {
+            this.select.selectByVisibleText(selection);
+        }
+    }
+
+    public void multipleDeselect(List<String> selections) {
+        for (String selection : selections) {
+            this.select.deselectByValue(selection);
+        }
+    }
+
+    public void multipleDeselectAll() {
+        this.select.deselectAll();
     }
 }

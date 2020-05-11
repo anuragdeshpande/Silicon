@@ -50,7 +50,7 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
 
     public PortalTableCell getCellWithTitle(String title){
         try{
-            return new PortalTableCell(getElement().findElement(By.xpath(".//td[@title='"+title+"']/i[not(contains(@class, 'ng-hide'))]")));
+            return new PortalTableCell(getElement().findElement(By.xpath(".//td[@title='"+title+"']")));
         } catch (Exception e){
             RegressionLogger.getTestLogger().error(e);
             throw e;
@@ -59,7 +59,7 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
 
     public List<PortalTableCell> getCellsWithTitle(String title){
         ArrayList<PortalTableCell> cells = new ArrayList<>();
-        List<WebElement> elements = getElement().findElements(By.xpath(".//td[@title='" + title + "']/i[not(contains(@class, 'ng-hide'))]"));
+        List<WebElement> elements = getElement().findElements(By.xpath(".//td[@title='" + title + "']"));
         for (WebElement element : elements){
             cells.add(new PortalTableCell(element));
         }
