@@ -13,6 +13,7 @@ import org.testng.xml.XmlTest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -145,6 +146,19 @@ public class SuiteGenerator {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName);
         xmlSuite.setVerbose(1);
+
+        // setting suite level parameters (if any)
+        if(!System.getProperty("SuiteLevelParams").isEmpty()){
+            HashMap<String, String> suiteLevelParameters = new HashMap<>();
+            String suiteLevelParams = System.getProperty("SuiteLevelParams");
+            for (String parameter : suiteLevelParams.split(",")) {
+                if(parameter.contains(":")){
+                    String[] split = parameter.split(":");
+                    suiteLevelParameters.put(split[0], split[1]);
+                }
+            }
+            xmlSuite.setParameters(suiteLevelParameters);
+        }
         if (threadCount > 1) {
             xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
         }
