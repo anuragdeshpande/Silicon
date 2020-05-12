@@ -18,6 +18,7 @@ public class UISelectBox extends UISelect {
     public UISelectBox(Identifier identifier) {
         super(identifier);
         this.select = new Select(this.getElement());
+        this.listElements = this.select.getOptions();
     }
 
     public UISelectBox(Identifier identifier, ReactionTime reactionTime) {
