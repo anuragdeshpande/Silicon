@@ -69,6 +69,8 @@ public class BaseOperations {
 
     @AfterTest(description = "AfterTest")
     public void afterTest(ITestContext context, XmlTest xmlTest) {
+        RegressionLogger.getXMLTestLogger().info("Closing Browser");
+        BrowserFactory.closeCurrentBrowser();
     }
 
     @AfterSuite(description = "AfterSuite")

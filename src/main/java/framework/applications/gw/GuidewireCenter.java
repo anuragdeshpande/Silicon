@@ -164,6 +164,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
+        RegressionLogger.getTestLogger().info("Logging in with: "+username);
     }
 
     protected void initiateService(BindingProvider provider, String userName, String password){

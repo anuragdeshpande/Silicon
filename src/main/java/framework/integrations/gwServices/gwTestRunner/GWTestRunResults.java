@@ -2,14 +2,14 @@ package framework.integrations.gwServices.gwTestRunner;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import framework.ReportManager;
+import framework.database.models.SuiteResultsDTO;
 import framework.database.models.TestResultsDTO;
-import framework.database.models.TestStatus;
 import framework.integrations.gwServices.gwTestRunner.generated.Testcase;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.net.ntp.TimeStamp;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -103,7 +103,7 @@ public class GWTestRunResults {
             // Recording to the TestResults Table
             for (Testcase testcase : this.testsuiteResults.getTestcase()) {
                 String failureReason = null;
-                TestStatus status = TestStatus.SUCCESS;
+                Status status = Status.PASS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
                 DecimalFormat format = new DecimalFormat("000000.000");
                 int testRunTimeInMilliSeconds = (int)((Double.parseDouble(format.format(Double.parseDouble(testcase.getTime()))))*1000);
@@ -112,17 +112,17 @@ public class GWTestRunResults {
                 testSuiteTimeStamp = endTimeStamp;
 
                 if (testcase.getSkipped() != null) {
-                    status = TestStatus.SKIPPED;
+                    status = Status.SKIP;
                 }
 
                 if (testcase.getFailure().size() > 0) {
                     failureReason = testcase.getFailure().get(0).getType();
-                    status = TestStatus.FAILURE;
+                    status = Status.FAIL;
                 }
 
                 if (testcase.getError().size() > 0) {
                     failureReason = testcase.getError().get(0).getType();
-                    status = TestStatus.FATAL;
+                    status = Status.FATAL;
                 }
 
                 TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
@@ -152,11 +152,8 @@ public class GWTestRunResults {
                     }
                 });
             }
-            DecimalFormat df = new DecimalFormat("0.00");
-
-            double passPercentage = Double.parseDouble(df.format(((double) passingTests.get() / totalTests.get()) * 100));
-            double failPercentage = Double.parseDouble(df.format((((double) failingTests.get() / totalTests.get()) * 100)));
-            ReportManager.insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
+            ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
         return false;
     }

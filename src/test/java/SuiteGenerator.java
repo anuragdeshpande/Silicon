@@ -3,6 +3,7 @@ import annotations.SmokeTest;
 import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
+import framework.webdriver.BrowserFactory;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.testng.TestNG;
@@ -22,8 +23,8 @@ public class SuiteGenerator {
     public static void main(String[] args) {
         boolean runUITests =
                 System.getProperty("EnableRegressionTests") != null ||
-                System.getProperty("EnableAPITests") != null ||
-                System.getProperty("EnableSmokeTests") != null;
+                        System.getProperty("EnableAPITests") != null ||
+                        System.getProperty("EnableSmokeTests") != null;
 
         boolean runGWUnitTests =
                 System.getProperty("gwUnitTestPackage") != null;
@@ -34,29 +35,29 @@ public class SuiteGenerator {
         boolean runGWSystemIntegrationTests =
                 System.getProperty("gwSystemIntegrationTestPackage") != null;
 
-        if(runUITests){
+        if (runUITests) {
             startTests(System.getProperty("ThreadCount"), System.getProperty("RunPackage"));
         }
 
-        if(runGWUnitTests){
+        if (runGWUnitTests) {
             startGWUnitTests();
         }
 
-        if(runGWIntegrationTests){
+        if (runGWIntegrationTests) {
             startGWIntegrationTests();
         }
 
-        if(runGWSystemIntegrationTests){
+        if (runGWSystemIntegrationTests) {
             startGWSystemIntegrationTests();
         }
 
     }
 
-    private static void startGWUnitTests(){
+    private static void startGWUnitTests() {
         ClassGraph graph = new ClassGraph();
         String gwUnitTestPackage = System.getProperty("gwUnitTestPackage");
         ClassInfoList gwUnitTestRunners = graph.whitelistPackages(gwUnitTestPackage).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found "+gwUnitTestRunners.size()+" Unit Test Runners in the package: "+gwUnitTestPackage);
+        System.out.println("Found " + gwUnitTestRunners.size() + " Unit Test Runners in the package: " + gwUnitTestPackage);
         gwUnitTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWUnitTestRunner.class).getConstructor().newInstance().runTests();
@@ -67,11 +68,11 @@ public class SuiteGenerator {
 
     }
 
-    private static void startGWIntegrationTests(){
+    private static void startGWIntegrationTests() {
         ClassGraph graph = new ClassGraph();
         String gwIntegrationTestPackage = System.getProperty("gwIntegrationTestPackage");
         ClassInfoList gwIntegrationTestRunners = graph.whitelistPackages(gwIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found "+gwIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwIntegrationTestPackage);
+        System.out.println("Found " + gwIntegrationTestRunners.size() + " Unit Test Runners in the package: " + gwIntegrationTestPackage);
         gwIntegrationTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWIntegrationTestRunner.class).getConstructor().newInstance().runTests();
@@ -81,11 +82,11 @@ public class SuiteGenerator {
         });
     }
 
-    private static void startGWSystemIntegrationTests(){
+    private static void startGWSystemIntegrationTests() {
         String gwSystemIntegrationTestPackage = System.getProperty("gwSystemIntegrationTestPackage");
         ClassGraph graph = new ClassGraph();
         ClassInfoList gwSystemIntegrationTestRunners = graph.whitelistPackages(gwSystemIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWSystemIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found "+gwSystemIntegrationTestRunners.size()+" Unit Test Runners in the package: "+gwSystemIntegrationTestPackage);
+        System.out.println("Found " + gwSystemIntegrationTestRunners.size() + " Unit Test Runners in the package: " + gwSystemIntegrationTestPackage);
         gwSystemIntegrationTestRunners.forEach(classInfo -> {
             try {
                 classInfo.loadClass(IGWSystemIntegrationTestRunner.class).getConstructor().newInstance().runTests();
@@ -98,7 +99,6 @@ public class SuiteGenerator {
     private static void startTests(String threadCounts, String basePackage) {
         basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
         int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
-        String suiteName = System.getProperty("SuiteName") == null ? "Regression" : System.getProperty("SuiteName");
         System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
 
@@ -111,28 +111,28 @@ public class SuiteGenerator {
         boolean shouldRunAPITests = System.getProperty("EnableAPITests") != null && System.getProperty("EnableAPITests").equalsIgnoreCase("true");
 
         /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
-        if(shouldRunSmokeTests){
+        if (shouldRunSmokeTests) {
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
-            System.out.println("Adding smoke tests: "+smokeTests.size());
+            System.out.println("Adding smoke tests: " + smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
-            suitesToRun.add(createSuite("SmokeTests", smokeTests, threadCount));
+            suitesToRun.add(createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
         }
 
-        if(shouldRunAPITests){
+        if (shouldRunAPITests) {
             ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
             System.out.println("Adding API Tests: " + apiTests.size());
             regressionTests = regressionTests.exclude(apiTests);
-            suitesToRun.add(createSuite("APITests", apiTests, threadCount));
+            suitesToRun.add(createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
         }
 
         /*  End Filtering and start main regression tests */
 
-        if(shouldRunRegressionTests){
-            System.out.println("Adding Regression Tests: "+regressionTests.size());
-            suitesToRun.add(createSuite(suiteName,regressionTests, threadCount));
+        if (shouldRunRegressionTests) {
+            System.out.println("Adding Regression Tests: " + regressionTests.size());
+            suitesToRun.add(createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
         }
 
-        if(!suitesToRun.isEmpty()){
+        if (!suitesToRun.isEmpty()) {
             TestNG testNG = new TestNG();
             testNG.setXmlSuites(suitesToRun);
             testNG.run();
@@ -142,17 +142,17 @@ public class SuiteGenerator {
     }
 
 
-    private static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount){
+    private static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName);
         xmlSuite.setVerbose(1);
 
         // setting suite level parameters (if any)
-        if(!System.getProperty("SuiteLevelParams").isEmpty()){
+        if (!System.getProperty("SuiteLevelParams").isEmpty()) {
             HashMap<String, String> suiteLevelParameters = new HashMap<>();
             String suiteLevelParams = System.getProperty("SuiteLevelParams");
             for (String parameter : suiteLevelParams.split(",")) {
-                if(parameter.contains(":")){
+                if (parameter.contains(":")) {
                     String[] split = parameter.split(":");
                     suiteLevelParameters.put(split[0], split[1]);
                 }

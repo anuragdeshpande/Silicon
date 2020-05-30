@@ -10,7 +10,8 @@ public class DBConnectionDTO {
     private String dbName;
 
     public static final DBConnectionDTO QA_DATA_REPO = new DBConnectionDTO("fbms2048.idfbins.com", "qawizproglobal", "test4work", "QAWIZPROGLOBALDATAREPOSITORY");
-    public static final DBConnectionDTO REPORTING_SERVER = new DBConnectionDTO("FBMSGWSQL-RR01.idfbins.com", "sa", "mau$2ugguidewire", "Regression");
+    public static final DBConnectionDTO TEST_NG_REPORTING_SERVER = new DBConnectionDTO("FBMSGWSQL-RR01.idfbins.com", "sa", "mau$2ugguidewire", "Regression");
+    public static final DBConnectionDTO PERFORMANCE_REPORTING_SERVER = new DBConnectionDTO("FBMSGWSQL-RR01.idfbins.com", "sa", "mau$2ugguidewire", "JMeterPerformanceTesting");
 
 
     public DBConnectionDTO() {

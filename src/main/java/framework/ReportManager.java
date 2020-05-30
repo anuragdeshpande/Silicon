@@ -7,22 +7,21 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
-import framework.database.models.DBConnectionDTO;
-import framework.database.models.SuiteResultsDTO;
-import framework.database.models.TestResultsDTO;
+import framework.database.models.*;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.lang3.Validate;
 import org.testng.Assert;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.annotations.Test;
 
+import javax.swing.plaf.ButtonUI;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -59,6 +58,10 @@ public class ReportManager {
     }
 
     public static ExtentReports initiate(String suiteName) {
+        if(System.getProperty("jenkinsBuildNumber") != null){
+            Validate.notNull(System.getProperty("UUID"));
+            Validate.notBlank(System.getProperty("UUID"));
+        }
         INIT_SUITE_NAME = suiteName;
         extentReports = new ExtentReports();
         extentReports.setReportUsesManualConfiguration(true);
@@ -168,26 +171,33 @@ public class ReportManager {
         int clockMoveAmount = 0;
         String tags = flattenTags(iTestResult);
 
-        if (status.equalsIgnoreCase("Failure")) {
+        if (status.equalsIgnoreCase(Status.FAIL.toString()) || status.equalsIgnoreCase(Status.FATAL.toString())) {
             failureImageURL = REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
-
-        return insertIntoTestResults(clockMove, testCreator, testName, startDate, endDate, failureImageURL, status,
-                failureReason, buildNumber, suiteName, testRunSource, tags);
+        TestResultsDTO testResultsDTO = TestResultsDTO.getInstance(clockMove, testCreator, testName, startDate, endDate, failureImageURL, Status.valueOf(status.toUpperCase()),failureReason, buildNumber, suiteName, testRunSource, tags);
+        return insertIntoTestResults(testResultsDTO);
 
     }
 
-    public static boolean insertIntoTestResults(boolean clockMove, String testCreator, String testName,
-                                                Timestamp startDate, Timestamp endDate,  String failureImageURL,
-                                                String status, String failureReason, String buildNumber,
-                                                String suiteName, String testRunSource, String tags){
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.REPORTING_SERVER);
+    public static boolean insertIntoTestResults(TestResultsDTO testResultsDTO){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
             return regressionDB
                     .update(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
-                            clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber,
-                            suiteName, testRunSource, tags) > 0;
+                            testResultsDTO.isClockMove(),
+                            testResultsDTO.getTestCreator(),
+                            testResultsDTO.getTestName(),
+                            testResultsDTO.getStartTimeStamp(),
+                            testResultsDTO.getEndTimestamp(),
+                            testResultsDTO.getFailureImageURL(),
+                            testResultsDTO.getStatus().toString(),
+                            testResultsDTO.getFailureReason(),
+                            testResultsDTO.getBuildNumber(),
+                            testResultsDTO.getSuiteName(),
+                            testResultsDTO.getTestRunSource(),
+                            testResultsDTO.getTags(),
+                            testResultsDTO.getUUID()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -195,7 +205,7 @@ public class ReportManager {
     }
 
     public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS){
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.REPORTING_SERVER);
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
         for (int i = 0; i < resultsDTOS.size(); i++) {
             params[i] = resultsDTOS.get(i).getValuesAsObjectArray();
@@ -211,39 +221,37 @@ public class ReportManager {
     static void recordSuiteResults(ISuite iSuite) {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
 //            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
-
-            AtomicInteger passedTests = new AtomicInteger(0);
-            AtomicInteger failedTests = new AtomicInteger(0);
-            AtomicInteger skippedTests = new AtomicInteger(0);
-
-            iSuite.getResults().values().forEach(iSuiteResult -> {
-                ITestContext testContext = iSuiteResult.getTestContext();
-                passedTests.set(passedTests.get() + testContext.getPassedTests().size());
-                failedTests.set(failedTests.get() + testContext.getFailedTests().size());
-                skippedTests.set(skippedTests.get() + testContext.getSkippedTests().size());
-            });
-
-
-            double passPercentage = Math.round((double) passedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
-            double failPercentage = Math.round((double) failedTests.get() / (passedTests.get() + failedTests.get() + skippedTests.get()) * 100);
+            String UUID = System.getProperty("UUID");
+            TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = getReportPath();
-
-            insertIntoSuiteResults(applicationName, passPercentage, failPercentage, skippedTests.get(), jenkinsBuildNumber, iSuite.getName(), reportPath);
+            SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getFatalCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, iSuite.getName(), reportPath);
+            insertIntoSuiteResults(suiteDTO);
         } else {
             System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
         }
 
     }
 
-    public static boolean insertIntoSuiteResults(String applicationName, double passPercentage, double failPercentage, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.REPORTING_SERVER);
+    public static boolean insertIntoSuiteResults(SuiteResultsDTO suiteResultsDTO){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
-            boolean shouldShowSuiteInPowerBI = System.getProperty("MarkAsTestBuild") != null && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
-            boolean shouldMarkSuiteAsTest = !shouldShowSuiteInPowerBI;
             regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
-                    applicationName, passPercentage, failPercentage, skippedTests, jenkinsBuildNumber, suiteName, reportPath, new Timestamp(System.currentTimeMillis()), shouldMarkSuiteAsTest, shouldShowSuiteInPowerBI);
+                    suiteResultsDTO.getApplicationName(),
+                    suiteResultsDTO.getPassedTests(),
+                    suiteResultsDTO.getFailedTests(),
+                    suiteResultsDTO.getSkippedTests(),
+                    suiteResultsDTO.getFatalTests(),
+                    suiteResultsDTO.getWarningTests(),
+                    suiteResultsDTO.getJenkinsBuildNumber(),
+                    suiteResultsDTO.getSuiteName(),
+                    suiteResultsDTO.getReportPath(),
+                    suiteResultsDTO.getSuiteStartTimeStamp(),
+                    suiteResultsDTO.getSuiteEndTimeStamp(),
+                    suiteResultsDTO.isSuiteTestBuild(),
+                    suiteResultsDTO.shouldShowInPowerBI(),
+                    suiteResultsDTO.getUUID());
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

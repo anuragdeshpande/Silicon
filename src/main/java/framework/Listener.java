@@ -15,7 +15,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.*;
 import org.testng.annotations.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -32,6 +31,7 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onStart(ISuite iSuite) {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        System.setProperty("SuiteStartTime", String.valueOf(System.currentTimeMillis()));
         String suiteName = iSuite.getName();
         logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
         this.extentReports = ReportManager.initiate(suiteName+"_"+timeStamp);
@@ -80,7 +80,7 @@ public class Listener implements ISuiteListener, ITestListener{
     public void onTestSuccess(ITestResult iTestResult) {
         ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
         if(writeToDatabase){
-            ReportManager.recordTestResult(iTestResult, "Success");
+            ReportManager.recordTestResult(iTestResult, Status.PASS.toString());
         }
 
     }
@@ -103,14 +103,13 @@ public class Listener implements ISuiteListener, ITestListener{
             String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
             testNode.log(Status.FATAL, iTestResult.getName()+" Failed with critical system failure");
             testNode.fatal(errorMessageFromScreen);
+
             iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
         }
 
         if(writeToDatabase){
-            ReportManager.recordTestResult(iTestResult, "Failure");
+            ReportManager.recordTestResult(iTestResult, testNode.getStatus().toString());
         }
-
-        BrowserFactory.closeCurrentBrowser();
     }
 
     // fires when a test is skipped
@@ -124,7 +123,7 @@ public class Listener implements ISuiteListener, ITestListener{
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
             extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");
             if(writeToDatabase){
-                ReportManager.recordTestResult(iTestResult, "Skipped");
+                ReportManager.recordTestResult(iTestResult, Status.SKIP.toString());
             }
         }
     }
@@ -138,12 +137,12 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
-//        System.out.println("After Test Test");
     }
 
     // Fires at the end of each suite.
     @Override
     public void onFinish(ISuite iSuite) {
+        System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
         ReportManager.recordSuiteResults(iSuite);
