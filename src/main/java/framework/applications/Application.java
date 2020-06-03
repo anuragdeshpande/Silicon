@@ -13,8 +13,9 @@ import java.util.Locale;
 
 abstract public class Application {
     protected Environment environment;
-    private HashMap<String, String> storage = new HashMap<>();
-    private Faker faker = new Faker(Locale.US);
+    private final HashMap<String, String> storage = new HashMap<>();
+    private final HashMap<String, Object> objectStorage = new HashMap<>();
+    private final Faker faker = new Faker(Locale.US);
 
     public Application(){
 
@@ -30,6 +31,10 @@ abstract public class Application {
 
     public HashMap<String, String> getStorage() {
         return storage;
+    }
+
+    public HashMap<String, Object> getObjectStorage(){
+        return objectStorage;
     }
 
     public Faker getFaker() {
