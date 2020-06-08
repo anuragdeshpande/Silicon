@@ -6,22 +6,22 @@ import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
-import framework.database.models.*;
+import framework.database.models.DBConnectionDTO;
+import framework.database.models.SuiteResultsDTO;
+import framework.database.models.TestCountDTO;
+import framework.database.models.TestResultsDTO;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.lang3.Validate;
 import org.testng.Assert;
 import org.testng.ISuite;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 
-import javax.swing.plaf.ButtonUI;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReportManager {
 
@@ -63,10 +62,6 @@ public class ReportManager {
             Validate.notBlank(System.getProperty("UUID"));
         }
         INIT_SUITE_NAME = suiteName;
-        extentReports = new ExtentReports();
-        extentReports.setReportUsesManualConfiguration(true);
-        ExtentHtmlReporter extentReporter;
-
         classMap = new HashMap<>();
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
@@ -77,7 +72,9 @@ public class ReportManager {
             boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
         }
 
-        extentReporter = new ExtentHtmlReporter(FULL_FILE_PATH);
+        ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
+        extentReports = new ExtentReports();
+        extentReports.setReportUsesManualConfiguration(true);
 
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.TEST);
