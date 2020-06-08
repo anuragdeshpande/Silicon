@@ -123,7 +123,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         }
 
         try{
-            PauseTest.createInstance().until(ExpectedConditions.alertIsPresent());
+            PauseTest.createSpecialInstance(1, 1).until(ExpectedConditions.alertIsPresent());
             interact.getDriver().switchTo().alert().accept();
         } catch (Exception e){
             // do nothing
