@@ -17,6 +17,7 @@ import framework.webdriver.PauseTest;
 import org.apache.commons.dbutils.QueryRunner;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -120,6 +121,13 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         if (uiConfirmationWindow.isPresent() && !uiConfirmationWindow.getElement().getAttribute("class").endsWith("x-hide-offsets")) {
             uiConfirmationWindow.clickOkButton();
         }
+
+        try{
+            PauseTest.createInstance().until(ExpectedConditions.alertIsPresent());
+            interact.getDriver().switchTo().alert().accept();
+        } catch (Exception e){
+            // do nothing
+        }
     }
 
 
@@ -159,7 +167,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     private void _login(String username, String password){
         GuidewireInteract interact = getInteractObject();
         if(this.environment == null){
-            Assert.fail("Please call openDefaultEnvironment() or openEnvironment() to open the application");
+            getLogger().info("Environment is not initialized. Opening Default environment");
+            openDefaultEnvironment();
         }
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
@@ -194,4 +203,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         return System.getenv("username") == null ? hostOrComputerName : hostOrComputerName.concat("/:ASCII:" + new StringBuilder(System.getenv("username")).reverse().toString()); // Doing this so that no one points finger looking at logs.
     }
 
+    public Environment getEnvironment() {
+        return environment;
+    }
 }
