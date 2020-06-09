@@ -140,7 +140,7 @@ public class Environment extends GenericEnvironment {
     private static Environment buildFor(Object[] rowResultFromDB){
         Environment resolvedEnvironment = new Environment();
         resolvedEnvironment.setEnvironmentUrl(String.valueOf(rowResultFromDB[0]));
-        resolvedEnvironment.setCanMoveClock(Boolean.parseBoolean(String.valueOf(rowResultFromDB[1])));
+        resolvedEnvironment.setCanMoveClock(Boolean.parseBoolean(String.valueOf(rowResultFromDB[2])));
         resolvedEnvironment.setHasRoundTripDocumentSupport(Boolean.parseBoolean(String.valueOf(rowResultFromDB[4])));
         DBConnectionDTO connectionDTO = new DBConnectionDTO();
         connectionDTO.setDbName(String.valueOf(rowResultFromDB[5]));
