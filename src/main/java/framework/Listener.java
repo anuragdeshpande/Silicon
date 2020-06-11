@@ -78,7 +78,10 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test is successful
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
+        ExtentTest test = ReportManager.getTest(iTestResult.getName());
+        test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
+        test.pass(iTestResult.getName() + ": Passed");
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, Status.PASS.toString());
         }
@@ -89,6 +92,9 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onTestFailure(ITestResult iTestResult) {
         ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
+        testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
+
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
@@ -116,6 +122,8 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
+        extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         if(extentLogger == null){
             extentLogger = ReportManager.getClass(iTestResult.getTestClass().getRealClass().getSimpleName());
         }

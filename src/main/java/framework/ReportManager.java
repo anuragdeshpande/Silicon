@@ -74,7 +74,6 @@ public class ReportManager {
 
         ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
         extentReports = new ExtentReports();
-        extentReports.setReportUsesManualConfiguration(true);
 
         // Configurations
         extentReporter.setAnalysisStrategy(AnalysisStrategy.TEST);
