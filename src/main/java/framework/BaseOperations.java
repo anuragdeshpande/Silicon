@@ -1,6 +1,8 @@
 package framework;
 
 import annotations.AutomatedTest;
+import annotations.PostResetScript;
+import annotations.PreResetScript;
 import com.aventstack.extentreports.ExtentReports;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
@@ -43,7 +45,8 @@ public class BaseOperations {
 
     @BeforeMethod(description = "BeforeMethod")
     public void beforeMethod(Method method, ITestResult iTestResult) {
-        String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        String testName = testMethod.getName();
         String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
 
         if (!className.equalsIgnoreCase("TestRunner")) {
@@ -51,9 +54,12 @@ public class BaseOperations {
             ReportManager.recordClass(className, xmlTestName);
         }
 
-        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
+        Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
         ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
-        if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class).length == 0 && testAnnotations.length > 0) {
+        boolean hasNoAutomatedTestAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class).length == 0;
+        boolean hasNoPostResetScriptAnnotation = testMethod.getAnnotationsByType(PreResetScript.class).length == 0;
+        boolean hasNoPreResetScriptAnnotation = testMethod.getAnnotationsByType(PostResetScript.class).length == 0;
+        if ((hasNoAutomatedTestAnnotation || ( hasNoPostResetScriptAnnotation||hasNoPreResetScriptAnnotation)) && testAnnotations.length > 0) {
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Skipping Test : " + testName + " : No @AutomatedTest annotation found.");
         }

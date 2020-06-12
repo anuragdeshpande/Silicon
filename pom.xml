@@ -134,7 +134,7 @@
     <dependency>
       <groupId>com.idfbins</groupId>
       <artifactId>RegressionAnnotations</artifactId>
-      <version>1.16</version>
+      <version>1.25</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>
