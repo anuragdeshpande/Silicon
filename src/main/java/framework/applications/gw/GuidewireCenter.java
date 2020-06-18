@@ -19,11 +19,16 @@ import framework.integrations.gwServices.debugToolsAPI.cc.CCDebugToolsAPIPortTyp
 import framework.integrations.gwServices.debugToolsAPI.pc.PCDebugToolsAPI;
 import framework.integrations.gwServices.debugToolsAPI.pc.PCDebugToolsAPIPortType;
 import framework.integrations.gwServices.debugToolsAPI.pc.WsiAuthenticationException_Exception;
+import framework.integrations.gwServices.gosuScriptRunner.GosuScriptRunner;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.time.DateUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -32,17 +37,19 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingProvider;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Objects;
 
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
-        IBatchServer, ITempLogin, IErrorHandling, IGWPages, ICanMoveClock {
+        IBatchServer, ITempLogin, IErrorHandling, IGWPages, ICanMoveClock, ICanStartRemoteDataChange {
 
     private String overrideEnvironmentURL = null;
 
@@ -302,6 +309,30 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         } catch (MalformedURLException e) {
             getLogger().error("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void runGosuScript(String gspAbsoluteFilePath, String associatedJSONAbsoluteFilePath) {
+        String referenceName;
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource("scripts/agents/agentsMeta.json")).getPath()));
+           referenceName = jsonObject.get("ExternalReference").toString();
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        GosuScriptRunner<GuidewireCenter> runner = new GosuScriptRunner<>(this);
+        runner.registerScript(gspAbsoluteFilePath, associatedJSONAbsoluteFilePath);
+        runner.runScript(referenceName);
+        Date currentDate = new Date();
+        Date endDate = DateUtils.addHours(currentDate, 1);
+        while (runner.getStatus(referenceName).equalsIgnoreCase("Executing")){
+            if(new Date().after(endDate)){
+                throw new RuntimeException("Script is still executing after waiting for an hour. Exiting. Script might be still running. Cannot make sure.");
+            }
         }
     }
 
