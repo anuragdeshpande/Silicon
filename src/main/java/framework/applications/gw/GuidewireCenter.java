@@ -313,11 +313,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     @Override
-    public void runGosuScript(String gspAbsoluteFilePath, String associatedJSONAbsoluteFilePath) {
+    public void runGosuScript(String gspFilePathRelativeToResourcesDirectory, String jsonFilePathRelativeToResourcesDirectory) {
         String referenceName;
         JSONParser parser = new JSONParser();
         try {
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource("scripts/agents/agentsMeta.json")).getPath()));
+            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource(gspFilePathRelativeToResourcesDirectory)).getPath()));
            referenceName = jsonObject.get("ExternalReference").toString();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
@@ -325,7 +325,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
 
         GosuScriptRunner<GuidewireCenter> runner = new GosuScriptRunner<>(this);
-        runner.registerScript(gspAbsoluteFilePath, associatedJSONAbsoluteFilePath);
+        runner.registerScript(gspFilePathRelativeToResourcesDirectory, jsonFilePathRelativeToResourcesDirectory);
         runner.runScript(referenceName);
         Date currentDate = new Date();
         Date endDate = DateUtils.addHours(currentDate, 1);
