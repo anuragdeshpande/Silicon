@@ -1,7 +1,7 @@
 package framework.integrations.vin;
 
 import framework.constants.ReactionTime;
-import framework.integrations.http.HTTPGet;
+import framework.integrations.http.HTTPOperations;
 import framework.webdriver.BrowserFactory;
 
 import java.io.*;
@@ -61,6 +61,6 @@ class StockVINNumbers implements Serializable {
     }
 
     static String getVIN(String type) {
-        return HTTPGet.makeGETRequest("http://randomvin.com/getvin.php?type=" + type);
+        return HTTPOperations.makeGETRequest("http://randomvin.com/getvin.php?type=" + type);
     }
 }
