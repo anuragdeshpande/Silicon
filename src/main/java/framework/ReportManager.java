@@ -35,7 +35,8 @@ import java.util.List;
 public class ReportManager {
 
     // Network Storage Location
-    private static String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
+    private static final String GLOBAL_SUITE_NAME = System.getProperty("globalSuiteName") == null ? "" : System.getProperty("globalSuiteName");
+    private static final String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
     public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp" : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
     private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
     private static String INIT_SUITE_NAME;
@@ -66,10 +67,13 @@ public class ReportManager {
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
+        if(!GLOBAL_SUITE_NAME.isEmpty()) {
+            REPORT_DIRECTORY_LOCATION = REPORT_DIRECTORY_LOCATION + "\\" + GLOBAL_SUITE_NAME;
+        }
         FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
-            boolean mkdir = new File(REPORT_DIRECTORY_LOCATION).mkdir();
+            new File(REPORT_DIRECTORY_LOCATION).mkdirs();
         }
 
         ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
