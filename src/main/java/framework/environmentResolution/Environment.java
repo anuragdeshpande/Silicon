@@ -4,6 +4,7 @@ import framework.database.ConnectionManager;
 import framework.database.models.DBConnectionDTO;
 import framework.enums.ApplicationNames;
 import framework.enums.Environments;
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
 
 import java.sql.SQLException;
@@ -32,7 +33,7 @@ public class Environment extends GenericEnvironment {
         this.applicationName = applicationName;
     }
 
-    private Environment(){
+    private Environment() {
 
     }
 
@@ -84,7 +85,7 @@ public class Environment extends GenericEnvironment {
         this.applicationName = applicationName;
     }
 
-    public static Environment resolve(ApplicationNames applicationName, Environments environment){
+    public static Environment resolve(ApplicationNames applicationName, Environments environment) {
         String ENVIRONMENT_RESOLVER_QUERY = "select * from " +
                 "(SELECT url.Url as ApplicationUrl, url.JenkinsDeployJobUrl as JenkinsJobUrl, env.ClockMove as MoveClock," +
                 "url.LogPath as ApplicationLogPath, url.RoundtripDocuments as DocumentRoundTrip, " +
@@ -93,23 +94,61 @@ public class Environment extends GenericEnvironment {
                 "FROM GWEnvs_Urls url " +
                 "INNER JOIN GWEnvs_UrlTypes urlType ON url.UrlTypesID = urlType.UrlTypesID " +
                 "INNER JOIN GWEnvs_Envs env ON url.EnvsID = env.EnvsID) as a " +
-                "where a.ApplicationName = '"+applicationName.name().toUpperCase()+"' " +
-                "and a.EnvironmentName = '"+environment.name().toUpperCase()+"'";
-        try{
+                "where a.ApplicationName = '" + applicationName.name().toUpperCase() + "' " +
+                "and a.EnvironmentName = '" + environment.name().toUpperCase() + "'";
+        try {
             Object[] result = ConnectionManager.getDBConnectionTo(DBConnectionDTO.QA_DATA_REPO)
                     .query(ENVIRONMENT_RESOLVER_QUERY, ConnectionManager.getResultHandlerInstance()).get(0);
 
             return buildFor(result);
         } catch (SQLException e) {
-            Assert.fail("Cannot connect to the data repo to get environment details"+ e.getLocalizedMessage());
-        } catch (NullPointerException npe){
-            Assert.fail("No Matching Results found for the given details: Application:"+applicationName.name()+" Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
+            Assert.fail("Cannot connect to the data repo to get environment details" + e.getLocalizedMessage());
+        } catch (NullPointerException npe) {
+            Assert.fail("No Matching Results found for the given details: Application:" + applicationName.name() + " Environment: " + environment.name() + " Exception: " + npe.getLocalizedMessage());
         }
+
 
         return null;
     }
 
-    public static List<Environment> resolveGWInstancesForPortalEnvironment(Environments environment){
+    public static Environment resolveLocal(ApplicationNames applicationName) {
+        String localhostName = System.getenv("COMPUTERNAME");
+        Environment environment = new Environment();
+        environment.setCanMoveClock(true);
+        environment.setEnvironmentName(Environments.LOCAL);
+        environment.setHasRoundTripDocumentSupport(false);
+        switch (applicationName) {
+            case AB:
+                environment.setApplicationName(ApplicationNames.AB);
+                environment.setEnvironmentUrl("http://localhost:8280/ab");
+                DBConnectionDTO abDTO = new DBConnectionDTO(localhostName, "abUserLocal", "password", localhostName+"_ContactManager");
+                environment.setDbConnectionDetails(abDTO);
+                break;
+            case PC:
+                environment.setApplicationName(ApplicationNames.PC);
+                environment.setEnvironmentUrl("http://localhost:8180/pc");
+                DBConnectionDTO pcDTO = new DBConnectionDTO(localhostName, "pcUserLocal", "password", localhostName+"_PolicyCenter");
+                environment.setDbConnectionDetails(pcDTO);
+                break;
+            case CC:
+                environment.setApplicationName(ApplicationNames.CC);
+                environment.setEnvironmentUrl("http://localhost:8080/cc");
+                DBConnectionDTO ccDTO = new DBConnectionDTO(localhostName, "ccUserLocal", "password", localhostName+"_ClaimCenter");
+                environment.setDbConnectionDetails(ccDTO);
+                break;
+            case BC:
+                environment.setApplicationName(ApplicationNames.BC);
+                environment.setEnvironmentUrl("http://localhost:8580/bc");
+                DBConnectionDTO bcDTO = new DBConnectionDTO(localhostName, "bcUserLocal", "password", localhostName+"_BillingCenter");
+                environment.setDbConnectionDetails(bcDTO);
+                break;
+            default:
+                throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+        }
+        return environment;
+    }
+
+    public static List<Environment> resolveGWInstancesForPortalEnvironment(Environments environment) {
         String ENVIRONMENT_RESOLVER_QUERY = "select * from " +
                 "(SELECT url.Url as ApplicationUrl, url.JenkinsDeployJobUrl as JenkinsJobUrl, env.ClockMove as MoveClock," +
                 "url.LogPath as ApplicationLogPath, url.RoundtripDocuments as DocumentRoundTrip, " +
@@ -119,8 +158,8 @@ public class Environment extends GenericEnvironment {
                 "INNER JOIN GWEnvs_UrlTypes urlType ON url.UrlTypesID = urlType.UrlTypesID " +
                 "INNER JOIN GWEnvs_Envs env ON url.EnvsID = env.EnvsID) as a " +
                 "where a.ApplicationName in ('CC', 'PC', 'BC', 'AB')" +
-                "and a.EnvironmentName = '"+environment.name().toUpperCase()+"'";
-        try{
+                "and a.EnvironmentName = '" + environment.name().toUpperCase() + "'";
+        try {
             List<Object[]> results = ConnectionManager.getDBConnectionTo(DBConnectionDTO.QA_DATA_REPO)
                     .query(ENVIRONMENT_RESOLVER_QUERY, ConnectionManager.getResultHandlerInstance());
             ArrayList<Environment> resolvedEnvironments = new ArrayList<>();
@@ -129,15 +168,15 @@ public class Environment extends GenericEnvironment {
             });
             return resolvedEnvironments;
         } catch (SQLException e) {
-            Assert.fail("Cannot connect to the data repo to get environment details"+ e.getLocalizedMessage());
-        } catch (NullPointerException npe){
-            Assert.fail("No Matching Results found for the given details: Environment: "+environment.name()+" Exception: "+npe.getLocalizedMessage());
+            Assert.fail("Cannot connect to the data repo to get environment details" + e.getLocalizedMessage());
+        } catch (NullPointerException npe) {
+            Assert.fail("No Matching Results found for the given details: Environment: " + environment.name() + " Exception: " + npe.getLocalizedMessage());
         }
 
         return null;
     }
 
-    private static Environment buildFor(Object[] rowResultFromDB){
+    private static Environment buildFor(Object[] rowResultFromDB) {
         Environment resolvedEnvironment = new Environment();
         resolvedEnvironment.setEnvironmentUrl(String.valueOf(rowResultFromDB[0]));
         resolvedEnvironment.setCanMoveClock(Boolean.parseBoolean(String.valueOf(rowResultFromDB[2])));
