@@ -3,7 +3,6 @@ import annotations.SmokeTest;
 import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
-import framework.webdriver.BrowserFactory;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.testng.TestNG;
@@ -142,7 +141,7 @@ public class SuiteGenerator {
     }
 
 
-    private static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
+    public static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName);
         xmlSuite.setVerbose(1);
