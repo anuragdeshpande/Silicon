@@ -15,6 +15,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.*;
 import org.testng.annotations.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -35,7 +36,7 @@ public class Listener implements ISuiteListener, ITestListener{
         String suiteName = iSuite.getName();
         logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
         this.extentReports = ReportManager.initiate(suiteName+"_"+timeStamp);
-        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite");
+        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
     }
 
 
