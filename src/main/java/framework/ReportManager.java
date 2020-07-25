@@ -2,7 +2,6 @@ package framework;
 
 import annotations.AutomatedTest;
 import annotations.AutomationHistory;
-import com.aventstack.extentreports.AnalysisStrategy;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -80,7 +79,6 @@ public class ReportManager {
         extentReports = new ExtentReports();
 
         // Configurations
-        extentReporter.setAnalysisStrategy(AnalysisStrategy.TEST);
         extentReporter.config().enableTimeline(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());

@@ -36,7 +36,7 @@ public class Listener implements ISuiteListener, ITestListener{
         String suiteName = iSuite.getName();
         logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
         this.extentReports = ReportManager.initiate(suiteName+"_"+timeStamp);
-        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
+        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild", "true").equalsIgnoreCase("false");
     }
 
 
