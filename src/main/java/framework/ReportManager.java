@@ -103,7 +103,9 @@ public class ReportManager {
     public static ExtentTest recordClass(String className, String xmlTestName) {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
-            BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
+            if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
+                BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
+            }
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
@@ -114,7 +116,9 @@ public class ReportManager {
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
-            BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
+            if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+                BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
+            }
         }
 
         return xmlTestMap.get(xmlTestName);
@@ -125,7 +129,9 @@ public class ReportManager {
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(className).createNode(testName, description);
             testMap.put(testName, extentTest);
-            BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
+            if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+                BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
+            }
         }
 
         return testMap.get(testName);
