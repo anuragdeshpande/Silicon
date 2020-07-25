@@ -24,7 +24,7 @@ public class PortalEnvironment extends GenericEnvironment {
 
         // Resolving CC
         interact.withDOM().injectInfoMessage("Fetching GW Connection details for Portals " + gwEnvironmentPortalUses.name() + " Environment");
-        List<Environment> environments = Environment.resolveGWInstancesForPortalEnvironment(Environments.DEV);
+        List<Environment> environments = Environment.resolveGWInstancesForPortalEnvironment(this.gwEnvironmentPortalUses);
         assert environments != null;
         for (Environment environment : environments) {
             switch (environment.getApplicationName()) {
