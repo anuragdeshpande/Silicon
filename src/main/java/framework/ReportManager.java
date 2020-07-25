@@ -90,7 +90,7 @@ public class ReportManager {
         return extentReports;
     }
 
-    static ExtentTest recordSuite(String suiteName) {
+    public static ExtentTest recordSuite(String suiteName) {
         if (!suiteMap.containsKey(suiteName)) {
             ExtentTest suite = extentReports.createTest("SuiteLogger - " + suiteName);
             suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
@@ -100,7 +100,7 @@ public class ReportManager {
         return suiteMap.get(suiteName);
     }
 
-    static ExtentTest recordClass(String className, String xmlTestName) {
+    public static ExtentTest recordClass(String className, String xmlTestName) {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
             BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
@@ -110,7 +110,7 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
+    public static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
@@ -121,7 +121,7 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    static ExtentTest recordTest(String testName, String className, String description) {
+    public static ExtentTest recordTest(String testName, String className, String description) {
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(className).createNode(testName, description);
             testMap.put(testName, extentTest);
@@ -152,7 +152,7 @@ public class ReportManager {
         return suiteMap.get(suiteName);
     }
 
-    static boolean recordTestResult(ITestResult iTestResult, String status) {
+    public static boolean recordTestResult(ITestResult iTestResult, String status) {
         AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
 
         Timestamp startDate = new Timestamp(iTestResult.getStartMillis());
@@ -216,7 +216,7 @@ public class ReportManager {
         }
     }
 
-    static void recordSuiteResults(ISuite iSuite) {
+    public static void recordSuiteResults(ISuite iSuite) {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
 //            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             String UUID = System.getProperty("UUID");
