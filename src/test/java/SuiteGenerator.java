@@ -3,21 +3,19 @@ import annotations.SmokeTest;
 import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
+import framework.suiteManager.SuiteCreator;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
-import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
-import org.testng.xml.XmlTest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class SuiteGenerator {
+    private static final SuiteCreator suiteCreator = new SuiteCreator();
 
     public static void main(String[] args) {
         boolean runUITests =
@@ -114,21 +112,21 @@ public class SuiteGenerator {
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
             System.out.println("Adding smoke tests: " + smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
-            suitesToRun.add(createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
+            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
         }
 
         if (shouldRunAPITests) {
             ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
             System.out.println("Adding API Tests: " + apiTests.size());
             regressionTests = regressionTests.exclude(apiTests);
-            suitesToRun.add(createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
+            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
         }
 
         /*  End Filtering and start main regression tests */
 
         if (shouldRunRegressionTests) {
             System.out.println("Adding Regression Tests: " + regressionTests.size());
-            suitesToRun.add(createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
+            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
         }
 
         if (!suitesToRun.isEmpty()) {
@@ -141,58 +139,5 @@ public class SuiteGenerator {
     }
 
 
-    public static XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
-        XmlSuite xmlSuite = new XmlSuite();
-        xmlSuite.setName(suiteName);
-        xmlSuite.setVerbose(1);
 
-        // setting suite level parameters (if any)
-        if (!System.getProperty("SuiteLevelParams").isEmpty()) {
-            HashMap<String, String> suiteLevelParameters = new HashMap<>();
-            String suiteLevelParams = System.getProperty("SuiteLevelParams");
-            for (String parameter : suiteLevelParams.split(",")) {
-                if (parameter.contains(":")) {
-                    String[] split = parameter.split(":");
-                    suiteLevelParameters.put(split[0], split[1]);
-                }
-            }
-            xmlSuite.setParameters(suiteLevelParameters);
-        }
-        if (threadCount > 1) {
-            xmlSuite.setParallel(XmlSuite.ParallelMode.TESTS);
-        }
-
-        xmlSuite.setThreadCount(threadCount);
-        ArrayList<String> listeners = new ArrayList<>();
-        listeners.add(System.getProperty("TestNGListener", "framework.Listener"));
-        xmlSuite.setListeners(listeners);
-
-        testClasses.forEach(classInfo -> {
-            // Add Test
-            XmlTest xmlTest = new XmlTest(xmlSuite);
-            xmlTest.setName(classInfo.getSimpleName());
-            xmlTest.setPreserveOrder(true);
-            if (threadCount > 1) {
-                xmlTest.setParallel(XmlSuite.ParallelMode.TESTS);
-            }
-            xmlTest.setThreadCount(threadCount);
-
-            // Add Classes
-            LinkedList<XmlClass> classes = new LinkedList<>();
-            XmlClass xmlClass = new XmlClass();
-            xmlClass.setName(classInfo.getName());
-            classes.add(xmlClass);
-            xmlTest.setClasses(classes);
-
-            if (Boolean.valueOf(System.getProperty("isClockMove"))) {
-                xmlTest.addIncludedGroup("ClockMove");
-            } else {
-                xmlTest.addExcludedGroup("ClockMove");
-            }
-        });
-
-        System.out.println(xmlSuite.toXml());
-        return xmlSuite;
-
-    }
 }
