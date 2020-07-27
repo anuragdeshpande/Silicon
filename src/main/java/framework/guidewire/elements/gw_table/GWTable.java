@@ -6,11 +6,10 @@ import framework.guidewire.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
+import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,7 +157,7 @@ public class GWTable extends UIElement implements IGWUITable{
     }
 
     public void clickCheckBoxWithLabel(String label) {
-        new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).clickCheckbox();
+        new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).markCheckBox();
     }
 
     public List<GWRow> getRows() {

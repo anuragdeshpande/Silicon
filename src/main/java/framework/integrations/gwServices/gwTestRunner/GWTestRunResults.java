@@ -55,16 +55,16 @@ public class GWTestRunResults {
                 }
                 if (!testCase.getError().isEmpty()) {
                     testCase.getError().forEach(error -> {
-                        test.fatal(error.getType());
-                        test.fatal(MarkupHelper.createCodeBlock(error.getMessage().replaceAll("   ", "  ")
+                        test.fail(error.getType());
+                        test.fail(MarkupHelper.createCodeBlock(error.getMessage().replaceAll("   ", "  ")
                                 .replaceAll("  ", "\n").replaceAll("\nat", "\n\tat")));
                     });
                 }
 
                 if (!testCase.getFailure().isEmpty()) {
                     testCase.getFailure().forEach(failure -> {
-                        test.fatal(failure.getType());
-                        test.fatal(MarkupHelper.createCodeBlock(failure.getMessage().replaceAll("   ", "  ")
+                        test.fail(failure.getType());
+                        test.fail(MarkupHelper.createCodeBlock(failure.getMessage().replaceAll("   ", "  ")
                                 .replaceAll("  ", "\n").replaceAll("\nat", "\n\tat")));
                     });
                 }
@@ -122,7 +122,7 @@ public class GWTestRunResults {
 
                 if (testcase.getError().size() > 0) {
                     failureReason = testcase.getError().get(0).getType();
-                    status = Status.FATAL;
+                    status = Status.FAIL;
                 }
 
                 TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
@@ -152,7 +152,7 @@ public class GWTestRunResults {
                     }
                 });
             }
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
         return false;

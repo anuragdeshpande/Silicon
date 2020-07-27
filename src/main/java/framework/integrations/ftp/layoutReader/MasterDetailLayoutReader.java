@@ -32,7 +32,7 @@ public class MasterDetailLayoutReader extends LayoutReader {
 
             // found detail line without a master line
             if(!masterDetail.hasMasterLine()){
-                logger.fatal("Cannot process detail line without a master line. Invalid File Format.");
+                logger.fail("Cannot process detail line without a master line. Invalid File Format.");
                 throw new InvalidLineFormatException("Detail Line found without a master line.");
             }
 
@@ -53,7 +53,7 @@ public class MasterDetailLayoutReader extends LayoutReader {
 
             // no detail lines got another master line
             if (!masterDetail.hasDetailLines()) {
-                logger.fatal("Multiple Master Lines without detail lines. Invalid File Format.");
+                logger.fail("Multiple Master Lines without detail lines. Invalid File Format.");
                 throw new InvalidLineFormatException("Multiple Master Lines without Duplicate Lines");
             }
         }
@@ -73,7 +73,7 @@ public class MasterDetailLayoutReader extends LayoutReader {
 
         String errorMessage = "Unknown Start Character on line: " + line.substring(0, 10) + "...";
         Assert.fail(errorMessage);
-        logger.fatal(errorMessage);
+        logger.fail(errorMessage);
 
         throw new InvalidLineFormatException(errorMessage);
     }

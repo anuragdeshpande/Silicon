@@ -255,7 +255,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             abDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
 
         } catch (WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.cc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.bc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.ab.WsiAuthenticationException_Exception e) {
-            getLogger().error(e);
+            getLogger().fail(e);
             Assert.fail("Failed to move clock: " + e.getLocalizedMessage());
         }
 
@@ -270,7 +270,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             initiateService((BindingProvider) service, "su", "gw");
             return service;
         } catch (MalformedURLException e) {
-            getLogger().error("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
+            getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
@@ -283,7 +283,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             initiateService((BindingProvider) service, "su", "gw");
             return service;
         } catch (MalformedURLException e) {
-            getLogger().error("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
+            getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
@@ -295,7 +295,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             initiateService((BindingProvider) service, "su", "gw");
             return service;
         } catch (MalformedURLException e) {
-            getLogger().error("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
+            getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
@@ -307,7 +307,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             initiateService((BindingProvider) service, "su", "gw");
             return service;
         } catch (MalformedURLException e) {
-            getLogger().error("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
+            getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
@@ -340,7 +340,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(GregorianCalendar.from(date.toLocalDate().atStartOfDay(ZoneId.systemDefault())));
         } catch (DatatypeConfigurationException e) {
-            RegressionLogger.getTestLogger().error("Could not convert Date to XMLGregorian Calandar: " + e.getLocalizedMessage());
+            RegressionLogger.getTestLogger().fail("Could not convert Date to XMLGregorian Calandar: " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }

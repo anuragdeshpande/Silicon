@@ -7,7 +7,6 @@ public class SuiteResultsDTO {
     private int passedTests;
     private int failedTests;
     private int skippedTests;
-    private int fatalTests;
     private int warningTests;
     private String jenkinsBuildNumber;
     private String suiteName;
@@ -18,7 +17,7 @@ public class SuiteResultsDTO {
     private Timestamp suiteStartTimeStamp;
     private Timestamp suiteEndTimeStamp;
 
-    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int fatalTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
+    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
         this.applicationName = applicationName;
         this.passedTests = passedTests;
         this.failedTests = failedTests;
@@ -26,7 +25,6 @@ public class SuiteResultsDTO {
         this.jenkinsBuildNumber = jenkinsBuildNumber;
         this.suiteName = suiteName;
         this.reportPath = reportPath;
-        this.fatalTests = fatalTests;
         this.warningTests = warningTests;
         this.UUID = System.getProperty("UUID");
         this.shouldShowInPowerBI = System.getProperty("MarkAsTestBuild") != null && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
@@ -35,8 +33,8 @@ public class SuiteResultsDTO {
         this.suiteEndTimeStamp = new Timestamp(Long.parseLong(System.getProperty("SuiteEndTime")));
     }
 
-    public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int fatalTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath){
-        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, fatalTests, warningTests, jenkinsBuildNumber, suiteName, reportPath);
+    public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath){
+        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, warningTests, jenkinsBuildNumber, suiteName, reportPath);
     }
 
     public String getApplicationName() {
@@ -93,15 +91,6 @@ public class SuiteResultsDTO {
 
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
-    }
-
-
-    public int getFatalTests() {
-        return fatalTests;
-    }
-
-    public void setFatalTests(int fatalTests) {
-        this.fatalTests = fatalTests;
     }
 
     public int getWarningTests() {

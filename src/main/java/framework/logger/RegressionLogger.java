@@ -23,10 +23,8 @@ import java.util.Date;
 public class RegressionLogger {
 
     private Logger logger;
-    private ExtentTest extentLogger;
-    private boolean isSuite;
-    private String testName;
-    private String testClassName;
+    private final ExtentTest extentLogger;
+    private final boolean isSuite;
 
     public RegressionLogger(Logger logger, ExtentTest extentLogger, boolean isSuite) {
         this.logger = logger;
@@ -36,29 +34,6 @@ public class RegressionLogger {
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
     }
-
-    public void debug(Object message) {
-        if (isSuite) {
-            logger.debug(message);
-            extentLogger.log(Status.DEBUG, message.toString());
-        } else {
-            System.out.println(message);
-        }
-
-    }
-
-    public void debug(Object message, Throwable e) {
-        if (isSuite) {
-            logger.debug(message, e);
-            extentLogger.log(Status.DEBUG, message.toString());
-            extentLogger.log(Status.DEBUG, e);
-        } else {
-            System.out.println(message);
-            e.printStackTrace();
-        }
-
-    }
-
 
     public void info(Object message) {
         if (isSuite) {
@@ -75,6 +50,28 @@ public class RegressionLogger {
             logger.info(message, e);
             extentLogger.log(Status.INFO, message.toString());
             extentLogger.log(Status.INFO, e);
+        } else {
+            System.out.println(message);
+            e.printStackTrace();
+        }
+
+    }
+
+    public void fail(Object message) {
+        if (isSuite) {
+            logger.error(message);
+            extentLogger.log(Status.FAIL, message.toString());
+        } else {
+            System.out.println(message);
+        }
+
+    }
+
+    public void fail(Object message, Throwable e) {
+        if (isSuite) {
+            logger.error(message, e);
+            extentLogger.log(Status.FAIL, message.toString());
+            extentLogger.log(Status.FAIL, e);
         } else {
             System.out.println(message);
             e.printStackTrace();
@@ -105,81 +102,10 @@ public class RegressionLogger {
 
     }
 
-    public void fatal(Object message) {
-        if (isSuite) {
-            logger.fatal(message);
-            extentLogger.log(Status.FATAL, message.toString());
-        } else {
-            System.out.println(message);
-        }
-
-    }
-
-    public void fatal(Object message, Throwable e) {
-        if (isSuite) {
-            logger.fatal(message, e);
-            extentLogger.log(Status.FATAL, message.toString());
-            extentLogger.log(Status.FATAL, e);
-        } else {
-            System.out.println(message);
-            e.printStackTrace();
-        }
-
-    }
-
-    public void trace(Object message) {
-        if (isSuite) {
-            logger.trace(message);
-            extentLogger.log(Status.DEBUG, message.toString());
-        } else {
-            System.out.println(message);
-        }
-
-    }
-
-    public void trace(Object message, Throwable e) {
-        if (isSuite) {
-            logger.trace(message, e);
-            extentLogger.log(Status.DEBUG, message.toString());
-            extentLogger.log(Status.DEBUG, e);
-        } else {
-            System.out.println(message);
-            e.printStackTrace();
-        }
-
-    }
-
-    public void error(Object message) {
-        if (isSuite) {
-            logger.error(message);
-            extentLogger.log(Status.ERROR, message.toString());
-        } else {
-            System.out.println(message);
-        }
-
-    }
-
-    public void error(Object message, Throwable e) {
-        if (isSuite) {
-            logger.error(message, e);
-            extentLogger.log(Status.ERROR, message.toString());
-            extentLogger.log(Status.ERROR, e);
-        } else {
-            System.out.println(message);
-            e.printStackTrace();
-        }
-
-    }
-
     public void captureScreenshot(String screenShotTitle) {
         if(this.isSuite){
-            try {
-                info("Screen shot Captured:" + screenShotTitle);
-                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
-            } catch (IOException e) {
-                warn(screenShotTitle);
-                warn("Could not save on demand screen shot", e);
-            }
+            info("Screen shot Captured:" + screenShotTitle);
+            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
         } else {
             System.out.println("Skipping screen shot capture as Running test locally");
         }

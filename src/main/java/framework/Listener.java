@@ -59,7 +59,7 @@ public class Listener implements ISuiteListener, ITestListener{
         ExtentTest testLogger = ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
-            testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
+            testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
             iTestResult.setStatus(ITestResult.SKIP);
             throw new SkipException("Fatal Error: @AutomatedTest annotation not found.");
         } else {
@@ -108,8 +108,8 @@ public class Listener implements ISuiteListener, ITestListener{
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if(GuidewireInteract.hasErrorMessageOnScreen()){
             String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
-            testNode.log(Status.FATAL, iTestResult.getName()+" Failed with critical system failure");
-            testNode.fatal(errorMessageFromScreen);
+            testNode.log(Status.FAIL, iTestResult.getName()+" Failed with critical system failure");
+            testNode.fail(errorMessageFromScreen);
 
             iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
         }
@@ -125,9 +125,6 @@ public class Listener implements ISuiteListener, ITestListener{
         ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
         extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
-        if(extentLogger == null){
-            extentLogger = ReportManager.getClass(iTestResult.getTestClass().getRealClass().getSimpleName());
-        }
         extentLogger.skip(iTestResult.getName() + ": Skipped");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
             extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");

@@ -28,12 +28,10 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
     public List<PortalTableCell> getCellsMatchingXPathFilter(By xpathFilter) {
         ArrayList<PortalTableCell> cells = new ArrayList<>();
         try{
-            getElement().findElements(xpathFilter).forEach(element -> {
-                cells.add(new PortalTableCell(element));
-            });
+            getElement().findElements(xpathFilter).forEach(element -> cells.add(new PortalTableCell(element)));
             return cells;
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);;
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -43,7 +41,7 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
         try{
             return new PortalTableCell(getElement().findElement(xPathFilter));
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -52,7 +50,7 @@ public class PortalTableRow extends UIElement implements ITableCellXPathFilter<P
         try{
             return new PortalTableCell(getElement().findElement(By.xpath(".//td[@title='"+title+"']")));
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }

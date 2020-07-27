@@ -79,10 +79,10 @@ public class ReportManager {
         extentReports = new ExtentReports();
 
         // Configurations
-        extentReporter.config().enableTimeline(true);
+        extentReporter.config().setTimelineEnabled(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
-        extentReporter.config().setJS("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
+        extentReporter.config().setJs("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
         String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
         extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
         extentReporter.config().setReportName(applicationName + " Regression Report");
@@ -175,7 +175,7 @@ public class ReportManager {
         int clockMoveAmount = 0;
         String tags = flattenTags(iTestResult);
 
-        if (status.equalsIgnoreCase(Status.FAIL.toString()) || status.equalsIgnoreCase(Status.FATAL.toString())) {
+        if (status.equalsIgnoreCase(Status.FAIL.toString())) {
             failureImageURL = REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
@@ -230,7 +230,7 @@ public class ReportManager {
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = getReportPath();
-            SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getFatalCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, iSuite.getName(), reportPath);
+            SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, iSuite.getName(), reportPath);
             insertIntoSuiteResults(suiteDTO);
         } else {
             System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
@@ -246,7 +246,7 @@ public class ReportManager {
                     suiteResultsDTO.getPassedTests(),
                     suiteResultsDTO.getFailedTests(),
                     suiteResultsDTO.getSkippedTests(),
-                    suiteResultsDTO.getFatalTests(),
+                    0,
                     suiteResultsDTO.getWarningTests(),
                     suiteResultsDTO.getJenkinsBuildNumber(),
                     suiteResultsDTO.getSuiteName(),

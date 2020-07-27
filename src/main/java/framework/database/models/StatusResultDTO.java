@@ -43,10 +43,6 @@ public class StatusResultDTO {
             map.put(Status.FAIL, 0);
         }
 
-        if(!map.containsKey(Status.FATAL)){
-            map.put(Status.FATAL, 0);
-        }
-
         if(!map.containsKey(Status.SKIP)){
             map.put(Status.SKIP, 0);
         }

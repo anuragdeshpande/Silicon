@@ -38,22 +38,21 @@ public class PortalTable extends UIElement
         try{
             return getElement().findElements(By.xpath("//tr")).size();
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             RegressionLogger.getTestLogger().info("Returning 0 as row count");
             return 0;
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public List<PortalTableCell> getCellsMatchingXPathFilter(By xpathFilter) {
         ArrayList<PortalTableCell> cells = new ArrayList<>();
         try{
-            getElement().findElements(xpathFilter).forEach(element -> {
-                cells.add(new PortalTableCell(element));
-            });
+            getElement().findElements(xpathFilter).forEach(element -> cells.add(new PortalTableCell(element)));
             return cells;
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw  e;
         }
     }
@@ -63,7 +62,7 @@ public class PortalTable extends UIElement
         try{
             return new PortalTableCell(getElement().findElement(xPathFilter));
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -72,12 +71,10 @@ public class PortalTable extends UIElement
     public List<PortalTableRow> getRowsMatchingXPathFilter(By xPathFilter) {
         ArrayList<PortalTableRow> cells = new ArrayList<>();
         try{
-            getElement().findElements(xPathFilter).forEach(element -> {
-                cells.add(new PortalTableRow(element));
-            });
+            getElement().findElements(xPathFilter).forEach(element -> cells.add(new PortalTableRow(element)));
             return cells;
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw  e;
         }
     }
@@ -87,7 +84,7 @@ public class PortalTable extends UIElement
         try{
             return new PortalTableRow(getElement().findElement(xPathFilter));
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);;
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -96,12 +93,10 @@ public class PortalTable extends UIElement
     public List<UIElement> getElementsMatchingXPathFilter(By xPathFilter) {
         ArrayList<UIElement> elements = new ArrayList<>();
         try{
-            getElement().findElements(xPathFilter).forEach(element -> {
-                elements.add(new UIElement(element));
-            });
+            getElement().findElements(xPathFilter).forEach(element -> elements.add(new UIElement(element)));
             return elements;
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -111,7 +106,7 @@ public class PortalTable extends UIElement
         try {
             return new UIElement(new Identifier((xPathFilter)));
         } catch (Exception e) {
-            RegressionLogger.getTestLogger().error(e);
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }
@@ -120,12 +115,10 @@ public class PortalTable extends UIElement
     public List<PortalTableRow> getRows() {
         ArrayList<PortalTableRow> tableRows = new ArrayList<>();
         try{
-            getElement().findElements(By.xpath(".//tbody/tr")).forEach(element -> {
-                tableRows.add(new PortalTableRow(element));
-            });
+            getElement().findElements(By.xpath(".//tbody/tr")).forEach(element -> tableRows.add(new PortalTableRow(element)));
             return tableRows;
         } catch (Exception e){
-            RegressionLogger.getTestLogger().error(e);;
+            RegressionLogger.getTestLogger().fail(e);
             throw e;
         }
     }

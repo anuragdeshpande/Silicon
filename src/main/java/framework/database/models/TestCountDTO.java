@@ -12,7 +12,6 @@ import java.util.List;
 public class TestCountDTO {
     private int passCount;
     private int failCount;
-    private int fatalCount;
     private int skipCount;
     private int warningCount;
 
@@ -32,14 +31,12 @@ public class TestCountDTO {
         HashMap<Status, Integer> map = StatusResultDTO.convertToStatusMap(resultDTOS);
         int passTestCount = map.get(Status.PASS);
         int failTestCount = map.get(Status.FAIL);
-        int fatalTestCount = map.get(Status.FATAL);
         int skipTestCount = map.get(Status.SKIP);
         int warningTestCount = map.get(Status.WARNING);
 
         TestCountDTO testCountDTO = new TestCountDTO();
         testCountDTO.setPassCount(passTestCount);
         testCountDTO.setFailCount(failTestCount);
-        testCountDTO.setFatalCount(fatalTestCount);
         testCountDTO.setSkipCount(skipTestCount);
         testCountDTO.setWarningCount(warningTestCount);
 
@@ -54,9 +51,6 @@ public class TestCountDTO {
         return failCount;
     }
 
-    public int getFatalCount() {
-        return fatalCount;
-    }
 
     public int getSkipCount() {
         return skipCount;
@@ -74,9 +68,6 @@ public class TestCountDTO {
         this.failCount = failCount;
     }
 
-    public void setFatalCount(int fatalCount) {
-        this.fatalCount = fatalCount;
-    }
 
     public void setSkipCount(int skipCount) {
         this.skipCount = skipCount;
