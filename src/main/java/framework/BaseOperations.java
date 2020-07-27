@@ -5,6 +5,7 @@ import annotations.PostResetScript;
 import annotations.PreResetScript;
 import com.aventstack.extentreports.ExtentReports;
 import framework.logger.RegressionLogger;
+import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -29,18 +30,22 @@ public class BaseOperations {
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setXmlTestName(xmlTestName);
         // Making sure there is only one thread per test at any given point of time
 //        Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
-        ReportManager.recordXMLTest(xmlTestName, xmlTest.getSuite().getName());
+        ReportManager.recordXMLTest(dto);
         RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
 
     @BeforeClass(description = "BeforeClass")
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
-        String testClassName = iTestContext.getClass().getSimpleName();
-        if (!testClassName.equalsIgnoreCase("TestRunner")) {
-            ReportManager.recordClass(testClassName, xmlTest.getName());
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setClassName(iTestContext.getClass().getSimpleName());
+        dto.setXmlTestName(xmlTest.getName());
+        if (!dto.getClassName().equalsIgnoreCase("TestRunner")) {
+            ReportManager.recordClass(dto);
             BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving class name to cache");
         }
     }
@@ -49,23 +54,24 @@ public class BaseOperations {
     public void beforeMethod(Method method, ITestResult iTestResult) {
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving method name to cache");
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        String testName = testMethod.getName();
-        String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setTestName(testMethod.getName());
+        dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
 
-        if (!className.equalsIgnoreCase("TestRunner")) {
-            String xmlTestName = iTestResult.getMethod().getTestClass().getXmlTest().getName();
-            ReportManager.recordClass(className, xmlTestName);
+        if (!dto.getClassName().equalsIgnoreCase("TestRunner")) {
+            dto.setXmlTestName(iTestResult.getMethod().getTestClass().getXmlTest().getName());
+            ReportManager.recordClass(dto);
         }
 
         Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
-        ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        ReportManager.recordTest(dto, testAnnotations.length > 0? testAnnotations[0].description() : null);
         boolean hasNoAutomatedTestAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class).length == 0;
         boolean hasNoPostResetScriptAnnotation = testMethod.getAnnotationsByType(PreResetScript.class).length == 0;
         boolean hasNoPreResetScriptAnnotation = testMethod.getAnnotationsByType(PostResetScript.class).length == 0;
         if ((hasNoAutomatedTestAnnotation && (hasNoPostResetScriptAnnotation && hasNoPreResetScriptAnnotation)) && testAnnotations.length > 0) {
             BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: Skipping test as annotation requirements are not met");
             iTestResult.setStatus(ITestResult.SKIP);
-            throw new SkipException("Skipping Test : " + testName + " : No @AutomatedTest annotation found.");
+            throw new SkipException("Skipping Test : " + dto.getTestName() + " : No @AutomatedTest annotation found.");
         }
         BrowserFactory.getCurrentBrowser().withDOM().clearBannerMessage();
     }
