@@ -6,6 +6,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
+import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
@@ -51,12 +52,13 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onTestStart(ITestResult iTestResult) {
 //        System.out.println("In onTestStart");
-        String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
-        String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
+        dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
 
 //        System.out.println("Starting Test - "+ testName);
         Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
-        ExtentTest testLogger = ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        ExtentTest testLogger = ReportManager.recordTest(dto, testAnnotations.length > 0? testAnnotations[0].description() : null);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
