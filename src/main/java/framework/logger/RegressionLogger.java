@@ -5,6 +5,7 @@ import com.aventstack.extentreports.Status;
 import framework.Listener;
 import framework.ReportManager;
 import framework.constants.StringConstants;
+import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.io.FileUtils;
@@ -137,8 +138,10 @@ public class RegressionLogger {
     }
 
     public synchronized static RegressionLogger getTestLogger(){
-        String testName = BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
-        ExtentTest extentTest = ReportManager.getTest(testName);
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setTestName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME));
+        dto.setClassName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+        ExtentTest extentTest = ReportManager.getTest(dto);
         return new RegressionLogger(Listener.logger, extentTest, ReportManager.isInitiated());
     }
 

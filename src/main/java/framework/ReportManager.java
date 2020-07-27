@@ -129,7 +129,7 @@ public class ReportManager {
 
     @SuppressWarnings("Duplicates")
     public static ExtentTest recordTest(TestDetailsDTO dto, String description) {
-        String testName = dto.getClassName()+"_"+dto.getTestName();
+        String testName = dto.getReportTestName();
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(dto.getClassName()).createNode(dto.getTestName(), description);
             testMap.put(testName, extentTest);
@@ -146,8 +146,8 @@ public class ReportManager {
         extentReports.removeTest(classMap.get(className));
     }
 
-    public static ExtentTest getTest(String testName) {
-        return testMap.get(testName);
+    public static ExtentTest getTest(TestDetailsDTO dto) {
+        return testMap.get(dto.getReportTestName());
     }
 
     public static ExtentTest getClass(String className) {

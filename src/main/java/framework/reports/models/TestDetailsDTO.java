@@ -40,4 +40,8 @@ public class TestDetailsDTO {
     public void setSuiteName(String suiteName) {
         this.suiteName = suiteName;
     }
+
+    public String getReportTestName(){
+        return this.className+"_"+this.testName;
+    }
 }

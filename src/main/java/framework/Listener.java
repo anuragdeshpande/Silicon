@@ -51,14 +51,8 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-//        System.out.println("In onTestStart");
-        TestDetailsDTO dto = new TestDetailsDTO();
-        dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
-        dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
-
-//        System.out.println("Starting Test - "+ testName);
         Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
-        ExtentTest testLogger = ReportManager.recordTest(dto, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        ExtentTest testLogger = ReportManager.recordTest(buildTestDetailsDTO(iTestResult), testAnnotations.length > 0? testAnnotations[0].description() : null);
         AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
@@ -81,7 +75,7 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test is successful
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ExtentTest test = ReportManager.getTest(iTestResult.getName());
+        ExtentTest test = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         test.pass(iTestResult.getName() + ": Passed");
@@ -94,7 +88,7 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test fails
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
+        ExtentTest testNode = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
 
@@ -124,7 +118,7 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
+        ExtentTest extentLogger = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
         extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         extentLogger.skip(iTestResult.getName() + ": Skipped");
@@ -169,6 +163,14 @@ public class Listener implements ISuiteListener, ITestListener{
             e.printStackTrace();
         }
         return destinationFilePath;
+    }
+
+    private TestDetailsDTO buildTestDetailsDTO(ITestResult iTestResult){
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
+        dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
+
+        return dto;
     }
 
 
