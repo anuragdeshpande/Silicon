@@ -14,6 +14,7 @@ import framework.database.models.DBConnectionDTO;
 import framework.database.models.SuiteResultsDTO;
 import framework.database.models.TestCountDTO;
 import framework.database.models.TestResultsDTO;
+import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.Validate;
@@ -90,19 +91,20 @@ public class ReportManager {
         return extentReports;
     }
 
-    public static ExtentTest recordSuite(String suiteName) {
-        if (!suiteMap.containsKey(suiteName)) {
-            ExtentTest suite = extentReports.createTest("SuiteLogger - " + suiteName);
+    public static ExtentTest recordSuite(TestDetailsDTO dto) {
+        if (!suiteMap.containsKey(dto.getSuiteName())) {
+            ExtentTest suite = extentReports.createTest("SuiteLogger - " + dto.getSuiteName());
             suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
-            suiteMap.put(suiteName, suite);
+            suiteMap.put(dto.getSuiteName(), suite);
         }
 
-        return suiteMap.get(suiteName);
+        return suiteMap.get(dto.getSuiteName());
     }
 
-    public static ExtentTest recordClass(String className, String xmlTestName) {
+    public static ExtentTest recordClass(TestDetailsDTO dto) {
+        String className = dto.getClassName();
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
-            ExtentTest extentTestClass = xmlTestMap.get(xmlTestName).createNode(className);
+            ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).createNode(className);
             if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
                 BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
             }
@@ -112,7 +114,8 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    public static ExtentTest recordXMLTest(String xmlTestName, String suiteName) {
+    public static ExtentTest recordXMLTest(TestDetailsDTO dto) {
+        String xmlTestName = dto.getXmlTestName();
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
@@ -125,9 +128,10 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    public static ExtentTest recordTest(String testName, String className, String description) {
+    public static ExtentTest recordTest(TestDetailsDTO dto, String description) {
+        String testName = dto.getClassName()+"_"+dto.getTestName();
         if (!testMap.containsKey(testName)) {
-            ExtentTest extentTest = classMap.get(className).createNode(testName, description);
+            ExtentTest extentTest = classMap.get(dto.getClassName()).createNode(dto.getTestName(), description);
             testMap.put(testName, extentTest);
             if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
                 BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
@@ -171,8 +175,6 @@ public class ReportManager {
         String buildNumber = System.getProperty("jenkinsBuildNumber");
         String suiteName = iTestResult.getTestContext().getSuite().getName();
         String testRunSource = System.getProperty("startedByUser");
-        String clockMoveTimeUnit = null;
-        int clockMoveAmount = 0;
         String tags = flattenTags(iTestResult);
 
         if (status.equalsIgnoreCase(Status.FAIL.toString())) {
@@ -285,75 +287,6 @@ public class ReportManager {
         }
 
         return tags.toString();
-    }
-
-
-    private static java.lang.String compileCustomCSS() {
-
-        return (".leaf.pass > .collapsible-header, .leaf.pass > .collapsible-body {\n" +
-                "            border: #b5d6a7;\n" +
-                "            border-left: 2px solid #b5d6a7;\n" +
-                "            }\n" +
-                "\n" +
-                "            .leaf.fail > .collapsible-header, .leaf.fail > .collapsible-body {\n" +
-                "            border: #ff9a9a;\n" +
-                "            border-left: 2px solid #ff9a9a;\n" +
-                "            }\n" +
-                "\n" +
-                "            .leaf.fatal > .collapsible-header, .leaf.fatal > .collapsible-body {\n" +
-                "            border: darkorange;\n" +
-                "            border-left: 2px solid darkorange;\n" +
-                "            }\n" +
-                "\n" +
-                "            span.node-time.label.grey.lighten-1.white-text, span.node-duration.label.grey.lighten-1.white-text {\n" +
-                "            background-color: transparent !important;\n" +
-                "            }\n" +
-                "\n" +
-                "            span.category.label.white-text {\n" +
-                "            display: table-cell;\n" +
-                "            /*    background: #444 !important; */\n" +
-                "            }\n" +
-                "\n" +
-                "            span.category.label.white-text:after {\n" +
-                "            content: '\\A' !important;\n" +
-                "            white-space: pre;\n" +
-                "            }\n" +
-                "\n" +
-                "            span.author{\n" +
-                "            display: none;\n" +
-                "            }\n" +
-                "\n" +
-                "            .collapsible-header.active > span.author{\n" +
-                "            display: table-cell;\n" +
-                "            float: right;\n" +
-                "            }\n" +
-                "\n" +
-                "            span.category.label.white-text:before, span.author.label.white-text:before {\n" +
-                "            font-family: 'material icons';\n" +
-                "            position: relative;\n" +
-                "            top: 2px;\n" +
-                "            left: -2px;\n" +
-                "            }\n" +
-                "\n" +
-                "            span.category.label.white-text:before {\n" +
-                "            content: 'local_offer';\n" +
-                "            }\n" +
-                "\n" +
-                "            span.author.label.white-text:before {\n" +
-                "            content: 'person';\n" +
-                "            }\n" +
-                "\n" +
-                "            .collapsible-header > span.label{\n" +
-                "            border-radius: 0;\n" +
-                "            }" +
-                "\n" +
-                "            a.brand-logo.blue.darken-3{\n" +
-                "            padding-left: 10px;\n" +
-                "            }" +
-                "\n" +
-                "            #nav-mobile li:last-child{\n" +
-                "            display: none;\n" +
-                "            }");
     }
 
     public static String getReportPath(){
