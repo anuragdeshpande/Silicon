@@ -11,6 +11,8 @@ import java.util.LinkedList;
 
 public class SuiteCreator {
 
+    private boolean skipListeners;
+
     public XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setName(suiteName);
@@ -33,9 +35,13 @@ public class SuiteCreator {
         }
 
         xmlSuite.setThreadCount(threadCount);
-        ArrayList<String> listeners = new ArrayList<>();
-        listeners.add(System.getProperty("TestNGListener", "framework.Listener"));
-        xmlSuite.setListeners(listeners);
+
+        if(!this.skipListeners){
+            ArrayList<String> listeners = new ArrayList<>();
+            listeners.add(System.getProperty("TestNGListener", "framework.Listener"));
+            xmlSuite.setListeners(listeners);
+        }
+
 
         testClasses.forEach(classInfo -> {
             // Add Test
@@ -64,5 +70,9 @@ public class SuiteCreator {
         System.out.println(xmlSuite.toXml());
         return xmlSuite;
 
+    }
+
+    public void setSkipListeners(boolean value){
+        this.skipListeners = value;
     }
 }
