@@ -4,6 +4,7 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.idfbins.driver.BaseTest;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.reports.models.TestDetailsDTO;
@@ -152,7 +153,12 @@ public class Listener implements ISuiteListener, ITestListener{
 
     @SuppressWarnings("Duplicates")
     private String captureScreenshot(ITestResult iTestResult) {
-        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        WebDriver driver;
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
+            driver = BrowserFactory.getCurrentBrowser().getDriver();
+        } else {
+            driver = ((BaseTest) iTestResult.getInstance()).getBaseTestDriverForListener();
+        }
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {
