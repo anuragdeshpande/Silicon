@@ -103,12 +103,14 @@ public class Listener implements ISuiteListener, ITestListener{
         testNode.fail(iTestResult.getThrowable());
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
-        if(GuidewireInteract.hasErrorMessageOnScreen()){
-            String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
-            testNode.log(Status.FAIL, iTestResult.getName()+" Failed with critical system failure");
-            testNode.fail(errorMessageFromScreen);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            if (GuidewireInteract.hasErrorMessageOnScreen()) {
+                String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
+                testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
+                testNode.fail(errorMessageFromScreen);
 
-            iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+                iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+            }
         }
 
         if(writeToDatabase){
