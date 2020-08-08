@@ -37,7 +37,7 @@ public class ReportManager {
     // Network Storage Location
     private static final String GLOBAL_SUITE_NAME = System.getProperty("globalSuiteName") == null ? "" : System.getProperty("globalSuiteName");
     private static final String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
-    public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp" : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
+    public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp/"+REPORT_FILE_NAME : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
     private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
     private static String INIT_SUITE_NAME;
 
