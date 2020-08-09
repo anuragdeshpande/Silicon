@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,13 +53,15 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
-        ExtentTest testLogger = ReportManager.recordTest(buildTestDetailsDTO(iTestResult), testAnnotations.length > 0? testAnnotations[0].description() : null);
-        AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
+        TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
+        ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        AutomatedTest[] annotations = testMethod.getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
             iTestResult.setStatus(ITestResult.SKIP);
-            throw new SkipException("Fatal Error: @AutomatedTest annotation not found.");
+            throw new SkipException("Fatal Error: @AutomatedTest annotation not found on test: "+testDetailsDTO.getTestName()+" on class: "+testDetailsDTO.getClassName());
         } else {
             AutomatedTest automatedTest = annotations[0];
             testLogger.assignAuthor(automatedTest.Author());
