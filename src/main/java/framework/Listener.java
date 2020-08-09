@@ -65,7 +65,10 @@ public class Listener implements ISuiteListener, ITestListener{
         } else {
             AutomatedTest automatedTest = annotations[0];
             testLogger.assignAuthor(automatedTest.Author());
-            testLogger.assignCategory(automatedTest.FeatureNumber(), automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            if(!automatedTest.FeatureNumber().isEmpty()){
+                testLogger.assignCategory(automatedTest.FeatureNumber());
+            }
+            testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
             for (String s : automatedTest.Centers()) {
                 testLogger.assignCategory(s);
             }
