@@ -4,10 +4,16 @@ import framework.constants.ReactionTime;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+// TODO clean up class and remove GWCore support
 public class PauseTest {
 
     private synchronized static WebDriver initiateDriver(ReactionTime reactionTime){
         WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
+        return driver;
+    }
+
+    private synchronized static WebDriver initiateDriver(WebDriver driver, ReactionTime reactionTime){
         driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         return driver;
     }
@@ -24,6 +30,11 @@ public class PauseTest {
         return new WebDriverWait(webDriver,timeOutInSeconds, pollingIntervalInMilliseconds);
     }
 
+    public synchronized static WebDriverWait createSpecialInstance(WebDriver driver, long timeOutInSeconds, long pollingIntervalInMilliseconds){
+        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
+        return new WebDriverWait(webDriver,timeOutInSeconds, pollingIntervalInMilliseconds);
+    }
+
     /**
      * Utility method to create a standard WebdriverWait instance
      * Remember to call BrowserFactory.reloadDriver() method after this use
@@ -32,6 +43,11 @@ public class PauseTest {
      */
     public synchronized static WebDriverWait createSpecialInstance(long timeOutInSeconds){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
+        return new WebDriverWait(webDriver,timeOutInSeconds);
+    }
+
+    public synchronized static WebDriverWait createSpecialInstance(WebDriver driver, long timeOutInSeconds){
+        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
         return new WebDriverWait(webDriver,timeOutInSeconds);
     }
 
@@ -44,6 +60,11 @@ public class PauseTest {
      */
     public synchronized static WebDriverWait createInstance(){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
+        return new WebDriverWait(webDriver,10, 100);
+    }
+
+    public synchronized static WebDriverWait createInstance(WebDriver driver){
+        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
         return new WebDriverWait(webDriver,10, 100);
     }
 }
