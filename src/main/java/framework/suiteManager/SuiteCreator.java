@@ -1,5 +1,6 @@
 package framework.suiteManager;
 
+import annotations.ClockMoveTest;
 import io.github.classgraph.ClassInfoList;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
@@ -12,6 +13,15 @@ import java.util.LinkedList;
 public class SuiteCreator {
 
     private boolean skipListeners;
+    private boolean isClockMove;
+
+    public SuiteCreator(){
+
+    }
+
+    public SuiteCreator(boolean isClockMove){
+        this.isClockMove = isClockMove;
+    }
 
     public XmlSuite createSuite(String suiteName, ClassInfoList testClasses, int threadCount) {
         XmlSuite xmlSuite = new XmlSuite();
@@ -43,6 +53,15 @@ public class SuiteCreator {
         }
 
 
+        // filtering clock move if marked in the constructor
+        if(isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")){
+            // filtering all classes that do not have clock move annotation
+            testClasses.filter(classInfo -> !classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+        } else if(!isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")) {
+            // filtering all classes that have clock move annotation
+            testClasses.filter(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+        }
+
         testClasses.forEach(classInfo -> {
             // Add Test
             XmlTest xmlTest = new XmlTest(xmlSuite);
@@ -60,9 +79,10 @@ public class SuiteCreator {
             classes.add(xmlClass);
             xmlTest.setClasses(classes);
 
-            if (Boolean.valueOf(System.getProperty("isClockMove"))) {
+            // adding groups filter only if the build is marked to NOT use the ClockMove annotation
+            if(isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("false")){
                 xmlTest.addIncludedGroup("ClockMove");
-            } else {
+            } else if (!isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("false")) {
                 xmlTest.addExcludedGroup("ClockMove");
             }
         });
