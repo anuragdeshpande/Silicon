@@ -4,6 +4,7 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.idfbins.driver.BaseTest;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.reports.models.TestDetailsDTO;
@@ -19,6 +20,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,17 +53,22 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
-        ExtentTest testLogger = ReportManager.recordTest(buildTestDetailsDTO(iTestResult), testAnnotations.length > 0? testAnnotations[0].description() : null);
-        AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
+        TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
+        ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        AutomatedTest[] annotations = testMethod.getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
             iTestResult.setStatus(ITestResult.SKIP);
-            throw new SkipException("Fatal Error: @AutomatedTest annotation not found.");
+            throw new SkipException("Fatal Error: @AutomatedTest annotation not found on test: "+testDetailsDTO.getTestName()+" on class: "+testDetailsDTO.getClassName());
         } else {
             AutomatedTest automatedTest = annotations[0];
             testLogger.assignAuthor(automatedTest.Author());
-            testLogger.assignCategory(automatedTest.FeatureNumber(), automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            if(!automatedTest.FeatureNumber().isEmpty()){
+                testLogger.assignCategory(automatedTest.FeatureNumber());
+            }
+            testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
             for (String s : automatedTest.Centers()) {
                 testLogger.assignCategory(s);
             }
@@ -102,12 +109,14 @@ public class Listener implements ISuiteListener, ITestListener{
         testNode.fail(iTestResult.getThrowable());
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
-        if(GuidewireInteract.hasErrorMessageOnScreen()){
-            String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
-            testNode.log(Status.FAIL, iTestResult.getName()+" Failed with critical system failure");
-            testNode.fail(errorMessageFromScreen);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            if (GuidewireInteract.hasErrorMessageOnScreen()) {
+                String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
+                testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
+                testNode.fail(errorMessageFromScreen);
 
-            iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+                iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+            }
         }
 
         if(writeToDatabase){
@@ -152,7 +161,12 @@ public class Listener implements ISuiteListener, ITestListener{
 
     @SuppressWarnings("Duplicates")
     private String captureScreenshot(ITestResult iTestResult) {
-        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        WebDriver driver;
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
+            driver = BrowserFactory.getCurrentBrowser().getDriver();
+        } else {
+            driver = ((BaseTest) iTestResult.getInstance()).getBaseTestDriverForListener();
+        }
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {

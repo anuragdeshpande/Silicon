@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SuiteGenerator {
-    private static final SuiteCreator suiteCreator = new SuiteCreator();
 
     public static void main(String[] args) {
         boolean runUITests =
@@ -112,21 +111,42 @@ public class SuiteGenerator {
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
             System.out.println("Adding smoke tests: " + smokeTests.size());
             regressionTests = regressionTests.exclude(smokeTests);
-            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
+            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")){
+                SuiteCreator creator = new SuiteCreator(true);
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "SmokeTestsClockMove"), smokeTests, threadCount));
+            }
+
+            SuiteCreator creator = new SuiteCreator(false);
+            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
+
         }
 
         if (shouldRunAPITests) {
             ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
             System.out.println("Adding API Tests: " + apiTests.size());
             regressionTests = regressionTests.exclude(apiTests);
-            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
+            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
+                SuiteCreator creator = new SuiteCreator(true);
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "APITestsClockMove"), apiTests, threadCount));
+            }
+
+            SuiteCreator creator = new SuiteCreator(false);
+            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
+
         }
 
         /*  End Filtering and start main regression tests */
 
         if (shouldRunRegressionTests) {
             System.out.println("Adding Regression Tests: " + regressionTests.size());
-            suitesToRun.add(suiteCreator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
+            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
+                SuiteCreator creator = new SuiteCreator(true);
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_TestsClockMove"), regressionTests, threadCount));
+            }
+
+            SuiteCreator creator = new SuiteCreator(false);
+            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
+
         }
 
         if (!suitesToRun.isEmpty()) {
