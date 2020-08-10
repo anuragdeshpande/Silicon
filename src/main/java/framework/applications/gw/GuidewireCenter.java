@@ -6,6 +6,7 @@ import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.enums.ApplicationNames;
+import framework.enums.Environments;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
@@ -265,7 +266,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public BCDebugToolsAPIPortType getBCDebugToolsAPI() {
         try {
-            BCDebugToolsAPI api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.BC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc801/BCDebugToolsAPI?WSDL"));
+            BCDebugToolsAPI api = null;
+            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+                api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.BC)).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc801/BCDebugToolsAPI?WSDL"));
+            } else {
+                api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.BC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc801/BCDebugToolsAPI?WSDL"));
+            }
             BCDebugToolsAPIPortType service = api.getBCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
@@ -276,9 +282,13 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     public PCDebugToolsAPIPortType getPCDebugToolsAPI() {
-
         try {
-            PCDebugToolsAPI api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+            PCDebugToolsAPI api = null;
+            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+                api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+            } else {
+                api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+            }
             PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
@@ -290,7 +300,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public CCDebugToolsAPIPortType getCCDebugToolsAPI() {
         try {
-            CCDebugToolsAPI api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL"));
+            CCDebugToolsAPI api = null;
+            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL"));
+            } else {
+                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL"));
+            }
             CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
@@ -302,7 +317,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public ABDebugToolsAPIPortType getABDebugToolsAPI() {
         try {
-            ABDebugToolsAPI api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+            ABDebugToolsAPI api = null;
+            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+            } else {
+                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+            }
             ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
