@@ -147,7 +147,7 @@ public class ReportManager {
     }
 
     public static ExtentTest getTest(TestDetailsDTO dto) {
-        return testMap.get(dto.getReportTestName());
+        return testMap.get(dto.getTestName());
     }
 
     public static ExtentTest getClass(String className) {
