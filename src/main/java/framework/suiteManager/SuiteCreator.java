@@ -55,11 +55,11 @@ public class SuiteCreator {
 
         // filtering clock move if marked in the constructor
         if(isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")){
-            // filtering all classes that do not have clock move annotation
-            testClasses.filter(classInfo -> !classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+            // removing test classes that do NOT have clock move annotation
+            testClasses.removeIf(classInfo -> !classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
         } else if(!isClockMove && System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")) {
             // filtering all classes that have clock move annotation
-            testClasses.filter(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+            testClasses.removeIf(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
         }
 
         testClasses.forEach(classInfo -> {
