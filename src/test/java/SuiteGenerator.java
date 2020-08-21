@@ -142,11 +142,10 @@ public class SuiteGenerator {
             if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
                 SuiteCreator creator = new SuiteCreator(true);
                 suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_TestsClockMove"), regressionTests, threadCount));
+            } else {
+                SuiteCreator creator = new SuiteCreator(false);
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
             }
-
-            SuiteCreator creator = new SuiteCreator(false);
-            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
-
         }
 
         if (!suitesToRun.isEmpty()) {
