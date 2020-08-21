@@ -120,25 +120,25 @@ public class Environment extends GenericEnvironment {
         switch (applicationName) {
             case AB:
                 environment.setApplicationName(ApplicationNames.AB);
-                environment.setEnvironmentUrl("http://localhost:8280/ab");
+                environment.setEnvironmentUrl("http://localhost:8280/ab/");
                 DBConnectionDTO abDTO = new DBConnectionDTO(localhostName, "abUserLocal", "password", localhostName+"_ContactManager");
                 environment.setDbConnectionDetails(abDTO);
                 break;
             case PC:
                 environment.setApplicationName(ApplicationNames.PC);
-                environment.setEnvironmentUrl("http://localhost:8180/pc");
+                environment.setEnvironmentUrl("http://localhost:8180/pc/");
                 DBConnectionDTO pcDTO = new DBConnectionDTO(localhostName, "pcUserLocal", "password", localhostName+"_PolicyCenter");
                 environment.setDbConnectionDetails(pcDTO);
                 break;
             case CC:
                 environment.setApplicationName(ApplicationNames.CC);
-                environment.setEnvironmentUrl("http://localhost:8080/cc");
+                environment.setEnvironmentUrl("http://localhost:8080/cc/");
                 DBConnectionDTO ccDTO = new DBConnectionDTO(localhostName, "ccUserLocal", "password", localhostName+"_ClaimCenter");
                 environment.setDbConnectionDetails(ccDTO);
                 break;
             case BC:
                 environment.setApplicationName(ApplicationNames.BC);
-                environment.setEnvironmentUrl("http://localhost:8580/bc");
+                environment.setEnvironmentUrl("http://localhost:8580/bc/");
                 DBConnectionDTO bcDTO = new DBConnectionDTO(localhostName, "bcUserLocal", "password", localhostName+"_BillingCenter");
                 environment.setDbConnectionDetails(bcDTO);
                 break;
