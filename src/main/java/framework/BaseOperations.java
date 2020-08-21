@@ -42,7 +42,7 @@ public class BaseOperations {
     @BeforeClass(description = "BeforeClass")
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
         TestDetailsDTO dto = new TestDetailsDTO();
-        dto.setClassName(iTestContext.getClass().getSimpleName());
+        dto.setClassName(this.getClass().getSimpleName());
         dto.setXmlTestName(xmlTest.getName());
         if (!dto.getClassName().equalsIgnoreCase("TestRunner")) {
             ReportManager.recordClass(dto);
