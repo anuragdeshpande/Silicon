@@ -82,12 +82,15 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test is successful
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ExtentTest test = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest test = ReportManager.getTest(dto);
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         test.pass(iTestResult.getName() + ": Passed");
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, Status.PASS.toString());
+        } else {
+            System.out.println("Test "+dto.getTestName()+"Passed but, Build is marked as TestBuild, skipping recording results to db");
         }
 
     }
@@ -95,7 +98,8 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test fails
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        ExtentTest testNode = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest testNode = ReportManager.getTest(dto);
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
 
@@ -121,13 +125,16 @@ public class Listener implements ISuiteListener, ITestListener{
 
         if(writeToDatabase){
             ReportManager.recordTestResult(iTestResult, testNode.getStatus().toString());
+        } else {
+            System.out.println("Test "+dto.getTestName()+"Failed but, Build is marked as TestBuild, skipping recording results to db");
         }
     }
 
     // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        ExtentTest extentLogger = ReportManager.getTest(buildTestDetailsDTO(iTestResult));
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest extentLogger = ReportManager.getTest(dto);
         extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         extentLogger.skip(iTestResult.getName() + ": Skipped");
@@ -135,6 +142,8 @@ public class Listener implements ISuiteListener, ITestListener{
             extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");
             if(writeToDatabase){
                 ReportManager.recordTestResult(iTestResult, Status.SKIP.toString());
+            } else {
+                System.out.println("Test "+dto.getTestName()+"has been Skipped. but, Build is marked as TestBuild, skipping recording results to db");
             }
         }
     }
@@ -156,7 +165,11 @@ public class Listener implements ISuiteListener, ITestListener{
         System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
-        ReportManager.recordSuiteResults(iSuite);
+        if(this.writeToDatabase){
+            ReportManager.recordSuiteResults(iSuite);
+        } else {
+            System.out.println("Suite complete. But, Build is marked as TestBuild, skipping recording suite results to db");
+        }
     }
 
     @SuppressWarnings("Duplicates")
