@@ -2,6 +2,7 @@ package framework;
 
 import annotations.AutomatedTest;
 import annotations.AutomationHistory;
+import annotations.ClockMoveTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -169,7 +170,13 @@ public class ReportManager {
         Timestamp endDate = new Timestamp(iTestResult.getEndMillis());
         String failureImageURL = null;
         String failureReason = null;
-        boolean clockMove = Arrays.stream(iTestResult.getTestContext().getIncludedGroups()).anyMatch(s -> s.equalsIgnoreCase("ClockMove"));
+        boolean clockMove;
+        if(System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")){
+            clockMove = iTestResult.getTestClass().getRealClass().isAnnotationPresent(ClockMoveTest.class);
+        } else {
+            clockMove = Arrays.stream(iTestResult.getTestContext().getIncludedGroups()).anyMatch(s -> s.equalsIgnoreCase("ClockMove"));
+        }
+
         String testCreator = automatedAnnotation.Author();
         String testName = iTestResult.getMethod().getMethodName();
         String buildNumber = System.getProperty("jenkinsBuildNumber");
