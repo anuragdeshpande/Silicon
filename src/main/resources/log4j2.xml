@@ -12,7 +12,7 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger  name="com.idfbins.qa.guidewire" level="debug">
+        <Logger  name="com.idfbins.qa.guidewire" level="info">
             <AppenderRef ref="File-Appender"/>
         </Logger>
         <Root level="info">
