@@ -116,7 +116,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         this.currentPassword = password;
 
         // Making sure the current user is not on vacation
-        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
+        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
         GuidewireInteract interact = getInteractObject();
 
         if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
