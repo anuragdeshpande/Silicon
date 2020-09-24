@@ -94,12 +94,12 @@ public class SuiteGenerator {
 
     private static void startTests(String threadCounts, String basePackage) {
         basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
-        int threadCount = threadCounts == null ? 1 : Integer.valueOf(threadCounts);
+        int threadCount = threadCounts == null ? 1 : Integer.parseInt(threadCounts);
         System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
 
         ClassGraph graph = new ClassGraph();
-        ClassInfoList regressionTests = graph.whitelistPackages(basePackage).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        ClassInfoList regressionTests = graph.whitelistPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
 
         List<XmlSuite> suitesToRun = new ArrayList<>();
         boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null && System.getProperty("EnableSmokeTests").equalsIgnoreCase("true");
