@@ -69,6 +69,7 @@ public class Listener implements ISuiteListener, ITestListener{
                 testLogger.assignCategory(automatedTest.FeatureNumber());
             }
             testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            testLogger.assignCategory(iTestResult.getTestContext().getSuite().getName());
             for (String s : automatedTest.Centers()) {
                 testLogger.assignCategory(s);
             }
