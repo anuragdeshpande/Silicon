@@ -71,7 +71,7 @@ public class ReportManager {
         if(!GLOBAL_SUITE_NAME.isEmpty()) {
             REPORT_DIRECTORY_LOCATION = REPORT_DIRECTORY_LOCATION + "\\" + GLOBAL_SUITE_NAME;
         }
-        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" +REPORT_FILE_NAME + ".html";
+        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             new File(REPORT_DIRECTORY_LOCATION).mkdirs();
@@ -297,6 +297,6 @@ public class ReportManager {
     }
 
     public static String getReportPath(){
-        return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + REPORT_FILE_NAME + ".html";
+        return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
     }
 }
