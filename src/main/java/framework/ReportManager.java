@@ -314,7 +314,7 @@ public class ReportManager {
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
         System.out.println("Generating Combined Report at"+finalReportPath);
-        extentReports.flush();
+        extent.flush();
     }
 
     private static void attachCustomConfig(ExtentSparkReporter extentReporter){
