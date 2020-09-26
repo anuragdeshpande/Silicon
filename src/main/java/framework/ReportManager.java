@@ -296,6 +296,7 @@ public class ReportManager {
 
     public static void generateCombinedReports(String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
         System.out.println("Combining Reports present at "+Arrays.toString(sourceFilesDirectoryPath));
+        System.out.println("Final Report will be generated at: "+targetLocation);
         ExtentReports extent = new ExtentReports();
         // Scanning for json files to parse for reports
         ArrayList<File> jsonFiles = new ArrayList<>();
@@ -309,11 +310,11 @@ public class ReportManager {
             System.out.println("Parsing Report: "+jsonFile.getAbsolutePath());
             extent.createDomainFromJsonArchive(jsonFile);
         }
-        String finalReportPath = targetLocation+"\\combinedReport.html";
+        String finalReportPath = targetLocation+"\\"+"combinedReport.html";
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
-        System.out.println("Generating Combined Report at"+finalReportPath);
+        System.out.println("Generating Combined Report at: "+finalReportPath);
         extent.flush();
     }
 
