@@ -7,6 +7,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
@@ -89,6 +90,10 @@ public class ReportManager {
         extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
         extentReporter.config().setReportName(applicationName + " Regression Report");
         extentReports.attachReporter(extentReporter);
+
+        // attaching json reporter for combining reports at the end of the suite run
+        JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION+"\\"+INIT_SUITE_NAME+"_"+REPORT_FILE_NAME+".json");
+        extentReports.attachReporter(jsonReport);
         return extentReports;
     }
 
