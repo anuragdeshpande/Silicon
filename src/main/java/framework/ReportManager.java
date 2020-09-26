@@ -79,7 +79,7 @@ public class ReportManager {
         extentReports = new ExtentReports();
 
         attachCustomConfig(extentReporter);
-
+        extentReports.attachReporter(extentReporter);
         // attaching json reporter for combining reports at the end of the suite run
         JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION+"\\"+INIT_SUITE_NAME+"_"+REPORT_FILE_NAME+".json");
         extentReports.attachReporter(jsonReport);
@@ -326,6 +326,5 @@ public class ReportManager {
         String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
         extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
         extentReporter.config().setReportName(applicationName + " Regression Report");
-        extentReports.attachReporter(extentReporter);
     }
 }
