@@ -69,9 +69,6 @@ public class ReportManager {
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
-        if(!GLOBAL_SUITE_NAME.isEmpty()) {
-            REPORT_DIRECTORY_LOCATION = REPORT_DIRECTORY_LOCATION + "\\" + GLOBAL_SUITE_NAME;
-        }
         FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
