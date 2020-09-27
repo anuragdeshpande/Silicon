@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.idfbins.driver.BaseTest;
+import framework.customExceptions.KnownDefectException;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.reports.models.TestDetailsDTO;
@@ -102,7 +103,6 @@ public class Listener implements ISuiteListener, ITestListener{
         ExtentTest testNode = ReportManager.getTest(dto);
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
-
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
@@ -121,6 +121,11 @@ public class Listener implements ISuiteListener, ITestListener{
 
                 iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
             }
+        }
+
+        if(iTestResult.getThrowable() instanceof KnownDefectException){
+            testNode.assignCategory("ActiveDefect");
+            ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: "+iTestResult.getThrowable().getLocalizedMessage());
         }
 
         if(writeToDatabase){
