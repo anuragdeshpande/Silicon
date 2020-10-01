@@ -71,4 +71,9 @@ public class TestRuntimeDTO {
     public static TestRuntimeDTO getInstance(String fullClassName, String packageName, long totalRuntime, String projectSource){
         return new TestRuntimeDTO(fullClassName, packageName, totalRuntime, projectSource);
     }
+
+    @Override
+    public String toString() {
+        return "fullClassName= " + fullClassName + ", packageName= " + packageName +  ", totalRuntime= " + totalRuntime + " seconds, projectSource= " + projectSource;
+    }
 }
