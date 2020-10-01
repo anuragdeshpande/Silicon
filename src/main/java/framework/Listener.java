@@ -23,6 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Listener implements ISuiteListener, ITestListener{
@@ -170,6 +173,11 @@ public class Listener implements ISuiteListener, ITestListener{
         System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
+        this.extentReports.getReport().getTestList().forEach(test -> {
+            LocalTime startTime = test.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            LocalTime endTime = test.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            System.out.println(test.getFullName()+": "+ Duration.between(startTime, endTime).toMinutes());
+        });
         if(this.writeToDatabase){
             ReportManager.recordSuiteResults(iSuite);
         } else {

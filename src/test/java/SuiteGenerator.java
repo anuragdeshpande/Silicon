@@ -110,6 +110,7 @@ public class SuiteGenerator {
         if (shouldRunSmokeTests) {
             ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
             System.out.println("Adding smoke tests: " + smokeTests.size());
+            System.out.println(smokeTests);
             regressionTests = regressionTests.exclude(smokeTests);
             if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")){
                 SuiteCreator creator = new SuiteCreator(true);
@@ -124,6 +125,7 @@ public class SuiteGenerator {
         if (shouldRunAPITests) {
             ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
             System.out.println("Adding API Tests: " + apiTests.size());
+            System.out.println(apiTests);
             regressionTests = regressionTests.exclude(apiTests);
             if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
                 SuiteCreator creator = new SuiteCreator(true);
@@ -139,6 +141,7 @@ public class SuiteGenerator {
 
         if (shouldRunRegressionTests) {
             System.out.println("Adding Regression Tests: " + regressionTests.size());
+            System.out.println(regressionTests);
             if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
                 SuiteCreator creator = new SuiteCreator(true);
                 suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_TestsClockMove"), regressionTests, threadCount));

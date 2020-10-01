@@ -12,10 +12,7 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
-import framework.database.models.DBConnectionDTO;
-import framework.database.models.SuiteResultsDTO;
-import framework.database.models.TestCountDTO;
-import framework.database.models.TestResultsDTO;
+import framework.database.models.*;
 import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.utils.BrowserStorageAccess;
@@ -209,6 +206,36 @@ public class ReportManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        try{
+            return regressionDB.update(TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters(),
+                    runtimeDTO.getFullClassName(),
+                    runtimeDTO.getPackageName(),
+                    runtimeDTO.getTotalRuntime(),
+                    runtimeDTO.getProjectSource()) > 0;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean insertBulkIntoTestRuntimeCatalog(List<TestResultsDTO> runtimeDTOs){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        Object[][] params = new Object[runtimeDTOs.size()][TestResultsDTO.getFieldCount()];
+        for (int i = 0; i < runtimeDTOs.size(); i++) {
+            params[i] = runtimeDTOs.get(i).getValuesAsObjectArray();
+        }
+
+        try{
+            return regressionDB.batch(TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS){
