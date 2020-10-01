@@ -222,7 +222,7 @@ public class ReportManager {
         }
     }
 
-    public static boolean insertBulkIntoTestRuntimeCatalog(List<TestResultsDTO> runtimeDTOs){
+    public static boolean insertBulkIntoTestRuntimeCatalog(List<TestRuntimeDTO> runtimeDTOs){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         Object[][] params = new Object[runtimeDTOs.size()][TestResultsDTO.getFieldCount()];
         for (int i = 0; i < runtimeDTOs.size(); i++) {
