@@ -221,7 +221,8 @@ public class Listener implements ISuiteListener, ITestListener{
         LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         LocalTime endTime = testContext.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         long timeTakenToRunSeconds = Duration.between(startTime, endTime).toMinutes() * 60;
-        return TestRuntimeDTO.getInstance(testContext.getClass().getName(), testContext.getClass().getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"));
+        Class realClass = testContext.getAllTestMethods()[0].getRealClass();
+        return TestRuntimeDTO.getInstance(realClass.getName(), realClass.getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"));
     }
 
 
