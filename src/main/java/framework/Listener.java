@@ -6,6 +6,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.idfbins.driver.BaseTest;
 import framework.customExceptions.KnownDefectException;
+import framework.database.models.TestRuntimeDTO;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.reports.models.TestDetailsDTO;
@@ -165,6 +166,9 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestContext);
+        System.out.println(testRuntimeDTO.toString());
+        ReportManager.insertIntoTestRuntimeCatalog(testRuntimeDTO);
     }
 
     // Fires at the end of each suite.
@@ -211,6 +215,13 @@ public class Listener implements ISuiteListener, ITestListener{
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
 
         return dto;
+    }
+
+    private TestRuntimeDTO buildTestRuntimeDTO(ITestContext testContext){
+        LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime endTime = testContext.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        long timeTakenToRunSeconds = Duration.between(startTime, endTime).toMinutes() * 60;
+        return TestRuntimeDTO.getInstance(testContext.getClass().getName(), testContext.getClass().getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"));
     }
 
 
