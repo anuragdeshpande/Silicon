@@ -1,4 +1,5 @@
 import annotations.APITest;
+import annotations.ClockMoveTest;
 import annotations.SmokeTest;
 import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
@@ -142,6 +143,9 @@ public class SuiteGenerator {
         if (shouldRunRegressionTests) {
             System.out.println("Adding Regression Tests: " + regressionTests.size());
             System.out.println(regressionTests);
+            ClassInfoList clockMoveTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+            System.out.println(clockMoveTests.size()+" Clock move tests");
+            System.out.println(clockMoveTests);
             if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
                 SuiteCreator creator = new SuiteCreator(true);
                 suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_TestsClockMove"), regressionTests, threadCount));
