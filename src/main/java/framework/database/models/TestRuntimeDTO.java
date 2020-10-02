@@ -6,6 +6,9 @@ public class TestRuntimeDTO {
     private long totalRuntime;
     private String projectSource;
 
+    public TestRuntimeDTO() {
+    }
+
     private TestRuntimeDTO(String fullClassName, String packageName, long totalRuntime, String projectSource) {
         this.fullClassName = fullClassName;
         this.packageName = packageName;
@@ -56,6 +59,10 @@ public class TestRuntimeDTO {
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
         return "INSERT INTO Regression.dbo.TestRuntimeCatalog (fullClassName, packageName, totalRunTime, projectSource) VALUES (?,?,?,?);";
+    }
+
+    public static String getJDBCPreparedUpdateStatementWithoutParameters(String fullClassName, String packageName){
+        return "Update Regression.dbo.TestRuntimeCatalog set fullClassName=?,packageName=?,totalRunTime=?,projectSource=? where fullClassName='"+fullClassName+"' and packageName='"+packageName+"'";
     }
 
     public Object[] getValuesAsObjectArray(){

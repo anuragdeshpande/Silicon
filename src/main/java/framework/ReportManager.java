@@ -17,6 +17,7 @@ import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.lang3.Validate;
 import org.testng.Assert;
 import org.testng.ISuite;
@@ -211,7 +212,11 @@ public class ReportManager {
     public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try{
-            return regressionDB.update(TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters(),
+            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
+                    new BeanHandler<>(TestRuntimeDTO.class));
+
+            return regressionDB.update(hasExistingRecord == null ?
+                            TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
                     runtimeDTO.getFullClassName(),
                     runtimeDTO.getPackageName(),
                     runtimeDTO.getTotalRuntime(),
