@@ -4,20 +4,26 @@ import annotations.SmokeTest;
 import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
 import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
+import framework.constants.StringConstants;
 import framework.suiteManager.SuiteCreator;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.Validate;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlSuite;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SuiteGenerator {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         boolean runUITests =
                 System.getProperty("EnableRegressionTests") != null ||
                         System.getProperty("EnableAPITests") != null ||
@@ -93,15 +99,23 @@ public class SuiteGenerator {
         });
     }
 
-    private static void startTests(String threadCounts, String basePackage) {
-        basePackage = System.getProperty("RunPackage") == null ? basePackage : System.getProperty("RunPackage");
+    private static void startTests(String threadCounts, String basePackage) throws IOException {
         int threadCount = threadCounts == null ? 1 : Integer.parseInt(threadCounts);
         System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
 
 
         ClassGraph graph = new ClassGraph();
-        ClassInfoList regressionTests = graph.whitelistPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        ClassInfoList regressionTests = null;
+        if(System.getProperty("RunPackage") != null){
+            regressionTests = graph.whitelistPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        }
 
+        if(System.getProperty("LoadBalancedFile") != null){
+            List<String> lines = FileUtils.readLines(new File(StringConstants.DEFAULT_REPORT_LOCATION_PATH + "\\" + System.getProperty("RunningNode") + ".txt"), StandardCharsets.UTF_8);
+            regressionTests = graph.whitelistClasses(lines.toArray(new String[0])).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        }
+
+        Validate.notNull(regressionTests, "No Tests found to index. RunPackage: "+System.getProperty("RunPackage"+" LoadBalancedFile: "+System.getProperty("LoadBalancedFile")));
         List<XmlSuite> suitesToRun = new ArrayList<>();
         boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null && System.getProperty("EnableSmokeTests").equalsIgnoreCase("true");
         boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null && System.getProperty("EnableRegressionTests").equalsIgnoreCase("true");

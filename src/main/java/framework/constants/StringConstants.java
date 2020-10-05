@@ -8,4 +8,5 @@ public final class StringConstants {
     public static final String TEST_CLASS_NAME = "testClassName_strvar";
     public static final String TEST_NAME = "testName_strvar";
     public static final String SUITE_NAME = "suiteName_strvar";
+    public static final String DEFAULT_REPORT_LOCATION_PATH = "\\\\qa\\regression_logs\\" + System.getProperty("globalSuiteName");
 }
