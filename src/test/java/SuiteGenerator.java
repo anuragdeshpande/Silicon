@@ -1,9 +1,7 @@
 import annotations.APITest;
 import annotations.ClockMoveTest;
+import annotations.DisabledTest;
 import annotations.SmokeTest;
-import framework.applications.gw.gwTestRunner.IGWIntegrationTestRunner;
-import framework.applications.gw.gwTestRunner.IGWSystemIntegrationTestRunner;
-import framework.applications.gw.gwTestRunner.IGWUnitTestRunner;
 import framework.constants.StringConstants;
 import framework.suiteManager.SuiteCreator;
 import io.github.classgraph.ClassGraph;
@@ -16,7 +14,6 @@ import org.testng.xml.XmlSuite;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,39 +21,97 @@ import java.util.List;
 public class SuiteGenerator {
 
     public static void main(String[] args) throws IOException {
-        boolean runUITests =
-                System.getProperty("EnableRegressionTests") != null ||
-                        System.getProperty("EnableAPITests") != null ||
-                        System.getProperty("EnableSmokeTests") != null;
-
-        boolean runGWUnitTests =
-                System.getProperty("gwUnitTestPackage") != null;
-
-        boolean runGWIntegrationTests =
-                System.getProperty("gwIntegrationTestPackage") != null;
-
-        boolean runGWSystemIntegrationTests =
-                System.getProperty("gwSystemIntegrationTestPackage") != null;
-
-        if (runUITests) {
-            startTests(System.getProperty("ThreadCount"), System.getProperty("RunPackage"));
-        }
-
-        if (runGWUnitTests) {
-            startGWUnitTests();
-        }
-
-        if (runGWIntegrationTests) {
-            startGWIntegrationTests();
-        }
-
-        if (runGWSystemIntegrationTests) {
-            startGWSystemIntegrationTests();
-        }
-
+        startTests(System.getProperty("ThreadCount"));
     }
 
-    private static void startGWUnitTests() {
+
+    private static void startTests(String threadCounts) throws IOException {
+        int threadCount = threadCounts == null ? 1 : Integer.parseInt(threadCounts);
+        System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
+        boolean isClockMove = System.getProperty("isClockMove", "false").equalsIgnoreCase("true");
+        String runningNode = System.getProperty("RunningNode");
+        ClassInfoList regressionTests = null;
+        if (System.getProperty("LoadBalancedFile") != null) {
+            ClassGraph graph = new ClassGraph();
+            String filePath;
+            if (isClockMove) {
+                filePath = StringConstants.DISTRIBUTED_TESTS_FILES_CLOCK_MOVE_LOCATION + "\\" + runningNode + ".txt";
+            } else {
+                filePath = StringConstants.DISTRIBUTED_TESTS_FILES_NON_CLOCK_MOVE_LOCATION + "\\" + runningNode + ".txt";
+            }
+
+            System.out.println("Reading tests from path: " + filePath);
+            List<String> lines = FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8);
+            String[] classes = lines.toArray(new String[0]);
+            regressionTests = graph.whitelistClasses(classes).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+            ClassInfoList disabledTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(DisabledTest.class.getCanonicalName()));
+            regressionTests = regressionTests.exclude(disabledTests);
+        }
+
+        Validate.notNull(regressionTests, "No Tests found to index. RunPackage: " + System.getProperty("RunPackage" + " LoadBalancedFile: " + System.getProperty("LoadBalancedFile")));
+        List<XmlSuite> suitesToRun = new ArrayList<>();
+        boolean shouldRunSmokeTests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.SMOKE_TEST);
+        boolean shouldRunRegressionTests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.UI_TEST);
+        boolean shouldRunAPITests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.API_TEST);
+
+        /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
+
+        if (shouldRunSmokeTests) {
+            ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()))
+                    .filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
+            System.out.println("Adding smoke tests: " + smokeTests.size());
+            System.out.println(smokeTests);
+            regressionTests = regressionTests.exclude(smokeTests);
+            SuiteCreator creator = new SuiteCreator(isClockMove);
+            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "SmokeTests" + runningNode), smokeTests, threadCount));
+
+        }
+
+        if (shouldRunAPITests) {
+            ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(APITest.class.getCanonicalName()))
+                    .filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
+            System.out.println("Adding API Tests: " + apiTests.size());
+            System.out.println(apiTests);
+            regressionTests = regressionTests.exclude(apiTests);
+            SuiteCreator creator = new SuiteCreator(isClockMove);
+            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "APITests" + runningNode), apiTests, threadCount));
+
+        }
+
+        /*  End Filtering and start main regression tests */
+
+        if (shouldRunRegressionTests) {
+            System.out.println("Total UI Tests: " + regressionTests.size());
+            System.out.println(regressionTests);
+            ClassInfoList clockMoveTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
+            System.out.println(clockMoveTests.size() + " Clock move tests");
+            System.out.println(clockMoveTests);
+            System.out.println("Request received for ClockMove: " + isClockMove + " running only requested tests");
+            regressionTests = regressionTests.exclude(clockMoveTests);
+            SuiteCreator creator = new SuiteCreator(isClockMove);
+            if(isClockMove){
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression" + runningNode), clockMoveTests, threadCount));
+            } else {
+                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression" + runningNode), regressionTests, threadCount));
+            }
+        }
+
+        if (!suitesToRun.isEmpty()) {
+            TestNG testNG = new TestNG();
+            testNG.setXmlSuites(suitesToRun);
+            if (!System.getProperty("DryRun", "false").equalsIgnoreCase("true")) {
+                testNG.run();
+            } else {
+                System.out.println("Suite marked as Dry Run, Skipping the initialize process for TestNG");
+            }
+        } else {
+            System.out.println("No Suites to run.");
+        }
+    }
+
+
+    // Reference Methods
+    /*private static void startGWUnitTests() {
         ClassGraph graph = new ClassGraph();
         String gwUnitTestPackage = System.getProperty("gwUnitTestPackage");
         ClassInfoList gwUnitTestRunners = graph.whitelistPackages(gwUnitTestPackage).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
@@ -97,87 +152,7 @@ public class SuiteGenerator {
                 e.printStackTrace();
             }
         });
-    }
-
-    private static void startTests(String threadCounts, String basePackage) throws IOException {
-        int threadCount = threadCounts == null ? 1 : Integer.parseInt(threadCounts);
-        System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
-
-
-        ClassGraph graph = new ClassGraph();
-        ClassInfoList regressionTests = null;
-        if(System.getProperty("RunPackage") != null){
-            regressionTests = graph.whitelistPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
-        }
-
-        if(System.getProperty("LoadBalancedFile") != null){
-            List<String> lines = FileUtils.readLines(new File(StringConstants.DEFAULT_REPORT_LOCATION_PATH + "\\" + System.getProperty("RunningNode") + ".txt"), StandardCharsets.UTF_8);
-            regressionTests = graph.whitelistClasses(lines.toArray(new String[0])).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
-        }
-
-        Validate.notNull(regressionTests, "No Tests found to index. RunPackage: "+System.getProperty("RunPackage"+" LoadBalancedFile: "+System.getProperty("LoadBalancedFile")));
-        List<XmlSuite> suitesToRun = new ArrayList<>();
-        boolean shouldRunSmokeTests = System.getProperty("EnableSmokeTests") != null && System.getProperty("EnableSmokeTests").equalsIgnoreCase("true");
-        boolean shouldRunRegressionTests = System.getProperty("EnableRegressionTests") != null && System.getProperty("EnableRegressionTests").equalsIgnoreCase("true");
-        boolean shouldRunAPITests = System.getProperty("EnableAPITests") != null && System.getProperty("EnableAPITests").equalsIgnoreCase("true");
-
-        /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
-        if (shouldRunSmokeTests) {
-            ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
-            System.out.println("Adding smoke tests: " + smokeTests.size());
-            System.out.println(smokeTests);
-            regressionTests = regressionTests.exclude(smokeTests);
-            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")){
-                SuiteCreator creator = new SuiteCreator(true);
-                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "SmokeTestsClockMove"), smokeTests, threadCount));
-            }
-
-            SuiteCreator creator = new SuiteCreator(false);
-            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "SmokeTests"), smokeTests, threadCount));
-
-        }
-
-        if (shouldRunAPITests) {
-            ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
-            System.out.println("Adding API Tests: " + apiTests.size());
-            System.out.println(apiTests);
-            regressionTests = regressionTests.exclude(apiTests);
-            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
-                SuiteCreator creator = new SuiteCreator(true);
-                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "APITestsClockMove"), apiTests, threadCount));
-            }
-
-            SuiteCreator creator = new SuiteCreator(false);
-            suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "APITests"), apiTests, threadCount));
-
-        }
-
-        /*  End Filtering and start main regression tests */
-
-        if (shouldRunRegressionTests) {
-            System.out.println("Adding Regression Tests: " + regressionTests.size());
-            System.out.println(regressionTests);
-            ClassInfoList clockMoveTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()));
-            System.out.println(clockMoveTests.size()+" Clock move tests");
-            System.out.println(clockMoveTests);
-            if(System.getProperty("isClockMove", "false").equalsIgnoreCase("true")) {
-                SuiteCreator creator = new SuiteCreator(true);
-                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_TestsClockMove"), regressionTests, threadCount));
-            } else {
-                SuiteCreator creator = new SuiteCreator(false);
-                suitesToRun.add(creator.createSuite(System.getProperty("SuiteName", "UI_Regression_Tests"), regressionTests, threadCount));
-            }
-        }
-
-        if (!suitesToRun.isEmpty()) {
-            TestNG testNG = new TestNG();
-            testNG.setXmlSuites(suitesToRun);
-            testNG.run();
-        } else {
-            System.out.println("No Suites to run.");
-        }
-    }
-
+    }*/
 
 
 }

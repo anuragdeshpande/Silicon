@@ -9,4 +9,12 @@ public final class StringConstants {
     public static final String TEST_NAME = "testName_strvar";
     public static final String SUITE_NAME = "suiteName_strvar";
     public static final String DEFAULT_REPORT_LOCATION_PATH = "\\\\qa\\regression_logs\\" + System.getProperty("globalSuiteName");
+    public static final String UI_TEST = "UITest";
+    public static final String SMOKE_TEST = "SmokeTest";
+    public static final String API_TEST = "APITest";
+    public static final String DISTRIBUTED_TESTS_FILES_ROOT_LOCATION = System.getProperty("ReportDirectoryFullLocation", "C:\\tmp") + "\\"+"testDistributions";
+    public static final String DISTRIBUTED_TESTS_FILES_NON_CLOCK_MOVE_LOCATION = DISTRIBUTED_TESTS_FILES_ROOT_LOCATION +"\\"+"nonClockMove";
+    public static final String DISTRIBUTED_TESTS_FILES_CLOCK_MOVE_LOCATION = DISTRIBUTED_TESTS_FILES_ROOT_LOCATION+"\\"+"clockMove";
+
+
 }

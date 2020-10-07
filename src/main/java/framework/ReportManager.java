@@ -217,15 +217,17 @@ public class ReportManager {
     public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try{
-            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
+            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
                     new BeanHandler<>(TestRuntimeDTO.class));
-
+            System.out.println(runtimeDTO.getFullClassName()+" has existing Record so updating with latest info: " +hasExistingRecord);
             return regressionDB.update(hasExistingRecord == null ?
                             TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
                     runtimeDTO.getFullClassName(),
                     runtimeDTO.getPackageName(),
                     runtimeDTO.getTotalRuntime(),
-                    runtimeDTO.getProjectSource()) > 0;
+                    runtimeDTO.getProjectSource(),
+                    runtimeDTO.getIsClockMove(),
+                    runtimeDTO.getTestType())> 0;
         } catch (Exception e){
             e.printStackTrace();
             return false;
