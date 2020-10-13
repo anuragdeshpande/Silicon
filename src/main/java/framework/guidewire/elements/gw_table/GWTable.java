@@ -121,6 +121,37 @@ public class GWTable extends UIElement implements IGWUITable{
         return null;
     }
 
+    public GWRow getRowWithTextExcludingText(String value, String exclusion) {
+        boolean isLastPage = false;
+
+        do {
+            for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
+                for (WebElement cell : row.findElements(By.tagName("td"))) {
+                    if (cell.getText().toUpperCase().contains(value.toUpperCase()) && !cell.getText().toUpperCase().contains(exclusion.toUpperCase())) {
+                        return new GWRow(row, columnLabelMap);
+                    }
+                }
+            }
+
+
+            try{
+                if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
+                    System.out.println("Multuple pages found in the table, searching on the next page");
+                    clickNextPage();
+                    new GWElement(GWIDs.QUICK_JUMP).click();
+                } else {
+                    System.out.println("Last Page reached");
+                    isLastPage = true;
+                }
+            } catch (NoSuchElementException nse){
+                isLastPage = true;
+            }
+        } while (!isLastPage);
+
+        System.out.println("Could not find a match in the entire table for "+value+", returning null");
+        return null;
+    }
+
     public GWRow getLastRow(){
         List<GWRow> rows = this.getRows();
         return rows.get(rows.size() -1);
