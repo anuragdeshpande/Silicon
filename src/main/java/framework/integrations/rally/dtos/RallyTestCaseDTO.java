@@ -10,11 +10,13 @@ public class RallyTestCaseDTO {
     private String notes;
     private String rallyUserRef;
     private String dateOfTestCase;
+    private String buildTag;
 
-    private RallyTestCaseDTO(boolean hasPassed, String notes, String rallyUserRef) {
+    private RallyTestCaseDTO(boolean hasPassed, String notes, String rallyUserRef, String buildTag) {
         this.hasPassed = hasPassed;
         this.notes = notes;
         this.rallyUserRef = rallyUserRef;
+        this.buildTag = buildTag;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -42,8 +44,12 @@ public class RallyTestCaseDTO {
         return dateOfTestCase;
     }
 
+    public String getBuildTag() {
+        return buildTag;
+    }
+
     // Instantiation
-    public static RallyTestCaseDTO getInstance(boolean hasPassed, String notes, String rallyUserRef){
-        return new RallyTestCaseDTO(hasPassed, notes, rallyUserRef);
+    public static RallyTestCaseDTO getInstance(boolean hasPassed, String notes, String rallyUserRef, String buildTag){
+        return new RallyTestCaseDTO(hasPassed, notes, rallyUserRef, buildTag);
     }
 }

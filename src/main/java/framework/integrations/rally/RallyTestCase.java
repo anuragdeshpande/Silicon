@@ -31,7 +31,7 @@ public class RallyTestCase extends RallyQueryableService {
             newTestCaseResult.addProperty("TestCase", testCaseRef);
             newTestCaseResult.addProperty("Verdict", dto.testCaseStatus());
             newTestCaseResult.addProperty("Notes", dto.getNotes());
-            newTestCaseResult.addProperty("Build", "TestBuild");
+            newTestCaseResult.addProperty("Build", dto.getBuildTag());
             newTestCaseResult.addProperty("Tester", dto.getRallyUserRef());
             newTestCaseResult.addProperty("Date", dto.getDateOfTestCase());
             CreateRequest createRequest = new CreateRequest(RallyItemType.TEST_CASE_RESULT.getItem_type_key(), newTestCaseResult);
@@ -58,13 +58,6 @@ public class RallyTestCase extends RallyQueryableService {
         String userStoryRef = testCase.rallyResponse.get("WorkProduct").getAsJsonObject().get("_ref").getAsString();
         testCase.relatedUserStory = RallyUserStory.getUserStoryByRef(userStoryRef, regressionLogger);
         return testCase;
-    }
-
-
-
-    public static void main(String[] args) {
-        RallyTestCase testCase = RallyTestCase.getTestCaseByID("TC1994", null);
-        testCase.recordTestResult(RallyTestCaseDTO.getInstance(true, "This is a test", RallyUserReference.getUserReference("adeshphande@idfbins.com")));
     }
 
     public String getTestCaseName() {
