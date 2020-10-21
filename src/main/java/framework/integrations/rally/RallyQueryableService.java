@@ -17,7 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public abstract class RallyQueryableService {
-    private final String apiKey = "_YV4rMBAS4e03RzzbCvslCwHjXk6ekcLoxNd2fdONac";
+    private final String apiKey = "_rQgnQwsuTi6WjrKNRB9bThqiBB1pEQxg4xbB4aKvjQ";
     private final String rallyURL = "https://rally1.rallydev.com";
     protected final ExtentTest regressionLogger;
 
