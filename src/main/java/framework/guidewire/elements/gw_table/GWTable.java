@@ -94,11 +94,10 @@ public class GWTable extends UIElement implements IGWUITable{
 
         do {
             for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
-                for (WebElement cell : row.findElements(By.tagName("td"))) {
-                    if (cell.getText().toUpperCase().contains(value.toUpperCase())) {
-//                        System.out.println("Found the row with the text: "+value);
-                        return new GWRow(row, columnLabelMap);
-                    }
+                // new code
+                String rowContent = row.getText();
+                if(rowContent.contains(value)){
+                    return new GWRow(row, columnLabelMap);
                 }
             }
 
