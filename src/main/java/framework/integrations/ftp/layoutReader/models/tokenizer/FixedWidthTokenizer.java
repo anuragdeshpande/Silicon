@@ -64,7 +64,7 @@ public class FixedWidthTokenizer implements ITokenizer {
                             LocalDate.parse(token, DateTimeFormatter.ofPattern(dateFormat));
                             break;
                         } else {
-                            logger.fatal("Invalid Date format expression");
+                            logger.fail("Invalid Date format expression");
                             throw new InvalidLineValueException("Cannot convert: "+token+" to format: "+dateFormat);
                         }
                     case ALPHA:
@@ -86,7 +86,7 @@ public class FixedWidthTokenizer implements ITokenizer {
                     assertThat(matches(field.getValidationPattern(), token)).withFailMessage("Input String: "+token+" fails validation against the given regular expression: "+field.getValidationPattern()).isTrue();
                 }
             } catch (Exception e) {
-                logger.fatal("Encountered Error: " + e.getLocalizedMessage());
+                logger.fail("Encountered Error: " + e.getLocalizedMessage());
                 throw e;
             }
 

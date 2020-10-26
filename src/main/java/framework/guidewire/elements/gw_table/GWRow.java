@@ -9,16 +9,20 @@ import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GWRow extends UIElement implements IGWRow{
     private WebElement element;
+    private HashMap<String, String> columnLabelMap;
 
-    public GWRow(WebElement element) {
+    public GWRow(WebElement element, HashMap<String, String> columnLabelMap) {
         super(element);
         this.element = element;
+        this.columnLabelMap = columnLabelMap;
     }
 
     @Override
@@ -36,6 +40,24 @@ public class GWRow extends UIElement implements IGWRow{
 //            System.out.println("Cell "+ cellNum +" is out of bounds. returning null");
             return null;
         }
+    }
+
+
+    public GWCell getCell(String id){
+        try {
+            List<WebElement> elements = this.element.findElements(By.tagName("td"));
+            for (WebElement element : elements) {
+                if(element.getAttribute("class").contains(id)){
+                    return new GWCell(element);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException ae){
+            Assert.fail("Incorrect Index: "+ae.getLocalizedMessage());
+            throw ae;
+        }
+
+        Assert.fail("Couldn't find cell with ID: "+id);
+        throw new RuntimeException();
     }
 
     @Override
@@ -84,6 +106,11 @@ public class GWRow extends UIElement implements IGWRow{
     public void clickRadioWithLabel(String label) {
         this.element.findElement(By.xpath(".//td/label[contains(text(),'" + label + "')]/preceding-sibling::input")).click();
 //        System.out.println("Radio Button Clicked");
+    }
+
+    @Override
+    public GWCell getCellAtColumnLabel(String columnLabel) {
+        return this.getCell(columnLabelMap.get(columnLabel));
     }
 
     public List<GWCell> getCells() {

@@ -9,11 +9,11 @@ import java.util.LinkedList;
 
 public class MasterDetail {
     private String _masterLine = null;
-    private LinkedList<String> _detailLines;
-    private LayoutFile.FixedWidthLayout.MasterDetail.Detail _detailLayout;
-    private LayoutFile.FixedWidthLayout.MasterDetail.Master _masterLayout;
+    private final LinkedList<String> _detailLines;
+    private final LayoutFile.FixedWidthLayout.MasterDetail.Detail _detailLayout;
+    private final LayoutFile.FixedWidthLayout.MasterDetail.Master _masterLayout;
     private String currentDetailLine;
-    private RegressionLogger logger;
+    private final RegressionLogger logger;
 
     public MasterDetail(RegressionLogger logger, LayoutFile.FixedWidthLayout.MasterDetail.Master masterLayout, LayoutFile.FixedWidthLayout.MasterDetail.Detail detailLayout){
         this._masterLayout = masterLayout;
@@ -30,7 +30,7 @@ public class MasterDetail {
     public MasterDetail addDetailLine(String line){
         if(_masterLine == null){
             Assert.fail("Cannot add Detail Line without Master Line: Invalid File");
-            logger.fatal("Cannot add Detail Line without master Line");
+            logger.fail("Cannot add Detail Line without master Line");
         } else {
             this._detailLines.add(line);
             this.currentDetailLine = line;

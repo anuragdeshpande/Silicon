@@ -4,8 +4,12 @@ import annotations.AutomatedTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.idfbins.driver.BaseTest;
+import framework.customExceptions.KnownDefectException;
+import framework.database.models.TestRuntimeDTO;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
+import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
@@ -18,7 +22,11 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Listener implements ISuiteListener, ITestListener{
@@ -32,10 +40,11 @@ public class Listener implements ISuiteListener, ITestListener{
     @Override
     public void onStart(ISuite iSuite) {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        System.setProperty("SuiteStartTime", String.valueOf(System.currentTimeMillis()));
         String suiteName = iSuite.getName();
         logger = LogManager.getLogger("RegressionLogs-"+timeStamp);
         this.extentReports = ReportManager.initiate(suiteName+"_"+timeStamp);
-        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite");
+        writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild", "true").equalsIgnoreCase("false");
     }
 
 
@@ -49,22 +58,23 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-//        System.out.println("In onTestStart");
-        String testName = iTestResult.getMethod().getConstructorOrMethod().getMethod().getName();
-        String className = iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName();
-
-//        System.out.println("Starting Test - "+ testName);
-        Test[] testAnnotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(Test.class);
-        ExtentTest testLogger = ReportManager.recordTest(testName, className, testAnnotations.length > 0? testAnnotations[0].description() : null);
-        AutomatedTest[] annotations = iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class);
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
+        TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
+        ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0? testAnnotations[0].description() : null);
+        AutomatedTest[] annotations = testMethod.getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
-            testLogger.fatal("Fatal Error: @AutomatedTest annotation not found.");
+            testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
             iTestResult.setStatus(ITestResult.SKIP);
-            throw new SkipException("Fatal Error: @AutomatedTest annotation not found.");
+            throw new SkipException("Fatal Error: @AutomatedTest annotation not found on test: "+testDetailsDTO.getTestName()+" on class: "+testDetailsDTO.getClassName());
         } else {
             AutomatedTest automatedTest = annotations[0];
             testLogger.assignAuthor(automatedTest.Author());
-            testLogger.assignCategory(automatedTest.FeatureNumber(), automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            if(!automatedTest.FeatureNumber().isEmpty()){
+                testLogger.assignCategory(automatedTest.FeatureNumber());
+            }
+            testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            testLogger.assignCategory(iTestResult.getTestContext().getSuite().getName());
             for (String s : automatedTest.Centers()) {
                 testLogger.assignCategory(s);
             }
@@ -78,9 +88,15 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test is successful
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-        ReportManager.getTest(iTestResult.getName()).pass(iTestResult.getName() + ": Passed");
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest test = ReportManager.getTest(dto);
+        test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
+        test.pass(iTestResult.getName() + ": Passed");
         if(writeToDatabase){
-            ReportManager.recordTestResult(iTestResult, "Success");
+            ReportManager.recordTestResult(iTestResult, Status.PASS.toString());
+        } else {
+            System.out.println("Test "+dto.getTestName()+"Passed but, Build is marked as TestBuild, skipping recording results to db");
         }
 
     }
@@ -88,7 +104,10 @@ public class Listener implements ISuiteListener, ITestListener{
     // fires when a test fails
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-        ExtentTest testNode = ReportManager.getTest(iTestResult.getName());
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest testNode = ReportManager.getTest(dto);
+        testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
@@ -99,32 +118,42 @@ public class Listener implements ISuiteListener, ITestListener{
         testNode.fail(iTestResult.getThrowable());
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
-        if(GuidewireInteract.hasErrorMessageOnScreen()){
-            String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
-            testNode.log(Status.FATAL, iTestResult.getName()+" Failed with critical system failure");
-            testNode.fatal(errorMessageFromScreen);
-            iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            if (GuidewireInteract.hasErrorMessageOnScreen()) {
+                String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
+                testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
+                testNode.fail(errorMessageFromScreen);
+
+                iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+            }
+        }
+
+        if(iTestResult.getThrowable() instanceof KnownDefectException){
+            testNode.assignCategory("ActiveDefect");
+            ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: "+iTestResult.getThrowable().getLocalizedMessage());
         }
 
         if(writeToDatabase){
-            ReportManager.recordTestResult(iTestResult, "Failure");
+            ReportManager.recordTestResult(iTestResult, testNode.getStatus().toString());
+        } else {
+            System.out.println("Test "+dto.getTestName()+"Failed but, Build is marked as TestBuild, skipping recording results to db");
         }
-
-        BrowserFactory.closeCurrentBrowser();
     }
 
     // fires when a test is skipped
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
-        ExtentTest extentLogger = ReportManager.getTest(iTestResult.getName());
-        if(extentLogger == null){
-            extentLogger = ReportManager.getClass(iTestResult.getTestClass().getRealClass().getSimpleName());
-        }
+        TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        ExtentTest extentLogger = ReportManager.getTest(dto);
+        extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
+        extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         extentLogger.skip(iTestResult.getName() + ": Skipped");
         if (iTestResult.getMethod().getConstructorOrMethod().getMethod().getDeclaredAnnotationsByType(AutomatedTest.class).length > 0) {
             extentLogger.log(Status.SKIP, "Test is not marked with @AutomationTest annotation: Skipping Test");
             if(writeToDatabase){
-                ReportManager.recordTestResult(iTestResult, "Skipped");
+                ReportManager.recordTestResult(iTestResult, Status.SKIP.toString());
+            } else {
+                System.out.println("Test "+dto.getTestName()+"has been Skipped. but, Build is marked as TestBuild, skipping recording results to db");
             }
         }
     }
@@ -138,20 +167,37 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
-//        System.out.println("After Test Test");
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestContext);
+        System.out.println(testRuntimeDTO.toString());
+        ReportManager.insertIntoTestRuntimeCatalog(testRuntimeDTO);
     }
 
     // Fires at the end of each suite.
     @Override
     public void onFinish(ISuite iSuite) {
+        System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
-        ReportManager.recordSuiteResults(iSuite);
+        this.extentReports.getReport().getTestList().forEach(test -> {
+            LocalTime startTime = test.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            LocalTime endTime = test.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            System.out.println(test.getFullName()+": "+ Duration.between(startTime, endTime).toMinutes());
+        });
+        if(this.writeToDatabase){
+            ReportManager.recordSuiteResults(iSuite);
+        } else {
+            System.out.println("Suite complete. But, Build is marked as TestBuild, skipping recording suite results to db");
+        }
     }
 
     @SuppressWarnings("Duplicates")
     private String captureScreenshot(ITestResult iTestResult) {
-        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        WebDriver driver;
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
+            driver = BrowserFactory.getCurrentBrowser().getDriver();
+        } else {
+            driver = ((BaseTest) iTestResult.getInstance()).getBaseTestDriverForListener();
+        }
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
         try {
@@ -162,6 +208,22 @@ public class Listener implements ISuiteListener, ITestListener{
             e.printStackTrace();
         }
         return destinationFilePath;
+    }
+
+    private TestDetailsDTO buildTestDetailsDTO(ITestResult iTestResult){
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
+        dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
+
+        return dto;
+    }
+
+    private TestRuntimeDTO buildTestRuntimeDTO(ITestContext testContext){
+        LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime endTime = testContext.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        long timeTakenToRunSeconds = Duration.between(startTime, endTime).toMinutes() * 60;
+        Class realClass = testContext.getAllTestMethods()[0].getRealClass();
+        return TestRuntimeDTO.getInstance(realClass.getName(), realClass.getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"));
     }
 
 

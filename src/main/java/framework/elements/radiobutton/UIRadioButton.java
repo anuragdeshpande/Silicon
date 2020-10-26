@@ -3,7 +3,7 @@ package framework.elements.radiobutton;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class UIRadioButton extends UIElement implements IUIRadioButton {
 
@@ -28,18 +28,14 @@ public class UIRadioButton extends UIElement implements IUIRadioButton {
     }
 
     @Override
-    public void clickByLabel(String label) {
-        this.label = label;
-        throw new NotImplementedException();
+    public void select() {
+        if(!isSelected()){
+            getElement().click();
+        }
     }
 
     @Override
-    public void clickYes() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public void clickNo() {
-        throw new NotImplementedException();
+    public boolean isSelected() {
+        return getElement().getAttribute("checked") != null;
     }
 }

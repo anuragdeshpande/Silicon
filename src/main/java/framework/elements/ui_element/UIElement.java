@@ -34,7 +34,7 @@ public class UIElement implements IUIElementOperations {
         this.element = findOptional(elementLocation, reactionTime);
     }
 
-    protected UIElement(WebElement element) {
+    public UIElement(WebElement element) {
         this.element = element;
     }
 

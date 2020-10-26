@@ -8,14 +8,18 @@ import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
+import framework.guidewire.elements.gw_select_box.GWMultiSelect;
 import framework.guidewire.elements.gw_select_box.GWSelectBox;
 import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import framework.webdriver.utils.WaitUtils;
+import org.openqa.selenium.*;
+import org.testng.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -110,4 +114,35 @@ public class GuidewireInteract extends Interact {
     public GWCheckBox withCheckbox(Identifier identifier) {
         return new GWCheckBox(identifier);
     }
+
+    public GWMultiSelect withMultiSelect(Identifier identifier){
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        WebElement multiSelect = interact.withElement(identifier).getElement();
+        return new GWMultiSelect(multiSelect);
+    }
+
+    public GWMultiSelect withMultiSelect(Identifier identifier, ReactionTime reactionTime){
+        return new GWMultiSelect(identifier, reactionTime);
+    }
+
+    public List<WebElement> withMultiValuedElement(Identifier identifier){
+        List<WebElement> elements = new ArrayList<>();
+        WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
+        try {
+            elements = waitUtils.waitUntilElementsAreVisible(identifier.getReference(), 10);
+        } catch (TimeoutException t) {
+            try {
+                elements = waitUtils.waitUntilElementsAreClickable(identifier.getReference(), 20);
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("*** See Stack Trace ***");
+        }
+
+        return elements;
+    }
+
 }

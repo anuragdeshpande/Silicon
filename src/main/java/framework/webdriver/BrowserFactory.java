@@ -2,9 +2,10 @@ package framework.webdriver;
 
 import framework.constants.ReactionTime;
 import framework.guidewire.GuidewireInteract;
+import framework.guidewire.PortalInteract;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.utils.WebDriverOptionsManager;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -51,7 +52,6 @@ public class BrowserFactory {
         if (isRemote) {
             pool.set(ThreadGuard.protect(new RemoteWebDriver(new URL(remoteHubURL), optionsManager.getChromeOptions())));
         } else {
-            ChromeDriverManager.chromedriver().clearPreferences();
             ChromeDriverManager.chromedriver().setup();
             WebDriver driver = ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions()));
             pool.set(driver);
@@ -67,6 +67,10 @@ public class BrowserFactory {
 
     public static synchronized GuidewireInteract getCurrentGuidewireBrowser() {
         return new GuidewireInteract(createDriver());
+    }
+
+    public static synchronized PortalInteract getCurrentPortalsBrowser(){
+        return new PortalInteract(createDriver());
     }
 
     private static synchronized WebDriver createDriver() {

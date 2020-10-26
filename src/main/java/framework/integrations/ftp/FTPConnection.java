@@ -43,7 +43,7 @@ public class FTPConnection {
             this._ftpClient.login(username, new String(Base64.decodeBase64(password)));
             logger.info("Successfully established FTP Connection to: " + serverName + " as user: " + username);
         } catch (IOException e) {
-            this.logger.error(e.getLocalizedMessage());
+            this.logger.fail(e.getLocalizedMessage());
             Assert.fail("Could not Connect to FTP Client: Bad Host, Username or password", e);
         }
 
@@ -72,12 +72,12 @@ public class FTPConnection {
         try {
             boolean isFound = Arrays.stream(this._ftpClient.listFiles()).anyMatch(ftpFile -> ftpFile.getName().toLowerCase().contains(fileNameToSearch.toLowerCase()));
             if (!isFound) {
-                logger.fatal("Cannot find the file: " + fileNameToSearch);
+                logger.fail("Cannot find the file: " + fileNameToSearch);
                 Arrays.stream(this._ftpClient.listFiles()).forEach(ff -> System.out.println(ff.getName()));
             }
             return isFound;
         } catch (IOException e) {
-            logger.error("Could not search for the file with name: " + fileNameToSearch + " encountered error: " + e.getLocalizedMessage(), e);
+            logger.fail("Could not search for the file with name: " + fileNameToSearch + " encountered error: " + e.getLocalizedMessage(), e);
             Assert.fail("Cannot try searching for file", e);
         }
 
@@ -91,7 +91,7 @@ public class FTPConnection {
                 return new RemoteFTPFile(file.get().getName(),this._ftpClient, logger);
             }
         } catch (IOException e) {
-            logger.error("Could not open file with name: " + fileName + " encountered error: " + e.getLocalizedMessage(), e);
+            logger.fail("Could not open file with name: " + fileName + " encountered error: " + e.getLocalizedMessage(), e);
             Assert.fail("Failed to open file", e);
         }
 

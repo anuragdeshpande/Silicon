@@ -1,15 +1,23 @@
 package framework.database.models;
 
+import java.sql.Timestamp;
+
 public class SuiteResultsDTO {
     private String applicationName;
     private int passedTests;
     private int failedTests;
     private int skippedTests;
+    private int warningTests;
     private String jenkinsBuildNumber;
     private String suiteName;
     private String reportPath;
+    private String UUID;
+    private boolean shouldShowInPowerBI;
+    private boolean shouldMarkSuiteAsTestBuild;
+    private Timestamp suiteStartTimeStamp;
+    private Timestamp suiteEndTimeStamp;
 
-    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
+    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
         this.applicationName = applicationName;
         this.passedTests = passedTests;
         this.failedTests = failedTests;
@@ -17,10 +25,16 @@ public class SuiteResultsDTO {
         this.jenkinsBuildNumber = jenkinsBuildNumber;
         this.suiteName = suiteName;
         this.reportPath = reportPath;
+        this.warningTests = warningTests;
+        this.UUID = System.getProperty("UUID");
+        this.shouldShowInPowerBI = System.getProperty("MarkAsTestBuild") != null && System.getProperty("MarkAsTestBuild").equalsIgnoreCase("false");
+        this.shouldMarkSuiteAsTestBuild = !this.shouldShowInPowerBI;
+        this.suiteStartTimeStamp = new Timestamp(Long.parseLong(System.getProperty("SuiteStartTime")));
+        this.suiteEndTimeStamp = new Timestamp(Long.parseLong(System.getProperty("SuiteEndTime")));
     }
 
-    public SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, String jenkinsBuildNumber, String suiteName, String reportPath){
-        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, jenkinsBuildNumber, suiteName, reportPath);
+    public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath){
+        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, warningTests, jenkinsBuildNumber, suiteName, reportPath);
     }
 
     public String getApplicationName() {
@@ -79,23 +93,55 @@ public class SuiteResultsDTO {
         this.reportPath = reportPath;
     }
 
-    public double getPassPercentage(){
-        return ((double) passedTests / (passedTests + failedTests + skippedTests))*100;
+    public int getWarningTests() {
+        return warningTests;
     }
 
-    public double getPassPercentage(int totalTests){
-        return ((double) passedTests/totalTests)*100;
+    public void setWarningTests(int warningTests) {
+        this.warningTests = warningTests;
     }
 
-    public double failPercentage(){
-        return ((double) failedTests / (passedTests + failedTests + skippedTests))*100;
+    public String getUUID() {
+        return UUID;
     }
 
-    public double failPercentage(int totalTests){
-        return ((double) failedTests/ totalTests)*100;
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
+
+    public boolean shouldShowInPowerBI() {
+        return shouldShowInPowerBI;
+    }
+
+    public void setShouldShowInPowerBI(boolean shouldShowInPowerBI) {
+        this.shouldShowInPowerBI = shouldShowInPowerBI;
+    }
+
+    public boolean isSuiteTestBuild() {
+        return shouldMarkSuiteAsTestBuild;
+    }
+
+    public void setShouldMarkSuiteAsTestBuild(boolean shouldMarkSuiteAsTestBuild) {
+        this.shouldMarkSuiteAsTestBuild = shouldMarkSuiteAsTestBuild;
+    }
+
+    public Timestamp getSuiteStartTimeStamp() {
+        return suiteStartTimeStamp;
+    }
+
+    public void setSuiteStartTimeStamp(Timestamp suiteStartTimeStamp) {
+        this.suiteStartTimeStamp = suiteStartTimeStamp;
+    }
+
+    public Timestamp getSuiteEndTimeStamp() {
+        return suiteEndTimeStamp;
+    }
+
+    public void setSuiteEndTimeStamp(Timestamp suiteEndTimeStamp) {
+        this.suiteEndTimeStamp = suiteEndTimeStamp;
     }
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
-        return "INSERT INTO SuiteResults(ApplicationName, PassPercentage, FailPercentage, SkippedCount, BuildNumber, SuiteName, ReportPath, Suite_Date) values (?,?,?,?,?,?,?,?)";
+        return "INSERT INTO SuiteResults(ApplicationName, PassedTests, FailedTests, SkippedTests, FatalTests, WarningTests, BuildNumber, SuiteName, ReportPath, Suite_Date, Suite_End_Date, IsTestBuild, ShowInPowerBIDashboard,UUID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 }

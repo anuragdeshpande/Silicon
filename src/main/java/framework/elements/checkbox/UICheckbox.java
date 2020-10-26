@@ -1,5 +1,6 @@
 package framework.elements.checkbox;
 
+import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.webdriver.BrowserFactory;
@@ -14,6 +15,10 @@ public class UICheckbox extends UIElement implements IUICheckbox {
 
     public UICheckbox(WebElement element){
         super(element);
+    }
+
+    public UICheckbox(Identifier identifier, ReactionTime reactionTime) {
+        super(identifier, reactionTime);
     }
 
     @Override
