@@ -45,6 +45,7 @@ public class BaseOperations {
 //        Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
         ReportManager.recordXMLTest(dto);
         RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
+        RegressionLogger.getXMLTestLogger().info("Test was part of the suite: "+context.getSuite().getName());
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
 

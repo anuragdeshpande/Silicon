@@ -1,4 +1,4 @@
-package framework.integrations.gwServices.gwTestRunner;
+package framework.utils.fileFilters;
 
 import java.io.File;
 import java.io.FilenameFilter;
