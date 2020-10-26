@@ -1,12 +1,19 @@
 package framework;
 
+import annotations.APITest;
 import annotations.AutomatedTest;
+import annotations.ClockMoveTest;
+import annotations.SmokeTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.idfbins.driver.BaseTest;
+import framework.constants.StringConstants;
+import framework.customExceptions.KnownDefectException;
+import framework.database.models.TestRuntimeDTO;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
+import framework.logger.RegressionLogger;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
@@ -22,6 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class Listener implements ISuiteListener, ITestListener{
@@ -69,6 +79,7 @@ public class Listener implements ISuiteListener, ITestListener{
                 testLogger.assignCategory(automatedTest.FeatureNumber());
             }
             testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
+            testLogger.assignCategory(iTestResult.getTestContext().getSuite().getName());
             for (String s : automatedTest.Centers()) {
                 testLogger.assignCategory(s);
             }
@@ -102,7 +113,6 @@ public class Listener implements ISuiteListener, ITestListener{
         ExtentTest testNode = ReportManager.getTest(dto);
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
-
         try {
             testNode.addScreenCaptureFromPath(this.captureScreenshot(iTestResult));
         } catch (Exception e) {
@@ -121,6 +131,11 @@ public class Listener implements ISuiteListener, ITestListener{
 
                 iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
             }
+        }
+
+        if(iTestResult.getThrowable() instanceof KnownDefectException){
+            testNode.assignCategory("ActiveDefect");
+            ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: "+iTestResult.getThrowable().getLocalizedMessage());
         }
 
         if(writeToDatabase){
@@ -157,6 +172,19 @@ public class Listener implements ISuiteListener, ITestListener{
     // Fires on Finishing a test class
     @Override
     public void onFinish(ITestContext iTestContext) {
+        try{
+            TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestContext);
+            System.out.println("Insert/Update completed Test: "+ testRuntimeDTO.getFullClassName()+": "+testRuntimeDTO.toString());
+            ReportManager.insertIntoTestRuntimeCatalog(testRuntimeDTO);
+        } catch (ArrayIndexOutOfBoundsException aie){
+            if(iTestContext.getAllTestMethods().length == 0){
+                RegressionLogger.getXMLTestLogger().warn("No Active tests found in the class. Class Maintenance might be needed.");
+            } else {
+                throw new RuntimeException(aie);
+            }
+        }
+
+
     }
 
     // Fires at the end of each suite.
@@ -165,6 +193,11 @@ public class Listener implements ISuiteListener, ITestListener{
         System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
+        this.extentReports.getReport().getTestList().forEach(test -> {
+            LocalTime startTime = test.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            LocalTime endTime = test.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+            System.out.println(test.getFullName()+": "+ Duration.between(startTime, endTime).toMinutes() +" minute(s)");
+        });
         if(this.writeToDatabase){
             ReportManager.recordSuiteResults(iSuite);
         } else {
@@ -198,6 +231,23 @@ public class Listener implements ISuiteListener, ITestListener{
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
 
         return dto;
+    }
+
+    private TestRuntimeDTO buildTestRuntimeDTO(ITestContext testContext){
+        LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime endTime = testContext.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        long timeTakenToRunSeconds = Duration.between(startTime, endTime).toMinutes() * 60;
+        Class realClass = testContext.getAllTestMethods()[0].getRealClass();
+        String isClockMove = realClass.isAnnotationPresent(ClockMoveTest.class) ? "true" : "false";
+        String testType = StringConstants.UI_TEST;
+        if(realClass.isAnnotationPresent(APITest.class)){
+            testType = StringConstants.API_TEST;
+        }
+
+        if(realClass.isAnnotationPresent(SmokeTest.class)){
+            testType = StringConstants.SMOKE_TEST;
+        }
+        return TestRuntimeDTO.getInstance(realClass.getName(), realClass.getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"), isClockMove, testType);
     }
 
 
