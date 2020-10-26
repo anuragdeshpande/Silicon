@@ -7,38 +7,36 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
-import framework.database.models.DBConnectionDTO;
-import framework.database.models.SuiteResultsDTO;
-import framework.database.models.TestCountDTO;
-import framework.database.models.TestResultsDTO;
+import framework.database.models.*;
 import framework.reports.models.TestDetailsDTO;
+import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.lang3.Validate;
 import org.testng.Assert;
 import org.testng.ISuite;
 import org.testng.ITestResult;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ReportManager {
 
     // Network Storage Location
     private static final String GLOBAL_SUITE_NAME = System.getProperty("globalSuiteName") == null ? "" : System.getProperty("globalSuiteName");
     private static final String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
-    public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp/"+REPORT_FILE_NAME : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME;
+    public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp/"+REPORT_FILE_NAME : (!GLOBAL_SUITE_NAME.isEmpty()? StringConstants.DEFAULT_REPORT_LOCATION_PATH : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME);
     private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
     private static String INIT_SUITE_NAME;
 
@@ -63,32 +61,31 @@ public class ReportManager {
             Validate.notNull(System.getProperty("UUID"));
             Validate.notBlank(System.getProperty("UUID"));
         }
+
         INIT_SUITE_NAME = suiteName;
         classMap = new HashMap<>();
         testMap = new HashMap<>();
         suiteMap = new HashMap<>();
         xmlTestMap = new HashMap<>();
-        if(!GLOBAL_SUITE_NAME.isEmpty()) {
-            REPORT_DIRECTORY_LOCATION = REPORT_DIRECTORY_LOCATION + "\\" + GLOBAL_SUITE_NAME;
+        if(System.getProperty("ReportDirectoryFullLocation") != null){
+            REPORT_DIRECTORY_LOCATION = System.getProperty("ReportDirectoryFullLocation");
         }
+
         FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             new File(REPORT_DIRECTORY_LOCATION).mkdirs();
+            System.setProperty("ReportDirectoryFullLocation", REPORT_DIRECTORY_LOCATION);
         }
 
         ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
         extentReports = new ExtentReports();
 
-        // Configurations
-        extentReporter.config().setTimelineEnabled(true);
-        extentReporter.config().setTheme(Theme.DARK);
-//        extentReporter.config().setCSS(compileCustomCSS());
-        extentReporter.config().setJs("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
-        String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
-        extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
-        extentReporter.config().setReportName(applicationName + " Regression Report");
+        attachCustomConfig(extentReporter);
         extentReports.attachReporter(extentReporter);
+        // attaching json reporter for combining reports at the end of the suite run
+        JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION+"\\"+INIT_SUITE_NAME+"_"+REPORT_FILE_NAME+".json");
+        extentReports.attachReporter(jsonReport);
         return extentReports;
     }
 
@@ -217,6 +214,42 @@ public class ReportManager {
         }
     }
 
+    public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        try{
+            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
+                    new BeanHandler<>(TestRuntimeDTO.class));
+            System.out.println(runtimeDTO.getFullClassName()+" has existing Record so updating with latest info: " +hasExistingRecord);
+            return regressionDB.update(hasExistingRecord == null ?
+                            TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
+                    runtimeDTO.getFullClassName(),
+                    runtimeDTO.getPackageName(),
+                    runtimeDTO.getTotalRuntime(),
+                    runtimeDTO.getProjectSource(),
+                    runtimeDTO.getIsClockMove(),
+                    runtimeDTO.getTestType())> 0;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean insertBulkIntoTestRuntimeCatalog(List<TestRuntimeDTO> runtimeDTOs){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        Object[][] params = new Object[runtimeDTOs.size()][TestResultsDTO.getFieldCount()];
+        for (int i = 0; i < runtimeDTOs.size(); i++) {
+            params[i] = runtimeDTOs.get(i).getValuesAsObjectArray();
+        }
+
+        try{
+            return regressionDB.batch(TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS){
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
@@ -298,5 +331,40 @@ public class ReportManager {
 
     public static String getReportPath(){
         return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
+    }
+
+    public static void generateCombinedReports(String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
+        System.out.println("Combining Reports present at "+Arrays.toString(sourceFilesDirectoryPath));
+        System.out.println("Final Report will be generated at: "+targetLocation);
+        ExtentReports extent = new ExtentReports();
+        // Scanning for json files to parse for reports
+        ArrayList<File> jsonFiles = new ArrayList<>();
+        for (String directoryPath : sourceFilesDirectoryPath) {
+            File directory = new File(directoryPath);
+            jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
+        }
+
+        // Preparing to read existing Reports
+        for (File jsonFile : jsonFiles) {
+            System.out.println("Parsing Report: "+jsonFile.getAbsolutePath());
+            extent.createDomainFromJsonArchive(jsonFile);
+        }
+        String finalReportPath = targetLocation+"\\"+"combinedReport.html";
+        ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
+        attachCustomConfig(sparkReporter);
+        extent.attachReporter(sparkReporter);
+        System.out.println("Generating Combined Report at: "+finalReportPath);
+        extent.flush();
+    }
+
+    private static void attachCustomConfig(ExtentSparkReporter extentReporter){
+        // Configurations
+        extentReporter.config().setTimelineEnabled(true);
+        extentReporter.config().setTheme(Theme.DARK);
+//        extentReporter.config().setCSS(compileCustomCSS());
+        extentReporter.config().setJs("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
+        String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
+        extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
+        extentReporter.config().setReportName(applicationName + " Regression Report");
     }
 }

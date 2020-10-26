@@ -3,10 +3,16 @@ package framework;
 import annotations.AutomatedTest;
 import annotations.PostResetScript;
 import annotations.PreResetScript;
+import annotations.TestCase;
 import com.aventstack.extentreports.ExtentReports;
+import constants.Users;
+import framework.integrations.rally.RallyTestCase;
+import framework.integrations.rally.RallyUserReference;
+import framework.integrations.rally.dtos.RallyTestCaseDTO;
 import framework.logger.RegressionLogger;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
@@ -14,6 +20,9 @@ import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
 
 public class BaseOperations {
     protected ExtentReports reports;
@@ -36,6 +45,7 @@ public class BaseOperations {
 //        Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
         ReportManager.recordXMLTest(dto);
         RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
+        RegressionLogger.getXMLTestLogger().info("Test was part of the suite: "+context.getSuite().getName());
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
 
@@ -78,6 +88,33 @@ public class BaseOperations {
 
     @AfterMethod(description = "AfterMethod")
     public void afterMethod(ITestResult iTestResult) {
+        // update test case if the method is tracked
+        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        TestCase testCaseAnnotation = testMethod.getAnnotation(TestCase.class);
+        AutomatedTest automatedTest = testMethod.getAnnotation(AutomatedTest.class);
+        if (testCaseAnnotation != null){
+            Optional<Users.User> user = Users.get(automatedTest.Author());
+            String userReference = null;
+            if(user.isPresent()){
+                userReference = RallyUserReference.getUserReference(user.get().getRallyUserEmail());
+            }
+            RallyTestCase rallyTestCase = RallyTestCase.getTestCaseByID(testCaseAnnotation.id(), null);
+            if(rallyTestCase.getRelatedUserStory().isStoryTracked()){
+                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                String buildTag = System.getProperty("jenkinsBuildNumber") == null ? "Local: "+ timestamp: "Regression Build " + System.getProperty("jenkinsBuildNumber");
+                switch (iTestResult.getStatus()){
+                    case ITestResult.SUCCESS:
+                        rallyTestCase.recordTestResult(RallyTestCaseDTO.getInstance(true, iTestResult.getMethod().getDescription(), userReference, buildTag));
+                        break;
+                    case ITestResult.FAILURE:
+                        rallyTestCase.recordTestResult(RallyTestCaseDTO.getInstance(false, ExceptionUtils.getStackTrace(iTestResult.getThrowable()), userReference, buildTag));
+                        break;
+                    default:
+                        rallyTestCase.recordTestResult(RallyTestCaseDTO.getInstance(false, iTestResult.getMethod().getDescription(), userReference, buildTag));
+                        break;
+                }
+            }
+        }
     }
 
     @AfterClass(description = "AfterClass")
