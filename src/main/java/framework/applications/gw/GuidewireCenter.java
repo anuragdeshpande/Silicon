@@ -4,7 +4,6 @@ import framework.applications.Application;
 import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
-import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.enums.ApplicationNames;
 import framework.enums.Environments;
 import framework.enums.LogLevel;
@@ -25,13 +24,14 @@ import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.DateUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
         IBatchServer, ITempLogin, IErrorHandling, IGWPages, ICanMoveClock, ICanStartRemoteDataChange {
@@ -70,13 +71,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     @Override
     public boolean hasErrorMessageOnScreen() {
-        String errorMessage = getInteractObject().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.MOMENTARY).screenGrab();
-        return !errorMessage.equalsIgnoreCase("");
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public String getErrorMessageOnScreen() {
-        return getInteractObject().withOptionalElement(GWIDs.ERROR_MESSAGE, ReactionTime.IMMEDIATE).screenGrab();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
@@ -114,18 +114,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         _login(userName, password);
         this.currentUsername = userName;
         this.currentPassword = password;
-
-        // Making sure the current user is not on vacation
-        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for page to load");
-        GuidewireInteract interact = getInteractObject();
-
-        if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
-            interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
-            interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
-        }
-        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for page to load");
-
-
+        PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
     }
 
     @Override
@@ -138,18 +127,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
-
-        UIConfirmationWindow uiConfirmationWindow = interact.withOptionalConfirmationWindow(ReactionTime.ONE_SECOND);
-        if (uiConfirmationWindow.isPresent() && !uiConfirmationWindow.getElement().getAttribute("class").endsWith("x-hide-offsets")) {
-            uiConfirmationWindow.clickOkButton();
-        }
-
-        try {
-            PauseTest.createSpecialInstance(1, 1).until(ExpectedConditions.alertIsPresent(), "Waiting for alert to be present");
-            interact.getDriver().switchTo().alert().accept();
-        } catch (Exception e) {
-            // do nothing
-        }
+        interact.withOptionalAlertWindow(ReactionTime.getInstance(1, TimeUnit.SECONDS)).ifPresent(Alert::accept);
     }
 
 
