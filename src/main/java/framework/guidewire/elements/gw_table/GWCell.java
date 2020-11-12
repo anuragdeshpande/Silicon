@@ -1,13 +1,13 @@
 package framework.guidewire.elements.gw_table;
 
+import framework.elements.checkbox.UICheckbox;
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.webdriver.BrowserFactory;
+import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 
@@ -25,24 +25,8 @@ public class GWCell extends UIElement  {
         element.click();
     }
 
-    /**
-     * @deprecated Use mark/unmark methods instead.
-     */
-    @Deprecated
-    public void clickCheckbox() {
-        new GWCheckBox(this.element).click();
-    }
-
-    public void markCheckBox() {
-        new GWCheckBox(this.element).mark();
-    }
-
-    public void unMarkCheckBox() {
-        new GWCheckBox(this.element).unmark();
-    }
-
-    public boolean isMarked() {
-        return new GWCheckBox(this.element).isChecked();
+    public UICheckbox getCheckbox(){
+        return new UICheckbox(this.element.findElement(By.cssSelector("input[type=checkbox]")));
     }
 
     public String getText() {
