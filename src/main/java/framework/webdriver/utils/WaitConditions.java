@@ -19,6 +19,8 @@ public class WaitConditions {
         this.driver = driver;
         this.timeoutInSeconds = timeoutInSeconds;
         this.pollingIntervalMilliseconds = pollingIntervalMilliseconds;
+
+        this.wait = new WebDriverWait(driver, timeoutInSeconds);
     }
 
     public WebDriverWait getWebdriverWait() {
