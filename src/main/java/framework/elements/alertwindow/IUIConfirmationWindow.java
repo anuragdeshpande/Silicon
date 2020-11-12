@@ -6,6 +6,4 @@ public interface IUIConfirmationWindow {
 
     void clickCancelButton();
 
-    void clickButtonWithText(String buttonText);
-
 }
