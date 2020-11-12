@@ -5,20 +5,14 @@ import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
-import framework.guidewire.elements.gw_checkbox.GWCheckBox;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
-import framework.guidewire.elements.gw_select_box.GWMultiSelect;
-import framework.guidewire.elements.gw_select_box.GWSelectBox;
 import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
-import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
-import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.*;
-import org.testng.Assert;
-
-import java.util.ArrayList;
-import java.util.List;
+import framework.webdriver.PauseTest;
+import org.apache.commons.lang3.NotImplementedException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -26,10 +20,10 @@ public class GuidewireInteract extends Interact {
     }
 
     public void withTabArrow(Identifier identifier) {
+        GuidewireInteract.clickQuickJump();
         UIElement uiElement = new UIElement(identifier);
-        Dimension size = uiElement.getElement().getSize();
-        BrowserFactory.getCurrentBrowser().getActions().moveToElement(uiElement.getElement(), (size.getWidth())/2 - 6, 10).click().build().perform();
-//        System.out.println("Tab Arrow Clicked: "+identifier.getReference());
+        uiElement.getElement().findElement(By.className("gw-icon--expand")).click();
+        PauseTest.waitForPageToLoad();
     }
 
     /**
@@ -37,19 +31,7 @@ public class GuidewireInteract extends Interact {
      * if the error message is shown on the screen with in 10 Milliseconds from the click, the function returns false.
      */
     public static boolean hasErrorMessageOnScreen(){
-        try{
-            GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-            WebDriver driver = interact.getDriver();
-            ReactionTime reactionTime = ReactionTime.MOMENTARY;
-            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-            WebElement errorElement = driver.findElement(GWIDs.ERROR_MESSAGE.getReference());
-            reactionTime = ReactionTime.STANDARD_WAIT_TIME;
-            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-            return errorElement != null && errorElement.isEnabled();
-        } catch (Exception e){
-            return false;
-        }
-
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     /**
@@ -62,28 +44,12 @@ public class GuidewireInteract extends Interact {
 
 
     public static String getErrorMessageFromScreen(){
-        return BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(GWIDs.ERROR_MESSAGE.getReference()).getText();
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public GWRadioButton withRadioButton(Identifier identifier) {
         return new GWRadioButton(identifier);
-    }
-
-    @Override
-    public GWSelectBox withSelectBox(Identifier identifier) {
-        new GWElement(identifier).click();
-        return new GWSelectBox(identifier);
-    }
-
-    @Override
-    public GWSelectBox withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
-        GWSelectBox uiElement = new GWSelectBox(identifier, reactionTime);
-        if(uiElement.isPresent()){
-            uiElement.click();
-        }
-
-        return uiElement;
     }
 
     @Override
@@ -102,47 +68,11 @@ public class GuidewireInteract extends Interact {
 
     @Override
     public UIConfirmationWindow withConfirmationWindow() {
-        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, ReactionTime.IMMEDIATE);
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
     @Override
     public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime) {
-        return new UIConfirmationWindow(GWIDs.CONFIRMATION_WINDOW, reactionTime);
+        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
-
-    @Override
-    public GWCheckBox withCheckbox(Identifier identifier) {
-        return new GWCheckBox(identifier);
-    }
-
-    public GWMultiSelect withMultiSelect(Identifier identifier){
-        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        WebElement multiSelect = interact.withElement(identifier).getElement();
-        return new GWMultiSelect(multiSelect);
-    }
-
-    public GWMultiSelect withMultiSelect(Identifier identifier, ReactionTime reactionTime){
-        return new GWMultiSelect(identifier, reactionTime);
-    }
-
-    public List<WebElement> withMultiValuedElement(Identifier identifier){
-        List<WebElement> elements = new ArrayList<>();
-        WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
-        try {
-            elements = waitUtils.waitUntilElementsAreVisible(identifier.getReference(), 10);
-        } catch (TimeoutException t) {
-            try {
-                elements = waitUtils.waitUntilElementsAreClickable(identifier.getReference(), 20);
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-                throw e;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail("*** See Stack Trace ***");
-        }
-
-        return elements;
-    }
-
 }
