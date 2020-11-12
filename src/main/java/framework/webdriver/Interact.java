@@ -2,7 +2,6 @@ package framework.webdriver;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
-import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.radiobutton.UIRadioButton;
 import framework.elements.selectbox.UISelect;
@@ -12,11 +11,12 @@ import framework.elements.ui_element.UIElement;
 import framework.webdriver.interactionContracts.*;
 import framework.webdriver.utils.BrowserStorageAccess;
 import framework.webdriver.utils.DOMManipulator;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.apache.commons.lang3.NotImplementedException;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Interact
         implements ICanGetDriver,
@@ -27,7 +27,6 @@ public class Interact
         ICanInteractWithTextArea<UITextbox>,
         ICanInteractWithSelectBox<UISelect>,
         ICanInteractWithCheckbox<UICheckbox>,
-        ICanInteractWithConfirmationWindow<UIConfirmationWindow>,
         ICanInteractWithDom<DOMManipulator>,
         ICanInteractWithBrowserStorage<BrowserStorageAccess>,
         ICanSendKeyCombinations{
@@ -116,16 +115,6 @@ public class Interact
     }
 
     @Override
-    public UIConfirmationWindow withConfirmationWindow() {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
-    }
-
-    @Override
-    public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime){
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
-    }
-
-    @Override
     public DOMManipulator withDOM(){
         return new DOMManipulator();
     }
@@ -153,5 +142,18 @@ public class Interact
         controlModifiers.forEach(actions:: keyUp);
         actions.build().perform();
 
+    }
+
+    public Alert withAlertWindow(){
+        return getDriver().switchTo().alert();
+    }
+
+    public Optional<Alert> withOptionalAlertWindow(ReactionTime reactionTime){
+        try{
+            PauseTest.createSpecialInstance(reactionTime.getTime()).until(ExpectedConditions.alertIsPresent(), "Waiting for alert windows if any");
+            return Optional.of(getDriver().switchTo().alert());
+        } catch (NoAlertPresentException | TimeoutException e){
+            return Optional.empty();
+        }
     }
 }
