@@ -7,6 +7,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.concurrent.TimeUnit;
+
 // TODO clean up class and remove GWCore support
 public class PauseTest {
 
@@ -43,6 +45,7 @@ public class PauseTest {
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
         return new WaitConditions(webDriver,timeOutInSeconds, 10);
     }
+
     /**
      * Utility method to create a standard WebdriverWait instance, with a timeout of upto 10 seconds and polling every 100 milliseconds
      * to check for the wait condition
@@ -65,7 +68,20 @@ public class PauseTest {
      * @param messageToShowWhileWaiting Message to show while waiting
      */
     public synchronized static void waitForPageToLoad(String messageToShowWhileWaiting){
-        _waitForPageToLoad(messageToShowWhileWaiting);
+        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting);
+    }
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
+     * @param timeToWait {@link ReactionTime} time to wait for page load to complete
+     * @param messageToShowWhileWaiting Message to show while waiting
+     */
+    public synchronized static void waitForPageToLoad(ReactionTime timeToWait, String messageToShowWhileWaiting){
+        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting);
     }
 
     /**
@@ -76,13 +92,26 @@ public class PauseTest {
      * and for the quick jump element to be clickable
      */
     public synchronized static void waitForPageToLoad(){
-        _waitForPageToLoad("Waiting for page load to complete");
+        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), "Waiting for page load to complete");
+    }
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
+     *
+     * @param timeToWait {@link ReactionTime} time to wait for page load to complete
+     */
+    public synchronized static void waitForPageToLoad(ReactionTime timeToWait){
+        _waitForPageToLoad(timeToWait, "Waiting for page load to complete");
     }
 
 
 
-    private synchronized static void _waitForPageToLoad(String messageToShowWhileWaiting){
-        PauseTest.createInstance().until(ExpectedConditions.and(
+    private synchronized static void _waitForPageToLoad(ReactionTime reactionTime, String messageToShowWhileWaiting){
+        PauseTest.createSpecialInstance(reactionTime.getTime()).until(ExpectedConditions.and(
                 ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
                 ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
         ), messageToShowWhileWaiting);
