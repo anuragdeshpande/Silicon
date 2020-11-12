@@ -15,8 +15,6 @@ public interface IGWRow {
 
     boolean hasValueAtCell(String whatToSearch, int cellNumber);
 
-    void clickCheckBox(int cellNumber);
-
     void clickSelectButton();
 
     void clickButtonWithText(String buttonText);
