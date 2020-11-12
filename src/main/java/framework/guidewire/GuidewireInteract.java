@@ -2,7 +2,6 @@ package framework.guidewire;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
-import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
@@ -66,13 +65,4 @@ public class GuidewireInteract extends Interact {
         return new GWTable(identifier);
     }
 
-    @Override
-    public UIConfirmationWindow withConfirmationWindow() {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
-    }
-
-    @Override
-    public UIConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime) {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
-    }
 }
