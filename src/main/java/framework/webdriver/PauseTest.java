@@ -55,6 +55,19 @@ public class PauseTest {
         return new WaitConditions(webDriver,10, 100);
     }
 
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
+     * @param messageToShowWhileWaiting Message to show while waiting
+     */
+    public synchronized static void waitForPageToLoad(String messageToShowWhileWaiting){
+        _waitForPageToLoad(messageToShowWhileWaiting);
+    }
+
     /**
      * It has been assumed that a page is loaded when the page load animation is gone and
      * quick jump box is clickable.
@@ -63,9 +76,15 @@ public class PauseTest {
      * and for the quick jump element to be clickable
      */
     public synchronized static void waitForPageToLoad(){
+        _waitForPageToLoad("Waiting for page load to complete");
+    }
+
+
+
+    private synchronized static void _waitForPageToLoad(String messageToShowWhileWaiting){
         PauseTest.createInstance().until(ExpectedConditions.and(
                 ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
                 ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
-        ), "Waiting for page load to complete");
+        ), messageToShowWhileWaiting);
     }
 }
