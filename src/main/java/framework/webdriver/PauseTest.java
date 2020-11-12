@@ -1,9 +1,11 @@
 package framework.webdriver;
 
 import framework.constants.ReactionTime;
+import framework.guidewire.pages.GWIDs;
 import framework.webdriver.utils.WaitConditions;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 // TODO clean up class and remove GWCore support
 public class PauseTest {
@@ -51,5 +53,19 @@ public class PauseTest {
     public synchronized static WaitConditions createInstance(){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
         return new WaitConditions(webDriver,10, 100);
+    }
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
+     */
+    public synchronized static void waitForPageToLoad(){
+        PauseTest.createInstance().until(ExpectedConditions.and(
+                ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
+                ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
+        ), "Waiting for page load to complete");
     }
 }
