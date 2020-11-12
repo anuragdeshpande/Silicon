@@ -1,6 +1,7 @@
 package framework.webdriver;
 
 import framework.constants.ReactionTime;
+import framework.webdriver.utils.WaitConditions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -25,14 +26,9 @@ public class PauseTest {
      * @param pollingIntervalInMilliseconds how frequently do you want to check for the waiting condition
      * @return Standard Webdriver wait object
      */
-    public synchronized static WebDriverWait createSpecialInstance(long timeOutInSeconds, long pollingIntervalInMilliseconds){
+    public synchronized static WaitConditions createSpecialInstance(long timeOutInSeconds, long pollingIntervalInMilliseconds){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,timeOutInSeconds, pollingIntervalInMilliseconds);
-    }
-
-    public synchronized static WebDriverWait createSpecialInstance(WebDriver driver, long timeOutInSeconds, long pollingIntervalInMilliseconds){
-        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,timeOutInSeconds, pollingIntervalInMilliseconds);
+        return new WaitConditions(webDriver, timeOutInSeconds, pollingIntervalInMilliseconds);
     }
 
     /**
@@ -41,16 +37,10 @@ public class PauseTest {
      * @param timeOutInSeconds timeout after which the lookup is terminated
      * @return standard Webdriver wait object
      */
-    public synchronized static WebDriverWait createSpecialInstance(long timeOutInSeconds){
+    public synchronized static WaitConditions createSpecialInstance(long timeOutInSeconds){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,timeOutInSeconds);
+        return new WaitConditions(webDriver,timeOutInSeconds, 10);
     }
-
-    public synchronized static WebDriverWait createSpecialInstance(WebDriver driver, long timeOutInSeconds){
-        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,timeOutInSeconds);
-    }
-
     /**
      * Utility method to create a standard WebdriverWait instance, with a timeout of upto 10 seconds and polling every 100 milliseconds
      * to check for the wait condition
@@ -58,13 +48,8 @@ public class PauseTest {
      * Remember to call BrowserFactory.reloadDriver() method after this use
      * @return Standard WebdriverWait Object.
      */
-    public synchronized static WebDriverWait createInstance(){
+    public synchronized static WaitConditions createInstance(){
         WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,10, 100);
-    }
-
-    public synchronized static WebDriverWait createInstance(WebDriver driver){
-        WebDriver webDriver = initiateDriver(driver, ReactionTime.IMMEDIATE);
-        return new WebDriverWait(webDriver,10, 100);
+        return new WaitConditions(webDriver,10, 100);
     }
 }
