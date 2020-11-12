@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
 
 public class GWIDs {
     public static final Identifier LIST_OPTIONS = new Identifier(By.cssSelector("div.x-boundlist.x-boundlist-floating.x-boundlist-default.x-layer.x-border-box:not([style*='display: none'])"));
-    public static final Identifier QUICK_JUMP = new Identifier(By.id("QuickJump-inputEl"));
+    public static final Identifier QUICK_JUMP = new Identifier(By.name("QuickJump"));
     public static final Identifier ERROR_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='error_icon']/parent::div"));
     public static final Identifier WARNING_MESSAGE = new Identifier(By.xpath("//div[@class='message']/img[@class='warning_icon']/parent::div"));
     public static final Identifier CONFIRMATION_WINDOW = new Identifier(By.cssSelector("div[id*='messagebox-']"));
@@ -16,9 +16,9 @@ public class GWIDs {
 
 
     public static class Login{
-        public static final Identifier USER_NAME = new Identifier(By.id("Login:LoginScreen:LoginDV:username-inputEl"), ElementType.TEXT_BOX);
-        public static final Identifier PASSWORD = new Identifier(By.id("Login:LoginScreen:LoginDV:password-inputEl"), ElementType.TEXT_BOX);
-        public static final Identifier LOGIN = new Identifier(By.id("Login:LoginScreen:LoginDV:submit-btnInnerEl"), ElementType.ELEMENT);
+        public static final Identifier USER_NAME = new Identifier(By.name("Login-LoginScreen-LoginDV-username"), ElementType.TEXT_BOX);
+        public static final Identifier PASSWORD = new Identifier(By.name("Login-LoginScreen-LoginDV-password"), ElementType.TEXT_BOX);
+        public static final Identifier LOGIN = new Identifier(By.id("Login-LoginScreen-LoginDV-submit"), ElementType.ELEMENT);
     }
 
     public static class SettingsCog{
