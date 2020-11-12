@@ -116,14 +116,14 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         this.currentPassword = password;
 
         // Making sure the current user is not on vacation
-        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
+        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for page to load");
         GuidewireInteract interact = getInteractObject();
 
         if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
             interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
             interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
         }
-        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()));
+        PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for page to load");
 
 
     }
@@ -145,7 +145,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         }
 
         try {
-            PauseTest.createSpecialInstance(1, 1).until(ExpectedConditions.alertIsPresent());
+            PauseTest.createSpecialInstance(1, 1).until(ExpectedConditions.alertIsPresent(), "Waiting for alert to be present");
             interact.getDriver().switchTo().alert().accept();
         } catch (Exception e) {
             // do nothing

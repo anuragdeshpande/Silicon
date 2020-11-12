@@ -3,7 +3,6 @@ package framework.guidewire;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
-import framework.elements.checkbox.UICheckbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_checkbox.GWCheckBox;
@@ -60,6 +59,7 @@ public class GuidewireInteract extends Interact {
     public static void clickQuickJump(){
         new GWElement(GWIDs.QUICK_JUMP).getElement().click();
     }
+
 
     public static String getErrorMessageFromScreen(){
         return BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(GWIDs.ERROR_MESSAGE.getReference()).getText();

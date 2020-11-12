@@ -73,8 +73,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
         }
         PortalInteract interact = BrowserFactory.getCurrentPortalsBrowser();
         try{
-            interact.withDOM().injectInfoMessage("Waiting for Home page to load");
-            PauseTest.createSpecialInstance(timeout, 5).until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("gw-progress")));
+            PauseTest.createSpecialInstance(timeout, 5).until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("gw-progress")), "Waiting for Home page to load");
         }catch (TimeoutException te){
             RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeout+" seconds");
@@ -94,7 +93,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
         PortalInteract interact = BrowserFactory.getCurrentPortalsBrowser();
         interact.withElement(new Identifier(By.xpath("//div[contains(@class, 'gw-modal-footer')]//button[contains(@class, 'gw-btn-primary')]"))).click();
         try{
-            PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[contains(@class, 'gw-modal-body')]//i[contains(@class, 'gw-modal-state-error-circle')]")));
+            PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[contains(@class, 'gw-modal-body')]//i[contains(@class, 'gw-modal-state-error-circle')]")), "Waiting to close error message");
         } catch (Exception e){
             // do nothing
         }
