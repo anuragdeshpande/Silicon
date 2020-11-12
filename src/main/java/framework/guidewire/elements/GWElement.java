@@ -40,32 +40,17 @@ public class GWElement extends UIElement {
 
     @Override
     public void click() {
+        PauseTest.waitForPageToLoad();
         if (!this.isPresent()) {
             Assert.fail("Element is not Clickable");
         }
 
         try {
             this.getElement().click();
+            PauseTest.waitForPageToLoad();
         } catch (ElementClickInterceptedException cie) {
-            retryClickAfterOverlayIsCleared();
+            PauseTest.waitForPageToLoad();
         }
-
-
-        // closing the warning window if Identifier is marked to check it
-        if (identifier.shouldCheckForWarning()) {
-            closeWarningWindow();
-        }
-
-        if (identifier.shouldGuardRaceCondition()) {
-            braceForRaceCondition();
-        }
-
-        // checking for error messages after clicking
-        if (GuidewireInteract.hasErrorMessageOnScreen()) {
-            // Unknown Error - fail the test at Fatal Level
-            throw new ErrorMessageOnScreenException("Error Message On Screen: " + GuidewireInteract.getErrorMessageFromScreen());
-        }
-
     }
 
     private void closeWarningWindow() {
@@ -113,31 +98,6 @@ public class GWElement extends UIElement {
         }
 
 
-    }
-
-    private void retryClickAfterOverlayIsCleared() {
-        Properties configProperties = PropertiesFileLoader.load("config.properties");
-        String timeoutStr = configProperties.getProperty("GWPageTimeout");
-        int timeout = 5;
-        if(timeoutStr != null){
-            timeout = Integer.parseInt(timeoutStr);
-        }
-        // there is a temporary overlay, wait for the overlay to disappear and then click again.
-        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ReactionTime reactionTime = ReactionTime.IMMEDIATE;
-        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-        try {
-            new WebDriverWait(driver, timeout)
-                    .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//body[contains(@class, 'x-mask')]")));
-        } catch (TimeoutException e) {
-            Assert.fail("Guidewire Application is taking over 5 seconds to respond to click: Aborting tests");
-        }
-
-        reactionTime = ReactionTime.STANDARD_WAIT_TIME;
-        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-
-        // overlay element is gone - clicking again
-        this.getElement().click();
     }
 
     private void closeWarningWindowWhenAppears() {
