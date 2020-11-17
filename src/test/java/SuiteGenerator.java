@@ -7,7 +7,6 @@ import framework.suiteManager.SuiteCreator;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.Validate;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlSuite;
@@ -30,9 +29,12 @@ public class SuiteGenerator {
         System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
         boolean isClockMove = System.getProperty("isClockMove", "false").equalsIgnoreCase("true");
         String runningNode = System.getProperty("RunningNode");
-        ClassInfoList regressionTests = null;
+        ClassInfoList regressionTests;
+        ClassGraph graph = new ClassGraph();
+        System.out.println("Default Class white listing from RunPackage(s): "+System.getProperty("RunPackage"));
+        regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).scan().getClassesWithAnnotation(Test.class.getCanonicalName());
+
         if (System.getProperty("LoadBalancedFile") != null) {
-            ClassGraph graph = new ClassGraph();
             String filePath;
             if (isClockMove) {
                 filePath = StringConstants.DISTRIBUTED_TESTS_FILES_CLOCK_MOVE_LOCATION + "\\" + runningNode + ".txt";
@@ -40,15 +42,16 @@ public class SuiteGenerator {
                 filePath = StringConstants.DISTRIBUTED_TESTS_FILES_NON_CLOCK_MOVE_LOCATION + "\\" + runningNode + ".txt";
             }
 
-            System.out.println("Reading tests from path: " + filePath);
+            System.out.println("Resetting existing regression tests and Reading new tests from path: " + filePath);
             List<String> lines = FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8);
             String[] classes = lines.toArray(new String[0]);
             regressionTests = graph.whitelistClasses(classes).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
-            ClassInfoList disabledTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(DisabledTest.class.getCanonicalName()));
-            regressionTests = regressionTests.exclude(disabledTests);
         }
 
-        Validate.notNull(regressionTests, "No Tests found to index. RunPackage: " + System.getProperty("RunPackage" + " LoadBalancedFile: " + System.getProperty("LoadBalancedFile")));
+        ClassInfoList disabledTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(DisabledTest.class.getCanonicalName()));
+        regressionTests = regressionTests.exclude(disabledTests);
+
+
         List<XmlSuite> suitesToRun = new ArrayList<>();
         boolean shouldRunSmokeTests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.SMOKE_TEST);
         boolean shouldRunRegressionTests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.UI_TEST);
