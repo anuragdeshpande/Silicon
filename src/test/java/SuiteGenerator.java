@@ -32,7 +32,7 @@ public class SuiteGenerator {
         ClassInfoList regressionTests;
         ClassGraph graph = new ClassGraph();
         System.out.println("Default Class white listing from RunPackage(s): "+System.getProperty("RunPackage"));
-        regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).scan().getClassesWithAnnotation(Test.class.getCanonicalName());
+        regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName());
 
         if (System.getProperty("LoadBalancedFile") != null) {
             String filePath;
