@@ -35,6 +35,8 @@ public class SuiteGenerator {
         regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName());
 
         if (System.getProperty("LoadBalancedFile") != null) {
+            regressionTests = null;
+            graph = new ClassGraph();
             String filePath;
             if (isClockMove) {
                 filePath = StringConstants.DISTRIBUTED_TESTS_FILES_CLOCK_MOVE_LOCATION + "\\" + runningNode + ".txt";
