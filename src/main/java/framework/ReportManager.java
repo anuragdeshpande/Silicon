@@ -87,17 +87,6 @@ public class ReportManager {
         // attaching json reporter for combining reports at the end of the suite run
         JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".json");
         extentReports.attachReporter(jsonReport);
-
-        // report to klov reporting if flag is setup
-        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
-            ExtentKlovReporter klov = new ExtentKlovReporter();
-            klov
-                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
-                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
-            klov.setProjectName(System.getProperty("SuiteName"));
-            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
-            extentReports.attachReporter(klov);
-        }
         return extentReports;
     }
 
@@ -365,6 +354,17 @@ public class ReportManager {
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
+
+        // report to klov reporting if flag is setup
+        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
+            ExtentKlovReporter klov = new ExtentKlovReporter();
+            klov
+                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
+                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
+            klov.setProjectName(System.getProperty("ProjectName"));
+            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
+            extentReports.attachReporter(klov);
+        }
         System.out.println("Generating Combined Report at: " + finalReportPath);
         extent.flush();
     }
