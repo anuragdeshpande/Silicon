@@ -34,7 +34,9 @@ public class SuiteGenerator {
         System.out.println("Default Class white listing from RunPackage(s): "+System.getProperty("RunPackage"));
         regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName());
 
-        if (System.getProperty("LoadBalancedFile") != null) {
+        if (System.getProperty("LoadBalancedFile") != null
+                && !System.getProperty("LoadBalancedFile").isEmpty()
+                && System.getProperty("LoadBalancedFile").equalsIgnoreCase("true")) {
             regressionTests = null;
             graph = new ClassGraph();
             String filePath;
@@ -62,7 +64,6 @@ public class SuiteGenerator {
             boolean shouldRunAPITests = System.getProperty("TestType").equalsIgnoreCase(StringConstants.API_TEST);
 
             /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
-
             if (shouldRunSmokeTests) {
                 ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()))
                         .filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
@@ -86,7 +87,6 @@ public class SuiteGenerator {
             }
 
             /*  End Filtering and start main regression tests */
-
             if (shouldRunRegressionTests) {
                 System.out.println("Total UI Tests: " + regressionTests.size());
                 System.out.println(regressionTests);
