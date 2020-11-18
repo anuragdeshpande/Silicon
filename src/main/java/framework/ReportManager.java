@@ -347,7 +347,7 @@ public class ReportManager {
                     .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
             klov.setProjectName(System.getProperty("ProjectName"));
             klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
-            extentReports.attachReporter(klov);
+            extent.attachReporter(klov);
         }
 
         // Scanning for json files to parse for reports
