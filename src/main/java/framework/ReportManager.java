@@ -94,7 +94,7 @@ public class ReportManager {
             klov
                     .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
                     .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
-            klov.setProjectName(System.getProperty("ProjectName"));
+            klov.setProjectName(System.getProperty("SuiteName"));
             klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
             extentReports.attachReporter(klov);
         }
