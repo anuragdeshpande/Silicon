@@ -90,10 +90,12 @@ public class ReportManager {
 
         // report to klov reporting if flag is setup
         if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
-            ExtentKlovReporter klov = new ExtentKlovReporter(System.getProperty("ProjectName"));
+            ExtentKlovReporter klov = new ExtentKlovReporter();
             klov
                     .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
                     .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
+            klov.setProjectName("NightlyRegression");
+            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
             extentReports.attachReporter(klov);
         }
         return extentReports;

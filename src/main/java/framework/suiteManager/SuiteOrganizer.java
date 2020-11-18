@@ -25,6 +25,7 @@ public class SuiteOrganizer {
     private static List<TestRuntimeDTO> dtos;
     private static final List<TestRuntimeDTO> nonClockMoveDTOs;
     private static final List<TestRuntimeDTO> clockMoveDTOs;
+    private static final List<TestRuntimeDTO> potentialTests;
 
 
     static {
@@ -33,7 +34,7 @@ public class SuiteOrganizer {
         try {
             deleteVoidTests();
             dtos = getAllExistingTestsFromDB();
-            indexPotentialTestsInRunPackage();
+            potentialTests = indexPotentialTestsInRunPackage();
             dtos = getAllExistingTestsFromDB();
             dtos.forEach(runtimeDTO -> {
                 if(runtimeDTO.getIsClockMove().equalsIgnoreCase("true")){
@@ -92,7 +93,7 @@ public class SuiteOrganizer {
         }
     }
 
-    private static void indexPotentialTestsInRunPackage() {
+    private static List<TestRuntimeDTO> indexPotentialTestsInRunPackage() {
         String basePackage = System.getProperty("RunPackage");
         String projectSource = System.getProperty("ApplicationName");
         if (basePackage != null) {
@@ -110,6 +111,7 @@ public class SuiteOrganizer {
 
             Map<String, TestRuntimeDTO> classNames = dtos.stream().collect(Collectors.toMap(TestRuntimeDTO::getFullClassName, e -> e));
             Set<String> newClassesInserted = new HashSet<>();
+            ArrayList<TestRuntimeDTO> potentialTests = new ArrayList<>();
             classesWithTestAnnotation.forEach(classInfo -> {
                 String testType = StringConstants.UI_TEST;
                 if (classInfo.hasAnnotation(SmokeTest.class.getCanonicalName())) {
@@ -122,10 +124,12 @@ public class SuiteOrganizer {
 
                 TestRuntimeDTO runtimeDTO = TestRuntimeDTO.getInstance(classInfo.getName(), classInfo.getPackageName(), classNames.containsKey(classInfo.getName()) ? classNames.get(classInfo.getName()).getTotalRuntime() : 1, projectSource, classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()) + "", testType);
                 ReportManager.insertIntoTestRuntimeCatalog(runtimeDTO);
+                potentialTests.add(runtimeDTO);
                 newClassesInserted.add(classInfo.getName());
             });
 
             System.out.println("Inserted/ Updated classes that were not indexed before ("+newClassesInserted.size()+"):" + Arrays.toString(newClassesInserted.toArray()));
+            return potentialTests;
         } else {
             throw new IllegalStateException("No Base Package details found. Value is: " + basePackage + ". Cannot start proper regression run without full indexing of the tests");
         }
@@ -153,18 +157,21 @@ public class SuiteOrganizer {
         Iterator<PackagedSuite> packageIterator;
         while (sourceIterator.hasNext()) {
             TestRuntimeDTO dto = sourceIterator.next();
-            // sort package list
-            sortPackages(targetPackages);
-            packageIterator = targetPackages.iterator();
-            PackagedSuite aPackage = packageIterator.next();
-            // add to the list if the packagedSuite is in current round or still in previous round
-            if ((aPackage.getTotalRuntime() <= currentMaxRuntime) && (aPackage.getIterationCount() <= currentIterationCount)) {
-                long updatedPackageRunTime = aPackage.addTest(dto.getFullClassName(), dto.getTotalRuntime());
-                if (updatedPackageRunTime > currentMaxRuntime) {
-                    currentMaxRuntime = updatedPackageRunTime;
-                }
-                if (currentIterationCount < aPackage.getIterationCount()) {
-                    currentIterationCount = aPackage.getIterationCount();
+            Optional<TestRuntimeDTO> match = potentialTests.stream().filter(potentialTest -> potentialTest.getFullClassName().equalsIgnoreCase(dto.getFullClassName())).findFirst();
+            if(match.isPresent()) {
+                // sort package list
+                sortPackages(targetPackages);
+                packageIterator = targetPackages.iterator();
+                PackagedSuite aPackage = packageIterator.next();
+                // add to the list if the packagedSuite is in current round or still in previous round
+                if ((aPackage.getTotalRuntime() <= currentMaxRuntime) && (aPackage.getIterationCount() <= currentIterationCount)) {
+                    long updatedPackageRunTime = aPackage.addTest(dto.getFullClassName(), dto.getTotalRuntime());
+                    if (updatedPackageRunTime > currentMaxRuntime) {
+                        currentMaxRuntime = updatedPackageRunTime;
+                    }
+                    if (currentIterationCount < aPackage.getIterationCount()) {
+                        currentIterationCount = aPackage.getIterationCount();
+                    }
                 }
             }
         }
