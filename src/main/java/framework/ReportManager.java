@@ -338,6 +338,18 @@ public class ReportManager {
         System.out.println("Combining Reports present at " + Arrays.toString(sourceFilesDirectoryPath));
         System.out.println("Final Report will be generated at: " + targetLocation);
         ExtentReports extent = new ExtentReports();
+        // report to klov reporting if flag is setup
+        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
+            System.out.println("Attempting to push tests to klov server");
+            ExtentKlovReporter klov = new ExtentKlovReporter();
+            klov
+                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
+                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
+            klov.setProjectName(System.getProperty("ProjectName"));
+            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
+            extentReports.attachReporter(klov);
+        }
+
         // Scanning for json files to parse for reports
         ArrayList<File> jsonFiles = new ArrayList<>();
         for (String directoryPath : sourceFilesDirectoryPath) {
@@ -354,17 +366,6 @@ public class ReportManager {
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
-
-        // report to klov reporting if flag is setup
-        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
-            ExtentKlovReporter klov = new ExtentKlovReporter();
-            klov
-                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
-                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
-            klov.setProjectName(System.getProperty("ProjectName"));
-            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
-            extentReports.attachReporter(klov);
-        }
         System.out.println("Generating Combined Report at: " + finalReportPath);
         extent.flush();
     }
