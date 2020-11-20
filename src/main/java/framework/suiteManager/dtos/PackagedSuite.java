@@ -52,6 +52,7 @@ public class PackagedSuite {
     }
 
     public static ArrayList<PackagedSuite> initializePackages(int numberOfThreads, String distributeAgainst){
+        System.out.println("Distributing Against: "+distributeAgainst);
         String[] distributionList = distributeAgainst.split(",");
         ArrayList<PackagedSuite> packages = new ArrayList<>();
         for (String runnerName : distributionList) {
