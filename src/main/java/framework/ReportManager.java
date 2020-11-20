@@ -372,7 +372,6 @@ public class ReportManager {
 
     private static void attachCustomConfig(ExtentSparkReporter extentReporter) {
         // Configurations
-        extentReporter.config().setTimelineEnabled(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJs("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
