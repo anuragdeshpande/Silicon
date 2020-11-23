@@ -1,6 +1,11 @@
 package framework.database.models;
 
+import framework.database.ConnectionManager;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 public class SuiteResultsDTO {
     private String applicationName;
@@ -16,6 +21,7 @@ public class SuiteResultsDTO {
     private boolean shouldMarkSuiteAsTestBuild;
     private Timestamp suiteStartTimeStamp;
     private Timestamp suiteEndTimeStamp;
+    private Timestamp suite_end_date;
 
     private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
         this.applicationName = applicationName;
@@ -33,8 +39,31 @@ public class SuiteResultsDTO {
         this.suiteEndTimeStamp = new Timestamp(Long.parseLong(System.getProperty("SuiteEndTime")));
     }
 
+    public SuiteResultsDTO() {
+    }
+
     public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath){
         return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, warningTests, jenkinsBuildNumber, suiteName, reportPath);
+    }
+
+    public static Optional<SuiteResultsDTO> getExisting(String uuid, String applicationName, String suiteName){
+        try{
+            SuiteResultsDTO existingDTO = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER).query("Select * from SuiteResults where UUID = '"+uuid+"' and ApplicationName='"+applicationName+"' and SuiteName='"+suiteName+"'",
+                    new BeanHandler<>(SuiteResultsDTO.class));
+            return Optional.of(existingDTO);
+        } catch (SQLException sqlException) {
+            return Optional.empty();
+        }
+    }
+
+    public static SuiteResultsDTO updateExisting(TestCountDTO testCountDTO, SuiteResultsDTO existingDTO){
+        existingDTO.incrementPassedTests(testCountDTO.getPassCount());
+        existingDTO.incrementFailedTests(testCountDTO.getFailCount());
+        existingDTO.incrementSkippedTests(testCountDTO.getSkipCount());
+        existingDTO.incrementWarningTests(testCountDTO.getWarningCount());
+        existingDTO.setSuiteEndTimeStamp(new Timestamp(System.currentTimeMillis()));
+
+        return existingDTO;
     }
 
     public String getApplicationName() {
@@ -143,5 +172,37 @@ public class SuiteResultsDTO {
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
         return "INSERT INTO SuiteResults(ApplicationName, PassedTests, FailedTests, SkippedTests, FatalTests, WarningTests, BuildNumber, SuiteName, ReportPath, Suite_Date, Suite_End_Date, IsTestBuild, ShowInPowerBIDashboard,UUID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    }
+
+    public static String getJDBCPreparedUpdateStatementWithoutParameters(){
+        return "Update SuiteResults set PassedTests=?,FailedTests=?,SkippedTests=?,WarningTests=?,Suite_End_date=? where UUID=? and SuiteName=? and ApplicationName=?";
+    }
+
+    public Timestamp getSuite_end_date() {
+        return suite_end_date;
+    }
+
+    public void setSuite_end_date(Timestamp suite_end_date) {
+        this.suite_end_date = suite_end_date;
+    }
+
+    public void incrementPassedTests(int testCount){
+        this.passedTests+=testCount;
+    }
+
+    public void incrementFailedTests(int testCount){
+        this.failedTests+=testCount;
+    }
+
+    public void incrementSkippedTests(int testCount){
+        this.skippedTests+=testCount;
+    }
+
+    public void incrementFatalTests(int testCount){
+        this.failedTests+=testCount;
+    }
+
+    public void incrementWarningTests(int testCount){
+        this.warningTests+=testCount;
     }
 }
