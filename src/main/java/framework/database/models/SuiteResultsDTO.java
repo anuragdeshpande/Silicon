@@ -61,7 +61,6 @@ public class SuiteResultsDTO {
         existingDTO.incrementFailedTests(testCountDTO.getFailCount());
         existingDTO.incrementSkippedTests(testCountDTO.getSkipCount());
         existingDTO.incrementWarningTests(testCountDTO.getWarningCount());
-        existingDTO.setSuiteEndTimeStamp(new Timestamp(System.currentTimeMillis()));
 
         return existingDTO;
     }
