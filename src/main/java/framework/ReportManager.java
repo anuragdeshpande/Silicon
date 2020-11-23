@@ -273,8 +273,15 @@ public class ReportManager {
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = getReportPath();
-            SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, iSuite.getName(), reportPath);
-            insertIntoSuiteResults(suiteDTO);
+            String suiteName = iSuite.getName();
+            Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
+            if(existingSuiteDTO.isPresent()){
+                SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
+                updateSuiteResults(updatedDTO);
+            } else {
+                SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, suiteName, reportPath);
+                insertIntoSuiteResults(suiteDTO);
+            }
         } else {
             System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
         }
@@ -307,6 +314,26 @@ public class ReportManager {
         }
     }
 
+    public static boolean updateSuiteResults(SuiteResultsDTO suiteResultsDTO){
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        try {
+            regressionDB.update(SuiteResultsDTO.getJDBCPreparedUpdateStatementWithoutParameters(),
+                    suiteResultsDTO.getPassedTests(),
+                    suiteResultsDTO.getFailedTests(),
+                    suiteResultsDTO.getSkippedTests(),
+                    suiteResultsDTO.getWarningTests(),
+                    suiteResultsDTO.getSuite_end_date(),
+                    suiteResultsDTO.getUUID(),
+                    suiteResultsDTO.getSuiteName(),
+                    suiteResultsDTO.getApplicationName());
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Assert.fail("Could not update the suite results to the database");
+            return false;
+        }
+    }
+
     private static String flattenTags(ITestResult iTestResult) {
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
         AutomationHistory[] historyAnnotations = testMethod.getAnnotationsByType(AutomationHistory.class);
@@ -331,7 +358,7 @@ public class ReportManager {
     }
 
     public static String getReportPath() {
-        return "http://qa.idfbins.com/regression_logs/" + REPORT_FILE_NAME + "/" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
+        return "http://qa.idfbins.com/regression_logs/" + GLOBAL_SUITE_NAME;
     }
 
     public static void generateCombinedReports(String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
