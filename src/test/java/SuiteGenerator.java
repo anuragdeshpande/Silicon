@@ -65,8 +65,7 @@ public class SuiteGenerator {
 
             /* Start Filtering: Need to remove all the other tests before creating the main regression tests */
             if (shouldRunSmokeTests) {
-                ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()))
-                        .filter(classInfo -> classInfo.hasMethodAnnotation(SmokeTest.class.getCanonicalName()));
+                ClassInfoList smokeTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(SmokeTest.class.getCanonicalName()));
                 System.out.println("Adding smoke tests: " + smokeTests.size());
                 System.out.println(smokeTests);
                 regressionTests = regressionTests.exclude(smokeTests);
@@ -76,8 +75,7 @@ public class SuiteGenerator {
             }
 
             if (shouldRunAPITests) {
-                ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(APITest.class.getCanonicalName()))
-                        .filter(classInfo -> classInfo.hasMethodAnnotation(APITest.class.getCanonicalName()));
+                ClassInfoList apiTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(APITest.class.getCanonicalName()));
                 System.out.println("Adding API Tests: " + apiTests.size());
                 System.out.println(apiTests);
                 regressionTests = regressionTests.exclude(apiTests);
