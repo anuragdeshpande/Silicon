@@ -50,7 +50,7 @@ public class SuiteResultsDTO {
         try{
             SuiteResultsDTO existingDTO = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER).query("Select * from SuiteResults where UUID = '"+uuid+"' and ApplicationName='"+applicationName+"' and SuiteName='"+suiteName+"'",
                     new BeanHandler<>(SuiteResultsDTO.class));
-            return Optional.of(existingDTO);
+            return Optional.ofNullable(existingDTO);
         } catch (SQLException sqlException) {
             return Optional.empty();
         }
