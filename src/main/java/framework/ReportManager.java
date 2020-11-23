@@ -322,7 +322,6 @@ public class ReportManager {
                     suiteResultsDTO.getFailedTests(),
                     suiteResultsDTO.getSkippedTests(),
                     suiteResultsDTO.getWarningTests(),
-                    suiteResultsDTO.getSuite_end_date(),
                     suiteResultsDTO.getUUID(),
                     suiteResultsDTO.getSuiteName(),
                     suiteResultsDTO.getApplicationName());

@@ -175,7 +175,7 @@ public class SuiteResultsDTO {
     }
 
     public static String getJDBCPreparedUpdateStatementWithoutParameters(){
-        return "Update SuiteResults set PassedTests=?,FailedTests=?,SkippedTests=?,WarningTests=?,Suite_End_date=? where UUID=? and SuiteName=? and ApplicationName=?";
+        return "Update SuiteResults set PassedTests=?,FailedTests=?,SkippedTests=?,WarningTests=?,Suite_End_Date=GETDATE() where UUID=? and SuiteName=? and ApplicationName=?";
     }
 
     public Timestamp getSuite_end_date() {
