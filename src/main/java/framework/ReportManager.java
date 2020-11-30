@@ -269,11 +269,11 @@ public class ReportManager {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
 //            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
             String UUID = System.getProperty("UUID");
-            TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID);
+            String suiteName = iSuite.getName();
+            TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID, suiteName);
             String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = getReportPath();
-            String suiteName = iSuite.getName();
             Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
             if(existingSuiteDTO.isPresent()){
                 SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
