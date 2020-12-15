@@ -149,23 +149,23 @@ public class GuidewireInteract extends Interact {
         return elements;
     }
 
-    public void waitForPageToLoad(){
+    public static void waitForPageToLoad(){
         _waitForPageToLoad(10, 1, "Waiting for Quick Jump to be clickable");
     }
 
-    public void waitForPageToLoad(String message){
+    public static void waitForPageToLoad(String message){
         _waitForPageToLoad(10, 1, message);
     }
 
-    public void waitForPageToLoad(long timeToWait, long pollingInterval){
+    public static void waitForPageToLoad(long timeToWait, long pollingInterval){
         _waitForPageToLoad(timeToWait, pollingInterval, "Waiting for Quick Jump to be clickable");
     }
 
-    public void waitForPageToLoad(long timeToWait, long pollingInterval, String message){
+    public static void waitForPageToLoad(long timeToWait, long pollingInterval, String message){
         _waitForPageToLoad(timeToWait, pollingInterval, message);
     }
 
-    private void _waitForPageToLoad(long timeToWait, long pollingInterval, String message){
+    private static void _waitForPageToLoad(long timeToWait, long pollingInterval, String message){
         PauseTest.createSpecialInstance(timeToWait, pollingInterval).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), message);
     }
 
