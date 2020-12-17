@@ -1,6 +1,5 @@
 package framework.utils;
 
-import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.TimeoutException;
@@ -35,9 +34,8 @@ public class WaitConditions {
             interact.withDOM().clearBannerMessage();
             return until;
         } catch (TimeoutException toe){
-            interact.withDOM().injectDangerMessage("Page did not load in under "+timeoutInSeconds+" seconds");
-            RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
-            throw new TimeoutException("Page is still loading");
+            interact.withDOM().injectDangerMessage(messageToShowWhileWaiting+" Failed");
+            throw new TimeoutException(messageToShowWhileWaiting+" Failed");
         }
     }
 }
