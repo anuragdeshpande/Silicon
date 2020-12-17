@@ -97,7 +97,7 @@ public class GWElement extends UIElement {
     private void braceForRaceCondition() {
         GuidewireInteract.clickQuickJump();
         try{
-            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()), "Waiting to avoid race condition click");
+            PauseTest.createSpecialInstance(1, 10).getWebdriverWait().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
             // Race Condition Check
             if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().trim().equalsIgnoreCase("Your data change could not be made because another user already changed the data. Please cancel out of the wizard and create your check again.")) {
                 System.out.println("#################### Race Condition: Retrying the click #########################");
@@ -105,7 +105,7 @@ public class GWElement extends UIElement {
                 while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0) {
                     timeoutCounter--;
                     this.getElement().click();
-                    PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()), "Waiting to avoid race condition click");
+                    PauseTest.createInstance().getWebdriverWait().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()));
                 }
             }
         } catch (TimeoutException tme){

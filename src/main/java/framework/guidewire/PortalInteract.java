@@ -79,6 +79,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
             RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeout+" seconds");
             RegressionLogger.getTestLogger().captureScreenshot("Page loading did not meet SLA");
+            interact.withDOM().clearBannerMessage();
             throw new TimeoutException("Page is still loading");
         }
     }
