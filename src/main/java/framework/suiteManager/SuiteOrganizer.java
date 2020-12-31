@@ -137,9 +137,10 @@ public class SuiteOrganizer {
     }
 
     private static void deleteVoidTests() throws SQLException {
+        String basePackage = System.getProperty("RunPackage");
         // deleting tests where their run times are at 0 or 1
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
-        int totalRowsUpdated = regressionDB.update("Delete from TestRuntimeCatalog where totalRunTime = 1 or totalRunTime = 0");
+        int totalRowsUpdated = regressionDB.update("Delete from TestRuntimeCatalog where packageName = '"+basePackage+"' and  totalRunTime = 1 or totalRunTime = 0");
         System.out.println("Deleted "+totalRowsUpdated+" rows that were at runtime = 0/1 so that the current run could insert if the tests are still needed");
     }
 

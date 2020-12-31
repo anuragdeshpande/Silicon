@@ -221,7 +221,7 @@ public class ReportManager {
         try {
             TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
                     new BeanHandler<>(TestRuntimeDTO.class));
-            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + hasExistingRecord);
+            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null));
             return regressionDB.update(hasExistingRecord == null ?
                             TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
                     runtimeDTO.getFullClassName(),
@@ -232,6 +232,7 @@ public class ReportManager {
                     runtimeDTO.getTestType()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Failed to insert: "+e.getLocalizedMessage());
             return false;
         }
     }
@@ -435,10 +436,13 @@ public class ReportManager {
                 }
             }
 
-            System.out.println("Inserting master record in the suite results table");
-            finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance("NightlyRegression", passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), "NightlyRegression", finalReportPath);
-            ReportManager.insertIntoSuiteResults(suiteResultsDTO);
+            if(forMasterFile){
+                System.out.println("Inserting master record in the suite results table");
+                finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
+                SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance("NightlyRegression", passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+                ReportManager.insertIntoSuiteResults(suiteResultsDTO);
+            }
+
         }
     }
 
