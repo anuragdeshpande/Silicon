@@ -5,7 +5,6 @@ import framework.applications.portals.elements.tables.PortalTable;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.checkbox.UICheckbox;
-import framework.logger.RegressionLogger;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
@@ -76,9 +75,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
             interact.withDOM().injectInfoMessage("Waiting for Home page to load");
             PauseTest.createSpecialInstance(timeout, 5).until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("gw-progress")), "Page is loading");
         }catch (TimeoutException te){
-            RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeout+" seconds");
-            RegressionLogger.getTestLogger().captureScreenshot("Page loading did not meet SLA");
             interact.withDOM().clearBannerMessage();
             throw new TimeoutException("Page is still loading");
         }

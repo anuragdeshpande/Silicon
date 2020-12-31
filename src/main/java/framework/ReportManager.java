@@ -6,6 +6,7 @@ import annotations.ClockMoveTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.model.Test;
 import com.aventstack.extentreports.reporter.ExtentKlovReporter;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.JsonFormatter;
@@ -38,7 +39,7 @@ public class ReportManager {
     private static final String GLOBAL_SUITE_NAME = System.getProperty("globalSuiteName") == null ? "" : System.getProperty("globalSuiteName");
     private static final String REPORT_FILE_NAME = System.getProperty("reportFileName") == null ? "LocalTestRun" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) : System.getProperty("reportFileName");
     public static String REPORT_DIRECTORY_LOCATION = System.getProperty("jenkinsBuildNumber") == null ? "C:/tmp/" + REPORT_FILE_NAME : (!GLOBAL_SUITE_NAME.isEmpty() ? StringConstants.DEFAULT_REPORT_LOCATION_PATH : "\\\\qa\\regression_logs\\" + REPORT_FILE_NAME);
-    private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + REPORT_FILE_NAME + ".html";
+    private static String FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + File.separator + REPORT_FILE_NAME + ".html";
     private static String INIT_SUITE_NAME;
 
     // Reporting Indices
@@ -72,7 +73,7 @@ public class ReportManager {
             REPORT_DIRECTORY_LOCATION = System.getProperty("ReportDirectoryFullLocation");
         }
 
-        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
+        FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + File.separator + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
         File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             new File(REPORT_DIRECTORY_LOCATION).mkdirs();
@@ -85,7 +86,7 @@ public class ReportManager {
         attachCustomConfig(extentReporter);
         extentReports.attachReporter(extentReporter);
         // attaching json reporter for combining reports at the end of the suite run
-        JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION + "\\" + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".json");
+        JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION + File.separator + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".json");
         extentReports.attachReporter(jsonReport);
         return extentReports;
     }
@@ -275,7 +276,7 @@ public class ReportManager {
             String applicationName = System.getProperty("ApplicationName");
             String reportPath = getReportPath();
             Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
-            if(existingSuiteDTO.isPresent()){
+            if (existingSuiteDTO.isPresent()) {
                 SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
                 updateSuiteResults(updatedDTO);
             } else {
@@ -314,7 +315,7 @@ public class ReportManager {
         }
     }
 
-    public static boolean updateSuiteResults(SuiteResultsDTO suiteResultsDTO){
+    public static boolean updateSuiteResults(SuiteResultsDTO suiteResultsDTO) {
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
             regressionDB.update(SuiteResultsDTO.getJDBCPreparedUpdateStatementWithoutParameters(),
@@ -357,10 +358,10 @@ public class ReportManager {
     }
 
     public static String getReportPath() {
-        return "http://qa.idfbins.com/regression_logs/" + GLOBAL_SUITE_NAME;
+        return ReportManager.FULL_FILE_PATH.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
     }
 
-    public static void generateCombinedReports(String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
+    public static void generateCombinedReports(boolean forMasterFile, String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
         System.out.println("Combining Reports present at " + Arrays.toString(sourceFilesDirectoryPath));
         System.out.println("Final Report will be generated at: " + targetLocation);
         ExtentReports extent = new ExtentReports();
@@ -370,17 +371,31 @@ public class ReportManager {
             ExtentKlovReporter klov = new ExtentKlovReporter();
             klov
                     .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
-                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
+                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"), 27017);
             klov.setProjectName(System.getProperty("ProjectName"));
-            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
+            klov.setReportName(System.getProperty("ApplicationName") + "_" + System.getProperty("jenkinsBuildNumber"));
             extent.attachReporter(klov);
         }
 
         // Scanning for json files to parse for reports
         ArrayList<File> jsonFiles = new ArrayList<>();
-        for (String directoryPath : sourceFilesDirectoryPath) {
-            File directory = new File(directoryPath);
-            jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
+        if (forMasterFile) {
+            // deep scanning target location for existing combined reports
+            for (String directoryPath : sourceFilesDirectoryPath) {
+                File directory = new File(directoryPath);
+                if (directory.isDirectory()) {
+                    for (File subdirectory : Objects.requireNonNull(directory.listFiles())) {
+                        if (subdirectory.isDirectory()) {
+                            jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(subdirectory.listFiles(new JSONFileNameFilter()))));
+                        }
+                    }
+                }
+            }
+        } else {
+            for (String directoryPath : sourceFilesDirectoryPath) {
+                File directory = new File(directoryPath);
+                jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
+            }
         }
 
         // Preparing to read existing Reports
@@ -394,6 +409,37 @@ public class ReportManager {
         extent.attachReporter(sparkReporter);
         System.out.println("Generating Combined Report at: " + finalReportPath);
         extent.flush();
+
+        if(forMasterFile){
+            // updating suite and test results table with the combined path
+            int passedTests = 0;
+            int failedTests = 0;
+            int skippedTests = 0;
+            int warningTests = 0;
+            System.setProperty("SuiteStartTime", String.valueOf(extent.getReport().getStartTime().getTime()));
+            System.setProperty("SuiteEndTime", String.valueOf(extent.getReport().getEndTime().getTime()));
+            for (Test test : extent.getReport().getTestList()) {
+                switch (test.getStatus()){
+                    case PASS:
+                        passedTests++;
+                        break;
+                    case FAIL:
+                        failedTests++;
+                        break;
+                    case SKIP:
+                        skippedTests++;
+                        break;
+                    case WARNING:
+                        warningTests++;
+                        break;
+                }
+            }
+
+            System.out.println("Inserting master record in the suite results table");
+            finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance("NightlyRegression", passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), "NightlyRegression", finalReportPath);
+            ReportManager.insertIntoSuiteResults(suiteResultsDTO);
+        }
     }
 
     private static void attachCustomConfig(ExtentSparkReporter extentReporter) {
