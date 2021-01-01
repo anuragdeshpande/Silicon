@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentKlovReporter;
 import framework.ReportManager;
 import framework.database.models.SuiteResultsDTO;
 import framework.database.models.TestResultsDTO;
@@ -42,6 +43,17 @@ public class GWTestRunResults {
                 .format(testSuiteTimeStamp);
         String suiteName = this.testsuiteResults.getName();
         ExtentReports extentReports = ReportManager.initiate(suiteName + "_" + timeStamp);
+        // report to klov reporting if flag is setup
+        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
+            System.out.println("Attempting to push tests to klov server");
+            ExtentKlovReporter klov = new ExtentKlovReporter();
+            klov
+                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
+                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
+            klov.setProjectName(System.getProperty("ProjectName"));
+            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
+            extentReports.attachReporter(klov);
+        }
         extentReports.setReportUsesManualConfiguration(true);
         if (this.testsuiteResults.getTestcase().size() > 0) {
             for (Testcase testCase : this.testsuiteResults.getTestcase()) {

@@ -93,7 +93,7 @@
     <dependency>
       <groupId>com.aventstack</groupId>
       <artifactId>extentreports</artifactId>
-      <version>5.0.2</version>
+      <version>5.0.5</version>
     </dependency>
 
     <dependency>
@@ -146,7 +146,7 @@
     <dependency>
       <groupId>com.idfbins</groupId>
       <artifactId>RegressionAnnotations</artifactId>
-      <version>1.37</version>
+      <version>1.41</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>
@@ -168,6 +168,12 @@
       <groupId>com.rallydev.rest</groupId>
       <artifactId>rally-rest-api</artifactId>
       <version>2.2.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.aventstack/klov-reporter -->
+    <dependency>
+      <groupId>com.aventstack</groupId>
+      <artifactId>klov-reporter</artifactId>
+      <version>5.0.4</version>
     </dependency>
 
   </dependencies>

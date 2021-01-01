@@ -91,6 +91,15 @@ public class RegressionLogger {
 
     }
 
+    public void addTag(String tagName){
+        if(isSuite){
+            extentLogger.log(Status.INFO, "Tagging: "+tagName);
+            extentLogger.assignCategory(tagName);
+        } else {
+            System.out.println("Could not tag since the run is not a suite");
+        }
+    }
+
     public void warn(Object message, Throwable e) {
         if (isSuite) {
             logger.warn(message, e);
