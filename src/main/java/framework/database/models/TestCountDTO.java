@@ -18,11 +18,11 @@ public class TestCountDTO {
     public TestCountDTO() {
     }
 
-    public static TestCountDTO getTestCountDataFor(String uuid){
+    public static TestCountDTO getTestCountDataFor(String uuid, String suiteName){
         QueryRunner testNGReportingServer = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         List<StatusResultDTO> resultDTOS;
         try {
-            resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' group by t.TestStatus",
+            resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' and SuiteName= '"+suiteName+"' group by t.TestStatus",
                     new BeanListHandler<>(StatusResultDTO.class));
         } catch (SQLException e) {
             throw new RuntimeException(e);

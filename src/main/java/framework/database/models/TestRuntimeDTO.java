@@ -5,15 +5,19 @@ public class TestRuntimeDTO {
     private String packageName;
     private long totalRuntime;
     private String projectSource;
+    private String isClockMove;
+    private String testType;
 
     public TestRuntimeDTO() {
     }
 
-    private TestRuntimeDTO(String fullClassName, String packageName, long totalRuntime, String projectSource) {
+    private TestRuntimeDTO(String fullClassName, String packageName, long totalRuntime, String projectSource, String isClockMove, String testType) {
         this.fullClassName = fullClassName;
         this.packageName = packageName;
         this.totalRuntime = totalRuntime;
         this.projectSource = projectSource;
+        this.isClockMove = isClockMove;
+        this.testType = testType;
     }
     
     // Getter
@@ -33,7 +37,15 @@ public class TestRuntimeDTO {
     public String getProjectSource() {
         return projectSource;
     }
-    
+
+    public String getIsClockMove() {
+        return isClockMove;
+    }
+
+    public String getTestType() {
+        return testType;
+    }
+
     // Setter
 
 
@@ -53,16 +65,24 @@ public class TestRuntimeDTO {
         this.projectSource = projectSource;
     }
 
+    public void setIsClockMove(String isClockMove) {
+        this.isClockMove = isClockMove;
+    }
+
+    public void setTestType(String testType) {
+        this.testType = testType;
+    }
+
     public static int getFieldCount(){
         return TestResultsDTO.class.getDeclaredFields().length;
     }
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
-        return "INSERT INTO Regression.dbo.TestRuntimeCatalog (fullClassName, packageName, totalRunTime, projectSource) VALUES (?,?,?,?);";
+        return "INSERT INTO Regression.dbo.TestRuntimeCatalog (fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType) VALUES (?,?,?,?,?,?);";
     }
 
     public static String getJDBCPreparedUpdateStatementWithoutParameters(String fullClassName, String packageName){
-        return "Update Regression.dbo.TestRuntimeCatalog set fullClassName=?,packageName=?,totalRunTime=?,projectSource=? where fullClassName='"+fullClassName+"' and packageName='"+packageName+"'";
+        return "Update Regression.dbo.TestRuntimeCatalog set fullClassName=?,packageName=?,totalRunTime=?,projectSource=?,isClockMove=?,testType=? where fullClassName='"+fullClassName+"' and packageName='"+packageName+"'";
     }
 
     public Object[] getValuesAsObjectArray(){
@@ -71,16 +91,18 @@ public class TestRuntimeDTO {
         values[1] = getPackageName();
         values[2] = getTotalRuntime();
         values[3] = getProjectSource();
+        values[4] = getIsClockMove();
+        values[5] = getTestType();
 
         return values;
     }
 
-    public static TestRuntimeDTO getInstance(String fullClassName, String packageName, long totalRuntime, String projectSource){
-        return new TestRuntimeDTO(fullClassName, packageName, totalRuntime, projectSource);
+    public static TestRuntimeDTO getInstance(String fullClassName, String packageName, long totalRuntime, String projectSource, String isClockMove, String testType){
+        return new TestRuntimeDTO(fullClassName, packageName, totalRuntime, projectSource, isClockMove, testType);
     }
 
     @Override
     public String toString() {
-        return "fullClassName= " + fullClassName + ", packageName= " + packageName +  ", totalRuntime= " + totalRuntime + " seconds, projectSource= " + projectSource;
+        return "fullClassName= " + fullClassName + ", packageName= " + packageName +  ", totalRuntime= " + totalRuntime + " seconds, projectSource= " + projectSource+" isClockMove: "+isClockMove+" testType: "+testType;
     }
 }

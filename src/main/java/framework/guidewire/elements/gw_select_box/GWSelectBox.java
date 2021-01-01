@@ -92,7 +92,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
         if (!listElements.isEmpty()) {
             WebElement element = listElements.get(new Faker().number().numberBetween(0, listElements.size() - 1));
             String selectionText = element.getText();
-            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element));
+            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOf(element), "Waiting for "+element.getText()+" to be clickable");
             selectElement(element);
 //            System.out.println("Selected: " + selectionText);
             return selectionText;
@@ -152,7 +152,7 @@ public class GWSelectBox extends UISelect implements IGWSelectBoxOperations {
     }
 
     private void selectElement(WebElement element) {
-        PauseTest.createSpecialInstance(1, 5).until(ExpectedConditions.visibilityOf(element));
+        PauseTest.createSpecialInstance(1, 5).until(ExpectedConditions.visibilityOf(element), "Waiting for "+element.getText()+" to be visible");
         element.click();
         new GWElement(GWIDs.QUICK_JUMP, ReactionTime.IMMEDIATE).click();
     }

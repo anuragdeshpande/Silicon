@@ -3,7 +3,6 @@ package framework.guidewire;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
-import framework.elements.checkbox.UICheckbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_checkbox.GWCheckBox;
@@ -14,8 +13,13 @@ import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import framework.webdriver.PauseTest;
 import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 import java.util.ArrayList;
@@ -143,6 +147,26 @@ public class GuidewireInteract extends Interact {
         }
 
         return elements;
+    }
+
+    public static void waitForPageToLoad(){
+        _waitForPageToLoad(10, 1, "Waiting for Quick Jump to be clickable");
+    }
+
+    public static void waitForPageToLoad(String message){
+        _waitForPageToLoad(10, 1, message);
+    }
+
+    public static void waitForPageToLoad(long timeToWait, long pollingInterval){
+        _waitForPageToLoad(timeToWait, pollingInterval, "Waiting for Quick Jump to be clickable");
+    }
+
+    public static void waitForPageToLoad(long timeToWait, long pollingInterval, String message){
+        _waitForPageToLoad(timeToWait, pollingInterval, message);
+    }
+
+    private static void _waitForPageToLoad(long timeToWait, long pollingInterval, String message){
+        PauseTest.createSpecialInstance(timeToWait, pollingInterval).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), message);
     }
 
 }
