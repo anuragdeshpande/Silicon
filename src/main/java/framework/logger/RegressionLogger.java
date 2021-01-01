@@ -2,43 +2,34 @@ package framework.logger;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import framework.Listener;
 import framework.ReportManager;
 import framework.constants.StringConstants;
+import framework.customExceptions.IncorrectCallException;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class RegressionLogger {
 
-    private Logger logger;
     private final ExtentTest extentLogger;
     private final boolean isSuite;
 
-    public RegressionLogger(Logger logger, ExtentTest extentLogger, boolean isSuite) {
-        this.logger = logger;
-        if (this.logger == null) {
-            this.logger = LogManager.getLogger("LocalRegressionLogs-" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
-        }
+    public RegressionLogger(ExtentTest extentLogger, boolean isSuite) {
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
     }
 
     public void info(Object message) {
         if (isSuite) {
-            logger.info(message);
             extentLogger.log(Status.INFO, message.toString());
         } else {
             System.out.println(message);
@@ -48,7 +39,6 @@ public class RegressionLogger {
 
     public void info(Object message, Throwable e) {
         if (isSuite) {
-            logger.info(message, e);
             extentLogger.log(Status.INFO, message.toString());
             extentLogger.log(Status.INFO, e);
         } else {
@@ -60,7 +50,6 @@ public class RegressionLogger {
 
     public void fail(Object message) {
         if (isSuite) {
-            logger.error(message);
             extentLogger.log(Status.FAIL, message.toString());
         } else {
             System.out.println(message);
@@ -70,7 +59,6 @@ public class RegressionLogger {
 
     public void fail(Object message, Throwable e) {
         if (isSuite) {
-            logger.error(message, e);
             extentLogger.log(Status.FAIL, message.toString());
             extentLogger.log(Status.FAIL, e);
         } else {
@@ -83,7 +71,6 @@ public class RegressionLogger {
 
     public void warn(Object message) {
         if (isSuite) {
-            logger.warn(message);
             extentLogger.log(Status.WARNING, message.toString());
         } else {
             System.out.println(message);
@@ -102,7 +89,6 @@ public class RegressionLogger {
 
     public void warn(Object message, Throwable e) {
         if (isSuite) {
-            logger.warn(message, e);
             extentLogger.log(Status.WARNING, message.toString());
             extentLogger.log(Status.WARNING, e);
         } else {
@@ -124,11 +110,19 @@ public class RegressionLogger {
 
 
     public String getTestName(){
-        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            return BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
+        } else {
+            throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+        }
     }
 
     public String getTestClassName(){
-        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            return BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME);
+        } else {
+            throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+        }
     }
 
     @SuppressWarnings("Duplicates")
@@ -146,21 +140,52 @@ public class RegressionLogger {
         return destinationFilePath;
     }
 
-    public synchronized static RegressionLogger getTestLogger(){
+    public synchronized static RegressionLogger getTestLogger(String testMethodName, String testClassName){
         TestDetailsDTO dto = new TestDetailsDTO();
-        dto.setTestName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME));
-        dto.setClassName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+        dto.setTestName(testMethodName);
+        dto.setClassName(testClassName);
         ExtentTest extentTest = ReportManager.getTest(dto);
-        return new RegressionLogger(Listener.logger, extentTest, ReportManager.isInitiated());
+        return new RegressionLogger(extentTest, ReportManager.isInitiated());
+    }
+
+    public synchronized static RegressionLogger getTestLogger(){
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")){
+            TestDetailsDTO dto = new TestDetailsDTO();
+            dto.setTestName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME));
+            dto.setClassName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+            ExtentTest extentTest = ReportManager.getTest(dto);
+            return new RegressionLogger(extentTest, ReportManager.isInitiated());
+        } else {
+            throw new IncorrectCallException("Project is marked as unsafe for Lithium Framework. Please call getTestLogger(String testMethodName, String testClassName)");
+        }
+
+    }
+
+    public synchronized static RegressionLogger getTestClassLogger(String testClassName){
+        ExtentTest extentClassTest = ReportManager.getClass(testClassName);
+        return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getTestClassLogger(){
-        ExtentTest extentClassTest = ReportManager.getClass(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
-        return new RegressionLogger(Listener.logger, extentClassTest, ReportManager.isInitiated());
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            ExtentTest extentClassTest = ReportManager.getClass(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+            return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
+        } else {
+            throw new IncorrectCallException("Project is marked as unsafe for Lithium Framework. Please call getTestClassLogger(String testClassName)");
+        }
+    }
+
+    public synchronized static RegressionLogger getXMLTestLogger(String xmlTestName){
+        ExtentTest extentXMLTest = ReportManager.getXMLTest(xmlTestName);
+        return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getXMLTestLogger(){
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(BrowserStorageAccess.getInstance().get(StringConstants.XML_TEST_NAME));
-        return new RegressionLogger(Listener.logger, extentXMLTest, ReportManager.isInitiated());
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            ExtentTest extentXMLTest = ReportManager.getXMLTest(BrowserStorageAccess.getInstance().get(StringConstants.XML_TEST_NAME));
+            return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
+        } else {
+            throw new IncorrectCallException("Project is marked as unsafe for Lithium Framework. Please call getXMLTestLogger(String xmlTestName)");
+        }
     }
 }
