@@ -419,30 +419,37 @@ public class ReportManager {
             int warningTests = 0;
             System.setProperty("SuiteStartTime", String.valueOf(extent.getReport().getStartTime().getTime()));
             System.setProperty("SuiteEndTime", String.valueOf(extent.getReport().getEndTime().getTime()));
-            for (Test test : extent.getReport().getTestList()) {
-                switch (test.getStatus()){
-                    case PASS:
-                        passedTests++;
-                        break;
-                    case FAIL:
-                        failedTests++;
-                        break;
-                    case SKIP:
-                        skippedTests++;
-                        break;
-                    case WARNING:
-                        warningTests++;
-                        break;
+            for (Test ancestorTest : extent.getReport().getTestList()) {
+                List<Test> testsToParse = new ArrayList<>();
+                if(ancestorTest.hasChildren()){
+                    testsToParse = ancestorTest.getChildren();
+                } else {
+                    testsToParse.add(ancestorTest);
                 }
+
+                for (Test test : testsToParse) {
+                    switch (test.getStatus()){
+                        case PASS:
+                            passedTests++;
+                            break;
+                        case FAIL:
+                            failedTests++;
+                            break;
+                        case SKIP:
+                            skippedTests++;
+                            break;
+                        case WARNING:
+                            warningTests++;
+                            break;
+                    }
+                }
+
             }
 
-            if(forMasterFile){
-                System.out.println("Inserting master record in the suite results table");
-                finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-                SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance("NightlyRegression", passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
-                ReportManager.insertIntoSuiteResults(suiteResultsDTO);
-            }
-
+            System.out.println("Inserting master record in the suite results table");
+            finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+            ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
     }
 
