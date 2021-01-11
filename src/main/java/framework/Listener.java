@@ -9,7 +9,9 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.idfbins.driver.BaseTest;
 import framework.constants.StringConstants;
+import framework.customExceptions.BlockedMessageQueueException;
 import framework.customExceptions.KnownDefectException;
+import framework.customExceptions.PotentialSystemIssueException;
 import framework.database.models.TestRuntimeDTO;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
@@ -136,6 +138,14 @@ public class Listener implements ISuiteListener, ITestListener{
         if(iTestResult.getThrowable() instanceof KnownDefectException){
             testNode.assignCategory("ActiveDefect");
             ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: "+iTestResult.getThrowable().getLocalizedMessage());
+        }
+
+        if(iTestResult.getThrowable() instanceof BlockedMessageQueueException){
+            testNode.assignCategory("BlockedMessageQueue");
+            testNode.assignCategory("PotentialSystemFailure");
+        }
+        if(iTestResult.getThrowable() instanceof PotentialSystemIssueException){
+            testNode.assignCategory("PotentialSystemFailure");
         }
 
         if(writeToDatabase){
