@@ -99,22 +99,31 @@ public class RegressionLogger {
     }
 
     public void captureScreenshot(String screenShotTitle) {
-        if(this.isSuite){
-            info("Screen shot Captured:" + screenShotTitle);
-            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            if (this.isSuite) {
+                info("Screen shot Captured:" + screenShotTitle);
+                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+            } else {
+                System.out.println("Skipping screen shot capture as Running test locally");
+            }
         } else {
-            System.out.println("Skipping screen shot capture as Running test locally");
+            throw new IncorrectCallException("Please use captureScreenshot(WebDriver driver, String screenShotTitle) method.");
         }
 
     }
 
     public void captureScreenshot(WebDriver driver, String screenShotTitle) {
-        if(this.isSuite){
-            info("Screen shot Captured:" + screenShotTitle);
-            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(driver), screenShotTitle);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            throw new IncorrectCallException("Should not create your own driver, Please use captureScreenshot(String screenShotTitle)");
         } else {
-            System.out.println("Skipping screen shot capture as Running test locally");
+            if(this.isSuite){
+                info("Screen shot Captured:" + screenShotTitle);
+                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(driver), screenShotTitle);
+            } else {
+                System.out.println("Skipping screen shot capture as Running test locally");
+            }
         }
+
 
     }
 
