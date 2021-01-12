@@ -99,12 +99,31 @@ public class RegressionLogger {
     }
 
     public void captureScreenshot(String screenShotTitle) {
-        if(this.isSuite){
-            info("Screen shot Captured:" + screenShotTitle);
-            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            if (this.isSuite) {
+                info("Screen shot Captured:" + screenShotTitle);
+                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+            } else {
+                System.out.println("Skipping screen shot capture as Running test locally");
+            }
         } else {
-            System.out.println("Skipping screen shot capture as Running test locally");
+            throw new IncorrectCallException("Please use captureScreenshot(WebDriver driver, String screenShotTitle) method.");
         }
+
+    }
+
+    public void captureScreenshot(WebDriver driver, String screenShotTitle) {
+        if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
+            throw new IncorrectCallException("Should not create your own driver, Please use captureScreenshot(String screenShotTitle)");
+        } else {
+            if(this.isSuite){
+                info("Screen shot Captured:" + screenShotTitle);
+                this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(driver), screenShotTitle);
+            } else {
+                System.out.println("Skipping screen shot capture as Running test locally");
+            }
+        }
+
 
     }
 
@@ -139,6 +158,22 @@ public class RegressionLogger {
         }
         return destinationFilePath;
     }
+
+    @SuppressWarnings("Duplicates")
+    private String getScreenshotPath(WebDriver driver) {
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now()+"_"+Thread.currentThread().getId() + ".png";
+        try {
+            File destFile = new File(destinationFilePath);
+            FileUtils.moveFile(scrFile, destFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return destinationFilePath;
+    }
+
+
 
     public synchronized static RegressionLogger getTestLogger(String testMethodName, String testClassName){
         TestDetailsDTO dto = new TestDetailsDTO();
