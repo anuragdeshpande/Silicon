@@ -11,6 +11,7 @@ import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.integrations.gwServices.adminImporter.AdminDataImporter;
 import framework.integrations.gwServices.debugToolsAPI.ab.ABDebugToolsAPI;
 import framework.integrations.gwServices.debugToolsAPI.ab.ABDebugToolsAPIPortType;
 import framework.integrations.gwServices.debugToolsAPI.bc.BCDebugToolsAPI;
@@ -354,6 +355,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 throw new RuntimeException("Script is still executing after waiting for an hour. Exiting. Script might be still running. Cannot make sure.");
             }
         }
+    }
+
+    @Override
+    public void importXMLFile(String adminDataResourcePathReference) {
+        AdminDataImporter<GuidewireCenter> importer = new AdminDataImporter<>(this);
+        importer.importData(adminDataResourcePathReference);
     }
 
     private XMLGregorianCalendar convertDateToXMLGregCal(LocalDateTime date) {
