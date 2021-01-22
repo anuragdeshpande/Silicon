@@ -10,6 +10,7 @@ import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.integrations.gwServices.adminImporter.AdminDataImporter;
 import framework.integrations.gwServices.debugToolsAPI.ab.ABDebugToolsAPI;
 import framework.integrations.gwServices.debugToolsAPI.ab.ABDebugToolsAPIPortType;
 import framework.integrations.gwServices.debugToolsAPI.bc.BCDebugToolsAPI;
@@ -115,6 +116,18 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         this.currentUsername = userName;
         this.currentPassword = password;
         PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
+
+        // Making sure the current user is not on vacation
+        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for landing page where Quick jump is clickable");
+        GuidewireInteract interact = getInteractObject();
+
+        if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
+            interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
+            interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
+            PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Resolving vacation status for the user.");
+        }
+
+
     }
 
     @Override
@@ -332,6 +345,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 throw new RuntimeException("Script is still executing after waiting for an hour. Exiting. Script might be still running. Cannot make sure.");
             }
         }
+    }
+
+    @Override
+    public void importXMLFile(String adminDataResourcePathReference) {
+        AdminDataImporter<GuidewireCenter> importer = new AdminDataImporter<>(this);
+        importer.importData(adminDataResourcePathReference);
     }
 
     private XMLGregorianCalendar convertDateToXMLGregCal(LocalDateTime date) {

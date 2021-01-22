@@ -5,8 +5,6 @@ import framework.applications.portals.elements.tables.PortalTable;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.checkbox.UICheckbox;
-import framework.elements.portalElements.PortalElements;
-import framework.logger.RegressionLogger;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
@@ -17,6 +15,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import java.util.Properties;
 
 public class PortalInteract extends Interact implements ICanInteractWithTable<PortalTable> {
@@ -75,9 +74,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
         try{
             PauseTest.createSpecialInstance(timeout, 5).until(ExpectedConditions.invisibilityOfElementLocated(By.tagName("gw-progress")), "Waiting for Home page to load");
         }catch (TimeoutException te){
-            RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeout+" seconds");
-            RegressionLogger.getTestLogger().captureScreenshot("Page loading did not meet SLA");
             throw new TimeoutException("Page is still loading");
         }
     }
