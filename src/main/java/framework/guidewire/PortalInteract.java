@@ -41,18 +41,6 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
     }
 
     @Override
-    public PortalConfirmationWindow withConfirmationWindow() {
-        return new PortalConfirmationWindow(new Identifier(By.xpath("//*[contains(@class, 'gw-modal-body')]//*[contains(@class, 'gw-message')]")),
-                ReactionTime.THREE_SECONDS);
-    }
-
-    @Override
-    public PortalConfirmationWindow withOptionalConfirmationWindow(ReactionTime reactionTime) {
-        return new PortalConfirmationWindow(new Identifier(By.xpath("//*[contains(@class, 'gw-modal-body')]//*[contains(@class, 'gw-message')]")),
-                reactionTime);
-    }
-
-    @Override
     public PortalTable withTable(Identifier identifier) {
         return new PortalTable(identifier);
     }

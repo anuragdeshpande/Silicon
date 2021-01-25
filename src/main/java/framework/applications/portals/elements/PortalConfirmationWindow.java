@@ -12,11 +12,8 @@ public class PortalConfirmationWindow extends UIConfirmationWindow {
      * Use of this constructor automatically assumes the Confirmation Window in question is
      * optional and will wait upto the reaction time passed as parameter
      *
-     * @param identifier   element Identifier
-     * @param reactionTime time to wait
      */
-    public PortalConfirmationWindow(Identifier identifier, ReactionTime reactionTime) {
-        super(identifier, reactionTime);
+    public PortalConfirmationWindow() {
     }
 
     @Override
@@ -44,7 +41,6 @@ public class PortalConfirmationWindow extends UIConfirmationWindow {
         return heading+": "+messageBody;
     }
 
-    @Override
     public void clickButtonWithText(String buttonText) {
         new UIElement(new Identifier(By.xpath("//*[contains(@class, 'gw-modal-footer')]//*[text()='"+buttonText+"']"))).click();
     }
