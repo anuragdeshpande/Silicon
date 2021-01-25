@@ -1,6 +1,7 @@
 package framework.guidewire.elements.gw_table;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IGWUITable {
     void clickAdd();
@@ -8,6 +9,7 @@ public interface IGWUITable {
     void clickRemove();
 
     GWRow getRowWithText(String value);
+    Optional<GWRow> getOptionalRowWithText(String value);
 
     void clickNextPage();
 
@@ -18,8 +20,6 @@ public interface IGWUITable {
     void clickFirstPage();
 
     void clickToolbarButtonWithText(String buttonText);
-
-    void clickRandomCheckbox();
 
     List<GWCell> getCells(String columnName);
 }
