@@ -2,6 +2,7 @@ package framework.guidewire;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
+import framework.elements.enums.ElementType;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
@@ -63,6 +64,11 @@ public class GuidewireInteract extends Interact {
 
     public GWTable withTable(Identifier identifier) {
         return new GWTable(identifier);
+    }
+
+    public static boolean isPageLoading(){
+        UIElement pageLoader = new UIElement(new Identifier(By.id("gw-click-overlay"), ElementType.ELEMENT), ReactionTime.MOMENTARY);
+        return pageLoader.isPresent() && pageLoader.getElement().getAttribute("class").contains("gw-click-overlay");
     }
 
 }
