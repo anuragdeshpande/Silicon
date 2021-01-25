@@ -1,5 +1,7 @@
 package framework.guidewire.elements.gw_table;
 
+import framework.customExceptions.IncorrectCallException;
+import framework.customExceptions.PotentialSystemIssueException;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
@@ -7,42 +9,37 @@ import framework.guidewire.pages.GWIDs;
 import framework.utils.NumberUtils;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.lang3.NotImplementedException;
+import org.assertj.core.api.OptionalAssert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-public class GWTable extends UIElement implements IGWUITable{
+public class GWTable extends UIElement implements IGWUITable {
 
-    private static final By TOOLBAR_REFERENCE = By.xpath("//ancestor::div[2]/preceding-sibling::div[2]");
-    private static final By FIRST_PAGE_REFERENCE = By.xpath("//a[@data-qtip='First Page']");
-    private static final By LAST_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Last Page']");
-    private static final By NEXT_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Next Page']");
-    private static final By PREVIOUS_PAGE_REFERENCE = By.xpath("//a[@data-qtip='Previous Page']");
+    private static final By FIRST_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-first')]");
+    private static final By LAST_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-last')]");
+    private static final By NEXT_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-next')]");
+    private static final By PREVIOUS_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-prev')]");
 
-    private HashMap<String, String> columnLabelMap;
+    private final HashMap<String, String> columnLabelMap;
 
     public GWTable(Identifier identifier) {
         super(identifier);
-//
-//        if(!identifier.getReference().toString().endsWith("LV") && !identifier.getReference().toString().endsWith("-body")){
-//            Assert.fail("Cannot parse a table if it is not ending in LV or -body");
-//        }
+        if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV")) {
+            throw new IncorrectCallException("Table IDs must always end with LV");
+        }
 
         columnLabelMap = new HashMap<>();
-        if(identifier.getReference().toString().endsWith("LV")){
-            super.elementLocation = By.id(identifier.getReference().toString().replaceAll("By.id: ", "").concat("-body"));
-        }
-        List<WebElement> labels = getElement().findElement(By.xpath("./preceding-sibling::div[1]"))
-                .findElements(By.xpath(".//*[@class='x-column-header-text']/parent::div[contains(@id, 'gridcolumn') and not(contains(@class, 'x-column-header-inner-empty'))]/parent::div"));
+        List<WebElement> labels = getElement().findElements(By.xpath(".//table//tr[contains(@class, 'gw-header-row')]/td"));
         for (int i = 0; i < labels.size(); ++i) {
             String label = labels.get(i).getText().trim();
-            label = label.equals("") ? "blank-"+(i-1) : label;
+            label = label.equals("") ? "blank-" + (i - 1) : label;
             columnLabelMap.put(label, labels.get(i).getAttribute("id"));
         }
+
+        System.out.println("Here");
     }
 
     @Override
@@ -57,28 +54,29 @@ public class GWTable extends UIElement implements IGWUITable{
 
     @Override
     public void clickNextPage() {
-        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE);
+
+        WebElement element = this.getElement().findElement(NEXT_PAGE_REFERENCE);
         element.click();
         System.out.println("Next Page Clicked");
     }
 
     @Override
     public void clickPreviousPage() {
-        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(PREVIOUS_PAGE_REFERENCE);
+        WebElement element = this.getElement().findElement(PREVIOUS_PAGE_REFERENCE);
         element.click();
         System.out.println("Previous Page Clicked");
     }
 
     @Override
     public void clickLastPage() {
-        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(LAST_PAGE_REFERENCE);
+        WebElement element = this.getElement().findElement(LAST_PAGE_REFERENCE);
         element.click();
         System.out.println("Last Page Clicked");
     }
 
     @Override
     public void clickFirstPage() {
-        WebElement element = this.getElement().findElement(TOOLBAR_REFERENCE).findElement(FIRST_PAGE_REFERENCE);
+        WebElement element = this.getElement().findElement(FIRST_PAGE_REFERENCE);
         element.click();
         System.out.println("First Page Clicked");
     }
@@ -96,28 +94,36 @@ public class GWTable extends UIElement implements IGWUITable{
             for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
                 // new code
                 String rowContent = row.getText();
-                if(rowContent.contains(value)){
+                if (rowContent.contains(value)) {
                     return new GWRow(row, columnLabelMap);
                 }
             }
 
 
-            try{
-                if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
-                    System.out.println("Multuple pages found in the table, searching on the next page");
+            try {
+                if (this.getElement().findElement(NEXT_PAGE_REFERENCE).getAttribute("aria-disabled").equalsIgnoreCase("false")) {
+                    System.out.println("Multiple pages found in the table, searching on the next page");
                     clickNextPage();
                     new GWElement(GWIDs.QUICK_JUMP).click();
                 } else {
                     System.out.println("Last Page reached");
                     isLastPage = true;
                 }
-            } catch (NoSuchElementException nse){
+            } catch (NoSuchElementException nse) {
                 isLastPage = true;
             }
         } while (!isLastPage);
 
-        System.out.println("Could not find a match in the entire table for "+value+", returning null");
-        return null;
+        throw new PotentialSystemIssueException("Row containing: " + value + " was not found in the table");
+    }
+
+    @Override
+    public Optional<GWRow> getOptionalRowWithText(String value) {
+        try {
+            return Optional.of(getRowWithText(value));
+        } catch (PotentialSystemIssueException pse) {
+            return Optional.empty();
+        }
     }
 
     public GWRow getRowWithTextExcludingText(String value, String exclusion) {
@@ -133,47 +139,31 @@ public class GWTable extends UIElement implements IGWUITable{
             }
 
 
-            try{
-                if (!this.getElement().findElement(TOOLBAR_REFERENCE).findElement(NEXT_PAGE_REFERENCE).getAttribute("class").contains("x-btn-disabled")) {
-                    System.out.println("Multuple pages found in the table, searching on the next page");
+            try {
+                if (this.getElement().findElement(NEXT_PAGE_REFERENCE).getAttribute("aria-disabled").equalsIgnoreCase("false")) {
+                    System.out.println("Multiple pages found in the table, searching on the next page");
                     clickNextPage();
                     new GWElement(GWIDs.QUICK_JUMP).click();
                 } else {
                     System.out.println("Last Page reached");
                     isLastPage = true;
                 }
-            } catch (NoSuchElementException nse){
+            } catch (NoSuchElementException nse) {
                 isLastPage = true;
             }
         } while (!isLastPage);
 
-        System.out.println("Could not find a match in the entire table for "+value+", returning null");
+        System.out.println("Could not find a match in the entire table for " + value + ", returning null");
         return null;
     }
 
-    public GWRow getLastRow(){
+    public GWRow getLastRow() {
         List<GWRow> rows = this.getRows();
-        return rows.get(rows.size() -1);
+        return rows.get(rows.size() - 1);
     }
 
-    public boolean hasRowWithText(String value){
+    public boolean hasRowWithText(String value) {
         return getRowWithText(value) != null;
-    }
-
-    @Override
-    public void clickRandomCheckbox() {
-        System.out.println("Searching for all the checkboxes in the table");
-        List<WebElement> checkboxes = this.getElement().findElements(By.tagName("img"));
-        int randomCheckBoxNumber = NumberUtils.getRandomNumberInRange(0, checkboxes.size() - 1);
-        WebElement checkbox = checkboxes.get(randomCheckBoxNumber);
-
-        BrowserFactory.getCurrentBrowser().getActions().clickAndHold(checkbox)
-                .moveByOffset(1, 1)
-                .release(checkbox)
-                .build()
-                .perform();
-
-        System.out.println("Clicked on random checkbox : "+randomCheckBoxNumber);
     }
 
     @Override
@@ -184,10 +174,6 @@ public class GWTable extends UIElement implements IGWUITable{
         });
 
         return cells;
-    }
-
-    public void clickCheckBoxWithLabel(String label) {
-        new GWCell(this.getElement().findElement(By.xpath("//label[contains(text(),'" + label + "')]//ancestor::tr/td/div/img//parent::div//parent::td"))).markCheckBox();
     }
 
     public List<GWRow> getRows() {
@@ -201,16 +187,16 @@ public class GWTable extends UIElement implements IGWUITable{
         return rows;
     }
 
-    public int getRowCount(){
+    public int getRowCount() {
         return this.getElement().findElements(By.tagName("tr")).size();
     }
 
-    public GWRow getRow(int rowNumber){
+    public GWRow getRow(int rowNumber) {
         WebElement row = this.getElement().findElements(By.tagName("tr")).get(rowNumber);
         return new GWRow(row, columnLabelMap);
     }
 
-    public HashMap<String, String> getColumnLabels(){
+    public HashMap<String, String> getColumnLabels() {
         return this.columnLabelMap;
     }
 }
