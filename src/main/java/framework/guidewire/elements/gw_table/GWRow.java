@@ -1,10 +1,11 @@
 package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
+import framework.elements.selectbox.UISelect;
+import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.GuidewireInteract;
-import framework.guidewire.elements.gw_select_box.GWSelectBox;
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -105,7 +106,7 @@ public class GWRow extends UIElement implements IGWRow{
     }
 
     @Override
-    public GWSelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
+    public UISelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
         GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
         WebDriver driver = interact.getDriver();
         try{
@@ -114,7 +115,7 @@ public class GWRow extends UIElement implements IGWRow{
             this.getCell(cellNumber).click();
         }
 
-        return new GWSelectBox(selectBoxIdentifierByName);
+        return new UISelectBox(selectBoxIdentifierByName);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class GWRow extends UIElement implements IGWRow{
         return new UITextbox(textBoxIdentifierByName);
     }
 
-    public GWSelectBox getDoubleClickSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
+    public UISelectBox getDoubleClickSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
         GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
         try{
             interact.getDriver().findElement(selectBoxIdentifierByName.getReference());
@@ -137,7 +138,7 @@ public class GWRow extends UIElement implements IGWRow{
             this.getCell(cellNumber).doubleClick();
         }
 
-        return new GWSelectBox(selectBoxIdentifierByName);
+        return new UISelectBox(selectBoxIdentifierByName);
     }
 
     public UITextbox getDoubleClickTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName) {

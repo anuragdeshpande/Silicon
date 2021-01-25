@@ -1,11 +1,11 @@
 package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
+import framework.elements.selectbox.UISelect;
 import framework.elements.textbox.UITextbox;
-import framework.guidewire.elements.gw_select_box.GWSelectBox;
 
 public interface IGWRow {
-    GWSelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName);
+    UISelect getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName);
 
     UITextbox getTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName);
 
