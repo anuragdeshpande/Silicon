@@ -78,29 +78,4 @@ public class GWElement extends UIElement {
             }
         }
     }
-
-    private void braceForRaceCondition() {
-        GuidewireInteract.clickQuickJump();
-        try{
-            PauseTest.createSpecialInstance(1, 10).until(ExpectedConditions.visibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()), "Checking for any error messages");
-            // Race Condition Check
-            if (GuidewireInteract.hasErrorMessageOnScreen() && GuidewireInteract.getErrorMessageFromScreen().trim().equalsIgnoreCase("Your data change could not be made because another user already changed the data. Please cancel out of the wizard and create your check again.")) {
-                System.out.println("#################### Race Condition: Retrying the click #########################");
-                int timeoutCounter = 10;
-                while (GuidewireInteract.hasErrorMessageOnScreen() && timeoutCounter > 0) {
-                    timeoutCounter--;
-                    this.getElement().click();
-                    PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(GWIDs.ERROR_MESSAGE.getReference()), "Checking for any error messages");
-                }
-            }
-        } catch (TimeoutException tme){
-            // no error message - did not run into race condition
-        }
-
-
-    }
-
-    private void closeWarningWindowWhenAppears() {
-
-    }
 }
