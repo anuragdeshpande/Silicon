@@ -53,7 +53,7 @@ public class DOMManipulator {
         String builder = "let node = document.createElement('div');" +
                 "node.id = 'BannerMessage';" +
                 "node.innerText = '" + message + "';" +
-                "node.setAttribute('style', 'text-align: center;text-transform: uppercase;padding: 5px 0; color: " + textColor + "; background: " + backgroundColor + "; letter-spacing: 5px; font-weight: bold;');" +
+                "node.setAttribute('style', 'text-align: center;position: relative; z-index: 5000;text-transform: uppercase;padding: 5px 0; color: " + textColor + "; background: " + backgroundColor + "; letter-spacing: 5px; font-weight: bold;');" +
                 "let body = document.getElementsByTagName('Body')[0];" +
                 "body.insertBefore(node, body.childNodes[0]);";
         ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder);
