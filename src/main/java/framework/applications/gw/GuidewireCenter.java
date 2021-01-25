@@ -4,6 +4,7 @@ import framework.applications.Application;
 import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
 import framework.database.ConnectionManager;
+import framework.elements.ui_element.UIElement;
 import framework.enums.ApplicationNames;
 import framework.enums.Environments;
 import framework.enums.LogLevel;
@@ -32,7 +33,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -115,17 +118,16 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         _login(userName, password);
         this.currentUsername = userName;
         this.currentPassword = password;
-        PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
 
         // Making sure the current user is not on vacation
-        PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for landing page where Quick jump is clickable");
+        /*PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for landing page where Quick jump is clickable");
         GuidewireInteract interact = getInteractObject();
 
         if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
             interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
             interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
             PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Resolving vacation status for the user.");
-        }
+        }*/
 
 
     }
@@ -186,6 +188,21 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
+
+        UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
+        if (loginIssues.isPresent()) {
+            if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
+                RegressionLogger.getTestLogger().fail("Unable to login with Username: " + username + " and Password " + password);
+                throw new InvalidArgumentException("Incorrect Username or Password");
+            }
+
+            if (loginIssues.getElement().getText().contains("Locked")) {
+                RegressionLogger.getTestLogger().fail("Unable to login with Username: " + username + " and Password " + password);
+                throw new InvalidArgumentException("Account is locked/disabled by admin");
+            }
+        }
+
+        PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
         RegressionLogger.getTestLogger().info("Logging in with: " + username);
     }
 
@@ -329,7 +346,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         JSONParser parser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource(gspFilePathRelativeToResourcesDirectory)).getPath()));
-           referenceName = jsonObject.get("ExternalReference").toString();
+            referenceName = jsonObject.get("ExternalReference").toString();
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
@@ -340,8 +357,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         runner.runScript(referenceName);
         Date currentDate = new Date();
         Date endDate = DateUtils.addHours(currentDate, 1);
-        while (runner.getStatus(referenceName).equalsIgnoreCase("Executing")){
-            if(new Date().after(endDate)){
+        while (runner.getStatus(referenceName).equalsIgnoreCase("Executing")) {
+            if (new Date().after(endDate)) {
                 throw new RuntimeException("Script is still executing after waiting for an hour. Exiting. Script might be still running. Cannot make sure.");
             }
         }
@@ -363,8 +380,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
 
-    private String cleanUpEnvironmentURL(String environmentURL){
+    private String cleanUpEnvironmentURL(String environmentURL) {
         String cleanupURL = environmentURL.substring(0, environmentURL.lastIndexOf("/"));
-        return cleanupURL.substring(0, cleanupURL.lastIndexOf("/"))+"/";
+        return cleanupURL.substring(0, cleanupURL.lastIndexOf("/")) + "/";
     }
 }
