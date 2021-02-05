@@ -3,6 +3,9 @@ package framework.applications.gw;
 import framework.applications.Application;
 import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
+import framework.customExceptions.AccountLockedOrDisabledException;
+import framework.customExceptions.EnvironmentNotAvailableException;
+import framework.customExceptions.InvalidLoginException;
 import framework.database.ConnectionManager;
 import framework.elements.ui_element.UIElement;
 import framework.enums.ApplicationNames;
@@ -29,6 +32,13 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -118,18 +128,6 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         _login(userName, password);
         this.currentUsername = userName;
         this.currentPassword = password;
-
-        // Making sure the current user is not on vacation
-        /*PauseTest.createSpecialInstance(60, 100).until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Waiting for landing page where Quick jump is clickable");
-        GuidewireInteract interact = getInteractObject();
-
-        if (interact.withOptionalElement(GWIDs.VACATION_STATUS_UPDATE, ReactionTime.IMMEDIATE).isPresent()) {
-            interact.withSelectBox(GWIDs.VACATION_STATUS_DROPDOWN).select("At work");
-            interact.withElement(GWIDs.VACATION_STATUS_UPDATE).click();
-            PauseTest.createInstance().until(ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference()), "Resolving vacation status for the user.");
-        }*/
-
-
     }
 
     @Override
@@ -152,27 +150,46 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     @Override
     public void openEnvironment(Environment environment) {
-        GuidewireInteract interact = getInteractObject();
-        // Clearing any existing Banner Messages
-        interact.withDOM().clearBannerMessage();
-        if (!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")) {
-            /* flushing out browser */
+        this.environment = environment;
+        if(isUp()){
+            GuidewireInteract interact = getInteractObject();
+            // Clearing any existing Banner Messages
+            interact.withDOM().clearBannerMessage();
+            if (!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")) {
+                /* flushing out browser */
 
-            // refresh browser
-            interact.getDriver().navigate().refresh();
-            // logging out of the current environment if it is logged in
-            if (interact.withOptionalElement(GWIDs.SETTINGS_COG, ReactionTime.IMMEDIATE).isPresent()) {
-                logout();
+                // refresh browser
+                interact.getDriver().navigate().refresh();
+                // logging out of the current environment if it is logged in
+                if (interact.withOptionalElement(GWIDs.SETTINGS_COG, ReactionTime.IMMEDIATE).isPresent()) {
+                    logout();
+                }
+
+                /* end flush */
             }
 
-            /* end flush */
+
+            this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
+            String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
+            // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
+            interact.getDriver().get(url);
+        } else {
+            throw new EnvironmentNotAvailableException(this.environment.getEnvironmentUrl() + " Did not respond properly");
         }
 
-        this.environment = environment;
-        this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
-        String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
-        // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
-        interact.getDriver().get(url);
+    }
+
+    @Override
+    public boolean isUp() {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet httpGet = new HttpGet(environment.getEnvironmentUrl());
+            return httpClient.execute(httpGet, httpResponse -> {
+                int status = httpResponse.getStatusLine().getStatusCode();
+                return status >= 200 && status < 300;
+            });
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     public RegressionLogger getLogger() {
@@ -192,13 +209,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
         if (loginIssues.isPresent()) {
             if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
-                RegressionLogger.getTestLogger().fail("Unable to login with Username: " + username + " and Password " + password);
-                throw new InvalidArgumentException("Incorrect Username or Password");
+                RegressionLogger.getTestLogger().fail(new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password));
             }
 
             if (loginIssues.getElement().getText().contains("Locked")) {
-                RegressionLogger.getTestLogger().fail("Unable to login with Username: " + username + " and Password " + password);
-                throw new InvalidArgumentException("Account is locked/disabled by admin");
+                RegressionLogger.getTestLogger().fail(new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password));
             }
         }
 
