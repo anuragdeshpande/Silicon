@@ -205,15 +205,16 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
+        if (!interact.withOptionalElement(GWIDs.QUICK_JUMP, ReactionTime.STANDARD_WAIT_TIME).isPresent()) {
+            UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
+            if (loginIssues.isPresent()) {
+                if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
+                    RegressionLogger.getTestLogger().fail(new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password));
+                }
 
-        UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
-        if (loginIssues.isPresent()) {
-            if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
-                RegressionLogger.getTestLogger().fail(new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password));
-            }
-
-            if (loginIssues.getElement().getText().contains("Locked")) {
-                RegressionLogger.getTestLogger().fail(new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password));
+                if (loginIssues.getElement().getText().contains("Locked")) {
+                    RegressionLogger.getTestLogger().fail(new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password));
+                }
             }
         }
 
