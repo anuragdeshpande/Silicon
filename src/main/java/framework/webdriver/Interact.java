@@ -25,7 +25,7 @@ public class Interact
         ICanInteractWithRadioButton<UIRadioButton>,
         ICanInteractWithTextBox<UITextbox>,
         ICanInteractWithTextArea<UITextbox>,
-        ICanInteractWithSelectBox<UISelect>,
+        ICanInteractWithSelectBox<UISelectBox>,
         ICanInteractWithCheckbox<UICheckbox>,
         ICanInteractWithDom<DOMManipulator>,
         ICanInteractWithBrowserStorage<BrowserStorageAccess>,
@@ -95,12 +95,12 @@ public class Interact
     }
 
     @Override
-    public UISelect withSelectBox(Identifier identifier) {
+    public UISelectBox withSelectBox(Identifier identifier) {
         return new UISelectBox(identifier);
     }
 
     @Override
-    public UISelect withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
+    public UISelectBox withOptionalSelectBox(Identifier identifier, ReactionTime reactionTime) {
         return new UISelectBox(identifier, reactionTime);
     }
 
