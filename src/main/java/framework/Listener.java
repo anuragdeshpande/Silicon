@@ -8,6 +8,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.idfbins.driver.BaseTest;
+import framework.constants.ReactionTime;
 import framework.constants.StringConstants;
 import framework.customExceptions.BlockedMessageQueueException;
 import framework.customExceptions.KnownDefectException;
@@ -126,8 +127,8 @@ public class Listener implements ISuiteListener, ITestListener{
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if(System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
-            if (GuidewireInteract.hasErrorMessageOnScreen()) {
-                String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen();
+            if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
+                String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY);
                 testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
                 testNode.fail(errorMessageFromScreen);
 

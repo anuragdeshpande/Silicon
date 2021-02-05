@@ -64,7 +64,7 @@ public class GWElement extends UIElement {
             // do nothing. just the south panel did not show up. so no warning windows.
         }
 
-        if (GuidewireInteract.hasErrorMessageOnScreen()) {
+        if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.THREE_SECONDS)) {
             GWElement closeButton = new GWElement(new Identifier(By.linkText("Close")), ReactionTime.IMMEDIATE);
             GWElement clearButton = new GWElement(new Identifier(By.linkText("Clear")), ReactionTime.IMMEDIATE);
             if (closeButton.isPresent()) {

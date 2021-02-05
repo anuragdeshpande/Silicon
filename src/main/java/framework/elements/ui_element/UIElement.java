@@ -2,6 +2,7 @@ package framework.elements.ui_element;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
+import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.By;
@@ -25,6 +26,7 @@ public class UIElement implements IUIElementOperations {
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
         this.element = findElement(elementLocation);
+
     }
 
     public UIElement(Identifier identifier, ReactionTime reactionTime) {
@@ -32,6 +34,7 @@ public class UIElement implements IUIElementOperations {
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
         this.element = findOptional(elementLocation, reactionTime);
+
     }
 
     public UIElement(WebElement element) {
@@ -149,6 +152,8 @@ public class UIElement implements IUIElementOperations {
     }
 
     private WebElement findOptional(By elementLocation, ReactionTime reactionTime) {
+        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+elementLocation+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
         try {
             WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
@@ -158,11 +163,14 @@ public class UIElement implements IUIElementOperations {
 
 //            System.out.println("Optional Element found: " + elementLocation);
             this.element = element;
+            interact.withDOM().clearBannerMessage();
             return element;
         } catch (Exception e) {
             System.out.println("Optional Element not found at location: " + elementLocation);
+            interact.withDOM().clearBannerMessage();
             return null;
         }
+
     }
 
     @Override
