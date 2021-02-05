@@ -199,4 +199,8 @@ public class GWTable extends UIElement implements IGWUITable {
     public HashMap<String, String> getColumnLabels() {
         return this.columnLabelMap;
     }
+
+    public GWTableSelectionColumn getSelectionColumn(){
+        return new GWTableSelectionColumn(this, identifier);
+    }
 }
