@@ -10,7 +10,6 @@ import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
 import framework.webdriver.Interact;
 import framework.webdriver.PauseTest;
-import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -28,10 +27,11 @@ public class GuidewireInteract extends Interact {
 
     /**
      * this is designed to catch the error messages immediately after clicking.
-     * if the error message is shown on the screen with in 10 Milliseconds from the click, the function returns false.
+     * if the error message is shown on the screen with in 3 Seconds from the click, the function returns false.
      */
-    public static boolean hasErrorMessageOnScreen(){
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+    public static boolean hasErrorMessageOnScreen(ReactionTime reactionTime){
+        UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGES, reactionTime);
+        return uiElement.isPresent();
     }
 
     /**
@@ -43,8 +43,17 @@ public class GuidewireInteract extends Interact {
     }
 
 
-    public static String getErrorMessageFromScreen(){
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+    /**
+     * Checks and returns error message from the screen
+     * @return Returns Error Message as String, returns blank String if no error message is available
+     */
+    public static String getErrorMessageFromScreen(ReactionTime reactionTime){
+        UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGES, reactionTime);
+        if(uiElement.isPresent()){
+            return uiElement.screenGrab();
+        } else {
+            return "";
+        }
     }
 
     @Override

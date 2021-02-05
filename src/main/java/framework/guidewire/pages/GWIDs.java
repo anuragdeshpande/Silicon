@@ -4,9 +4,12 @@ import framework.elements.Identifier;
 import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
 
+import java.util.IdentityHashMap;
+
 public class GWIDs {
     public static final Identifier QUICK_JUMP = new Identifier(By.name("QuickJump"));
     public static final Identifier SETTINGS_COG = new Identifier(By.id("gw-TabBarWidget--settings"), ElementType.ELEMENT);
+    public static final Identifier ERROR_MESSAGES = new Identifier(By.xpath("//div[@class='gw-WebMessage']//div[contains(@class, 'gw-alert-error')]//div[@class='gw-message']"));
 
 
     public static class Login{
