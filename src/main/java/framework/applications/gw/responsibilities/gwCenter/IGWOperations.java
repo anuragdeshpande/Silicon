@@ -15,4 +15,6 @@ public interface IGWOperations {
     GuidewireInteract getInteractObject();
 
     void overrideEnvironmentURL(String url);
+
+    boolean isUp();
 }
