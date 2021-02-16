@@ -36,8 +36,6 @@ public class WaitConditions {
             return until;
         } catch (TimeoutException toe){
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeoutInSeconds+" seconds");
-            RegressionLogger.getTestLogger().captureScreenshot("Page is still loading");
-            RegressionLogger.getTestLogger().captureScreenshot("Page loading did not meet SLA");
             throw new TimeoutException("Page is still loading");
         }
     }

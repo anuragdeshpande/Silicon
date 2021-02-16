@@ -76,7 +76,7 @@ public class GuidewireInteract extends Interact {
     }
 
     public static boolean isPageLoading(){
-        UIElement pageLoader = new UIElement(new Identifier(By.id("gw-click-overlay"), ElementType.ELEMENT), ReactionTime.MOMENTARY);
+        UIElement pageLoader = new UIElement(new Identifier(By.id("gw-click-overlay"), "Overlay Element"), ReactionTime.MOMENTARY);
         return pageLoader.isPresent() && pageLoader.getElement().getAttribute("class").contains("gw-click-overlay");
     }
 

@@ -1,7 +1,9 @@
 package framework.elements.ui_element;
 
 import framework.constants.ReactionTime;
+import framework.customExceptions.NotInitializedException;
 import framework.elements.Identifier;
+import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.utils.WaitUtils;
@@ -23,6 +25,9 @@ public class UIElement implements IUIElementOperations {
     protected By elementLocation;
 
     public UIElement(Identifier identifier) {
+        if(identifier instanceof UninitializedIdentifier){
+            throw new NotInitializedException("This element has not yet been migrated. Please get the latest reference from the UI");
+        }
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
         this.element = findElement(elementLocation);
@@ -30,6 +35,9 @@ public class UIElement implements IUIElementOperations {
     }
 
     public UIElement(Identifier identifier, ReactionTime reactionTime) {
+        if(identifier instanceof UninitializedIdentifier){
+            throw new NotInitializedException("This element has not yet been migrated. Please get the latest reference from the UI");
+        }
         this.isOptional = true;
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();

@@ -38,29 +38,12 @@ public class GWRadioButton extends UIRadioButton implements IGWRadioButton {
         }
     }
 
-    public WebElement getElementByLabel(String labelText) {
-        WebElement baseElement = super.getElement();
-        if (!baseElement.getTagName().equalsIgnoreCase("input")) {
-//            System.out.println("Finding <input> in the current dom element "+ baseElement);
-            baseElement = baseElement.findElement(By.xpath(".//label[text()='" + labelText + "']/preceding-sibling::input"));
-        }
-
-//        System.out.println("Found table: "+ baseElement);
-        return baseElement;
+    public UIElement getElementByLabel(String nameAttributeOfInputRadio, String labelText) {
+        return new UIElement(new Identifier(By.xpath("//input[@type='radio'][@name='" + nameAttributeOfInputRadio + "'][@value='" + labelText + "']")));
     }
 
     @Override
-    public void clickByLabel(String labelText) {
-        new UIElement(new Identifier(By.xpath(".//label[text()='" + labelText + "']/preceding-sibling::input"))).click();
-    }
-
-    @Override
-    public void clickYes() {
-        clickByLabel("Yes");
-    }
-
-    @Override
-    public void clickNo() {
-        clickByLabel("No");
+    public void clickByLabel(String nameAttributeOfInputRadio, String labelText) {
+        getElementByLabel(nameAttributeOfInputRadio, labelText).click();
     }
 }

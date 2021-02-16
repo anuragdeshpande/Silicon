@@ -32,19 +32,16 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.InvalidArgumentException;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -205,15 +202,17 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
-        if (!interact.withOptionalElement(GWIDs.QUICK_JUMP, ReactionTime.STANDARD_WAIT_TIME).isPresent()) {
+        try{
+            PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.id("Login-LoginScreen-2")), "Waiting for login to complete");
+        } catch (TimeoutException te){
             UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
             if (loginIssues.isPresent()) {
                 if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
-                    RegressionLogger.getTestLogger().fail(new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password));
+                    throw new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password);
                 }
 
                 if (loginIssues.getElement().getText().contains("Locked")) {
-                    RegressionLogger.getTestLogger().fail(new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password));
+                    throw new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password);
                 }
             }
         }
