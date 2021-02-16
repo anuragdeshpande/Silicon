@@ -1,7 +1,7 @@
 package framework.enums;
 
 public enum Environments {
-    DEV, DEV2, DEV3,
+    DEV, DEV2, DEV3, DEV10,
     IT,
     PS01, PS02, PS03,
     QA, QA3,
