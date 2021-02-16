@@ -75,6 +75,10 @@ public class GuidewireInteract extends Interact {
         return new GWTable(identifier);
     }
 
+    public GWTable withTableNoHeaderRow(Identifier identifier){
+        return new GWTable(identifier, true);
+    }
+
     public static boolean isPageLoading(){
         UIElement pageLoader = new UIElement(new Identifier(By.id("gw-click-overlay"), "Overlay Element"), ReactionTime.MOMENTARY);
         return pageLoader.isPresent() && pageLoader.getElement().getAttribute("class").contains("gw-click-overlay");

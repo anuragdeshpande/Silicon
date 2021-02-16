@@ -6,10 +6,7 @@ import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
-import framework.utils.NumberUtils;
-import framework.webdriver.BrowserFactory;
 import org.apache.commons.lang3.NotImplementedException;
-import org.assertj.core.api.OptionalAssert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -22,11 +19,13 @@ public class GWTable extends UIElement implements IGWUITable {
     private static final By LAST_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-last')]");
     private static final By NEXT_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-next')]");
     private static final By PREVIOUS_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-prev')]");
+    private final boolean hasHeaderRow;
 
     private final HashMap<String, String> columnLabelMap;
 
     public GWTable(Identifier identifier) {
         super(identifier);
+        hasHeaderRow = true;
         if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV")) {
             throw new IncorrectCallException("Table IDs must always end with LV");
         }
@@ -38,8 +37,12 @@ public class GWTable extends UIElement implements IGWUITable {
             label = label.equals("") ? "blank-" + (i - 1) : label;
             columnLabelMap.put(label, labels.get(i).getAttribute("id"));
         }
+    }
 
-        System.out.println("Here");
+    public GWTable(Identifier identifier, boolean hasNoHeaderRow) {
+        super(identifier);
+        columnLabelMap = new HashMap<>();
+        hasHeaderRow = false;
     }
 
     @Override
@@ -54,31 +57,48 @@ public class GWTable extends UIElement implements IGWUITable {
 
     @Override
     public void clickNextPage() {
+        if (hasHeaderRow) {
+            WebElement element = this.getElement().findElement(NEXT_PAGE_REFERENCE);
+            element.click();
+            System.out.println("Next Page Clicked");
+        } else {
+            throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
+        }
 
-        WebElement element = this.getElement().findElement(NEXT_PAGE_REFERENCE);
-        element.click();
-        System.out.println("Next Page Clicked");
     }
 
     @Override
     public void clickPreviousPage() {
-        WebElement element = this.getElement().findElement(PREVIOUS_PAGE_REFERENCE);
-        element.click();
-        System.out.println("Previous Page Clicked");
+        if (hasHeaderRow) {
+            WebElement element = this.getElement().findElement(PREVIOUS_PAGE_REFERENCE);
+            element.click();
+            System.out.println("Previous Page Clicked");
+        } else {
+            throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
+        }
+
     }
 
     @Override
     public void clickLastPage() {
-        WebElement element = this.getElement().findElement(LAST_PAGE_REFERENCE);
-        element.click();
-        System.out.println("Last Page Clicked");
+        if (hasHeaderRow) {
+            WebElement element = this.getElement().findElement(LAST_PAGE_REFERENCE);
+            element.click();
+            System.out.println("Last Page Clicked");
+        } else {
+            throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
+        }
     }
 
     @Override
     public void clickFirstPage() {
-        WebElement element = this.getElement().findElement(FIRST_PAGE_REFERENCE);
-        element.click();
-        System.out.println("First Page Clicked");
+        if(hasHeaderRow) {
+            WebElement element = this.getElement().findElement(FIRST_PAGE_REFERENCE);
+            element.click();
+            System.out.println("First Page Clicked");
+        } else {
+            throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
+        }
     }
 
     @Override
@@ -197,10 +217,14 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public HashMap<String, String> getColumnLabels() {
-        return this.columnLabelMap;
+        if(hasHeaderRow){
+            return this.columnLabelMap;
+        } else {
+            throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
+        }
     }
 
-    public GWTableSelectionColumn getSelectionColumn(){
+    public GWTableSelectionColumn getSelectionColumn() {
         return new GWTableSelectionColumn(this, identifier);
     }
 }
