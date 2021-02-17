@@ -5,6 +5,7 @@ import framework.guidewire.pages.GWIDs;
 import framework.webdriver.utils.WaitConditions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.concurrent.TimeUnit;
@@ -106,6 +107,31 @@ public class PauseTest {
      */
     public synchronized static void waitForPageToLoad(ReactionTime timeToWait){
         _waitForPageToLoad(timeToWait, "Waiting for page load to complete");
+    }
+
+    /**
+     * Adds a timer to the page and waits until the timer runs out.
+     * Timer takes foreground control on the thread, meaning nothing is active while the timer is running.
+     * @param timeoutInSeconds Time to wait in seconds
+     */
+    public synchronized static void startWaitTimer(int timeoutInSeconds){
+        long elapsedTime = 0;
+        long startTime = System.currentTimeMillis();
+        Interact interact = BrowserFactory.getCurrentBrowser();
+        interact.withDOM().injectInfoMessage("Starting timer for "+timeoutInSeconds+" Seconds");
+        while(elapsedTime < timeoutInSeconds){
+            if(startTime + (elapsedTime * 1000) <= System.currentTimeMillis()){
+                interact.withDOM().injectWarningMessage("Waiting for timer to run out in " + (timeoutInSeconds - elapsedTime) + " Seconds");
+                elapsedTime +=1;
+            }
+        }
+        interact.withDOM().clearBannerMessage();
+    }
+
+    public static void main(String[] args) {
+        BrowserFactory.getCurrentBrowser().getDriver().get("https://www.google.com");
+        startWaitTimer(5);
+        System.out.println("Done");
     }
 
 
