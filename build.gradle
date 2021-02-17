@@ -67,7 +67,9 @@ dependencies {
 
 group = 'com.idfbins.qa'
 version = '4.0.0'
-sourceCompatibility = '1.8'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 publishing {
     publications {

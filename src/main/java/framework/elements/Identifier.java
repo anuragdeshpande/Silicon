@@ -1,10 +1,7 @@
 package framework.elements;
 
-import com.sun.org.apache.xml.internal.security.signature.ReferenceNotInitializedException;
 import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
-
-import java.util.IdentityHashMap;
 
 public class Identifier extends GenericIdentifier {
     private By reference;
