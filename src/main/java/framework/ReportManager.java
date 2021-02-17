@@ -105,9 +105,7 @@ public class ReportManager {
         String className = dto.getClassName();
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).createNode(className);
-            if (System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
-                BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
-            }
+            BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
@@ -119,9 +117,7 @@ public class ReportManager {
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
-            if (System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
-                BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
-            }
+            BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
         }
 
         return xmlTestMap.get(xmlTestName);
@@ -133,9 +129,7 @@ public class ReportManager {
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(dto.getClassName()).createNode(dto.getTestName(), description);
             testMap.put(testName, extentTest);
-            if (System.getProperty("LithiumSafe", "false").equalsIgnoreCase("true")) {
-                BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
-            }
+            BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
         }
 
         return testMap.get(testName);
@@ -232,7 +226,7 @@ public class ReportManager {
                     runtimeDTO.getTestType()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to insert: "+e.getLocalizedMessage());
+            System.out.println("Failed to insert: " + e.getLocalizedMessage());
             return false;
         }
     }
@@ -411,7 +405,7 @@ public class ReportManager {
         System.out.println("Generating Combined Report at: " + finalReportPath);
         extent.flush();
 
-        if(forMasterFile){
+        if (forMasterFile) {
             // updating suite and test results table with the combined path
             int passedTests = 0;
             int failedTests = 0;
@@ -421,14 +415,14 @@ public class ReportManager {
             System.setProperty("SuiteEndTime", String.valueOf(extent.getReport().getEndTime().getTime()));
             for (Test ancestorTest : extent.getReport().getTestList()) {
                 List<Test> testsToParse = new ArrayList<>();
-                if(ancestorTest.hasChildren()){
+                if (ancestorTest.hasChildren()) {
                     testsToParse = ancestorTest.getChildren();
                 } else {
                     testsToParse.add(ancestorTest);
                 }
 
                 for (Test test : testsToParse) {
-                    switch (test.getStatus()){
+                    switch (test.getStatus()) {
                         case PASS:
                             passedTests++;
                             break;
