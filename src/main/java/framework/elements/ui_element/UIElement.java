@@ -1,6 +1,7 @@
 package framework.elements.ui_element;
 
 import framework.constants.ReactionTime;
+import framework.customExceptions.ElementNotFoundException;
 import framework.customExceptions.NotInitializedException;
 import framework.elements.Identifier;
 import framework.elements.UninitializedIdentifier;
@@ -30,7 +31,7 @@ public class UIElement implements IUIElementOperations {
         }
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
-        this.element = findElement(elementLocation);
+        this.element = findElement(identifier);
 
     }
 
@@ -41,7 +42,7 @@ public class UIElement implements IUIElementOperations {
         this.isOptional = true;
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
-        this.element = findOptional(elementLocation, reactionTime);
+        this.element = findOptional(identifier, reactionTime);
 
     }
 
@@ -109,22 +110,21 @@ public class UIElement implements IUIElementOperations {
             if(this.elementLocation == null){
                 throw new RuntimeException("The original element was a WebElement. Please change implementation to use Identifer from the framework");
             }
-            return this.isOptional ? findOptional(elementLocation, ReactionTime.MOMENTARY) : findElement(elementLocation);
+            return this.isOptional ? findOptional(identifier, ReactionTime.MOMENTARY) : findElement(identifier);
         }
     }
 
-    private WebElement findElement(By elementLocation) {
+    private WebElement findElement(Identifier identifier) {
         WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
         WebElement element = null;
 
         try {
-            element = waitUtils.waitUntilElementIsVisible(elementLocation, 10);
+            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), 10);
         } catch (TimeoutException t) {
             try {
-                element = waitUtils.waitUntilElementIsClickable(elementLocation, 20);
+                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), 20);
             } catch (TimeoutException e) {
-                e.printStackTrace();
-                throw e;
+                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found in time", e);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,34 +138,14 @@ public class UIElement implements IUIElementOperations {
         return element;
     }
 
-    private WebElement findOptional(By elementLocation) {
-        WaitUtils waitUtils = new WaitUtils(BrowserFactory.getCurrentBrowser().getDriver());
-        WebElement element = null;
 
-        try {
-            element = waitUtils.waitUntilElementIsVisible(elementLocation, 1);
-        } catch (TimeoutException t) {
-            try {
-                element = waitUtils.waitUntilElementIsClickable(elementLocation, 1);
-            } catch (TimeoutException e) {
-//                System.out.println("Optional Element: " + elementLocation.toString() + " Not Found.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail(e.getLocalizedMessage());
-        }
-
-        this.element = element;
-        return element;
-    }
-
-    private WebElement findOptional(By elementLocation, ReactionTime reactionTime) {
+    private WebElement findOptional(Identifier identifier, ReactionTime reactionTime) {
         GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+elementLocation+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
+        interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+identifier.getFriendlyName()+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
         try {
             WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
-            WebElement element = driver.findElement(elementLocation);
+            WebElement element = driver.findElement(identifier.getReference());
             reactionTime = ReactionTime.STANDARD_WAIT_TIME;
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
 

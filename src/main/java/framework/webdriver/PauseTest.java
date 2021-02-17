@@ -66,10 +66,36 @@ public class PauseTest {
      *
      * Utility method to create the wait loop to check for the loading animation to go away
      * and for the quick jump element to be clickable
+     */
+    public synchronized static void waitForPageToLoad(){
+        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), "This message should not show", false);
+    }
+
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
      * @param messageToShowWhileWaiting Message to show while waiting
      */
     public synchronized static void waitForPageToLoad(String messageToShowWhileWaiting){
-        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting);
+        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting, true);
+    }
+
+
+    /**
+     * It has been assumed that a page is loaded when the page load animation is gone and
+     * quick jump box is clickable.
+     *
+     * Utility method to create the wait loop to check for the loading animation to go away
+     * and for the quick jump element to be clickable
+     *
+     * @param timeToWait {@link ReactionTime} time to wait for page load to complete
+     */
+    public synchronized static void waitForPageToLoad(ReactionTime timeToWait){
+        _waitForPageToLoad(timeToWait, "This message should not show", false);
     }
 
     /**
@@ -82,32 +108,9 @@ public class PauseTest {
      * @param messageToShowWhileWaiting Message to show while waiting
      */
     public synchronized static void waitForPageToLoad(ReactionTime timeToWait, String messageToShowWhileWaiting){
-        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting);
+        _waitForPageToLoad(ReactionTime.getInstance(timeToWait.getTime(), TimeUnit.SECONDS), messageToShowWhileWaiting, true);
     }
 
-    /**
-     * It has been assumed that a page is loaded when the page load animation is gone and
-     * quick jump box is clickable.
-     *
-     * Utility method to create the wait loop to check for the loading animation to go away
-     * and for the quick jump element to be clickable
-     */
-    public synchronized static void waitForPageToLoad(){
-        _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), "Waiting for page load to complete");
-    }
-
-    /**
-     * It has been assumed that a page is loaded when the page load animation is gone and
-     * quick jump box is clickable.
-     *
-     * Utility method to create the wait loop to check for the loading animation to go away
-     * and for the quick jump element to be clickable
-     *
-     * @param timeToWait {@link ReactionTime} time to wait for page load to complete
-     */
-    public synchronized static void waitForPageToLoad(ReactionTime timeToWait){
-        _waitForPageToLoad(timeToWait, "Waiting for page load to complete");
-    }
 
     /**
      * Adds a timer to the page and waits until the timer runs out.
@@ -136,8 +139,8 @@ public class PauseTest {
 
 
 
-    private synchronized static void _waitForPageToLoad(ReactionTime reactionTime, String messageToShowWhileWaiting){
-        PauseTest.createSpecialInstance(reactionTime.getTime()).until(ExpectedConditions.and(
+    private synchronized static void _waitForPageToLoad(ReactionTime reactionTime, String messageToShowWhileWaiting, boolean showMessage){
+        PauseTest.createSpecialInstance(reactionTime.getTime()).showMessage(showMessage).until(ExpectedConditions.and(
                 ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
                 ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
         ), messageToShowWhileWaiting);

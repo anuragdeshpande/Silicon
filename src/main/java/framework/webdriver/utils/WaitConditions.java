@@ -1,6 +1,5 @@
 package framework.webdriver.utils;
 
-import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.TimeoutException;
@@ -14,6 +13,7 @@ public class WaitConditions {
     private long timeoutInSeconds;
     private long pollingIntervalMilliseconds;
     private WebDriverWait wait;
+    private boolean showMessage = true;
 
     public WaitConditions(WebDriver driver, long timeoutInSeconds, long pollingIntervalMilliseconds){
         this.driver = driver;
@@ -27,12 +27,21 @@ public class WaitConditions {
         return wait;
     }
 
+    public WaitConditions showMessage(boolean value){
+        this.showMessage = value;
+        return this;
+    }
+
     public <V> V until(Function<? super WebDriver, V> waitCondition, String messageToShowWhileWaiting){
         Interact interact = BrowserFactory.getCurrentBrowser();
-        interact.withDOM().injectInfoMessage(messageToShowWhileWaiting);
+        if(showMessage){
+            interact.withDOM().injectInfoMessage(messageToShowWhileWaiting);
+        }
         try{
             V until = wait.until(waitCondition);
-            interact.withDOM().clearBannerMessage();
+            if(showMessage){
+                interact.withDOM().clearBannerMessage();
+            }
             return until;
         } catch (TimeoutException toe){
             interact.withDOM().injectDangerMessage("Page did not load in under "+timeoutInSeconds+" seconds");
