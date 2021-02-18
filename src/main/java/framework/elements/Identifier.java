@@ -47,4 +47,8 @@ public class Identifier extends GenericIdentifier {
     public String getFriendlyName() {
         return friendlyName == null ? "Please add friendly name to this identifier" : friendlyName;
     }
+
+    public String getReferenceValue(){
+        return this.reference.toString().split(":")[1];
+    }
 }
