@@ -1,5 +1,5 @@
 package framework.guidewire.elements.gw_radio_button;
 
 public interface IGWRadioButton {
-    void clickByLabel(String nameAttribute, String label);
+    void clickByLabel(String label);
 }

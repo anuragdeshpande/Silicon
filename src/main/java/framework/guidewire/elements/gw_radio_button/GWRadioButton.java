@@ -38,12 +38,12 @@ public class GWRadioButton extends UIRadioButton implements IGWRadioButton {
         }
     }
 
-    public UIElement getElementByLabel(String nameAttributeOfInputRadio, String labelText) {
-        return new UIElement(new Identifier(By.xpath("//input[@type='radio'][@name='" + nameAttributeOfInputRadio + "'][@value='" + labelText + "']")));
+    public UIElement getElementByLabel(String labelText) {
+        return new UIElement(new Identifier(By.xpath("//input[@type='radio'][@name='" + getElement().getAttribute("name") + "'][@value='" + labelText + "']")));
     }
 
     @Override
-    public void clickByLabel(String nameAttributeOfInputRadio, String labelText) {
-        getElementByLabel(nameAttributeOfInputRadio, labelText).click();
+    public void clickByLabel(String labelText) {
+        getElementByLabel(labelText).click();
     }
 }
