@@ -49,6 +49,6 @@ public class Identifier extends GenericIdentifier {
     }
 
     public String getReferenceValue(){
-        return this.reference.toString().split(":")[1];
+        return (this.reference.toString().split(":")[1]).trim();
     }
 }
