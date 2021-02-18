@@ -12,6 +12,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class GWTable extends UIElement implements IGWUITable {
 
@@ -106,6 +107,12 @@ public class GWTable extends UIElement implements IGWUITable {
         throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
     }
 
+    /**
+     * Gets the row that matches the string being passed, if it is found in one of the columns.
+     * For Guidewire tables, to combine multiple consecutive columns
+     * @param value
+     * @return
+     */
     @Override
     public GWRow getRowWithText(String value) {
         boolean isLastPage = false;
@@ -135,6 +142,15 @@ public class GWTable extends UIElement implements IGWUITable {
         } while (!isLastPage);
 
         throw new PotentialSystemIssueException("Row containing: " + value + " was not found in the table");
+    }
+
+    /**
+     * Attempts to find a row that meets the conditional predicate passed
+     * @param predicate Group of conditions that need to be satisfied by the given row
+     * @return Returns {@link Optional<GWRow>} if a row exists.
+     */
+    public Optional<GWRow> getRow(Predicate<GWRow> predicate){
+        return this.getRows().stream().filter(predicate).findFirst();
     }
 
     @Override
