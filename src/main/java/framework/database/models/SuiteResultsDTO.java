@@ -13,6 +13,7 @@ public class SuiteResultsDTO {
     private int failedTests;
     private int skippedTests;
     private int warningTests;
+    private int fatalTests;
     private String jenkinsBuildNumber;
     private String suiteName;
     private String reportPath;
@@ -23,11 +24,12 @@ public class SuiteResultsDTO {
     private Timestamp suiteEndTimeStamp;
     private Timestamp suite_end_date;
 
-    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
+    private SuiteResultsDTO(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, int fatalTests, String jenkinsBuildNumber, String suiteName, String reportPath) {
         this.applicationName = applicationName;
         this.passedTests = passedTests;
         this.failedTests = failedTests;
         this.skippedTests = skippedTests;
+        this.fatalTests = fatalTests;
         this.jenkinsBuildNumber = jenkinsBuildNumber;
         this.suiteName = suiteName;
         this.reportPath = reportPath;
@@ -42,8 +44,8 @@ public class SuiteResultsDTO {
     public SuiteResultsDTO() {
     }
 
-    public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, String jenkinsBuildNumber, String suiteName, String reportPath){
-        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, warningTests, jenkinsBuildNumber, suiteName, reportPath);
+    public static SuiteResultsDTO createInstance(String applicationName, int passedTests, int failedTests, int skippedTests, int warningTests, int fatalTests, String jenkinsBuildNumber, String suiteName, String reportPath){
+        return new SuiteResultsDTO(applicationName, passedTests, failedTests, skippedTests, warningTests, fatalTests, jenkinsBuildNumber, suiteName, reportPath);
     }
 
     public static Optional<SuiteResultsDTO> getExisting(String uuid, String applicationName, String suiteName){
@@ -87,6 +89,10 @@ public class SuiteResultsDTO {
 
     public void setFailedTests(int failedTests) {
         this.failedTests = failedTests;
+    }
+
+    public int getFatalTests() {
+        return fatalTests;
     }
 
     public int getSkippedTests() {
@@ -174,7 +180,7 @@ public class SuiteResultsDTO {
     }
 
     public static String getJDBCPreparedUpdateStatementWithoutParameters(){
-        return "Update SuiteResults set PassedTests=?,FailedTests=?,SkippedTests=?,WarningTests=?,Suite_End_Date=GETDATE() where UUID=? and SuiteName=? and ApplicationName=?";
+        return "Update SuiteResults set PassedTests=?,FailedTests=?,SkippedTests=?,WarningTests=?,FatalTests=?,Suite_End_Date=GETDATE() where UUID=? and SuiteName=? and ApplicationName=?";
     }
 
     public Timestamp getSuite_end_date() {

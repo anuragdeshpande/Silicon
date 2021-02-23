@@ -13,8 +13,11 @@ import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
+import framework.customExceptions.BlockedMessageQueueException;
+import framework.customExceptions.PotentialSystemIssueException;
 import framework.database.ConnectionManager;
 import framework.database.models.*;
+import framework.guidewire.ErrorMessageOnScreenException;
 import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.utils.BrowserStorageAccess;
@@ -275,7 +278,7 @@ public class ReportManager {
                 SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
                 updateSuiteResults(updatedDTO);
             } else {
-                SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), jenkinsBuildNumber, suiteName, reportPath);
+                SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
                 insertIntoSuiteResults(suiteDTO);
             }
         } else {
@@ -292,7 +295,7 @@ public class ReportManager {
                     suiteResultsDTO.getPassedTests(),
                     suiteResultsDTO.getFailedTests(),
                     suiteResultsDTO.getSkippedTests(),
-                    0,
+                    suiteResultsDTO.getFatalTests(),
                     suiteResultsDTO.getWarningTests(),
                     suiteResultsDTO.getJenkinsBuildNumber(),
                     suiteResultsDTO.getSuiteName(),
@@ -318,6 +321,7 @@ public class ReportManager {
                     suiteResultsDTO.getFailedTests(),
                     suiteResultsDTO.getSkippedTests(),
                     suiteResultsDTO.getWarningTests(),
+                    suiteResultsDTO.getFatalTests(),
                     suiteResultsDTO.getUUID(),
                     suiteResultsDTO.getSuiteName(),
                     suiteResultsDTO.getApplicationName());
@@ -412,6 +416,7 @@ public class ReportManager {
             int failedTests = 0;
             int skippedTests = 0;
             int warningTests = 0;
+            int fatalTests = 0;
             System.setProperty("SuiteStartTime", String.valueOf(extent.getReport().getStartTime().getTime()));
             System.setProperty("SuiteEndTime", String.valueOf(extent.getReport().getEndTime().getTime()));
             for (Test ancestorTest : extent.getReport().getTestList()) {
@@ -428,6 +433,10 @@ public class ReportManager {
                             passedTests++;
                             break;
                         case FAIL:
+                            fatalTests += test.getExceptions().stream()
+                                    .filter(exceptionInfo -> exceptionInfo.getException() instanceof ErrorMessageOnScreenException
+                                            || exceptionInfo.getException() instanceof BlockedMessageQueueException
+                                            || exceptionInfo.getException() instanceof PotentialSystemIssueException).count();
                             failedTests++;
                             break;
                         case SKIP:
@@ -443,7 +452,7 @@ public class ReportManager {
 
             System.out.println("Inserting master record in the suite results table");
             finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests,fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
     }
