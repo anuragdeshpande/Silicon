@@ -123,8 +123,8 @@ public class Listener implements ISuiteListener, ITestListener {
             testNode.fail(e);
         }
 
-        testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
-        testNode.fail(MarkupHelper.createCodeBlock(ExceptionUtils.getStackTrace(iTestResult.getThrowable())));
+        testNode.log(Status.FAIL, iTestResult.getName() + ": Failed: "+iTestResult.getThrowable().toString());
+        testNode.log(Status.FAIL, iTestResult.getThrowable());
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
