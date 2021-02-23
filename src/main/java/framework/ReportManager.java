@@ -378,14 +378,13 @@ public class ReportManager {
             // deep scanning target location for existing combined reports
             for (String directoryPath : sourceFilesDirectoryPath) {
                 File directory = new File(directoryPath);
+                jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
                 if (directory.isDirectory()) {
                     for (File subdirectory : Objects.requireNonNull(directory.listFiles())) {
                         if (subdirectory.isDirectory()) {
                             jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(subdirectory.listFiles(new JSONFileNameFilter()))));
                         }
                     }
-                } else {
-                    jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
                 }
             }
         } else {
