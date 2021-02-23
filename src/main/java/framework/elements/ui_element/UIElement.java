@@ -124,7 +124,7 @@ public class UIElement implements IUIElementOperations {
             try {
                 element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), 20);
             } catch (TimeoutException e) {
-                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found in time", e);
+                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found after waiting for approx 30 seconds", e);
             }
         } catch (Exception e) {
             e.printStackTrace();
