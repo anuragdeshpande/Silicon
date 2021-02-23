@@ -19,6 +19,7 @@ import framework.logger.RegressionLogger;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -122,7 +123,7 @@ public class Listener implements ISuiteListener, ITestListener {
         }
 
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
-        testNode.fail(iTestResult.getThrowable());
+        testNode.fail(ExceptionUtils.getStackTrace(iTestResult.getThrowable()));
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
