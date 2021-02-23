@@ -384,6 +384,8 @@ public class ReportManager {
                             jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(subdirectory.listFiles(new JSONFileNameFilter()))));
                         }
                     }
+                } else {
+                    jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
                 }
             }
         } else {
