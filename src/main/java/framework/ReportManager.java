@@ -189,6 +189,7 @@ public class ReportManager {
 
     }
 
+
     public static boolean insertIntoTestResults(TestResultsDTO testResultsDTO) {
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
