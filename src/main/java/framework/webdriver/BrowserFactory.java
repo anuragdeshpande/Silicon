@@ -54,6 +54,7 @@ public class BrowserFactory {
         } else {
             ChromeDriverManager.chromedriver().setup();
             WebDriver driver = ThreadGuard.protect(new ChromeDriver(optionsManager.getChromeOptions()));
+            driver.manage().window().maximize();
             pool.set(driver);
             driverPool.add(driver);
         }

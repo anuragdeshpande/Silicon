@@ -83,7 +83,7 @@ public class SuiteOrganizer {
 
         for (PackagedSuite aPackage : packages) {
             System.out.println(aPackage.toString());
-            FileWriter writer = new FileWriter(writeLocation +"\\"+ aPackage.getPackageIdentifier() + ".txt");
+            FileWriter writer = new FileWriter(writeLocation +"\\"+ aPackage.getPackageIdentifier().trim() + ".txt");
             for (String testName : aPackage.getTestNames()) {
                 writer.write(testName);
                 writer.write("\n");

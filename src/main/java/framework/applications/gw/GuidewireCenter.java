@@ -5,6 +5,7 @@ import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
 import framework.customExceptions.AccountLockedOrDisabledException;
 import framework.customExceptions.EnvironmentNotAvailableException;
+import framework.customExceptions.IncorrectCallException;
 import framework.customExceptions.InvalidLoginException;
 import framework.database.ConnectionManager;
 import framework.elements.ui_element.UIElement;
@@ -136,8 +137,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public void logout() {
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
+        boolean hasPendingWorkItems = interact.withElement(GWIDs.UNSAVED_WORK).getElement().getAttribute("class").contains("gw-hasChildren");
         interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
-        interact.withOptionalAlertWindow(ReactionTime.getInstance(1, TimeUnit.SECONDS)).ifPresent(Alert::accept);
+        if(hasPendingWorkItems){
+            interact.withOptionalAlertWindow(ReactionTime.getInstance(3, TimeUnit.SECONDS)).ifPresent(Alert::accept);
+        }
+        PauseTest.createInstance().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.Login.LOGIN.getReference()), "Waiting for logout to complete");
     }
 
 
@@ -152,24 +157,25 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             GuidewireInteract interact = getInteractObject();
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
-            if (!interact.getDriver().getCurrentUrl().equalsIgnoreCase("data:,")) {
-                /* flushing out browser */
-
-                // refresh browser
-                interact.getDriver().navigate().refresh();
-                // logging out of the current environment if it is logged in
-                if (interact.withOptionalElement(GWIDs.SETTINGS_COG, ReactionTime.IMMEDIATE).isPresent()) {
-                    logout();
+            String currentUrl = interact.getDriver().getCurrentUrl();
+            if (!currentUrl.equalsIgnoreCase("data:,")) {
+                PauseTest.waitForPageToLoad();
+                if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
+                    throw new IncorrectCallException(environment.getApplicationName()+": "+environment.getEnvironmentName()+" is still logged in. Please logout of the existing instance before opening a new one");
                 }
-
-                /* end flush */
             }
 
-
-            this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
-            String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
             // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
-            interact.getDriver().get(url);
+            interact.withDOM().injectInfoMessage("Getting connection to "+this.environment.getEnvironmentName()+" database");
+            this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
+            interact.withDOM().clearBannerMessage();
+            String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
+
+
+            if(!url.equalsIgnoreCase(currentUrl)){
+                interact.getDriver().get(url);
+            }
+
         } else {
             throw new EnvironmentNotAvailableException(this.environment.getEnvironmentUrl() + " Did not respond properly");
         }

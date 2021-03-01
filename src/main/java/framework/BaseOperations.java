@@ -6,6 +6,7 @@ import annotations.PreResetScript;
 import annotations.TestCase;
 import com.aventstack.extentreports.ExtentReports;
 import constants.Users;
+import framework.guidewire.GuidewireInteract;
 import framework.integrations.rally.RallyTestCase;
 import framework.integrations.rally.RallyUserReference;
 import framework.integrations.rally.dtos.RallyTestCaseDTO;
@@ -93,13 +94,18 @@ public class BaseOperations {
         TestCase testCaseAnnotation = testMethod.getAnnotation(TestCase.class);
         AutomatedTest automatedTest = testMethod.getAnnotation(AutomatedTest.class);
         if (testCaseAnnotation != null){
-            Optional<Users.User> user = Users.get(automatedTest.Author());
-            String userReference = null;
-            if(user.isPresent()){
-                userReference = RallyUserReference.getUserReference(user.get().getRallyUserEmail());
-            }
             RallyTestCase rallyTestCase = RallyTestCase.getTestCaseByID(testCaseAnnotation.id(), null);
             if(rallyTestCase.getRelatedUserStory().isStoryTracked()){
+                GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+                interact.withDOM().injectInfoMessage("Uploading results to rally test case");
+
+                Optional<Users.User> user = Users.get(automatedTest.Author());
+                String userReference = null;
+                if(user.isPresent()){
+                    userReference = RallyUserReference.getUserReference(user.get().getRallyUserEmail());
+                }
+
+
                 String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
                 String buildTag = System.getProperty("jenkinsBuildNumber") == null ? "Local: "+ timestamp: "Regression Build " + System.getProperty("jenkinsBuildNumber");
                 switch (iTestResult.getStatus()){
@@ -113,6 +119,8 @@ public class BaseOperations {
                         rallyTestCase.recordTestResult(RallyTestCaseDTO.getInstance(false, iTestResult.getMethod().getDescription(), userReference, buildTag));
                         break;
                 }
+
+                interact.withDOM().clearBannerMessage();
             }
         }
     }

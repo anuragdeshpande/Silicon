@@ -7,6 +7,7 @@ import framework.elements.Identifier;
 import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.PauseTest;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -26,6 +27,7 @@ public class UIElement implements IUIElementOperations {
     protected By elementLocation;
 
     public UIElement(Identifier identifier) {
+        PauseTest.waitForPageToLoad();
         if(identifier instanceof UninitializedIdentifier){
             throw new NotInitializedException("This element has not yet been migrated. Please get the latest reference from the UI");
         }
