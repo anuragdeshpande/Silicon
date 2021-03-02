@@ -10,6 +10,7 @@ import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
 import framework.webdriver.interactionContracts.*;
 import framework.webdriver.utils.BrowserStorageAccess;
+import framework.webdriver.utils.BrowserWindowManipulator;
 import framework.webdriver.utils.DOMManipulator;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -64,6 +65,10 @@ public class Interact
     @Override
     public UIElement withOptionalElement(Identifier identifier, ReactionTime reactionTime) {
         return new UIElement(identifier, reactionTime);
+    }
+
+    public BrowserWindowManipulator withWindow(){
+        return new BrowserWindowManipulator();
     }
 
     @Override
