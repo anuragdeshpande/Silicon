@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 // TODO clean up class and remove GWCore support
@@ -130,13 +131,6 @@ public class PauseTest {
         }
         interact.withDOM().clearBannerMessage();
     }
-
-    public static void main(String[] args) {
-        BrowserFactory.getCurrentBrowser().getDriver().get("https://www.google.com");
-        startWaitTimer(5);
-        System.out.println("Done");
-    }
-
 
 
     private synchronized static void _waitForPageToLoad(ReactionTime reactionTime, String messageToShowWhileWaiting, boolean showMessage){
