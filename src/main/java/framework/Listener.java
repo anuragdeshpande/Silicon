@@ -220,7 +220,7 @@ public class Listener implements ISuiteListener, ITestListener {
         WebDriver driver;
         driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + File.separator + iTestResult.getName() + ".png";
         try {
             File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
@@ -228,7 +228,7 @@ public class Listener implements ISuiteListener, ITestListener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return destinationFilePath;
+        return destinationFilePath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
     }
 
     private TestDetailsDTO buildTestDetailsDTO(ITestResult iTestResult) {
