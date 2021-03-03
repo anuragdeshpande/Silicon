@@ -7,6 +7,7 @@ import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.pages.GWIDs;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.poi.util.StringUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -36,7 +37,11 @@ public class GWTable extends UIElement implements IGWUITable {
         for (int i = 0; i < labels.size(); ++i) {
             String label = labels.get(i).getText().trim();
             label = label.equals("") ? "blank-" + (i - 1) : label;
-            columnLabelMap.put(label, labels.get(i).getAttribute("id"));
+            String id = labels.get(i).getAttribute("id");
+            String[] headers = id.replaceAll("Header", "").split(label);
+            headers[0] = headers[0] + label +"\\d-";
+            id = StringUtil.join(headers, "");
+            columnLabelMap.put(label, id);
         }
     }
 
@@ -216,7 +221,9 @@ public class GWTable extends UIElement implements IGWUITable {
         List<GWRow> rows = new ArrayList<>();
 
         this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
-            rows.add(new GWRow(row, columnLabelMap));
+            if (row.getAttribute("class").toLowerCase(Locale.ROOT).contains("gw-standard-row")) {
+                rows.add(new GWRow(row, columnLabelMap));
+            }
         });
 
 //        System.out.println("Found : "+rows.size()+" Rows");
