@@ -1,7 +1,6 @@
 package framework.guidewire.elements.gw_table;
 
 import framework.elements.Identifier;
-import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
@@ -43,7 +42,7 @@ public class GWRow extends UIElement implements IGWRow{
         try {
             List<WebElement> elements = this.element.findElements(By.tagName("td"));
             for (WebElement element : elements) {
-                if(element.getAttribute("class").contains(id)){
+                if(element.getAttribute("id").matches(id)){
                     return new GWCell(element);
                 }
             }
