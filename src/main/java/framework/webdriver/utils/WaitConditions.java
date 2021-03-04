@@ -14,8 +14,9 @@ public class WaitConditions {
     private long pollingIntervalMilliseconds;
     private WebDriverWait wait;
     private boolean showMessage = true;
+    private boolean skipTimeout;
 
-    public WaitConditions(WebDriver driver, long timeoutInSeconds, long pollingIntervalMilliseconds){
+    public WaitConditions(WebDriver driver, long timeoutInSeconds, long pollingIntervalMilliseconds) {
         this.driver = driver;
         this.timeoutInSeconds = timeoutInSeconds;
         this.pollingIntervalMilliseconds = pollingIntervalMilliseconds;
@@ -27,25 +28,35 @@ public class WaitConditions {
         return wait;
     }
 
-    public WaitConditions showMessage(boolean value){
+    public WaitConditions showMessage(boolean value) {
         this.showMessage = value;
         return this;
     }
 
-    public <V> V until(Function<? super WebDriver, V> waitCondition, String messageToShowWhileWaiting){
+    public WaitConditions skipTimeOut(boolean value) {
+        this.skipTimeout = value;
+        return this;
+    }
+
+    public <V> V until(Function<? super WebDriver, V> waitCondition, String messageToShowWhileWaiting) {
         Interact interact = BrowserFactory.getCurrentBrowser();
-        if(showMessage){
+        if (showMessage) {
             interact.withDOM().injectInfoMessage(messageToShowWhileWaiting);
         }
-        try{
+        try {
             V until = wait.until(waitCondition);
-            if(showMessage){
+            if (showMessage) {
                 interact.withDOM().clearBannerMessage();
             }
             return until;
-        } catch (TimeoutException toe){
-            interact.withDOM().injectDangerMessage("Page did not load in under "+timeoutInSeconds+" seconds");
+        } catch (TimeoutException toe) {
+            interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
             throw new TimeoutException("Page is still loading");
+
         }
+    }
+
+    public boolean shouldSkipTimeout(){
+        return this.skipTimeout;
     }
 }

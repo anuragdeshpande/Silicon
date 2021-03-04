@@ -3,11 +3,15 @@ package framework.elements.radiobutton;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
-import org.apache.commons.lang3.NotImplementedException;
+import org.openqa.selenium.WebElement;
 
 public class UIRadioButton extends UIElement implements IUIRadioButton {
 
     protected String label;
+
+    public UIRadioButton(WebElement element) {
+        super(element);
+    }
 
     public UIRadioButton(Identifier identifier) {
         super(identifier);

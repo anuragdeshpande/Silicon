@@ -4,8 +4,13 @@ import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
 public class UITextbox extends UIElement implements IUITextOperations {
+
+    public UITextbox(WebElement element) {
+        super(element);
+    }
 
     public UITextbox(Identifier identifier) {
         super(identifier);

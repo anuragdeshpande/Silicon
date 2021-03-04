@@ -5,7 +5,6 @@ import framework.elements.Identifier;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,6 +13,13 @@ public class UISelectBox extends UISelect {
 
     private List<WebElement> listElements;
     private Select select;
+
+    public UISelectBox(WebElement element) {
+        super(element);
+        this.select = new Select(element);
+        this.listElements = this.select.getOptions()
+                .stream().filter(webElement -> !webElement.getText().equalsIgnoreCase("<none>")).collect(Collectors.toList());
+    }
 
     public UISelectBox(Identifier identifier) {
         super(identifier);
@@ -40,9 +46,9 @@ public class UISelectBox extends UISelect {
 
     @Override
     public String selectRandom() {
-        String selection = this.listElements.get(new Random().nextInt(this.listElements.size())).getText();
-        this.select.selectByVisibleText(selection);
-        return selection;
+        String optionToSelect = this.listElements.get(new Random(System.currentTimeMillis()).nextInt(this.listElements.size())).getText();
+        this.select.selectByVisibleText(optionToSelect);
+        return optionToSelect;
     }
 
     @Override

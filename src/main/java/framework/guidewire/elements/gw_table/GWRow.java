@@ -1,13 +1,7 @@
 package framework.guidewire.elements.gw_table;
 
-import framework.elements.Identifier;
-import framework.elements.selectbox.UISelectBox;
-import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
-import framework.guidewire.GuidewireInteract;
-import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
@@ -36,7 +30,6 @@ public class GWRow extends UIElement implements IGWRow{
             return null;
         }
     }
-
 
     public GWCell getCell(String id){
         try {
@@ -75,24 +68,6 @@ public class GWRow extends UIElement implements IGWRow{
     }
 
     @Override
-    public void clickSelectButton() {
-        this.element.findElement(By.linkText("Select")).click();
-//        System.out.println("Select Button Clicked");
-    }
-
-    @Override
-    public void clickButtonWithText(String buttonText) {
-        BrowserFactory.getCurrentGuidewireBrowser().getActions().click(this.element.findElement(By.linkText(buttonText))).moveByOffset(1, 1).build().perform();
-//        System.out.println("Clicked button with text: "+buttonText);
-    }
-
-    @Override
-    public void clickRadioWithLabel(String label) {
-        this.element.findElement(By.xpath(".//td/label[contains(text(),'" + label + "')]/preceding-sibling::input")).click();
-//        System.out.println("Radio Button Clicked");
-    }
-
-    @Override
     public GWCell getCellAtColumnLabel(String columnLabel) {
         return this.getCell(columnLabelMap.get(columnLabel));
     }
@@ -102,53 +77,6 @@ public class GWRow extends UIElement implements IGWRow{
         this.element.findElements(By.tagName("td")).forEach(cell -> cells.add(new GWCell(cell)));
 //        System.out.println("Returning "+cells.size()+" Cells");
         return cells;
-    }
-
-    @Override
-    public UISelectBox getSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
-        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        WebDriver driver = interact.getDriver();
-        try{
-            driver.findElement(selectBoxIdentifierByName.getReference());
-        } catch (Exception e){
-            this.getCell(cellNumber).click();
-        }
-
-        return new UISelectBox(selectBoxIdentifierByName);
-    }
-
-    @Override
-    public UITextbox getTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName) {
-        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        try{
-            interact.getDriver().findElement(textBoxIdentifierByName.getReference());
-        } catch (Exception e){
-            this.getCell(cellNumber).click();
-        }
-
-        return new UITextbox(textBoxIdentifierByName);
-    }
-
-    public UISelectBox getDoubleClickSelectBoxCell(int cellNumber, Identifier selectBoxIdentifierByName) {
-        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        try{
-            interact.getDriver().findElement(selectBoxIdentifierByName.getReference());
-        } catch (Exception e){
-            this.getCell(cellNumber).doubleClick();
-        }
-
-        return new UISelectBox(selectBoxIdentifierByName);
-    }
-
-    public UITextbox getDoubleClickTextBoxCell(int cellNumber, Identifier textBoxIdentifierByName) {
-        GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        try{
-            interact.getDriver().findElement(textBoxIdentifierByName.getReference());
-        } catch (Exception e){
-            this.getCell(cellNumber).doubleClick();
-        }
-
-        return new UITextbox(textBoxIdentifierByName);
     }
 
     @Override

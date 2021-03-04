@@ -39,7 +39,7 @@ public class GWTable extends UIElement implements IGWUITable {
             label = label.equals("") ? "blank-" + (i - 1) : label;
             String id = labels.get(i).getAttribute("id");
             String[] headers = id.replaceAll("Header", "").split(label);
-            headers[0] = headers[0] + label +"\\d-";
+            headers[0] = headers[0] + "\\d-"+label;
             id = StringUtil.join(headers, "");
             columnLabelMap.put(label, id);
         }
@@ -98,7 +98,7 @@ public class GWTable extends UIElement implements IGWUITable {
 
     @Override
     public void clickFirstPage() {
-        if(hasHeaderRow) {
+        if (hasHeaderRow) {
             WebElement element = this.getElement().findElement(FIRST_PAGE_REFERENCE);
             element.click();
             System.out.println("First Page Clicked");
@@ -115,6 +115,7 @@ public class GWTable extends UIElement implements IGWUITable {
     /**
      * Gets the row that matches the string being passed, if it is found in one of the columns.
      * For Guidewire tables, to combine multiple consecutive columns
+     *
      * @param value
      * @return
      */
@@ -123,7 +124,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row')]"))) {
                 // new code
                 String rowContent = row.getText();
                 if (rowContent.contains(value)) {
@@ -151,10 +152,11 @@ public class GWTable extends UIElement implements IGWUITable {
 
     /**
      * Attempts to find a row that meets the conditional predicate passed
+     *
      * @param predicate Group of conditions that need to be satisfied by the given row
      * @return Returns {@link Optional<GWRow>} if a row exists.
      */
-    public Optional<GWRow> getRow(Predicate<GWRow> predicate){
+    public Optional<GWRow> getRow(Predicate<GWRow> predicate) {
         return this.getRows().stream().filter(predicate).findFirst();
     }
 
@@ -171,7 +173,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.tagName("tr"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row')]"))) {
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase()) && !cell.getText().toUpperCase().contains(exclusion.toUpperCase())) {
                         return new GWRow(row, columnLabelMap);
@@ -219,19 +221,12 @@ public class GWTable extends UIElement implements IGWUITable {
 
     public List<GWRow> getRows() {
         List<GWRow> rows = new ArrayList<>();
-
-        this.getElement().findElements(By.tagName("tr")).forEach((row) -> {
-            if (row.getAttribute("class").toLowerCase(Locale.ROOT).contains("gw-standard-row")) {
-                rows.add(new GWRow(row, columnLabelMap));
-            }
-        });
-
-//        System.out.println("Found : "+rows.size()+" Rows");
+        this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row')]")).forEach((row) -> rows.add(new GWRow(row, columnLabelMap)));
         return rows;
     }
 
     public int getRowCount() {
-        return this.getElement().findElements(By.tagName("tr")).size();
+        return getRows().size();
     }
 
     public GWRow getRow(int rowNumber) {
@@ -240,7 +235,7 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public HashMap<String, String> getColumnLabels() {
-        if(hasHeaderRow){
+        if (hasHeaderRow) {
             return this.columnLabelMap;
         } else {
             throw new IncorrectCallException("Table is marked to not have header row. Cannot click Next");
