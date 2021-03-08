@@ -124,7 +124,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]"))) {
                 // new code
                 String rowContent = row.getText();
                 if (rowContent.contains(value)) {
@@ -173,7 +173,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]"))) {
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase()) && !cell.getText().toUpperCase().contains(exclusion.toUpperCase())) {
                         return new GWRow(row, columnLabelMap);
@@ -221,7 +221,7 @@ public class GWTable extends UIElement implements IGWUITable {
 
     public List<GWRow> getRows() {
         List<GWRow> rows = new ArrayList<>();
-        this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')")).forEach((row) -> rows.add(new GWRow(row, columnLabelMap)));
+        this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]")).forEach((row) -> rows.add(new GWRow(row, columnLabelMap)));
         return rows;
     }
 
