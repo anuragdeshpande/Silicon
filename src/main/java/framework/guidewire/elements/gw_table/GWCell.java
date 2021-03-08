@@ -52,10 +52,8 @@ public class GWCell extends UIElement  {
     }
 
     public void clickLink() {
-        WebElement linkElement = element.findElement(By.tagName("a"));
-        String linkText = linkElement.getText();
+        WebElement linkElement = element.findElement(By.xpath(".//div[@role='button']"));
         linkElement.click();
-//        System.out.println("Clicked on link: "+linkText);
     }
 
     public UITextbox getTextBox(){
