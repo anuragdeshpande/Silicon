@@ -32,7 +32,8 @@ public class RallyUserStory extends RallyQueryableService {
         RallyUserStory rallyUserStory = new RallyUserStory(null, regressionLogger);
         rallyUserStory.rallyResponse = rallyUserStory.get(_ref).getObject();
         rallyUserStory.storyNumber = rallyUserStory.rallyResponse.get("FormattedID").getAsString();
-        rallyUserStory.isStoryTracked = !rallyUserStory.rallyResponse.get("FlowState").getAsJsonObject().get("_refObjectName").getAsString().equalsIgnoreCase("Done");
+        String currentColumn = rallyUserStory.rallyResponse.get("FlowState").getAsJsonObject().get("_refObjectName").getAsString();
+        rallyUserStory.isStoryTracked = !(currentColumn.equalsIgnoreCase("Done") || currentColumn.equalsIgnoreCase("Accepted"));
         return rallyUserStory;
     }
 
