@@ -2,16 +2,22 @@ package framework.guidewire;
 
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;
-import framework.elements.enums.ElementType;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.GWElement;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
 import framework.guidewire.elements.gw_table.GWTable;
 import framework.guidewire.pages.GWIDs;
+import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import framework.webdriver.PauseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GuidewireInteract extends Interact {
     public GuidewireInteract(WebDriver driver) {
@@ -47,12 +53,14 @@ public class GuidewireInteract extends Interact {
      * Checks and returns error message from the screen
      * @return Returns Error Message as String, returns blank String if no error message is available
      */
-    public static String getErrorMessageFromScreen(ReactionTime reactionTime){
-        UIElement uiElement = new UIElement(GWIDs.ERROR_MESSAGES, reactionTime);
-        if(uiElement.isPresent()){
-            return uiElement.screenGrab();
+    public static Optional<List<String>> getErrorMessageFromScreen(ReactionTime reactionTime){
+        BrowserFactory.changeImplicitWaitTo(reactionTime);
+        List<String> errorMessageStrings = BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElements(GWIDs.ERROR_MESSAGES.getReference()).stream().map(WebElement::getText).collect(Collectors.toList());
+        BrowserFactory.changeImplicitWaitTo(ReactionTime.STANDARD_WAIT_TIME);
+        if(!errorMessageStrings.isEmpty()){
+            return Optional.of(errorMessageStrings);
         } else {
-            return "";
+            return Optional.empty();
         }
     }
 

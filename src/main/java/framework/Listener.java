@@ -36,7 +36,9 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class Listener implements ISuiteListener, ITestListener {
 
@@ -128,11 +130,14 @@ public class Listener implements ISuiteListener, ITestListener {
 
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
-            String errorMessageFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY);
             testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
-            testNode.fail(errorMessageFromScreen);
             testNode.assignCategory("ErrorOnScreen");
-            iTestResult.setThrowable(new ErrorMessageOnScreenException(errorMessageFromScreen));
+            GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY).ifPresent(errorMessagesFromScreen -> {
+                for (String errorMessageFromScreen : errorMessagesFromScreen) {
+                    testNode.fail(errorMessageFromScreen);
+                }
+                iTestResult.setThrowable(new ErrorMessageOnScreenException(Arrays.toString(new List[]{errorMessagesFromScreen})));
+            });
         }
 
         if (iTestResult.getThrowable() instanceof KnownDefectException) {
