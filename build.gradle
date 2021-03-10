@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'org.json:json:20200518'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    implementation 'com.idfbins:RegressionAnnotations:1.37'
+    implementation 'com.idfbins:RegressionAnnotations:1.44'
     implementation 'org.jasypt:jasypt:1.9.3'
     implementation 'commons-net:commons-net:3.6'
     implementation 'com.idfbins:GWCoreDriverUtilities:0.0.3'
