@@ -348,9 +348,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         try {
             ABDebugToolsAPI api = null;
             if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
-                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             } else {
-                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             }
             ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");

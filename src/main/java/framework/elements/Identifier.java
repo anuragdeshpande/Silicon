@@ -40,10 +40,6 @@ public class Identifier extends GenericIdentifier {
         return reference;
     }
 
-    public boolean canThrowWarning() {
-        return canThrowWarning;
-    }
-
     public String getFriendlyName() {
         return friendlyName == null ? "Please add friendly name to this identifier" : friendlyName;
     }
