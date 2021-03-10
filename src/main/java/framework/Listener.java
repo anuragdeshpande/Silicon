@@ -136,7 +136,7 @@ public class Listener implements ISuiteListener, ITestListener {
                 for (String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
                 }
-                iTestResult.setThrowable(new ErrorMessageOnScreenException(Arrays.toString(new List[]{errorMessagesFromScreen})));
+                iTestResult.setThrowable(new ErrorMessageOnScreenException(Arrays.toString(errorMessagesFromScreen.toArray())));
             });
         }
 

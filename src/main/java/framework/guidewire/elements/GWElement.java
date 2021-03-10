@@ -10,6 +10,10 @@ import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 public class GWElement extends UIElement {
     public GWElement(Identifier identifier) {
         super(identifier);
@@ -48,7 +52,10 @@ public class GWElement extends UIElement {
         }
 
         if(GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()){
-            throw new ErrorMessageOnScreenException(GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE));
+            Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
+            errorMessagesFromScreen.ifPresent(strings -> {
+                throw new ErrorMessageOnScreenException(Arrays.toString(strings.toArray()));
+            });
         }
     }
 }
