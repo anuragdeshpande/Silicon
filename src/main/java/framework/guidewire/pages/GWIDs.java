@@ -1,10 +1,7 @@
 package framework.guidewire.pages;
 
 import framework.elements.Identifier;
-import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
-
-import java.util.IdentityHashMap;
 
 public class GWIDs {
     public static final Identifier QUICK_JUMP = new Identifier(By.name("QuickJump"), "QuickJump");
@@ -21,7 +18,7 @@ public class GWIDs {
     }
 
     public static class SettingsCog{
-        public static final Identifier LOGOUT = new Identifier(By.id("TabBar-LogoutTabBarLink"), "Logout Link");
+        public static final Identifier LOGOUT = new Identifier(By.id("TabBar-LogoutTabBarLink"), "Logout Link", true);
     }
 
 

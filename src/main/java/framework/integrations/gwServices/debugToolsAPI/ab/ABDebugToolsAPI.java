@@ -13,20 +13,20 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "ABDebugToolsAPI", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", wsdlLocation = "http://ab8dev/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL")
+@WebServiceClient(name = "ABDebugToolsAPI", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", wsdlLocation = "http://ab8dev/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL")
 public class ABDebugToolsAPI
     extends Service
 {
 
     private final static URL ABDEBUGTOOLSAPI_WSDL_LOCATION;
     private final static WebServiceException ABDEBUGTOOLSAPI_EXCEPTION;
-    private final static QName ABDEBUGTOOLSAPI_QNAME = new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPI");
+    private final static QName ABDEBUGTOOLSAPI_QNAME = new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPI");
 
     static {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://ab8dev/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI?WSDL");
+            url = new URL("http://ab8dev/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -65,7 +65,7 @@ public class ABDebugToolsAPI
      */
     @WebEndpoint(name = "ABDebugToolsAPISoap11Port")
     public ABDebugToolsAPIPortType getABDebugToolsAPISoap11Port() {
-        return super.getPort(new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPISoap11Port"), ABDebugToolsAPIPortType.class);
+        return super.getPort(new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPISoap11Port"), ABDebugToolsAPIPortType.class);
     }
 
     /**
@@ -77,7 +77,7 @@ public class ABDebugToolsAPI
      */
     @WebEndpoint(name = "ABDebugToolsAPISoap11Port")
     public ABDebugToolsAPIPortType getABDebugToolsAPISoap11Port(WebServiceFeature... features) {
-        return super.getPort(new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPISoap11Port"), ABDebugToolsAPIPortType.class, features);
+        return super.getPort(new QName("http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", "ABDebugToolsAPISoap11Port"), ABDebugToolsAPIPortType.class, features);
     }
 
     private static URL __getWsdlLocation() {

@@ -39,10 +39,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -137,10 +134,16 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public void logout() {
         GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.SETTINGS_COG).click();
+        GuidewireInteract.clickQuickJump();
+        interact.withElement(GWIDs.SETTINGS_COG).click();
         boolean hasPendingWorkItems = interact.withElement(GWIDs.UNSAVED_WORK).getElement().getAttribute("class").contains("gw-hasChildren");
-        interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
-        if(hasPendingWorkItems){
-            interact.withOptionalAlertWindow(ReactionTime.getInstance(3, TimeUnit.SECONDS)).ifPresent(Alert::accept);
+        try {
+            interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+            if (hasPendingWorkItems) {
+                interact.withOptionalAlertWindow(ReactionTime.getInstance(3, TimeUnit.SECONDS)).ifPresent(Alert::accept);
+            }
+        }catch (UnhandledAlertException uae){
+            interact.withAlertWindow().accept();
         }
         PauseTest.createInstance().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.Login.LOGIN.getReference()), "Waiting for logout to complete");
     }
@@ -331,9 +334,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         try {
             CCDebugToolsAPI api = null;
             if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
-                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL"));
+                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             } else {
-                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL"));
+                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             }
             CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");

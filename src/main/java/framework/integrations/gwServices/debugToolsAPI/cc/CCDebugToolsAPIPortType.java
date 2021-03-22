@@ -17,7 +17,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "CCDebugToolsAPIPortType", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
+@WebService(name = "CCDebugToolsAPIPortType", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
 @XmlSeeAlso({
     ObjectFactory.class
 })
@@ -30,10 +30,10 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "moveClockTo", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.MoveClockTo")
-    @ResponseWrapper(localName = "moveClockToResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.MoveClockToResponse")
+    @RequestWrapper(localName = "moveClockTo", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.MoveClockTo")
+    @ResponseWrapper(localName = "moveClockToResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.MoveClockToResponse")
     public void moveClockTo(
-            @WebParam(name = "date", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
+            @WebParam(name = "date", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
                     XMLGregorianCalendar date)
         throws WsiAuthenticationException_Exception
     ;
@@ -44,10 +44,10 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "addDays", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddDays")
-    @ResponseWrapper(localName = "addDaysResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddDaysResponse")
+    @RequestWrapper(localName = "addDays", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddDays")
+    @ResponseWrapper(localName = "addDaysResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddDaysResponse")
     public void addDays(
-            @WebParam(name = "days", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
+            @WebParam(name = "days", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
                     int days)
         throws WsiAuthenticationException_Exception
     ;
@@ -58,10 +58,10 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "addMonths", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddMonths")
-    @ResponseWrapper(localName = "addMonthsResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddMonthsResponse")
+    @RequestWrapper(localName = "addMonths", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddMonths")
+    @ResponseWrapper(localName = "addMonthsResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.AddMonthsResponse")
     public void addMonths(
-            @WebParam(name = "months", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
+            @WebParam(name = "months", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
                     int months)
         throws WsiAuthenticationException_Exception
     ;
@@ -73,9 +73,9 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
-    @RequestWrapper(localName = "getCurrentTime", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.GetCurrentTime")
-    @ResponseWrapper(localName = "getCurrentTimeResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.GetCurrentTimeResponse")
+    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
+    @RequestWrapper(localName = "getCurrentTime", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.GetCurrentTime")
+    @ResponseWrapper(localName = "getCurrentTimeResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.GetCurrentTimeResponse")
     public XMLGregorianCalendar getCurrentTime()
         throws WsiAuthenticationException_Exception
     ;
@@ -85,8 +85,8 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "runMainframeOlieCheckFile", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunMainframeOlieCheckFile")
-    @ResponseWrapper(localName = "runMainframeOlieCheckFileResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunMainframeOlieCheckFileResponse")
+    @RequestWrapper(localName = "runMainframeOlieCheckFile", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunMainframeOlieCheckFile")
+    @ResponseWrapper(localName = "runMainframeOlieCheckFileResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunMainframeOlieCheckFileResponse")
     public void runMainframeOlieCheckFile()
         throws WsiAuthenticationException_Exception
     ;
@@ -98,9 +98,9 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
-    @RequestWrapper(localName = "isMainframeOlieCheckFileRunning", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsMainframeOlieCheckFileRunning")
-    @ResponseWrapper(localName = "isMainframeOlieCheckFileRunningResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsMainframeOlieCheckFileRunningResponse")
+    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
+    @RequestWrapper(localName = "isMainframeOlieCheckFileRunning", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsMainframeOlieCheckFileRunning")
+    @ResponseWrapper(localName = "isMainframeOlieCheckFileRunningResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsMainframeOlieCheckFileRunningResponse")
     public Boolean isMainframeOlieCheckFileRunning()
         throws WsiAuthenticationException_Exception
     ;
@@ -110,8 +110,8 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "runFinancialEsc", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunFinancialEsc")
-    @ResponseWrapper(localName = "runFinancialEscResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunFinancialEscResponse")
+    @RequestWrapper(localName = "runFinancialEsc", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunFinancialEsc")
+    @ResponseWrapper(localName = "runFinancialEscResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.RunFinancialEscResponse")
     public void runFinancialEsc()
         throws WsiAuthenticationException_Exception
     ;
@@ -123,9 +123,9 @@ public interface CCDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
-    @RequestWrapper(localName = "isFinancialEscRunning", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsFinancialEscRunning")
-    @ResponseWrapper(localName = "isFinancialEscRunningResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsFinancialEscRunningResponse")
+    @WebResult(targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
+    @RequestWrapper(localName = "isFinancialEscRunning", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsFinancialEscRunning")
+    @ResponseWrapper(localName = "isFinancialEscRunningResponse", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", className = "gwclockservice.ccdebugtoolsapi.IsFinancialEscRunningResponse")
     public Boolean isFinancialEscRunning()
         throws WsiAuthenticationException_Exception
     ;

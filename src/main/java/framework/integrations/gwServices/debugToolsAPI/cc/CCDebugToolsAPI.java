@@ -13,20 +13,20 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "CCDebugToolsAPI", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", wsdlLocation = "http://cc8dev/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL")
+@WebServiceClient(name = "CCDebugToolsAPI", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", wsdlLocation = "http://cc8dev/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL")
 public class CCDebugToolsAPI
     extends Service
 {
 
     private final static URL CCDEBUGTOOLSAPI_WSDL_LOCATION;
     private final static WebServiceException CCDEBUGTOOLSAPI_EXCEPTION;
-    private final static QName CCDEBUGTOOLSAPI_QNAME = new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPI");
+    private final static QName CCDEBUGTOOLSAPI_QNAME = new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPI");
 
     static {
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://cc8dev/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI?WSDL");
+            url = new URL("http://cc8dev/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -65,7 +65,7 @@ public class CCDebugToolsAPI
      */
     @WebEndpoint(name = "CCDebugToolsAPISoap11Port")
     public CCDebugToolsAPIPortType getCCDebugToolsAPISoap11Port() {
-        return super.getPort(new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPISoap11Port"), CCDebugToolsAPIPortType.class);
+        return super.getPort(new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPISoap11Port"), CCDebugToolsAPIPortType.class);
     }
 
     /**
@@ -77,7 +77,7 @@ public class CCDebugToolsAPI
      */
     @WebEndpoint(name = "CCDebugToolsAPISoap11Port")
     public CCDebugToolsAPIPortType getCCDebugToolsAPISoap11Port(WebServiceFeature... features) {
-        return super.getPort(new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPISoap11Port"), CCDebugToolsAPIPortType.class, features);
+        return super.getPort(new QName("http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI", "CCDebugToolsAPISoap11Port"), CCDebugToolsAPIPortType.class, features);
     }
 
     private static URL __getWsdlLocation() {

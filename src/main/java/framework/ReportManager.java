@@ -406,8 +406,10 @@ public class ReportManager {
         }
         String finalReportPath = targetLocation + "\\" + "combinedReport.html";
         ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
+        JsonFormatter jsonReporter = new JsonFormatter(finalReportPath.replace(".html", ".json"));
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
+        extent.attachReporter(jsonReporter);
         System.out.println("Generating Combined Report at: " + finalReportPath);
         extent.flush();
 

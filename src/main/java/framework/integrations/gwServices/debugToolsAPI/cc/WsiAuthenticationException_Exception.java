@@ -10,7 +10,7 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "WsiAuthenticationException", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc700/ccdebugtools/CCDebugToolsAPI")
+@WebFault(name = "WsiAuthenticationException", targetNamespace = "http://guidewire.com/cc/ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI")
 public class WsiAuthenticationException_Exception
     extends Exception
 {

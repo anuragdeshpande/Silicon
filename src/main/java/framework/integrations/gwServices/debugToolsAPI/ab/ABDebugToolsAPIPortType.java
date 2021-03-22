@@ -17,7 +17,7 @@ import javax.xml.ws.ResponseWrapper;
  * Generated source version: 2.2
  * 
  */
-@WebService(name = "ABDebugToolsAPIPortType", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI")
+@WebService(name = "ABDebugToolsAPIPortType", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI")
 @XmlSeeAlso({
     ObjectFactory.class
 })
@@ -30,10 +30,10 @@ public interface ABDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "moveClockTo", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.MoveClockTo")
-    @ResponseWrapper(localName = "moveClockToResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.MoveClockToResponse")
+    @RequestWrapper(localName = "moveClockTo", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.MoveClockTo")
+    @ResponseWrapper(localName = "moveClockToResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.MoveClockToResponse")
     public void moveClockTo(
-            @WebParam(name = "date", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI")
+            @WebParam(name = "date", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI")
                     XMLGregorianCalendar date)
         throws WsiAuthenticationException_Exception
     ;
@@ -45,9 +45,9 @@ public interface ABDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @WebResult(targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI")
-    @RequestWrapper(localName = "getCurrentDate", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.GetCurrentDate")
-    @ResponseWrapper(localName = "getCurrentDateResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.GetCurrentDateResponse")
+    @WebResult(targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI")
+    @RequestWrapper(localName = "getCurrentDate", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.GetCurrentDate")
+    @ResponseWrapper(localName = "getCurrentDateResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.GetCurrentDateResponse")
     public XMLGregorianCalendar getCurrentDate()
         throws WsiAuthenticationException_Exception
     ;
@@ -57,8 +57,8 @@ public interface ABDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @RequestWrapper(localName = "runMembershipDuesUpdate", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.RunMembershipDuesUpdate")
-    @ResponseWrapper(localName = "runMembershipDuesUpdateResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.RunMembershipDuesUpdateResponse")
+    @RequestWrapper(localName = "runMembershipDuesUpdate", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.RunMembershipDuesUpdate")
+    @ResponseWrapper(localName = "runMembershipDuesUpdateResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.RunMembershipDuesUpdateResponse")
     public void runMembershipDuesUpdate()
         throws WsiAuthenticationException_Exception
     ;
@@ -70,9 +70,9 @@ public interface ABDebugToolsAPIPortType {
      * @throws WsiAuthenticationException_Exception
      */
     @WebMethod
-    @WebResult(targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI")
-    @RequestWrapper(localName = "isMembershipDuesUpdateRunning", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.IsMembershipDuesUpdateRunning")
-    @ResponseWrapper(localName = "isMembershipDuesUpdateRunningResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab801/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.IsMembershipDuesUpdateRunningResponse")
+    @WebResult(targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI")
+    @RequestWrapper(localName = "isMembershipDuesUpdateRunning", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.IsMembershipDuesUpdateRunning")
+    @ResponseWrapper(localName = "isMembershipDuesUpdateRunningResponse", targetNamespace = "http://guidewire.com/ab/ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI", className = "gwclockservice.abdebugtoolsapi.IsMembershipDuesUpdateRunningResponse")
     public Boolean isMembershipDuesUpdateRunning()
         throws WsiAuthenticationException_Exception
     ;

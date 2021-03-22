@@ -111,4 +111,15 @@ public class UISelectBox extends UISelect {
     public void multipleDeselectAll() {
         this.select.deselectAll();
     }
+
+    public String getFirstSelectedOption(){
+        return this.select.getFirstSelectedOption().getText();
+    }
+
+    public String[] getAllSelectedOptions(){
+        return (String[]) this.select.getAllSelectedOptions().stream().map(WebElement::getText).toArray();
+    }
+
+
+
 }
