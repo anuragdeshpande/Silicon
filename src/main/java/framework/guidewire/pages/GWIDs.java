@@ -6,7 +6,8 @@ import org.openqa.selenium.By;
 public class GWIDs {
     public static final Identifier QUICK_JUMP = new Identifier(By.name("QuickJump"), "QuickJump");
     public static final Identifier SETTINGS_COG = new Identifier(By.id("gw-TabBarWidget--settings"), "Settings Cog");
-    public static final Identifier ERROR_MESSAGES = new Identifier(By.xpath("//div[@class='gw-WebMessage']//div[contains(@class, 'gw-alert-error')]//div[@class='gw-message']"), "Error Messages");
+    public static final Identifier ERROR_MESSAGES = new Identifier(By.xpath("//div[@class='gw-WebMessage']//div[contains(@class, 'gw-alert-error')]//div[@class='gw-message'] | //div[contains(@class, 'gw-MessagesWidget--group-error')]//div[@class='gw-message']"), "Error Messages");
+    public static final Identifier INFO_MESSAGES = new Identifier(By.xpath("//div[@class='gw-WebMessage']//div[contains(@class, 'gw-alert-info')]//div[@class='gw-message'] | //div[contains(@class, 'gw-MessagesWidget--group-info')]//div[@class='gw-message']"), "Info Messages");
     public static final Identifier UNSAVED_WORK = new Identifier(By.id("TabBar-UnsavedWorkTabBarLink"), "Unsaved Work");
 
 

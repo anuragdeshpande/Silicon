@@ -7,7 +7,6 @@ import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.elements.gw_radio_button.GWRadioButton;
 import framework.webdriver.BrowserFactory;
-import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -48,7 +47,8 @@ public class GWCell extends UIElement  {
     }
 
     public void clickSelect() {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+        WebElement element = this.element.findElement(By.xpath(".//div[contains(@class, 'gw-label') and contains(., 'Select')] | .//div[contains(@class, 'gw-mini-button')]"));
+        element.click();
     }
 
     public void clickLink() {
@@ -67,7 +67,9 @@ public class GWCell extends UIElement  {
     }
 
     public GWRadioButton getRadios(){
-        return new GWRadioButton(this.getElement());
+        WebElement element = this.getElement().findElement(By.xpath(".//input[@type='radio']"));
+        return new GWRadioButton(element);
+
     }
 
 

@@ -175,6 +175,8 @@ public class ReportManager {
 
         String testCreator = automatedAnnotation.Author();
         String testName = iTestResult.getMethod().getMethodName();
+        String className = iTestResult.getMethod().getTestClass().getName();
+        testName = className+"."+testName;
         String buildNumber = System.getProperty("jenkinsBuildNumber");
         String suiteName = iTestResult.getTestContext().getSuite().getName();
         String testRunSource = System.getProperty("startedByUser");

@@ -33,10 +33,26 @@ public class GWRadioButton extends UIRadioButton implements IGWRadioButton {
         new GWRadioButton(identifier).clickByLabel(label);
     }
 
+    public void clickByValue(String value){
+        getElementByValue(value).click();
+    }
+
+    public void clickByValue(Identifier identifier, String value){
+        new GWRadioButton(identifier).clickByValue(value);
+    }
+
+
+    private UIElement getElementByValue(String labelText) {
+        if(getElement().getAttribute("type").equalsIgnoreCase("radio") && getElement().getTagName().equalsIgnoreCase("input")){
+            return new UIElement(BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(By.xpath("//input[@type='radio'][@name='" + getElement().getAttribute("name") + "'][@value='" + labelText + "']")));
+        } else {
+            throw new IncorrectCallException("Current element is not of input[type='radio'] please resolve the identifier correctly and try again");
+        }
+    }
 
     private UIElement getElementByLabel(String labelText) {
         if(getElement().getAttribute("type").equalsIgnoreCase("radio") && getElement().getTagName().equalsIgnoreCase("input")){
-            return new UIElement(BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(By.xpath("//input[@type='radio'][@name='" + getElement().getAttribute("name") + "'][@value='" + labelText + "']")));
+            return new UIElement(BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElement(By.xpath("//input[@type='radio'][@name='" + getElement().getAttribute("name") + "'][@aria-label='" + labelText + "']")));
         } else {
             throw new IncorrectCallException("Current element is not of input[type='radio'] please resolve the identifier correctly and try again");
         }

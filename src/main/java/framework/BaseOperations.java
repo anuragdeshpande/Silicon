@@ -127,12 +127,14 @@ public class BaseOperations {
 
     @AfterClass(description = "AfterClass")
     public void afterClass(ITestContext context, XmlTest xmlTest) {
+        RegressionLogger.getTestClassLogger().info("Closing browser");
+        GuidewireInteract.clearCookiesToForceLogout();
+        BrowserFactory.closeCurrentBrowser();
     }
 
     @AfterTest(description = "AfterTest")
     public void afterTest(ITestContext context, XmlTest xmlTest) {
-        RegressionLogger.getXMLTestLogger().info("Closing Browser");
-        BrowserFactory.closeCurrentBrowser();
+
     }
 
     @AfterSuite(description = "AfterSuite")

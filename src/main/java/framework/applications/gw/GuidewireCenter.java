@@ -39,7 +39,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -133,19 +135,18 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     @Override
     public void logout() {
         GuidewireInteract interact = getInteractObject();
-        interact.withElement(GWIDs.SETTINGS_COG).click();
         GuidewireInteract.clickQuickJump();
         interact.withElement(GWIDs.SETTINGS_COG).click();
         boolean hasPendingWorkItems = interact.withElement(GWIDs.UNSAVED_WORK).getElement().getAttribute("class").contains("gw-hasChildren");
-        try {
-            interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
-            if (hasPendingWorkItems) {
-                interact.withOptionalAlertWindow(ReactionTime.getInstance(3, TimeUnit.SECONDS)).ifPresent(Alert::accept);
-            }
-        }catch (UnhandledAlertException uae){
-            interact.withAlertWindow().accept();
+        if(hasPendingWorkItems){
+            throw new IncorrectCallException("There is pending/Unsaved work. Please save/cancel before test can logout");
         }
+        interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
         PauseTest.createInstance().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.Login.LOGIN.getReference()), "Waiting for logout to complete");
+    }
+
+    public void forceLogout(){
+        GuidewireInteract.clearCookiesToForceLogout();
     }
 
 
@@ -164,7 +165,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             if (!currentUrl.equalsIgnoreCase("data:,")) {
                 PauseTest.waitForPageToLoad();
                 if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
-                    throw new IncorrectCallException(environment.getApplicationName()+": "+environment.getEnvironmentName()+" is still logged in. Please logout of the existing instance before opening a new one");
+                    forceLogout();
                 }
             }
 

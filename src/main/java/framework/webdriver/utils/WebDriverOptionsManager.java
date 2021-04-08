@@ -1,6 +1,8 @@
 package framework.webdriver.utils;
 
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 
 public class WebDriverOptionsManager {
 
@@ -18,8 +20,8 @@ public class WebDriverOptionsManager {
             chromeOptions.addArguments("--headless");
         }
 
-//        chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.ACCEPT);
-
+        chromeOptions.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.IGNORE);
+        chromeOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
         return chromeOptions;
     }
 

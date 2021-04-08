@@ -7,6 +7,7 @@ public class Identifier extends GenericIdentifier {
     private By reference;
     private boolean canThrowWarning;
     private String friendlyName;
+    private boolean ignoreTableLVCheck;
 
     protected Identifier(){
 
@@ -36,12 +37,21 @@ public class Identifier extends GenericIdentifier {
         return canThrowWarning;
     }
 
+    public Identifier ignoreLVCheckForTable(boolean value){
+        this.ignoreTableLVCheck = value;
+        return this;
+    }
+
     public By getReference() {
         return reference;
     }
 
     public String getFriendlyName() {
         return friendlyName == null ? "Please add friendly name to this identifier" : friendlyName;
+    }
+
+    public boolean shouldIgnoreLVCheckForTable() {
+        return ignoreTableLVCheck;
     }
 
     public String getReferenceValue(){

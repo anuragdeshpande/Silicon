@@ -1,14 +1,18 @@
 package framework.guidewire.elements;
 
 import framework.constants.ReactionTime;
+import framework.customExceptions.IncorrectCallException;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
+import framework.logger.RegressionLogger;
+import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebElement;
-import org.testng.Assert;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +44,7 @@ public class GWElement extends UIElement {
     public void click() {
         PauseTest.waitForPageToLoad();
         if (!this.isPresent()) {
-            Assert.fail("Element is not Clickable");
+            throw new IncorrectCallException("Element "+identifier.getFriendlyName()+" is not clickable.");
         }
 
         try {
@@ -49,6 +53,10 @@ public class GWElement extends UIElement {
         } catch (ElementClickInterceptedException cie) {
             PauseTest.waitForPageToLoad();
             this.getElement().click();
+        } catch (UnhandledAlertException uae){
+            Alert alert = BrowserFactory.getCurrentGuidewireBrowser().getDriver().switchTo().alert();
+            RegressionLogger.getTestLogger().info("Accepting Alert: "+alert.getText());
+            alert.accept();
         }
 
         if(GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()){

@@ -121,25 +121,25 @@ public class Environment extends GenericEnvironment {
             case AB:
                 environment.setApplicationName(ApplicationNames.AB);
                 environment.setEnvironmentUrl("http://localhost:8280/ab/");
-                DBConnectionDTO abDTO = new DBConnectionDTO(localhostName, "abUserLocal", "password", localhostName+"_ContactManager");
+                DBConnectionDTO abDTO = new DBConnectionDTO(localhostName, "abUserLocal", "password", "ContactManagerDatabase");
                 environment.setDbConnectionDetails(abDTO);
                 break;
             case PC:
                 environment.setApplicationName(ApplicationNames.PC);
                 environment.setEnvironmentUrl("http://localhost:8180/pc/");
-                DBConnectionDTO pcDTO = new DBConnectionDTO(localhostName, "pcUserLocal", "password", localhostName+"_PolicyCenter");
+                DBConnectionDTO pcDTO = new DBConnectionDTO(localhostName, "pcUserLocal", "password", "PolicyCenterDatabase");
                 environment.setDbConnectionDetails(pcDTO);
                 break;
             case CC:
                 environment.setApplicationName(ApplicationNames.CC);
                 environment.setEnvironmentUrl("http://localhost:8080/cc/");
-                DBConnectionDTO ccDTO = new DBConnectionDTO(localhostName, "ccUserLocal", "password", localhostName+"_ClaimCenter");
+                DBConnectionDTO ccDTO = new DBConnectionDTO(localhostName, "ccUserLocal", "password", "ClaimCenterDatabase");
                 environment.setDbConnectionDetails(ccDTO);
                 break;
             case BC:
                 environment.setApplicationName(ApplicationNames.BC);
                 environment.setEnvironmentUrl("http://localhost:8580/bc/");
-                DBConnectionDTO bcDTO = new DBConnectionDTO(localhostName, "bcUserLocal", "password", localhostName+"_BillingCenter");
+                DBConnectionDTO bcDTO = new DBConnectionDTO(localhostName, "bcUserLocal", "password", "BillingCenterDatabase");
                 environment.setDbConnectionDetails(bcDTO);
                 break;
             default:

@@ -14,7 +14,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,11 +50,26 @@ public class GuidewireInteract extends Interact {
 
     /**
      * Checks and returns error message from the screen
-     * @return Returns Error Message as String, returns blank String if no error message is available
+     * @return Returns Error Message as a List of Strings, returns blank String if no error message is available
      */
     public static Optional<List<String>> getErrorMessageFromScreen(ReactionTime reactionTime){
         BrowserFactory.changeImplicitWaitTo(reactionTime);
         List<String> errorMessageStrings = BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElements(GWIDs.ERROR_MESSAGES.getReference()).stream().map(WebElement::getText).collect(Collectors.toList());
+        BrowserFactory.changeImplicitWaitTo(ReactionTime.STANDARD_WAIT_TIME);
+        if(!errorMessageStrings.isEmpty()){
+            return Optional.of(errorMessageStrings);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Checks and returns info message from the screen
+     * @return Returns Info Message as a List of Strings, returns blank String if no error message is available
+     */
+    public static Optional<List<String>> getInfoMessageFromScreen(ReactionTime reactionTime){
+        BrowserFactory.changeImplicitWaitTo(reactionTime);
+        List<String> errorMessageStrings = BrowserFactory.getCurrentGuidewireBrowser().getDriver().findElements(GWIDs.INFO_MESSAGES.getReference()).stream().map(WebElement::getText).collect(Collectors.toList());
         BrowserFactory.changeImplicitWaitTo(ReactionTime.STANDARD_WAIT_TIME);
         if(!errorMessageStrings.isEmpty()){
             return Optional.of(errorMessageStrings);
@@ -90,6 +104,11 @@ public class GuidewireInteract extends Interact {
     public static boolean isPageLoading(){
         UIElement pageLoader = new UIElement(new Identifier(By.id("gw-click-overlay"), "Overlay Element"), ReactionTime.MOMENTARY);
         return pageLoader.isPresent() && pageLoader.getElement().getAttribute("class").contains("gw-click-overlay");
+    }
+
+    public static void clearCookiesToForceLogout(){
+        BrowserFactory.getCurrentBrowser().getDriver().manage().deleteAllCookies();
+        BrowserFactory.getCurrentBrowser().getDriver().navigate().refresh();
     }
 
 }

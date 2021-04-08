@@ -21,13 +21,16 @@ public class GWTable extends UIElement implements IGWUITable {
     private static final By LAST_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-last')]");
     private static final By NEXT_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-next')]");
     private static final By PREVIOUS_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-prev')]");
-    private final boolean hasHeaderRow;
+    private boolean hasHeaderRow;
 
     private final HashMap<String, String> columnLabelMap;
 
     public GWTable(Identifier identifier) {
         super(identifier);
         hasHeaderRow = true;
+        if(identifier.shouldIgnoreLVCheckForTable() != hasHeaderRow){
+            hasHeaderRow = identifier.shouldIgnoreLVCheckForTable();
+        }
         if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV")) {
             throw new IncorrectCallException("Table IDs must always end with LV");
         }
@@ -48,7 +51,10 @@ public class GWTable extends UIElement implements IGWUITable {
     public GWTable(Identifier identifier, boolean hasNoHeaderRow) {
         super(identifier);
         columnLabelMap = new HashMap<>();
-        hasHeaderRow = false;
+        hasHeaderRow = hasNoHeaderRow;
+        if(identifier.shouldIgnoreLVCheckForTable()){
+            hasHeaderRow = true;
+        }
     }
 
     @Override
@@ -124,7 +130,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[not(contains(@class, 'gw-header-row'))]"))) {
                 // new code
                 String rowContent = row.getText();
                 if (rowContent.contains(value)) {
@@ -173,7 +179,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[not(contains(@class, 'gw-header-row'))]"))) {
                 for (WebElement cell : row.findElements(By.tagName("td"))) {
                     if (cell.getText().toUpperCase().contains(value.toUpperCase()) && !cell.getText().toUpperCase().contains(exclusion.toUpperCase())) {
                         return new GWRow(row, columnLabelMap);
@@ -206,7 +212,11 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public boolean hasRowWithText(String value) {
-        return getRowWithText(value) != null;
+        try{
+            return getRowWithText(value) != null;
+        } catch (PotentialSystemIssueException pse){
+            return false;
+        }
     }
 
     @Override
@@ -221,7 +231,7 @@ public class GWTable extends UIElement implements IGWUITable {
 
     public List<GWRow> getRows() {
         List<GWRow> rows = new ArrayList<>();
-        this.getElement().findElements(By.xpath(".//tr[contains(@class, 'gw-standard-row') or contains(@class, 'gw-selected')]")).forEach((row) -> rows.add(new GWRow(row, columnLabelMap)));
+        this.getElement().findElements(By.xpath(".//tr[not(contains(@class, 'gw-header-row'))]")).forEach((row) -> rows.add(new GWRow(row, columnLabelMap)));
         return rows;
     }
 
@@ -230,8 +240,7 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public GWRow getRow(int rowNumber) {
-        WebElement row = this.getElement().findElements(By.tagName("tr")).get(rowNumber);
-        return new GWRow(row, columnLabelMap);
+        return getRows().get(rowNumber);
     }
 
     public HashMap<String, String> getColumnLabels() {
