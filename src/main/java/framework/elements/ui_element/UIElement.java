@@ -156,7 +156,7 @@ public class UIElement implements IUIElementOperations {
             interact.withDOM().clearBannerMessage();
             return element;
         } catch (Exception e) {
-            System.out.println("Optional Element not found at location: " + elementLocation);
+            System.out.println("Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
             interact.withDOM().clearBannerMessage();
             return null;
         }
