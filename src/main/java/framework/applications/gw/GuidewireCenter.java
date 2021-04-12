@@ -209,6 +209,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             getLogger().info("Environment is not initialized. Opening Default environment");
             openDefaultEnvironment();
         }
+        interact.getDriver().navigate().refresh();
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();

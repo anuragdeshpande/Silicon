@@ -200,6 +200,8 @@ public class ReportManager {
                             testResultsDTO.isClockMove(),
                             testResultsDTO.getTestCreator(),
                             testResultsDTO.getTestName(),
+                            testResultsDTO.getClassName(),
+                            testResultsDTO.getPackageName(),
                             testResultsDTO.getStartTimeStamp(),
                             testResultsDTO.getEndTimestamp(),
                             testResultsDTO.getFailureImageURL(),

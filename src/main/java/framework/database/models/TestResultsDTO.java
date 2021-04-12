@@ -170,7 +170,7 @@ public class TestResultsDTO {
         return "INSERT INTO TestResults" +
                 "(ClockMove, TestCreator, TestName, ClassName, PackageName, StartTime, " +
                 "EndTime, FailureImageURL, TestStatus, FailureReason, " +
-                "BuildNumber, SuiteName, TestRunSource, Tags, UUID, ClassName, PackageName) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "BuildNumber, SuiteName, TestRunSource, Tags, UUID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 
     public Object[] getValuesAsObjectArray(){
