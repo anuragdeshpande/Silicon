@@ -176,7 +176,7 @@ public class ReportManager {
         String testCreator = automatedAnnotation.Author();
         String testName = iTestResult.getMethod().getMethodName();
         String className = iTestResult.getMethod().getTestClass().getName();
-        testName = className+"."+testName;
+        String packageName = iTestResult.getMethod().getTestClass().getRealClass().getPackage().getName();
         String buildNumber = System.getProperty("jenkinsBuildNumber");
         String suiteName = iTestResult.getTestContext().getSuite().getName();
         String testRunSource = System.getProperty("startedByUser");
@@ -186,7 +186,7 @@ public class ReportManager {
             failureImageURL = REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
-        TestResultsDTO testResultsDTO = TestResultsDTO.getInstance(clockMove, testCreator, testName, startDate, endDate, failureImageURL, Status.valueOf(status.toUpperCase()), failureReason, buildNumber, suiteName, testRunSource, tags);
+        TestResultsDTO testResultsDTO = TestResultsDTO.getInstance(clockMove, testCreator, testName, className, packageName, startDate, endDate, failureImageURL, Status.valueOf(status.toUpperCase()), failureReason, buildNumber, suiteName, testRunSource, tags);
         return insertIntoTestResults(testResultsDTO);
 
     }

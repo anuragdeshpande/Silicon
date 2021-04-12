@@ -1,8 +1,8 @@
 package framework.database.models;
 
 import com.aventstack.extentreports.Status;
-import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
+
 import java.sql.Timestamp;
 
 public class TestResultsDTO {
@@ -21,8 +21,10 @@ public class TestResultsDTO {
     private String testRunSource;
     private String tags;
     private String UUID;
+    private String className;
+    private String packageName;
 
-    private TestResultsDTO(boolean isClockMove, String testCreator, String testName, Timestamp startTimeStamp, Timestamp endTimestamp, String failureImageURL, Status status, String failureReason, String buildNumber, String suiteName, String testRunSource, String tags) {
+    private TestResultsDTO(boolean isClockMove, String testCreator, String testName, String className, String packageName, Timestamp startTimeStamp, Timestamp endTimestamp, String failureImageURL, Status status, String failureReason, String buildNumber, String suiteName, String testRunSource, String tags) {
         this.isClockMove = isClockMove;
         this.testCreator = testCreator;
         this.testName = testName;
@@ -36,6 +38,8 @@ public class TestResultsDTO {
         this.testRunSource = testRunSource;
         this.tags = tags;
         this.UUID = System.getProperty("UUID");
+        this.className = className;
+        this.packageName = packageName;
     }
 
     public boolean isClockMove() {
@@ -146,11 +150,27 @@ public class TestResultsDTO {
         return TestResultsDTO.class.getDeclaredFields().length;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
         return "INSERT INTO TestResults" +
                 "(ClockMove, TestCreator, TestName, StartTime, " +
                 "EndTime, FailureImageURL, TestStatus, FailureReason, " +
-                "BuildNumber, SuiteName, TestRunSource, Tags, UUID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "BuildNumber, SuiteName, TestRunSource, Tags, UUID, ClassName, PackageName) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
 
     public Object[] getValuesAsObjectArray(){
@@ -170,15 +190,19 @@ public class TestResultsDTO {
         values[10] = getTestRunSource();
         values[11] = getTags();
         values[12] = getUUID();
+        values[13] = getClassName();
+        values[14] = getPackageName();
         return values;
     }
 
-    public static TestResultsDTO getInstance(boolean clockMove, String testCreator, String testName,
+    public static TestResultsDTO getInstance(boolean clockMove, String testCreator, String testName, String className, String packageName,
                                              Timestamp startDate, Timestamp endDate, String failureImageURL,
                                              Status status, String failureReason, String buildNumber,
                                              String suiteName, String testRunSource, String tags){
-        return new TestResultsDTO(clockMove, testCreator, testName, startDate, endDate, failureImageURL, status, failureReason, buildNumber, suiteName, testRunSource, tags);
+        return new TestResultsDTO(clockMove, testCreator, testName, className, packageName, startDate, endDate, failureImageURL, status, failureReason, buildNumber, suiteName, testRunSource, tags);
 
     }
+
+
 
 }

@@ -137,7 +137,7 @@ public class GWTestRunResults {
                     status = Status.FAIL;
                 }
 
-                TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(),
+                TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(), testcase.getClassname(), testcase.getClassname(),
                         startTimeStamp, endTimeStamp, null, status, failureReason, jenkinsBuildNumber, testsuiteResults.getName(), startedByUser, "");
 
                 resultsDTOS.add(resultsDTO);
