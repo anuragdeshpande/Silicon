@@ -168,7 +168,7 @@ public class TestResultsDTO {
 
     public static String getJDBCPreparedInsertStatementWithoutParameters(){
         return "INSERT INTO TestResults" +
-                "(ClockMove, TestCreator, TestName, StartTime, " +
+                "(ClockMove, TestCreator, TestName, ClassName, PackageName, StartTime, " +
                 "EndTime, FailureImageURL, TestStatus, FailureReason, " +
                 "BuildNumber, SuiteName, TestRunSource, Tags, UUID, ClassName, PackageName) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     }
