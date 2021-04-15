@@ -140,7 +140,9 @@ public class UIElement implements IUIElementOperations {
 
     private WebElement findOptional(Identifier identifier, ReactionTime reactionTime) {
         GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+identifier.getFriendlyName()+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
+        if(System.getProperty("jenkinsBuildNumber") != null){
+            interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+identifier.getFriendlyName()+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
+        }
         try {
             WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
@@ -154,7 +156,9 @@ public class UIElement implements IUIElementOperations {
             return element;
         } catch (Exception e) {
             System.out.println("Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
-            interact.withDOM().clearBannerMessage();
+            if(System.getProperty("jenkinsBuildNumber") != null) {
+                interact.withDOM().clearBannerMessage();
+            }
             return null;
         }
 
