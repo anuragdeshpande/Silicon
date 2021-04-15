@@ -1,7 +1,6 @@
 package framework.guidewire.elements.gw_table;
 
 import framework.elements.checkbox.UICheckbox;
-import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
@@ -61,7 +60,7 @@ public class GWCell extends UIElement  {
         return new UITextbox(element);
     }
 
-    public UISelect getSelectBox(){
+    public UISelectBox getSelectBox(){
         WebElement element = this.getElement().findElement(By.tagName("select"));
         return new UISelectBox(element);
     }

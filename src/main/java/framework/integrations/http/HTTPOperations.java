@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.zip.GZIPInputStream;
 
 public class HTTPOperations {
 
@@ -27,10 +28,17 @@ public class HTTPOperations {
             url = new URL(getURL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            con.setRequestProperty("User-Agent", "PostmanRuntime/7.26.10");
+            con.setRequestProperty("Accept", "*/*");
+            con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+            con.setRequestProperty("Connection", "keep-alive");
+            con.addRequestProperty("Host", "www.mysite.com");
+            con.addRequestProperty("Cache-Control","max-age=0");
+            con.addRequestProperty("Accept-Language","en-US,en;q=0.8");
+
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                br = new BufferedReader(new InputStreamReader(new GZIPInputStream(con.getInputStream())));
                 StringBuilder response = new StringBuilder();
                 while ((line = br.readLine()) != null) {
                     response.append(line);
@@ -38,7 +46,7 @@ public class HTTPOperations {
                 br.close();
                 return response.toString();
             } else {
-                System.out.println("GET Request did not work");
+                System.out.println("GET Request did not work. Got: "+responseCode);
             }
 
         } catch (IOException mue) {

@@ -7,7 +7,7 @@ public class Identifier extends GenericIdentifier {
     private By reference;
     private boolean canThrowWarning;
     private String friendlyName;
-    private boolean ignoreTableLVCheck;
+    private boolean ignoreTableLVCheck = true;
 
     protected Identifier(){
 
@@ -37,8 +37,13 @@ public class Identifier extends GenericIdentifier {
         return canThrowWarning;
     }
 
-    public Identifier ignoreLVCheckForTable(boolean value){
-        this.ignoreTableLVCheck = value;
+    public Identifier ignoreLVCheckForTable(){
+        this.ignoreTableLVCheck = false;
+        return this;
+    }
+
+    public Identifier doNotIgnoreLVCheckForTable(){
+        this.ignoreTableLVCheck = true;
         return this;
     }
 

@@ -9,10 +9,7 @@ import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import framework.webdriver.utils.WaitUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.testng.Assert;
 
 import java.time.LocalDate;
@@ -166,5 +163,35 @@ public class UIElement implements IUIElementOperations {
     @Override
     public LocalDate toDate(String pattern) {
         return LocalDate.parse(screenGrab(), DateTimeFormatter.ofPattern(pattern));
+    }
+
+    public void scrollToTop(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollTop -= document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
+    }
+
+    public void scrollToTop(String id){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollTop -= document.getElementById(\""+id+"\").scrollHeight");
+    }
+
+    public void scrollToBottom(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollTop += document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
+    }
+
+    public void scrollToBottom(String id){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollTop += document.getElementById(\""+id+"\").scrollHeight");
+    }
+
+    public void scrollIntoView(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollIntoViewIfNeeded()");
+    }
+
+    public void scrollIntoView(String id){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollIntoViewIfNeeded()");
     }
 }

@@ -6,6 +6,7 @@ import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class BrowserWindowManipulator {
 
@@ -52,5 +53,9 @@ public class BrowserWindowManipulator {
     public void scrollIntoView(By locatorReference){
         UIElement uiElement = new UIElement(new Identifier(locatorReference));
         js.executeScript("arguments[0].scrollIntoView();", uiElement.getElement());
+    }
+
+    public void scrollIntoView(WebElement element){
+        js.executeScript("arguments[0].scrollIntoView();", element);
     }
 }

@@ -17,6 +17,13 @@ public class VINTools {
         return StockVINNumbers.getVIN("fake");
     }
 
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            System.out.println(StockVINNumbers.getVIN("Real"));
+        }
+
+    }
+
     public static Vehicle decodeVIN(String vinNumber){
         String decodedVINDetails = queryVINDetails(vinNumber);
         if(decodedVINDetails != null){

@@ -39,10 +39,9 @@ public class GWTable extends UIElement implements IGWUITable {
         List<WebElement> labels = getElement().findElements(By.xpath(".//table//tr[contains(@class, 'gw-header-row')]/td"));
         for (int i = 0; i < labels.size(); ++i) {
             String label = labels.get(i).getText().trim();
-            label = label.equals("") ? "blank-" + (i - 1) : label;
             String id = labels.get(i).getAttribute("id");
-            String[] headers = id.replaceAll("Header", "").split(label);
-            headers[0] = headers[0] + "\\d-"+label;
+            String[] headers = id.replaceAll("Header", "").split("LV-");
+            headers[0] = headers[0] + "LV-\\d-";
             id = StringUtil.join(headers, "");
             columnLabelMap.put(label, id);
         }
