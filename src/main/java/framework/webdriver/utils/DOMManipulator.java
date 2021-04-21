@@ -2,6 +2,7 @@ package framework.webdriver.utils;
 
 import framework.webdriver.BrowserFactory;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 
 public class DOMManipulator {
 
@@ -56,12 +57,19 @@ public class DOMManipulator {
                 "node.setAttribute('style', 'text-align: center;position: relative; z-index: 5000;text-transform: uppercase;padding: 5px 0; color: " + textColor + "; background: " + backgroundColor + "; letter-spacing: 5px; font-weight: bold;');" +
                 "let body = document.getElementsByTagName('Body')[0];" +
                 "body.insertBefore(node, body.childNodes[0]);";
-        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder);
+        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        if(driver != null){
+            ((JavascriptExecutor) driver).executeScript(builder);
+        }
     }
 
     public synchronized void clearBannerMessage(){
         String builder = "let banner = document.getElementById('BannerMessage');" +
                 "if(banner !== null)banner.parentNode.removeChild(banner)";
-        ((JavascriptExecutor) BrowserFactory.getCurrentBrowser().getDriver()).executeScript(builder);
+
+        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        if(driver != null){
+            ((JavascriptExecutor) driver).executeScript(builder);
+        }
     }
 }
