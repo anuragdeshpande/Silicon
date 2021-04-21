@@ -1,5 +1,6 @@
 package framework.guidewire.elements.gw_table;
 
+import framework.customExceptions.IncorrectCallException;
 import framework.elements.ui_element.UIElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -69,6 +70,9 @@ public class GWRow extends UIElement implements IGWRow{
 
     @Override
     public GWCell getCellAtColumnLabel(String columnLabel) {
+        if(columnLabelMap == null){
+            throw new IncorrectCallException("Please call buildColumnMap() when reading the table \"interact.withTable().buildColumnMap()\"");
+        }
         return this.getCell(columnLabelMap.get(columnLabel));
     }
 

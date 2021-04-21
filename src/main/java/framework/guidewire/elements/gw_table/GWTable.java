@@ -22,8 +22,7 @@ public class GWTable extends UIElement implements IGWUITable {
     private static final By NEXT_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-next')]");
     private static final By PREVIOUS_PAGE_REFERENCE = By.xpath(".//div[contains(@id, '_ListPaging-prev')]");
     private boolean hasHeaderRow;
-
-    private final HashMap<String, String> columnLabelMap;
+    private HashMap<String, String> columnLabelMap = null;
 
     public GWTable(Identifier identifier) {
         super(identifier);
@@ -33,17 +32,6 @@ public class GWTable extends UIElement implements IGWUITable {
         }
         if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV")) {
             throw new IncorrectCallException("Table IDs must always end with LV");
-        }
-
-        columnLabelMap = new HashMap<>();
-        List<WebElement> labels = getElement().findElements(By.xpath(".//table//tr[contains(@class, 'gw-header-row')]/td"));
-        for (int i = 0; i < labels.size(); ++i) {
-            String label = labels.get(i).getText().trim();
-            String id = labels.get(i).getAttribute("id");
-            String[] headers = id.replaceAll("Header", "").split("LV-");
-            headers[0] = headers[0] + "LV-\\d-";
-            id = StringUtil.join(headers, "");
-            columnLabelMap.put(label, id);
         }
     }
 
@@ -220,6 +208,9 @@ public class GWTable extends UIElement implements IGWUITable {
 
     @Override
     public List<GWCell> getCells(String columnName) {
+        if(columnLabelMap == null){
+            throw new IncorrectCallException("First call buildColumnMap() when reading the table \"interact.withTable().buildColumnMap()\"");
+        }
         ArrayList<GWCell> cells = new ArrayList<>();
         getRows().forEach(gwRow -> {
             cells.add(gwRow.getCell(columnLabelMap.get(columnName)));
@@ -243,6 +234,9 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public HashMap<String, String> getColumnLabels() {
+        if(columnLabelMap == null){
+            throw new IncorrectCallException("First call buildColumnMap() when reading the table \"interact.withTable().buildColumnMap()\"");
+        }
         if (hasHeaderRow) {
             return this.columnLabelMap;
         } else {
@@ -252,5 +246,20 @@ public class GWTable extends UIElement implements IGWUITable {
 
     public GWTableSelectionColumn getSelectionColumn() {
         return new GWTableSelectionColumn(this, identifier);
+    }
+
+    public GWTable buildColumnMap(){
+        columnLabelMap = new HashMap<>();
+        List<WebElement> labels = getElement().findElements(By.xpath(".//table//tr[contains(@class, 'gw-header-row')]/td"));
+        for (WebElement webElement : labels) {
+            String label = webElement.getText().trim();
+            String id = webElement.getAttribute("id");
+            String[] headers = id.replaceAll("Header", "").split("LV-");
+            headers[0] = headers[0] + "LV-\\d{0,}-";
+            id = StringUtil.join(headers, "");
+            columnLabelMap.put(label, id);
+        }
+
+        return this;
     }
 }
