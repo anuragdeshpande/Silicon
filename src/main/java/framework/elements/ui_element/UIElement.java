@@ -7,6 +7,7 @@ import framework.elements.Identifier;
 import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.DriverFactory;
 import framework.webdriver.PauseTest;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.*;
@@ -118,10 +119,10 @@ public class UIElement implements IUIElementOperations {
         WebElement element = null;
 
         try {
-            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), 10);
+            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), ((int) (DriverFactory.getReactionTime().getTime()))/2);
         } catch (TimeoutException t) {
             try {
-                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), 20);
+                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), ((int) (DriverFactory.getReactionTime().getTime()))/2);
             } catch (TimeoutException e) {
                 throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found after waiting for approx 30 seconds", e);
             }
