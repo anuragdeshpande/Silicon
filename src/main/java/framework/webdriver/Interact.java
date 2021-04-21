@@ -4,7 +4,6 @@ import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.checkbox.UICheckbox;
 import framework.elements.radiobutton.UIRadioButton;
-import framework.elements.selectbox.UISelect;
 import framework.elements.selectbox.UISelectBox;
 import framework.elements.textbox.UITextbox;
 import framework.elements.ui_element.UIElement;
