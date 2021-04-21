@@ -21,8 +21,6 @@ import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -38,12 +36,10 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class Listener implements ISuiteListener, ITestListener {
 
     private ExtentReports extentReports;
-    public static Logger logger;
     public boolean writeToDatabase;
 
 
@@ -53,7 +49,6 @@ public class Listener implements ISuiteListener, ITestListener {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         System.setProperty("SuiteStartTime", String.valueOf(System.currentTimeMillis()));
         String suiteName = iSuite.getName();
-        logger = LogManager.getLogger("RegressionLogs-" + timeStamp);
         this.extentReports = ReportManager.initiate(suiteName + "_" + timeStamp);
         writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild", "true").equalsIgnoreCase("false");
     }
@@ -86,12 +81,8 @@ public class Listener implements ISuiteListener, ITestListener {
             }
             testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
             testLogger.assignCategory(iTestResult.getTestContext().getSuite().getName());
-            for (String s : automatedTest.Centers()) {
-                testLogger.assignCategory(s);
-            }
-            for (String s : automatedTest.Themes()) {
-                testLogger.assignCategory(s);
-            }
+            testLogger.assignCategory(automatedTest.Centers());
+            testLogger.assignCategory(automatedTest.Themes());
         }
     }
 
