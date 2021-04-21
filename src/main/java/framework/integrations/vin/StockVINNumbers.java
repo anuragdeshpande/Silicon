@@ -59,18 +59,19 @@ class StockVINNumbers implements Serializable {
     }
 
     static String getVIN(String type) {
-        String mainVIN = HTTPOperations.makeGETRequest("https://vingenerator.org/");
+        String mainVIN = HTTPOperations.makeGETRequest("http://randomvin.com/getvin.php?type=" + type);
         if(mainVIN != null){
-            return mainVIN.split("<input type=\"text\" name=\"vin\" class=\"input\" value=\"")[1].split("\"")[0];
+            return mainVIN;
         } else {
-            String backupVIN = HTTPOperations.makeGETRequest("http://randomvin.com/getvin.php?type=" + type);
-            if(backupVIN == null){
+            System.out.println("Using backup VIN Generator");
+            String backupVIN =HTTPOperations.makeGETRequest("https://vingenerator.org/");
+            if(backupVIN != null){
+                return backupVIN.split("<input type=\"text\" name=\"vin\" class=\"input\" value=\"")[1].split("\"")[0];
+            } else {
                 System.out.println("Using stock Vins");
                 String[] stockVINs = {"WDDDJ72X97A116339", "WDBEA30D3HA391172", "1G1YY26W285119002", "JH4DA1850HS006058", "1G3NL12E9YC404176", "WP0CA29972S650104"};
                 Collections.shuffle(Arrays.asList(stockVINs));
                 return stockVINs[0];
-            } else {
-                return backupVIN;
             }
         }
     }
