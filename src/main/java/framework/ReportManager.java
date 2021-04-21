@@ -20,7 +20,7 @@ import framework.database.models.*;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
-import framework.webdriver.utils.BrowserStorageAccess;
+import framework.webdriver.ThreadFactory;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.lang3.Validate;
@@ -108,7 +108,7 @@ public class ReportManager {
         String className = dto.getClassName();
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).createNode(className);
-            BrowserStorageAccess.getInstance().store(StringConstants.TEST_CLASS_NAME, className);
+            ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_CLASS_NAME, className);
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
@@ -120,7 +120,7 @@ public class ReportManager {
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, extentXMLTest);
-            BrowserStorageAccess.getInstance().store(StringConstants.XML_TEST_NAME, xmlTestName);
+            ThreadFactory.getInstance().getStorage().put(StringConstants.XML_TEST_NAME, xmlTestName);
         }
 
         return xmlTestMap.get(xmlTestName);
@@ -132,7 +132,7 @@ public class ReportManager {
         if (!testMap.containsKey(testName)) {
             ExtentTest extentTest = classMap.get(dto.getClassName()).createNode(dto.getTestName(), description);
             testMap.put(testName, extentTest);
-            BrowserStorageAccess.getInstance().store(StringConstants.TEST_NAME, testName);
+            ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_NAME, testName);
         }
 
         return testMap.get(testName);

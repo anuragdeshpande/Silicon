@@ -4,6 +4,7 @@ import annotations.DisabledTest;
 import annotations.SmokeTest;
 import framework.constants.StringConstants;
 import framework.suiteManager.SuiteCreator;
+import framework.webdriver.ThreadFactory;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
 import org.apache.commons.io.FileUtils;
@@ -26,7 +27,7 @@ public class SuiteGenerator {
 
     private static void startTests(String threadCounts) throws IOException {
         int threadCount = threadCounts == null ? 1 : Integer.parseInt(threadCounts);
-        System.out.println(Thread.currentThread().getId() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
+        System.out.println(ThreadFactory.getID() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
         boolean isClockMove = System.getProperty("isClockMove", "false").equalsIgnoreCase("true");
         String runningNode = System.getProperty("RunningNode");
         ClassInfoList regressionTests;

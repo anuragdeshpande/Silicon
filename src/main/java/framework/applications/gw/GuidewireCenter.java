@@ -28,7 +28,9 @@ import framework.integrations.gwServices.debugToolsAPI.pc.WsiAuthenticationExcep
 import framework.integrations.gwServices.gosuScriptRunner.GosuScriptRunner;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.DriverFactory;
 import framework.webdriver.PauseTest;
+import framework.webdriver.ThreadFactory;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
@@ -157,6 +159,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     @Override
     public void openEnvironment(Environment environment) {
         this.environment = environment;
+        if(ThreadFactory.getInstance().getDriver() == null){
+            ThreadFactory.getInstance().setDriver(DriverFactory.getInstance().createBrowserWindow());
+        }
+
+
         if(isUp()){
             GuidewireInteract interact = getInteractObject();
             // Clearing any existing Banner Messages

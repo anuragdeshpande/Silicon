@@ -4,9 +4,10 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import framework.ReportManager;
 import framework.constants.StringConstants;
+import framework.customExceptions.UnexpectedTerminationException;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
-import framework.webdriver.utils.BrowserStorageAccess;
+import framework.webdriver.ThreadFactory;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -26,6 +27,30 @@ public class RegressionLogger {
         this.isSuite = isSuite;
     }
 
+    public synchronized static RegressionLogger getFirstAvailableLogger(){
+        String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+        String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+        String xmlName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME));
+        TestDetailsDTO dto = new TestDetailsDTO();
+        dto.setClassName(className);
+        dto.setTestName(testName);
+
+        if(ReportManager.getTest(dto) != null){
+            return getTestLogger();
+        }
+
+        if(ReportManager.getClass(className) != null){
+            return getTestClassLogger();
+        }
+
+        if(ReportManager.getXMLTest(xmlName) != null){
+            return getXMLTestLogger();
+        }
+
+        throw new UnexpectedTerminationException("Could not find a suitable logger at the moment (XMLTestLogger: "+xmlName+", ClassTestLogger: "+className+", TestLogger: "+dto.getTestName()+"), please check if the test is initialized.");
+
+    }
+
     public synchronized static RegressionLogger getTestLogger(String testMethodName, String testClassName) {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(testMethodName);
@@ -36,8 +61,8 @@ public class RegressionLogger {
 
     public synchronized static RegressionLogger getTestLogger() {
         TestDetailsDTO dto = new TestDetailsDTO();
-        dto.setTestName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME));
-        dto.setClassName(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+        dto.setTestName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME)));
+        dto.setClassName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME)));
         ExtentTest extentTest = ReportManager.getTest(dto);
         return new RegressionLogger(extentTest, ReportManager.isInitiated());
     }
@@ -48,7 +73,7 @@ public class RegressionLogger {
     }
 
     public synchronized static RegressionLogger getTestClassLogger() {
-        ExtentTest extentClassTest = ReportManager.getClass(BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME));
+        ExtentTest extentClassTest = ReportManager.getClass(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME)));
         return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
@@ -58,7 +83,7 @@ public class RegressionLogger {
     }
 
     public synchronized static RegressionLogger getXMLTestLogger() {
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(BrowserStorageAccess.getInstance().get(StringConstants.XML_TEST_NAME));
+        ExtentTest extentXMLTest = ReportManager.getXMLTest(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME)));
         return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
@@ -150,18 +175,18 @@ public class RegressionLogger {
     }
 
     public String getTestName() {
-        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_NAME);
+        return ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
     }
 
     public String getTestClassName() {
-        return BrowserStorageAccess.getInstance().get(StringConstants.TEST_CLASS_NAME);
+        return ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
     }
 
     @SuppressWarnings("Duplicates")
     private String getScreenshotPath() {
         WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + Thread.currentThread().getId() + ".png";
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
         try {
             File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
@@ -175,7 +200,7 @@ public class RegressionLogger {
     @SuppressWarnings("Duplicates")
     private String getScreenshotPath(WebDriver driver) {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + Thread.currentThread().getId() + ".png";
+        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
         try {
             File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
