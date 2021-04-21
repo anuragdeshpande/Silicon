@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class GWTableSelectionColumn {

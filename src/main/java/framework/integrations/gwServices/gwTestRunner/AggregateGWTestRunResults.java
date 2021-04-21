@@ -4,7 +4,8 @@ import framework.integrations.gwServices.gwTestRunner.generated.Testcase;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuites;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AggregateGWTestRunResults {
     private Testsuites testsuites;

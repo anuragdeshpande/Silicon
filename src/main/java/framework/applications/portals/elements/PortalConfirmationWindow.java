@@ -1,6 +1,5 @@
 package framework.applications.portals.elements;
 
-import framework.constants.ReactionTime;
 import framework.elements.Identifier;
 import framework.elements.alertwindow.UIConfirmationWindow;
 import framework.elements.ui_element.UIElement;

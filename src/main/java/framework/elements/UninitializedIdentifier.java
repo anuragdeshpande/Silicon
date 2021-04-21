@@ -1,6 +1,5 @@
 package framework.elements;
 
-import framework.customExceptions.NotInitializedException;
 import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
 

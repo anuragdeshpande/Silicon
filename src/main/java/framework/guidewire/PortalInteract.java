@@ -1,6 +1,5 @@
 package framework.guidewire;
 
-import framework.applications.portals.elements.PortalConfirmationWindow;
 import framework.applications.portals.elements.tables.PortalTable;
 import framework.constants.ReactionTime;
 import framework.elements.Identifier;

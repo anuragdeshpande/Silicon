@@ -1,6 +1,12 @@
 
 package framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.ws.gw.webservice.pc.pc800.messagingtoolsapi;
 
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.messaging.ExternalDestinationConfig;
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.messaging.MessageProcessingDirection;
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.webservice.messagingtools.Acknowledgement;
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.webservice.messagingtools.MessageStatisticsData;
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.typekey.ErrorCategory;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -9,11 +15,6 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.messaging.ExternalDestinationConfig;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.messaging.MessageProcessingDirection;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.webservice.messagingtools.Acknowledgement;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.gw.api.webservice.messagingtools.MessageStatisticsData;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.typekey.ErrorCategory;
 
 
 /**

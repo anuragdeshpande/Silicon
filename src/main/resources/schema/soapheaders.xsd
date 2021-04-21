@@ -1,4 +1,5 @@
-<xs:schema xmlns:gwsoap="http://guidewire.com/ws/soapheaders" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://guidewire.com/ws/soapheaders" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://guidewire.com/ws/soapheaders"
+           elementFormDefault="qualified">
     <xs:element name="authentication" nillable="true">
         <xs:complexType>
             <xs:sequence>

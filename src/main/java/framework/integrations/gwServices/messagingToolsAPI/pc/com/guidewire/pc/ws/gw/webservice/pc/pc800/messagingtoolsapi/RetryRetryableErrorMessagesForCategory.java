@@ -1,11 +1,12 @@
 
 package framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.ws.gw.webservice.pc.pc800.messagingtoolsapi;
 
+import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.typekey.ErrorCategory;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import framework.integrations.gwServices.messagingToolsAPI.pc.com.guidewire.pc.typekey.ErrorCategory;
 
 
 /**

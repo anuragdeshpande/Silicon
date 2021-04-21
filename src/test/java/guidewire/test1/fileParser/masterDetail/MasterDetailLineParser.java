@@ -1,7 +1,10 @@
 package guidewire.test1.fileParser.masterDetail;
+
 import org.jsapar.schema.Schema;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
 public class MasterDetailLineParser {
 

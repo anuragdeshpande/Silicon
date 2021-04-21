@@ -1,7 +1,6 @@
 package framework.elements.portalElements;
 
 import framework.elements.Identifier;
-import framework.elements.enums.ElementType;
 import org.openqa.selenium.By;
 
 public class PortalElements {

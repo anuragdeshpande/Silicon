@@ -1,7 +1,8 @@
 package framework.integrations.gwServices.gwTestRunner;
 
 import framework.environmentResolution.Environment;
-import framework.integrations.gwServices.gwTestRunner.com.waysysweb.*;
+import framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTestAsJUnitResponse;
+import framework.integrations.gwServices.gwTestRunner.com.waysysweb.RunTestPortType;
 import framework.integrations.gwServices.gwTestRunner.generated.Testsuite;
 import org.apache.commons.io.IOUtils;
 

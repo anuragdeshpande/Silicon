@@ -1,12 +1,9 @@
 
 package framework.integrations.gwServices.messagingToolsAPI.bc.com.guidewire.bc.ws.gw.webservice.bc.messagingtoolsapi;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import framework.integrations.gwServices.messagingToolsAPI.bc.com.guidewire.gw.api.webservice.messagingtools.MessageStatisticsData;
+
+import javax.xml.bind.annotation.*;
 
 
 /**

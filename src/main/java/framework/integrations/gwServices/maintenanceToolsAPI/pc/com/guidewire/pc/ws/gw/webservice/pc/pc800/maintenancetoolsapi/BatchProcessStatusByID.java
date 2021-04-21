@@ -1,11 +1,12 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.pc.com.guidewire.pc.ws.gw.webservice.pc.pc800.maintenancetoolsapi;
 
+import framework.integrations.gwServices.maintenanceToolsAPI.pc.com.guidewire.gw.api.tools.ProcessID;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import framework.integrations.gwServices.maintenanceToolsAPI.pc.com.guidewire.gw.api.tools.ProcessID;
 
 
 /**
