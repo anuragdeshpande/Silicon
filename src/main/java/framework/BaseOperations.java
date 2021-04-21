@@ -13,6 +13,7 @@ import framework.integrations.rally.dtos.RallyTestCaseDTO;
 import framework.logger.RegressionLogger;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
+import framework.webdriver.ThreadFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -26,6 +27,7 @@ import java.util.Date;
 import java.util.Optional;
 
 public class BaseOperations {
+
     protected ExtentReports reports;
 
     @BeforeSuite
@@ -36,16 +38,13 @@ public class BaseOperations {
         }
     }
 
-
     @BeforeTest(description = "BeforeTest")
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setXmlTestName(xmlTestName);
-        // Making sure there is only one thread per test at any given point of time
-//        Thread.currentThread().setName("Thread"+xmlTestName+Thread.currentThread().getId());
         ReportManager.recordXMLTest(dto);
-        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+Thread.currentThread().getId());
+        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+ ThreadFactory.getID());
         RegressionLogger.getXMLTestLogger().info("Test was part of the suite: "+context.getSuite().getName());
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
