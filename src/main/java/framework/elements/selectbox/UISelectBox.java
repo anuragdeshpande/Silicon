@@ -1,7 +1,12 @@
 package framework.elements.selectbox;
 
 import framework.constants.ReactionTime;
+import framework.customExceptions.IncorrectCallException;
 import framework.elements.Identifier;
+import framework.webdriver.BrowserFactory;
+import framework.webdriver.Interact;
+import org.openqa.selenium.JavascriptException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -13,25 +18,37 @@ public class UISelectBox extends UISelect {
 
     private List<WebElement> listElements;
     private Select select;
+    private boolean shouldAccountForNone = false;
 
     public UISelectBox(WebElement element) {
         super(element);
         this.select = new Select(element);
         this.listElements = this.select.getOptions()
                 .stream().filter(webElement -> !webElement.getText().equalsIgnoreCase("<none>")).collect(Collectors.toList());
+        if(this.listElements.size() != this.getElementOptions().size()){
+            shouldAccountForNone = true;
+        }
     }
 
     public UISelectBox(Identifier identifier) {
         super(identifier);
         this.select = new Select(this.getElement());
-        this.listElements = this.select.getOptions();
+        this.listElements = this.select.getOptions()
+                .stream().filter(webElement -> !webElement.getText().equalsIgnoreCase("<none>")).collect(Collectors.toList());
+        if(this.listElements.size() != this.getElementOptions().size()){
+            shouldAccountForNone = true;
+        }
     }
 
     public UISelectBox(Identifier identifier, ReactionTime reactionTime) {
         super(identifier, reactionTime);
         if (this.isPresent()) {
             this.select = new Select(this.getElement());
-            this.listElements = this.select.getOptions();
+            this.listElements = this.select.getOptions()
+                    .stream().filter(webElement -> !webElement.getText().equalsIgnoreCase("<none>")).collect(Collectors.toList());
+            if(this.listElements.size() != this.getElementOptions().size()){
+                shouldAccountForNone = true;
+            }
         }
     }
 
@@ -53,9 +70,18 @@ public class UISelectBox extends UISelect {
 
     @Override
     public String select(int itemNumber) {
-        String selection = this.listElements.get(itemNumber).getText();
-        this.select.selectByVisibleText(selection);
-        return selection;
+        if(shouldAccountForNone){
+            itemNumber = itemNumber - 1;
+        }
+        String selection;
+        try{
+            selection = this.listElements.get(itemNumber).getText();
+            this.select.selectByVisibleText(selection);
+            return selection;
+        }catch (ArrayIndexOutOfBoundsException aie){
+            throw new IncorrectCallException("By default <none> option is filtered. Hence when a item number is given it is subtracted by 1. If you would like to override this behavior" +
+                    " then please use .getElementOptions() or .listElements and pass the option to select(String) method.");
+        }
     }
 
     @Override
@@ -113,7 +139,21 @@ public class UISelectBox extends UISelect {
     }
 
     public String getFirstSelectedOption(){
-        return this.select.getFirstSelectedOption().getText();
+        Interact interact = BrowserFactory.getCurrentBrowser();
+        try{
+            String value = ((String) ((JavascriptExecutor) interact.getDriver()).executeScript("var value = " +
+                    "document.getElementsByName(\"" + identifier.getReferenceValue() + "\")[0].value; return value;"));
+            if(value != null && !value.isEmpty()){
+                return value;
+            } else {
+                throw new JavascriptException("Cannot find element");
+            }
+        } catch (JavascriptException je){
+            interact.withDOM().injectInfoMessage("Getting selected Item using selenium. This might take some time");
+            String text = this.select.getFirstSelectedOption().getText();
+            interact.withDOM().clearBannerMessage();
+            return text;
+        }
     }
 
     public String[] getAllSelectedOptions(){
