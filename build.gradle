@@ -13,25 +13,10 @@ idea{
 }
 
 repositories {
-    mavenLocal()
+    mavenCentral()
     maven {
-        url = uri('http://artifactory.idfbins.com/artifactory/libs-release')
-    }
-
-    maven {
-        url = uri('http://artifactory.idfbins.com/artifactory/libs-release-local')
-    }
-
-    maven {
-        url = uri('http://artifactory.idfbins.com/artifactory/libs-snapshot')
-    }
-
-    maven {
-        url = uri('http://repo.maven.apache.org/maven2')
-    }
-
-    maven {
-        url = uri('https://oss.sonatype.org/content/repositories/ksoap2-android-releases/')
+        allowInsecureProtocol true
+        url 'http://artifactory.idfbins.com/artifactory/libs-release'
     }
 }
 
@@ -42,7 +27,6 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-1.2-api:2.13.3'
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'commons-dbutils:commons-dbutils:1.7'
-    implementation 'junit:junit:4.12'
     implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.poi:poi:4.0.1'
     implementation 'org.apache.poi:poi-ooxml:4.0.1'
@@ -51,23 +35,19 @@ dependencies {
     implementation 'org.assertj:assertj-core:3.17.2'
     implementation 'org.tigris.jsapar:jsapar:2.1.1'
     implementation 'com.codoid.products:fillo:1.18'
-    implementation 'com.aventstack:extentreports:5.0.2'
-    implementation 'io.github.classgraph:classgraph:4.8.69'
-    implementation 'io.github.bonigarcia:webdrivermanager:4.0.0'
+    implementation 'com.aventstack:extentreports:5.0.8'
+    implementation 'io.github.classgraph:classgraph:4.8.104'
+    implementation 'io.github.bonigarcia:webdrivermanager:4.4.0'
     implementation 'org.seleniumhq.selenium:selenium-chrome-driver:3.141.59'
-    implementation 'com.google.guava:guava:28.0-jre'
-    implementation 'org.simplejavamail:simple-java-mail:5.1.3'
-    implementation 'org.apache.httpcomponents:httpmime:4.5.12'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'com.google.guava:guava:30.1.1-jre'
     implementation 'org.json:json:20200518'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'com.idfbins:RegressionAnnotations:1.44'
     implementation 'org.jasypt:jasypt:1.9.3'
     implementation 'commons-net:commons-net:3.6'
-    implementation 'com.idfbins:GWCoreDriverUtilities:0.0.3'
     implementation 'com.rallydev.rest:rally-rest-api:2.2.1'
-    implementation 'com.aventstack:klov-reporter:5.0.4'
-    implementation group: 'org.apache.axis', name: 'axis', version: '1.4'
+    implementation 'com.aventstack:klov-reporter:5.0.7'
+    implementation 'org.apache.axis:axis:1.4'
 }
 
 group = 'com.idfbins.qa'
