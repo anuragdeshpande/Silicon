@@ -3,6 +3,7 @@ package framework.elements.selectbox;
 import framework.constants.ReactionTime;
 import framework.customExceptions.IncorrectCallException;
 import framework.elements.Identifier;
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.JavascriptException;
@@ -10,6 +11,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -90,11 +92,11 @@ public class UISelectBox extends UISelect {
             if (listItem.getText().contains(selection)) {
                 String selectedText = listItem.getText();
                 this.select.selectByVisibleText(selectedText);
-//                System.out.println("Clicked on partial match for: "+selection+" on list option: "+selectedText);
                 return selectedText;
             }
         }
-//        System.out.println("Could not find a partial match for: "+selection);
+        String message = "Could not find a partial match for "+selection+" in "+ Arrays.toString(this.listElements.toArray())+" skipping to next step";
+        RegressionLogger.getTestLogger().warn(message);
         return null;
     }
 
@@ -116,7 +118,9 @@ public class UISelectBox extends UISelect {
                 return selection;
             }
         }
-//        System.out.println("No selected options exist, returning null.");
+
+        String message = "Could not find any matching selection for "+Arrays.toString(selections)+" in "+ Arrays.toString(this.listElements.toArray())+" skipping to next step";
+        RegressionLogger.getTestLogger().warn(message);
         return null;
     }
 
