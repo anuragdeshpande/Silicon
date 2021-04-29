@@ -15,6 +15,7 @@ import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.ThreadFactory;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.openqa.selenium.UnhandledAlertException;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.SkipException;
@@ -128,7 +129,12 @@ public class BaseOperations {
     public void afterClass(ITestContext context, XmlTest xmlTest) {
         RegressionLogger.getTestClassLogger().info("Closing browser");
         GuidewireInteract.clearCookiesToForceLogout();
-        BrowserFactory.closeCurrentBrowser();
+        try{
+            BrowserFactory.closeCurrentBrowser();
+        } catch (UnhandledAlertException e){
+            BrowserFactory.getCurrentBrowser().getDriver().switchTo().alert().accept();
+            BrowserFactory.closeCurrentBrowser();
+        }
     }
 
     @AfterTest(description = "AfterTest")
