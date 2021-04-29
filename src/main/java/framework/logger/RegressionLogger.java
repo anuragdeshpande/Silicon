@@ -88,50 +88,46 @@ public class RegressionLogger {
     }
 
     public void info(Object message) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
-        } else {
-            System.out.println(message);
         }
 
     }
 
     public void info(Object message, Throwable e) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
             extentLogger.log(Status.INFO, e);
         } else {
-            System.out.println(message);
             e.printStackTrace();
         }
 
     }
 
     public void fail(Object message) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
-        } else {
-            System.out.println(message);
         }
-
     }
 
     public void fail(Object message, Throwable e) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
             extentLogger.log(Status.FAIL, e);
         } else {
-            System.out.println(message);
             e.printStackTrace();
         }
 
     }
 
     public void warn(Object message) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
-        } else {
-            System.out.println(message);
         }
 
     }
@@ -146,11 +142,11 @@ public class RegressionLogger {
     }
 
     public void warn(Object message, Throwable e) {
+        System.out.println(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
             extentLogger.log(Status.WARNING, e);
         } else {
-            System.out.println(message);
             e.printStackTrace();
         }
 
