@@ -43,6 +43,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -143,7 +144,14 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         if(hasPendingWorkItems){
             throw new IncorrectCallException("There is pending/Unsaved work. Please save/cancel before test can logout");
         }
-        interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+        try{
+            interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
+        } catch (StaleElementReferenceException se){
+            PauseTest.waitForPageToLoad();
+            if (interact.withOptionalElement(GWIDs.Login.LOGIN, ReactionTime.IMMEDIATE).isPresent()) {
+                RegressionLogger.getFirstAvailableLogger().info("Logout ran into stale element, resolving");
+            }
+        }
         PauseTest.createInstance().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.Login.LOGIN.getReference()), "Waiting for logout to complete");
     }
 
