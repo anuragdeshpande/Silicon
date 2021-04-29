@@ -30,7 +30,7 @@ public class GWTable extends UIElement implements IGWUITable {
         if(identifier.shouldIgnoreLVCheckForTable() != hasHeaderRow){
             hasHeaderRow = identifier.shouldIgnoreLVCheckForTable();
         }
-        if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV")) {
+        if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV") && identifier.shouldIgnoreLVCheckForTable()) {
             throw new IncorrectCallException("Table IDs must always end with LV");
         }
     }
@@ -196,6 +196,11 @@ public class GWTable extends UIElement implements IGWUITable {
     public GWRow getLastRow() {
         List<GWRow> rows = this.getRows();
         return rows.get(rows.size() - 1);
+    }
+
+    public GWRow getLastNthRow(int n){
+        List<GWRow> rows = this.getRows();
+        return rows.get(rows.size() - (n+1));
     }
 
     public boolean hasRowWithText(String value) {
