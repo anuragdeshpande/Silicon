@@ -95,7 +95,7 @@ public class UISelectBox extends UISelect {
                 return selectedText;
             }
         }
-        String message = "Could not find a partial match for "+selection+" in "+ Arrays.toString(this.listElements.toArray())+" skipping to next step";
+        String message = "Could not find a partial match for "+selection+" in "+ Arrays.toString(this.listElements.stream().map(WebElement::getText).toArray())+" skipping to next step";
         RegressionLogger.getTestLogger().warn(message);
         return null;
     }
@@ -119,7 +119,7 @@ public class UISelectBox extends UISelect {
             }
         }
 
-        String message = "Could not find any matching selection for "+Arrays.toString(selections)+" in "+ Arrays.toString(this.listElements.toArray())+" skipping to next step";
+        String message = "Could not find any matching selection for "+Arrays.toString(selections)+" in "+ Arrays.toString(this.listElements.stream().map(WebElement::getText).toArray())+" skipping to next step";
         RegressionLogger.getTestLogger().warn(message);
         return null;
     }
