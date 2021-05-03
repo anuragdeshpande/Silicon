@@ -1,15 +1,10 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.cc;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -18,13 +13,13 @@ import javax.xml.namespace.QName;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
- *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;anyAttribute namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/simpleContent>
- * &lt;/complexType>
+ * &lt;complexType&gt;
+ *   &lt;simpleContent&gt;
+ *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema&gt;string"&gt;
+ *       &lt;anyAttribute namespace='##other'/&gt;
+ *     &lt;/extension&gt;
+ *   &lt;/simpleContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -33,14 +28,11 @@ import javax.xml.namespace.QName;
 @XmlType(name = "", propOrder = {
     "value"
 })
-@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class TransactionId {
 
     @XmlValue
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String value;
     @XmlAnyAttribute
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
@@ -51,7 +43,6 @@ public class TransactionId {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getValue() {
         return value;
     }
@@ -64,7 +55,6 @@ public class TransactionId {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setValue(String value) {
         this.value = value;
     }
@@ -83,7 +73,6 @@ public class TransactionId {
      * @return
      *     always non-null
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }

@@ -1,13 +1,12 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.cc;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -16,28 +15,28 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WQueueStatus">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Executors" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQueueExecutorDetails" maxOccurs="unbounded" minOccurs="0"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="NumActiveExecutors" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="NumActiveWorkItems" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="QueueName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="WQueueStatus"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Executors" minOccurs="0"&gt;
+ *           &lt;complexType&gt;
+ *             &lt;complexContent&gt;
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *                 &lt;sequence&gt;
+ *                   &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQueueExecutorDetails" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *                 &lt;/sequence&gt;
+ *               &lt;/restriction&gt;
+ *             &lt;/complexContent&gt;
+ *           &lt;/complexType&gt;
+ *         &lt;/element&gt;
+ *         &lt;element name="NumActiveExecutors" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="NumActiveWorkItems" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="QueueName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -49,20 +48,15 @@ import javax.xml.bind.annotation.XmlType;
     "numActiveWorkItems",
     "queueName"
 })
-@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class WQueueStatus {
 
-    @XmlElement(name = "Executors", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "Executors")
     protected WQueueStatus.Executors executors;
-    @XmlElement(name = "NumActiveExecutors", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "NumActiveExecutors")
     protected Integer numActiveExecutors;
-    @XmlElement(name = "NumActiveWorkItems", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "NumActiveWorkItems")
     protected Integer numActiveWorkItems;
-    @XmlElement(name = "QueueName", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "QueueName")
     protected String queueName;
 
     /**
@@ -73,7 +67,6 @@ public class WQueueStatus {
      *     {@link WQueueStatus.Executors }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public WQueueStatus.Executors getExecutors() {
         return executors;
     }
@@ -86,7 +79,6 @@ public class WQueueStatus {
      *     {@link WQueueStatus.Executors }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setExecutors(WQueueStatus.Executors value) {
         this.executors = value;
     }
@@ -99,7 +91,6 @@ public class WQueueStatus {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getNumActiveExecutors() {
         return numActiveExecutors;
     }
@@ -112,7 +103,6 @@ public class WQueueStatus {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setNumActiveExecutors(Integer value) {
         this.numActiveExecutors = value;
     }
@@ -125,7 +115,6 @@ public class WQueueStatus {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getNumActiveWorkItems() {
         return numActiveWorkItems;
     }
@@ -138,7 +127,6 @@ public class WQueueStatus {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setNumActiveWorkItems(Integer value) {
         this.numActiveWorkItems = value;
     }
@@ -151,7 +139,6 @@ public class WQueueStatus {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getQueueName() {
         return queueName;
     }
@@ -164,7 +151,6 @@ public class WQueueStatus {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setQueueName(String value) {
         this.queueName = value;
     }
@@ -176,15 +162,15 @@ public class WQueueStatus {
      * <p>The following schema fragment specifies the expected content contained within this class.
      * 
      * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQueueExecutorDetails" maxOccurs="unbounded" minOccurs="0"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
+     * &lt;complexType&gt;
+     *   &lt;complexContent&gt;
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+     *       &lt;sequence&gt;
+     *         &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQueueExecutorDetails" maxOccurs="unbounded" minOccurs="0"/&gt;
+     *       &lt;/sequence&gt;
+     *     &lt;/restriction&gt;
+     *   &lt;/complexContent&gt;
+     * &lt;/complexType&gt;
      * </pre>
      * 
      * 
@@ -193,11 +179,9 @@ public class WQueueStatus {
     @XmlType(name = "", propOrder = {
         "entry"
     })
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public static class Executors {
 
         @XmlElement(name = "Entry", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools", nillable = true)
-        @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
         protected List<WQueueExecutorDetails> entry;
 
         /**
@@ -222,7 +206,6 @@ public class WQueueStatus {
          * 
          * 
          */
-        @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
         public List<WQueueExecutorDetails> getEntry() {
             if (entry == null) {
                 entry = new ArrayList<WQueueExecutorDetails>();

@@ -1,14 +1,10 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.pc;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -17,30 +13,30 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WQueueExecutorDetails">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="MaxNumOfWorkers" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="Tasks" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQTaskDetails" maxOccurs="unbounded" minOccurs="0"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="WQueueExecutorDetails"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="MaxNumOfWorkers" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="Tasks" minOccurs="0"&gt;
+ *           &lt;complexType&gt;
+ *             &lt;complexContent&gt;
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *                 &lt;sequence&gt;
+ *                   &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQTaskDetails" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *                 &lt;/sequence&gt;
+ *               &lt;/restriction&gt;
+ *             &lt;/complexContent&gt;
+ *           &lt;/complexType&gt;
+ *         &lt;/element&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -56,19 +52,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 public class WQueueExecutorDetails {
 
-    @XmlElement(name = "Active", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Active")
     protected Boolean active;
-    @XmlElement(name = "EndTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "EndTime")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar endTime;
-    @XmlElement(name = "Hostname", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Hostname")
     protected String hostname;
-    @XmlElement(name = "MaxNumOfWorkers", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "MaxNumOfWorkers")
     protected Integer maxNumOfWorkers;
-    @XmlElement(name = "StartTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "StartTime")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar startTime;
-    @XmlElement(name = "Tasks", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Tasks")
     protected WQueueExecutorDetails.Tasks tasks;
 
     /**
@@ -222,15 +218,15 @@ public class WQueueExecutorDetails {
      * <p>The following schema fragment specifies the expected content contained within this class.
      * 
      * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQTaskDetails" maxOccurs="unbounded" minOccurs="0"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
+     * &lt;complexType&gt;
+     *   &lt;complexContent&gt;
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+     *       &lt;sequence&gt;
+     *         &lt;element name="Entry" type="{http://guidewire.com/gw/api/webservice/maintenanceTools}WQTaskDetails" maxOccurs="unbounded" minOccurs="0"/&gt;
+     *       &lt;/sequence&gt;
+     *     &lt;/restriction&gt;
+     *   &lt;/complexContent&gt;
+     * &lt;/complexType&gt;
      * </pre>
      * 
      * 

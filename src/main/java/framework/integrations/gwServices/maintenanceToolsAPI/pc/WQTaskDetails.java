@@ -1,11 +1,7 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.pc;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
@@ -15,26 +11,26 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WQTaskDetails">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="ConsecutiveExceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="Exceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="InstanceId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="ItemsCheckedOut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="ItemsFailed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="ItemsProcessed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="ItemsSkipped" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="OrphansAdopted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="WQTaskDetails"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="ConsecutiveExceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="Exceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="InstanceId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="ItemsCheckedOut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="ItemsFailed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="ItemsProcessed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="ItemsSkipped" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="OrphansAdopted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -56,30 +52,30 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 public class WQTaskDetails {
 
-    @XmlElement(name = "Active", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Active")
     protected Boolean active;
-    @XmlElement(name = "ConsecutiveExceptions", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ConsecutiveExceptions")
     protected Integer consecutiveExceptions;
-    @XmlElement(name = "EndTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "EndTime")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar endTime;
-    @XmlElement(name = "Exceptions", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Exceptions")
     protected Integer exceptions;
-    @XmlElement(name = "Hostname", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Hostname")
     protected String hostname;
-    @XmlElement(name = "InstanceId", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "InstanceId")
     protected Integer instanceId;
-    @XmlElement(name = "ItemsCheckedOut", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ItemsCheckedOut")
     protected Integer itemsCheckedOut;
-    @XmlElement(name = "ItemsFailed", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ItemsFailed")
     protected Integer itemsFailed;
-    @XmlElement(name = "ItemsProcessed", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ItemsProcessed")
     protected Integer itemsProcessed;
-    @XmlElement(name = "ItemsSkipped", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ItemsSkipped")
     protected Integer itemsSkipped;
-    @XmlElement(name = "OrphansAdopted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "OrphansAdopted")
     protected Integer orphansAdopted;
-    @XmlElement(name = "StartTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "StartTime")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar startTime;
 

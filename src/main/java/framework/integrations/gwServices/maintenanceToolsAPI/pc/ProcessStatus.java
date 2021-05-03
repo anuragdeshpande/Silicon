@@ -1,11 +1,7 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.pc;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
@@ -15,31 +11,31 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessStatus">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Complete" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="DateCompleted" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="DateCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="DetailedStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="Executing" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="FailedOps" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="FailureReason" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="OpsCompleted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="OpsExpected" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="Progress" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="ReturnValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="ServerId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="StartDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
- *         &lt;element name="Starting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="StartingOrExecuting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="Success" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="ProcessStatus"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="Complete" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="DateCompleted" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="DateCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="DetailedStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="Executing" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="FailedOps" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="FailureReason" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="OpsCompleted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="OpsExpected" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="Progress" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="ReturnValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="ServerId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="StartDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *         &lt;element name="Starting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="StartingOrExecuting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="Success" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -66,42 +62,42 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 public class ProcessStatus {
 
-    @XmlElement(name = "Complete", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Complete")
     protected Boolean complete;
-    @XmlElement(name = "DateCompleted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "DateCompleted")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar dateCompleted;
-    @XmlElement(name = "DateCreated", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "DateCreated")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar dateCreated;
-    @XmlElement(name = "DetailedStatus", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "DetailedStatus")
     protected String detailedStatus;
-    @XmlElement(name = "Executing", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Executing")
     protected Boolean executing;
-    @XmlElement(name = "FailedOps", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "FailedOps")
     protected Integer failedOps;
-    @XmlElement(name = "FailureReason", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "FailureReason")
     protected String failureReason;
-    @XmlElement(name = "OpsCompleted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "OpsCompleted")
     protected Integer opsCompleted;
-    @XmlElement(name = "OpsExpected", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "OpsExpected")
     protected Integer opsExpected;
-    @XmlElement(name = "Progress", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Progress")
     protected String progress;
-    @XmlElement(name = "ReturnValue", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ReturnValue")
     protected String returnValue;
-    @XmlElement(name = "ServerId", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ServerId")
     protected String serverId;
-    @XmlElement(name = "StartDate", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "StartDate")
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar startDate;
-    @XmlElement(name = "Starting", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Starting")
     protected Boolean starting;
-    @XmlElement(name = "StartingOrExecuting", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "StartingOrExecuting")
     protected Boolean startingOrExecuting;
-    @XmlElement(name = "Success", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Success")
     protected Boolean success;
-    @XmlElement(name = "Type", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Type")
     protected String type;
 
     /**

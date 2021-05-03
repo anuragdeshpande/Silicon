@@ -1,7 +1,6 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.bc;
 
-import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -14,18 +13,18 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WorkQueueConfig">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="BatchSize" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="Instances" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="MaxPollInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *         &lt;element name="ThrottleInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="WorkQueueConfig"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="BatchSize" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="Instances" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="MaxPollInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="ThrottleInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -37,20 +36,15 @@ import javax.xml.bind.annotation.XmlType;
     "maxPollInterval",
     "throttleInterval"
 })
-@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class WorkQueueConfig {
 
-    @XmlElement(name = "BatchSize", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "BatchSize")
     protected Integer batchSize;
-    @XmlElement(name = "Instances", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "Instances")
     protected Integer instances;
-    @XmlElement(name = "MaxPollInterval", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "MaxPollInterval")
     protected Long maxPollInterval;
-    @XmlElement(name = "ThrottleInterval", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
+    @XmlElement(name = "ThrottleInterval")
     protected Long throttleInterval;
 
     /**
@@ -61,7 +55,6 @@ public class WorkQueueConfig {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getBatchSize() {
         return batchSize;
     }
@@ -74,7 +67,6 @@ public class WorkQueueConfig {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setBatchSize(Integer value) {
         this.batchSize = value;
     }
@@ -87,7 +79,6 @@ public class WorkQueueConfig {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getInstances() {
         return instances;
     }
@@ -100,7 +91,6 @@ public class WorkQueueConfig {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setInstances(Integer value) {
         this.instances = value;
     }
@@ -113,7 +103,6 @@ public class WorkQueueConfig {
      *     {@link Long }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Long getMaxPollInterval() {
         return maxPollInterval;
     }
@@ -126,7 +115,6 @@ public class WorkQueueConfig {
      *     {@link Long }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setMaxPollInterval(Long value) {
         this.maxPollInterval = value;
     }
@@ -139,7 +127,6 @@ public class WorkQueueConfig {
      *     {@link Long }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Long getThrottleInterval() {
         return throttleInterval;
     }
@@ -152,7 +139,6 @@ public class WorkQueueConfig {
      *     {@link Long }
      *     
      */
-    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:28:08-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setThrottleInterval(Long value) {
         this.throttleInterval = value;
     }

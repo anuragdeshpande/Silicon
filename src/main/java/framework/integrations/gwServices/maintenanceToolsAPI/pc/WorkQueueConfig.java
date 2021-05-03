@@ -13,18 +13,18 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WorkQueueConfig">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="BatchSize" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="Instances" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="MaxPollInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *         &lt;element name="ThrottleInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="WorkQueueConfig"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="BatchSize" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="Instances" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="MaxPollInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *         &lt;element name="ThrottleInterval" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -38,13 +38,13 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class WorkQueueConfig {
 
-    @XmlElement(name = "BatchSize", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "BatchSize")
     protected Integer batchSize;
-    @XmlElement(name = "Instances", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "Instances")
     protected Integer instances;
-    @XmlElement(name = "MaxPollInterval", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "MaxPollInterval")
     protected Long maxPollInterval;
-    @XmlElement(name = "ThrottleInterval", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @XmlElement(name = "ThrottleInterval")
     protected Long throttleInterval;
 
     /**
