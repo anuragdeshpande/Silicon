@@ -1,7 +1,12 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.ab;
 
-import javax.xml.bind.annotation.*;
+import javax.annotation.Generated;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
@@ -11,26 +16,26 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WQTaskDetails"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="ConsecutiveExceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *         &lt;element name="Exceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="InstanceId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="ItemsCheckedOut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="ItemsFailed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="ItemsProcessed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="ItemsSkipped" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="OrphansAdopted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="WQTaskDetails">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="Active" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="ConsecutiveExceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="EndTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="Exceptions" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="Hostname" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="InstanceId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="ItemsCheckedOut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="ItemsFailed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="ItemsProcessed" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="ItemsSkipped" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="OrphansAdopted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="StartTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -50,33 +55,46 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "orphansAdopted",
     "startTime"
 })
+@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class WQTaskDetails {
 
-    @XmlElement(name = "Active")
+    @XmlElement(name = "Active", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean active;
-    @XmlElement(name = "ConsecutiveExceptions")
+    @XmlElement(name = "ConsecutiveExceptions", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer consecutiveExceptions;
-    @XmlElement(name = "EndTime")
+    @XmlElement(name = "EndTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
     @XmlSchemaType(name = "dateTime")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected XMLGregorianCalendar endTime;
-    @XmlElement(name = "Exceptions")
+    @XmlElement(name = "Exceptions", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer exceptions;
-    @XmlElement(name = "Hostname")
+    @XmlElement(name = "Hostname", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String hostname;
-    @XmlElement(name = "InstanceId")
+    @XmlElement(name = "InstanceId", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer instanceId;
-    @XmlElement(name = "ItemsCheckedOut")
+    @XmlElement(name = "ItemsCheckedOut", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer itemsCheckedOut;
-    @XmlElement(name = "ItemsFailed")
+    @XmlElement(name = "ItemsFailed", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer itemsFailed;
-    @XmlElement(name = "ItemsProcessed")
+    @XmlElement(name = "ItemsProcessed", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer itemsProcessed;
-    @XmlElement(name = "ItemsSkipped")
+    @XmlElement(name = "ItemsSkipped", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer itemsSkipped;
-    @XmlElement(name = "OrphansAdopted")
+    @XmlElement(name = "OrphansAdopted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer orphansAdopted;
-    @XmlElement(name = "StartTime")
+    @XmlElement(name = "StartTime", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
     @XmlSchemaType(name = "dateTime")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected XMLGregorianCalendar startTime;
 
     /**
@@ -87,6 +105,7 @@ public class WQTaskDetails {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isActive() {
         return active;
     }
@@ -99,6 +118,7 @@ public class WQTaskDetails {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setActive(Boolean value) {
         this.active = value;
     }
@@ -111,6 +131,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getConsecutiveExceptions() {
         return consecutiveExceptions;
     }
@@ -123,6 +144,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setConsecutiveExceptions(Integer value) {
         this.consecutiveExceptions = value;
     }
@@ -135,6 +157,7 @@ public class WQTaskDetails {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public XMLGregorianCalendar getEndTime() {
         return endTime;
     }
@@ -147,6 +170,7 @@ public class WQTaskDetails {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setEndTime(XMLGregorianCalendar value) {
         this.endTime = value;
     }
@@ -159,6 +183,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getExceptions() {
         return exceptions;
     }
@@ -171,6 +196,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setExceptions(Integer value) {
         this.exceptions = value;
     }
@@ -183,6 +209,7 @@ public class WQTaskDetails {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getHostname() {
         return hostname;
     }
@@ -195,6 +222,7 @@ public class WQTaskDetails {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setHostname(String value) {
         this.hostname = value;
     }
@@ -207,6 +235,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getInstanceId() {
         return instanceId;
     }
@@ -219,6 +248,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setInstanceId(Integer value) {
         this.instanceId = value;
     }
@@ -231,6 +261,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getItemsCheckedOut() {
         return itemsCheckedOut;
     }
@@ -243,6 +274,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setItemsCheckedOut(Integer value) {
         this.itemsCheckedOut = value;
     }
@@ -255,6 +287,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getItemsFailed() {
         return itemsFailed;
     }
@@ -267,6 +300,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setItemsFailed(Integer value) {
         this.itemsFailed = value;
     }
@@ -279,6 +313,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getItemsProcessed() {
         return itemsProcessed;
     }
@@ -291,6 +326,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setItemsProcessed(Integer value) {
         this.itemsProcessed = value;
     }
@@ -303,6 +339,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getItemsSkipped() {
         return itemsSkipped;
     }
@@ -315,6 +352,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setItemsSkipped(Integer value) {
         this.itemsSkipped = value;
     }
@@ -327,6 +365,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getOrphansAdopted() {
         return orphansAdopted;
     }
@@ -339,6 +378,7 @@ public class WQTaskDetails {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setOrphansAdopted(Integer value) {
         this.orphansAdopted = value;
     }
@@ -351,6 +391,7 @@ public class WQTaskDetails {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public XMLGregorianCalendar getStartTime() {
         return startTime;
     }
@@ -363,6 +404,7 @@ public class WQTaskDetails {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setStartTime(XMLGregorianCalendar value) {
         this.startTime = value;
     }

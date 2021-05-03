@@ -24,23 +24,15 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _TransactionId_QNAME = new QName("http://guidewire.com/ws/soapheaders", "transaction_id");
     private final static QName _Authentication_QNAME = new QName("http://guidewire.com/ws/soapheaders", "authentication");
     private final static QName _Locale_QNAME = new QName("http://guidewire.com/ws/soapheaders", "locale");
-    private final static QName _TransactionId_QNAME = new QName("http://guidewire.com/ws/soapheaders", "transaction_id");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: framework.integrations.gwServices.maintenanceToolsAPI.ab
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link GetValidBatchProcessNamesResponse }
-     * 
-     */
-    public GetValidBatchProcessNamesResponse createGetValidBatchProcessNamesResponse() {
-        return new GetValidBatchProcessNamesResponse();
     }
 
     /**
@@ -60,6 +52,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetValidBatchProcessNamesResponse }
+     * 
+     */
+    public GetValidBatchProcessNamesResponse createGetValidBatchProcessNamesResponse() {
+        return new GetValidBatchProcessNamesResponse();
+    }
+
+    /**
      * Create an instance of {@link WQueueExecutorDetails }
      * 
      */
@@ -76,83 +76,91 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Authentication }
+     * Create an instance of {@link BatchProcessStatusByName }
      * 
      */
-    public Authentication createAuthentication() {
-        return new Authentication();
+    public BatchProcessStatusByName createBatchProcessStatusByName() {
+        return new BatchProcessStatusByName();
     }
 
     /**
-     * Create an instance of {@link Locale }
+     * Create an instance of {@link StartPlugin }
      * 
      */
-    public Locale createLocale() {
-        return new Locale();
+    public StartPlugin createStartPlugin() {
+        return new StartPlugin();
     }
 
     /**
-     * Create an instance of {@link TransactionId }
+     * Create an instance of {@link RequestTerminationOfBatchProcessByName }
      * 
      */
-    public TransactionId createTransactionId() {
-        return new TransactionId();
+    public RequestTerminationOfBatchProcessByName createRequestTerminationOfBatchProcessByName() {
+        return new RequestTerminationOfBatchProcessByName();
     }
 
     /**
-     * Create an instance of {@link GetValidBatchProcessNames }
+     * Create an instance of {@link GetWorkQueueNames }
      * 
      */
-    public GetValidBatchProcessNames createGetValidBatchProcessNames() {
-        return new GetValidBatchProcessNames();
+    public GetWorkQueueNames createGetWorkQueueNames() {
+        return new GetWorkQueueNames();
     }
 
     /**
-     * Create an instance of {@link GetValidBatchProcessNamesResponse.Return }
+     * Create an instance of {@link GetWQueueStatus }
      * 
      */
-    public GetValidBatchProcessNamesResponse.Return createGetValidBatchProcessNamesResponseReturn() {
-        return new GetValidBatchProcessNamesResponse.Return();
+    public GetWQueueStatus createGetWQueueStatus() {
+        return new GetWQueueStatus();
     }
 
     /**
-     * Create an instance of {@link WsiAuthenticationException }
+     * Create an instance of {@link StartPluginWithTimeoutResponse }
      * 
      */
-    public WsiAuthenticationException createWsiAuthenticationException() {
-        return new WsiAuthenticationException();
+    public StartPluginWithTimeoutResponse createStartPluginWithTimeoutResponse() {
+        return new StartPluginWithTimeoutResponse();
     }
 
     /**
-     * Create an instance of {@link IsBatchProcessNameValid }
+     * Create an instance of {@link WaitOnActiveWorkItemsResponse }
      * 
      */
-    public IsBatchProcessNameValid createIsBatchProcessNameValid() {
-        return new IsBatchProcessNameValid();
+    public WaitOnActiveWorkItemsResponse createWaitOnActiveWorkItemsResponse() {
+        return new WaitOnActiveWorkItemsResponse();
     }
 
     /**
-     * Create an instance of {@link IsBatchProcessNameValidResponse }
+     * Create an instance of {@link IsPluginStartedResponse }
      * 
      */
-    public IsBatchProcessNameValidResponse createIsBatchProcessNameValidResponse() {
-        return new IsBatchProcessNameValidResponse();
+    public IsPluginStartedResponse createIsPluginStartedResponse() {
+        return new IsPluginStartedResponse();
     }
 
     /**
-     * Create an instance of {@link StartBatchProcess }
+     * Create an instance of {@link StopPluginWithTimeout }
      * 
      */
-    public StartBatchProcess createStartBatchProcess() {
-        return new StartBatchProcess();
+    public StopPluginWithTimeout createStopPluginWithTimeout() {
+        return new StopPluginWithTimeout();
     }
 
     /**
-     * Create an instance of {@link StartBatchProcessResponse }
+     * Create an instance of {@link StopPluginResponse }
      * 
      */
-    public StartBatchProcessResponse createStartBatchProcessResponse() {
-        return new StartBatchProcessResponse();
+    public StopPluginResponse createStopPluginResponse() {
+        return new StopPluginResponse();
+    }
+
+    /**
+     * Create an instance of {@link BatchProcessStatusByID }
+     * 
+     */
+    public BatchProcessStatusByID createBatchProcessStatusByID() {
+        return new BatchProcessStatusByID();
     }
 
     /**
@@ -161,6 +169,14 @@ public class ObjectFactory {
      */
     public ProcessID createProcessID() {
         return new ProcessID();
+    }
+
+    /**
+     * Create an instance of {@link StartWorkQueueWorkersResponse }
+     * 
+     */
+    public StartWorkQueueWorkersResponse createStartWorkQueueWorkersResponse() {
+        return new StartWorkQueueWorkersResponse();
     }
 
     /**
@@ -180,91 +196,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StartBatchProcessWithArgumentsResponse }
+     * Create an instance of {@link StopWorkQueueWorkers }
      * 
      */
-    public StartBatchProcessWithArgumentsResponse createStartBatchProcessWithArgumentsResponse() {
-        return new StartBatchProcessWithArgumentsResponse();
-    }
-
-    /**
-     * Create an instance of {@link RequestTerminationOfBatchProcessByName }
-     * 
-     */
-    public RequestTerminationOfBatchProcessByName createRequestTerminationOfBatchProcessByName() {
-        return new RequestTerminationOfBatchProcessByName();
-    }
-
-    /**
-     * Create an instance of {@link RequestTerminationOfBatchProcessByNameResponse }
-     * 
-     */
-    public RequestTerminationOfBatchProcessByNameResponse createRequestTerminationOfBatchProcessByNameResponse() {
-        return new RequestTerminationOfBatchProcessByNameResponse();
-    }
-
-    /**
-     * Create an instance of {@link RequestTerminationOfBatchProcessByID }
-     * 
-     */
-    public RequestTerminationOfBatchProcessByID createRequestTerminationOfBatchProcessByID() {
-        return new RequestTerminationOfBatchProcessByID();
-    }
-
-    /**
-     * Create an instance of {@link RequestTerminationOfBatchProcessByIDResponse }
-     * 
-     */
-    public RequestTerminationOfBatchProcessByIDResponse createRequestTerminationOfBatchProcessByIDResponse() {
-        return new RequestTerminationOfBatchProcessByIDResponse();
-    }
-
-    /**
-     * Create an instance of {@link BatchProcessStatusByName }
-     * 
-     */
-    public BatchProcessStatusByName createBatchProcessStatusByName() {
-        return new BatchProcessStatusByName();
-    }
-
-    /**
-     * Create an instance of {@link BatchProcessStatusByNameResponse }
-     * 
-     */
-    public BatchProcessStatusByNameResponse createBatchProcessStatusByNameResponse() {
-        return new BatchProcessStatusByNameResponse();
-    }
-
-    /**
-     * Create an instance of {@link ProcessStatus }
-     * 
-     */
-    public ProcessStatus createProcessStatus() {
-        return new ProcessStatus();
-    }
-
-    /**
-     * Create an instance of {@link BatchProcessStatusByID }
-     * 
-     */
-    public BatchProcessStatusByID createBatchProcessStatusByID() {
-        return new BatchProcessStatusByID();
-    }
-
-    /**
-     * Create an instance of {@link BatchProcessStatusByIDResponse }
-     * 
-     */
-    public BatchProcessStatusByIDResponse createBatchProcessStatusByIDResponse() {
-        return new BatchProcessStatusByIDResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetWorkQueueConfig }
-     * 
-     */
-    public GetWorkQueueConfig createGetWorkQueueConfig() {
-        return new GetWorkQueueConfig();
+    public StopWorkQueueWorkers createStopWorkQueueWorkers() {
+        return new StopWorkQueueWorkers();
     }
 
     /**
@@ -284,67 +220,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SetWorkQueueConfig }
+     * Create an instance of {@link WaitOnActiveWorkItems }
      * 
      */
-    public SetWorkQueueConfig createSetWorkQueueConfig() {
-        return new SetWorkQueueConfig();
-    }
-
-    /**
-     * Create an instance of {@link SetWorkQueueConfigResponse }
-     * 
-     */
-    public SetWorkQueueConfigResponse createSetWorkQueueConfigResponse() {
-        return new SetWorkQueueConfigResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetWorkQueueNames }
-     * 
-     */
-    public GetWorkQueueNames createGetWorkQueueNames() {
-        return new GetWorkQueueNames();
-    }
-
-    /**
-     * Create an instance of {@link GetWorkQueueNamesResponse.Return }
-     * 
-     */
-    public GetWorkQueueNamesResponse.Return createGetWorkQueueNamesResponseReturn() {
-        return new GetWorkQueueNamesResponse.Return();
-    }
-
-    /**
-     * Create an instance of {@link NotifyQueueWorkers }
-     * 
-     */
-    public NotifyQueueWorkers createNotifyQueueWorkers() {
-        return new NotifyQueueWorkers();
-    }
-
-    /**
-     * Create an instance of {@link NotifyQueueWorkersResponse }
-     * 
-     */
-    public NotifyQueueWorkersResponse createNotifyQueueWorkersResponse() {
-        return new NotifyQueueWorkersResponse();
-    }
-
-    /**
-     * Create an instance of {@link StopWorkQueueWorkers }
-     * 
-     */
-    public StopWorkQueueWorkers createStopWorkQueueWorkers() {
-        return new StopWorkQueueWorkers();
-    }
-
-    /**
-     * Create an instance of {@link StopWorkQueueWorkersResponse }
-     * 
-     */
-    public StopWorkQueueWorkersResponse createStopWorkQueueWorkersResponse() {
-        return new StopWorkQueueWorkersResponse();
+    public WaitOnActiveWorkItems createWaitOnActiveWorkItems() {
+        return new WaitOnActiveWorkItems();
     }
 
     /**
@@ -356,22 +236,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StartWorkQueueWorkersResponse }
-     * 
-     */
-    public StartWorkQueueWorkersResponse createStartWorkQueueWorkersResponse() {
-        return new StartWorkQueueWorkersResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetWQueueStatus }
-     * 
-     */
-    public GetWQueueStatus createGetWQueueStatus() {
-        return new GetWQueueStatus();
-    }
-
-    /**
      * Create an instance of {@link GetWQueueStatusResponse }
      * 
      */
@@ -380,35 +244,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetNumActiveWorkItems }
+     * Create an instance of {@link IsBatchProcessNameValidResponse }
      * 
      */
-    public GetNumActiveWorkItems createGetNumActiveWorkItems() {
-        return new GetNumActiveWorkItems();
+    public IsBatchProcessNameValidResponse createIsBatchProcessNameValidResponse() {
+        return new IsBatchProcessNameValidResponse();
     }
 
     /**
-     * Create an instance of {@link GetNumActiveWorkItemsResponse }
+     * Create an instance of {@link StartBatchProcessWithArgumentsResponse }
      * 
      */
-    public GetNumActiveWorkItemsResponse createGetNumActiveWorkItemsResponse() {
-        return new GetNumActiveWorkItemsResponse();
+    public StartBatchProcessWithArgumentsResponse createStartBatchProcessWithArgumentsResponse() {
+        return new StartBatchProcessWithArgumentsResponse();
     }
 
     /**
-     * Create an instance of {@link WaitOnActiveWorkItems }
+     * Create an instance of {@link StartBatchProcess }
      * 
      */
-    public WaitOnActiveWorkItems createWaitOnActiveWorkItems() {
-        return new WaitOnActiveWorkItems();
-    }
-
-    /**
-     * Create an instance of {@link WaitOnActiveWorkItemsResponse }
-     * 
-     */
-    public WaitOnActiveWorkItemsResponse createWaitOnActiveWorkItemsResponse() {
-        return new WaitOnActiveWorkItemsResponse();
+    public StartBatchProcess createStartBatchProcess() {
+        return new StartBatchProcess();
     }
 
     /**
@@ -420,19 +276,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IsPluginStartedResponse }
+     * Create an instance of {@link WsiAuthenticationException }
      * 
      */
-    public IsPluginStartedResponse createIsPluginStartedResponse() {
-        return new IsPluginStartedResponse();
+    public WsiAuthenticationException createWsiAuthenticationException() {
+        return new WsiAuthenticationException();
     }
 
     /**
-     * Create an instance of {@link StartPlugin }
+     * Create an instance of {@link GetNumActiveWorkItemsResponse }
      * 
      */
-    public StartPlugin createStartPlugin() {
-        return new StartPlugin();
+    public GetNumActiveWorkItemsResponse createGetNumActiveWorkItemsResponse() {
+        return new GetNumActiveWorkItemsResponse();
+    }
+
+    /**
+     * Create an instance of {@link BatchProcessStatusByIDResponse }
+     * 
+     */
+    public BatchProcessStatusByIDResponse createBatchProcessStatusByIDResponse() {
+        return new BatchProcessStatusByIDResponse();
+    }
+
+    /**
+     * Create an instance of {@link ProcessStatus }
+     * 
+     */
+    public ProcessStatus createProcessStatus() {
+        return new ProcessStatus();
     }
 
     /**
@@ -444,19 +316,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StartPluginWithTimeout }
+     * Create an instance of {@link RequestTerminationOfBatchProcessByIDResponse }
      * 
      */
-    public StartPluginWithTimeout createStartPluginWithTimeout() {
-        return new StartPluginWithTimeout();
+    public RequestTerminationOfBatchProcessByIDResponse createRequestTerminationOfBatchProcessByIDResponse() {
+        return new RequestTerminationOfBatchProcessByIDResponse();
     }
 
     /**
-     * Create an instance of {@link StartPluginWithTimeoutResponse }
+     * Create an instance of {@link RequestTerminationOfBatchProcessByID }
      * 
      */
-    public StartPluginWithTimeoutResponse createStartPluginWithTimeoutResponse() {
-        return new StartPluginWithTimeoutResponse();
+    public RequestTerminationOfBatchProcessByID createRequestTerminationOfBatchProcessByID() {
+        return new RequestTerminationOfBatchProcessByID();
+    }
+
+    /**
+     * Create an instance of {@link GetWorkQueueConfig }
+     * 
+     */
+    public GetWorkQueueConfig createGetWorkQueueConfig() {
+        return new GetWorkQueueConfig();
+    }
+
+    /**
+     * Create an instance of {@link SetWorkQueueConfigResponse }
+     * 
+     */
+    public SetWorkQueueConfigResponse createSetWorkQueueConfigResponse() {
+        return new SetWorkQueueConfigResponse();
     }
 
     /**
@@ -468,19 +356,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StopPluginResponse }
+     * Create an instance of {@link GetValidBatchProcessNames }
      * 
      */
-    public StopPluginResponse createStopPluginResponse() {
-        return new StopPluginResponse();
+    public GetValidBatchProcessNames createGetValidBatchProcessNames() {
+        return new GetValidBatchProcessNames();
     }
 
     /**
-     * Create an instance of {@link StopPluginWithTimeout }
+     * Create an instance of {@link NotifyQueueWorkers }
      * 
      */
-    public StopPluginWithTimeout createStopPluginWithTimeout() {
-        return new StopPluginWithTimeout();
+    public NotifyQueueWorkers createNotifyQueueWorkers() {
+        return new NotifyQueueWorkers();
+    }
+
+    /**
+     * Create an instance of {@link WebServiceException }
+     * 
+     */
+    public WebServiceException createWebServiceException() {
+        return new WebServiceException();
+    }
+
+    /**
+     * Create an instance of {@link IsBatchProcessNameValid }
+     * 
+     */
+    public IsBatchProcessNameValid createIsBatchProcessNameValid() {
+        return new IsBatchProcessNameValid();
+    }
+
+    /**
+     * Create an instance of {@link StartPluginWithTimeout }
+     * 
+     */
+    public StartPluginWithTimeout createStartPluginWithTimeout() {
+        return new StartPluginWithTimeout();
+    }
+
+    /**
+     * Create an instance of {@link GetWorkQueueNamesResponse.Return }
+     * 
+     */
+    public GetWorkQueueNamesResponse.Return createGetWorkQueueNamesResponseReturn() {
+        return new GetWorkQueueNamesResponse.Return();
+    }
+
+    /**
+     * Create an instance of {@link SetWorkQueueConfig }
+     * 
+     */
+    public SetWorkQueueConfig createSetWorkQueueConfig() {
+        return new SetWorkQueueConfig();
+    }
+
+    /**
+     * Create an instance of {@link BatchProcessStatusByNameResponse }
+     * 
+     */
+    public BatchProcessStatusByNameResponse createBatchProcessStatusByNameResponse() {
+        return new BatchProcessStatusByNameResponse();
     }
 
     /**
@@ -492,14 +428,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ChangeSubtype }
-     * 
-     */
-    public ChangeSubtype createChangeSubtype() {
-        return new ChangeSubtype();
-    }
-
-    /**
      * Create an instance of {@link ChangeSubtypeResponse }
      * 
      */
@@ -508,11 +436,83 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WebServiceException }
+     * Create an instance of {@link RequestTerminationOfBatchProcessByNameResponse }
      * 
      */
-    public WebServiceException createWebServiceException() {
-        return new WebServiceException();
+    public RequestTerminationOfBatchProcessByNameResponse createRequestTerminationOfBatchProcessByNameResponse() {
+        return new RequestTerminationOfBatchProcessByNameResponse();
+    }
+
+    /**
+     * Create an instance of {@link NotifyQueueWorkersResponse }
+     * 
+     */
+    public NotifyQueueWorkersResponse createNotifyQueueWorkersResponse() {
+        return new NotifyQueueWorkersResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetNumActiveWorkItems }
+     * 
+     */
+    public GetNumActiveWorkItems createGetNumActiveWorkItems() {
+        return new GetNumActiveWorkItems();
+    }
+
+    /**
+     * Create an instance of {@link StartBatchProcessResponse }
+     * 
+     */
+    public StartBatchProcessResponse createStartBatchProcessResponse() {
+        return new StartBatchProcessResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetValidBatchProcessNamesResponse.Return }
+     * 
+     */
+    public GetValidBatchProcessNamesResponse.Return createGetValidBatchProcessNamesResponseReturn() {
+        return new GetValidBatchProcessNamesResponse.Return();
+    }
+
+    /**
+     * Create an instance of {@link StopWorkQueueWorkersResponse }
+     * 
+     */
+    public StopWorkQueueWorkersResponse createStopWorkQueueWorkersResponse() {
+        return new StopWorkQueueWorkersResponse();
+    }
+
+    /**
+     * Create an instance of {@link ChangeSubtype }
+     * 
+     */
+    public ChangeSubtype createChangeSubtype() {
+        return new ChangeSubtype();
+    }
+
+    /**
+     * Create an instance of {@link TransactionId }
+     * 
+     */
+    public TransactionId createTransactionId() {
+        return new TransactionId();
+    }
+
+    /**
+     * Create an instance of {@link Locale }
+     * 
+     */
+    public Locale createLocale() {
+        return new Locale();
+    }
+
+    /**
+     * Create an instance of {@link Authentication }
+     * 
+     */
+    public Authentication createAuthentication() {
+        return new Authentication();
     }
 
     /**
@@ -540,12 +540,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Authentication }{@code >}
+     * Create an instance of {@link JAXBElement }{@code <}{@link TransactionId }{@code >}}
      * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link Authentication }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://guidewire.com/ws/soapheaders", name = "transaction_id")
+    public JAXBElement<TransactionId> createTransactionId(TransactionId value) {
+        return new JAXBElement<TransactionId>(_TransactionId_QNAME, TransactionId.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Authentication }{@code >}}
+     * 
      */
     @XmlElementDecl(namespace = "http://guidewire.com/ws/soapheaders", name = "authentication")
     public JAXBElement<Authentication> createAuthentication(Authentication value) {
@@ -553,29 +558,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Locale }{@code >}
+     * Create an instance of {@link JAXBElement }{@code <}{@link Locale }{@code >}}
      * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link Locale }{@code >}
      */
     @XmlElementDecl(namespace = "http://guidewire.com/ws/soapheaders", name = "locale")
     public JAXBElement<Locale> createLocale(Locale value) {
         return new JAXBElement<Locale>(_Locale_QNAME, Locale.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link TransactionId }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link TransactionId }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://guidewire.com/ws/soapheaders", name = "transaction_id")
-    public JAXBElement<TransactionId> createTransactionId(TransactionId value) {
-        return new JAXBElement<TransactionId>(_TransactionId_QNAME, TransactionId.class, null, value);
     }
 
 }

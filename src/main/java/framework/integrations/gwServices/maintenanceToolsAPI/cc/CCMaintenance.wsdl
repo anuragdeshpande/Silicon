@@ -2,7 +2,7 @@
 <wsdl:definitions xmlns:gwsoap="http://guidewire.com/ws/soapheaders" xmlns:gwwsdl="http://guidewire.com/pl/wsdl" xmlns:pogo="http://guidewire.com/gw/api/tools" xmlns:pogo2="http://guidewire.com/gw/api/webservice/maintenanceTools" xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:tns="http://guidewire.com/cc/ws/gw/webservice/cc/MaintenanceToolsAPI" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://guidewire.com/cc/ws/gw/webservice/cc/MaintenanceToolsAPI" name="MaintenanceToolsAPI">
     <wsdl:types>
         <xs:schema xmlns:gw="http://guidewire.com/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://guidewire.com/cc/ws/gw/webservice/cc/MaintenanceToolsAPI" elementFormDefault="qualified">
-            <xs:import namespace="http://guidewire.com/ws/soapheaders" schemaLocation="soapheaders.xsd"/>
+            <xs:import namespace="http://guidewire.com/ws/soapheaders" schemaLocation="../soapheaders/soapheaders.xsd"/>
             <xs:import namespace="http://guidewire.com/gw/api/webservice/maintenanceTools"/>
             <xs:import namespace="http://guidewire.com/gw/api/tools"/>
             <!--  getValidBatchProcessNames() : String[]  -->

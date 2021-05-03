@@ -1,6 +1,7 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.cc;
 
+import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -13,15 +14,15 @@ import javax.xml.bind.annotation.XmlType;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessID"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="Pid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="ProcessID">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="Pid" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -30,9 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessID", namespace = "http://guidewire.com/gw/api/tools", propOrder = {
     "pid"
 })
+@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class ProcessID {
 
-    @XmlElement(name = "Pid")
+    @XmlElement(name = "Pid", namespace = "http://guidewire.com/gw/api/tools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Long pid;
 
     /**
@@ -43,6 +46,7 @@ public class ProcessID {
      *     {@link Long }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Long getPid() {
         return pid;
     }
@@ -55,6 +59,7 @@ public class ProcessID {
      *     {@link Long }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:26:07-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setPid(Long value) {
         this.pid = value;
     }

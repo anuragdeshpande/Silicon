@@ -1,7 +1,12 @@
 
 package framework.integrations.gwServices.maintenanceToolsAPI.ab;
 
-import javax.xml.bind.annotation.*;
+import javax.annotation.Generated;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
@@ -11,31 +16,31 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessStatus"&gt;
- *   &lt;complexContent&gt;
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *         &lt;element name="Complete" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="DateCompleted" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *         &lt;element name="DateCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *         &lt;element name="DetailedStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="Executing" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="FailedOps" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="FailureReason" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="OpsCompleted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="OpsExpected" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
- *         &lt;element name="Progress" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="ReturnValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="ServerId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="StartDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
- *         &lt;element name="Starting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="StartingOrExecuting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="Success" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
- *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *       &lt;/sequence&gt;
- *     &lt;/restriction&gt;
- *   &lt;/complexContent&gt;
- * &lt;/complexType&gt;
+ * &lt;complexType name="ProcessStatus">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="Complete" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="DateCompleted" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="DateCreated" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="DetailedStatus" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="Executing" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="FailedOps" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="FailureReason" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="OpsCompleted" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="OpsExpected" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="Progress" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="ReturnValue" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="ServerId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="StartDate" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
+ *         &lt;element name="Starting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="StartingOrExecuting" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="Success" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
  * </pre>
  * 
  * 
@@ -60,44 +65,62 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "success",
     "type"
 })
+@Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
 public class ProcessStatus {
 
-    @XmlElement(name = "Complete")
+    @XmlElement(name = "Complete", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean complete;
-    @XmlElement(name = "DateCompleted")
+    @XmlElement(name = "DateCompleted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
     @XmlSchemaType(name = "dateTime")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected XMLGregorianCalendar dateCompleted;
-    @XmlElement(name = "DateCreated")
+    @XmlElement(name = "DateCreated", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
     @XmlSchemaType(name = "dateTime")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected XMLGregorianCalendar dateCreated;
-    @XmlElement(name = "DetailedStatus")
+    @XmlElement(name = "DetailedStatus", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String detailedStatus;
-    @XmlElement(name = "Executing")
+    @XmlElement(name = "Executing", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean executing;
-    @XmlElement(name = "FailedOps")
+    @XmlElement(name = "FailedOps", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer failedOps;
-    @XmlElement(name = "FailureReason")
+    @XmlElement(name = "FailureReason", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String failureReason;
-    @XmlElement(name = "OpsCompleted")
+    @XmlElement(name = "OpsCompleted", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer opsCompleted;
-    @XmlElement(name = "OpsExpected")
+    @XmlElement(name = "OpsExpected", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Integer opsExpected;
-    @XmlElement(name = "Progress")
+    @XmlElement(name = "Progress", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String progress;
-    @XmlElement(name = "ReturnValue")
+    @XmlElement(name = "ReturnValue", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String returnValue;
-    @XmlElement(name = "ServerId")
+    @XmlElement(name = "ServerId", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String serverId;
-    @XmlElement(name = "StartDate")
+    @XmlElement(name = "StartDate", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
     @XmlSchemaType(name = "dateTime")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected XMLGregorianCalendar startDate;
-    @XmlElement(name = "Starting")
+    @XmlElement(name = "Starting", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean starting;
-    @XmlElement(name = "StartingOrExecuting")
+    @XmlElement(name = "StartingOrExecuting", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean startingOrExecuting;
-    @XmlElement(name = "Success")
+    @XmlElement(name = "Success", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected Boolean success;
-    @XmlElement(name = "Type")
+    @XmlElement(name = "Type", namespace = "http://guidewire.com/gw/api/webservice/maintenanceTools")
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     protected String type;
 
     /**
@@ -108,6 +131,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isComplete() {
         return complete;
     }
@@ -120,6 +144,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setComplete(Boolean value) {
         this.complete = value;
     }
@@ -132,6 +157,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public XMLGregorianCalendar getDateCompleted() {
         return dateCompleted;
     }
@@ -144,6 +170,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setDateCompleted(XMLGregorianCalendar value) {
         this.dateCompleted = value;
     }
@@ -156,6 +183,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public XMLGregorianCalendar getDateCreated() {
         return dateCreated;
     }
@@ -168,6 +196,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setDateCreated(XMLGregorianCalendar value) {
         this.dateCreated = value;
     }
@@ -180,6 +209,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getDetailedStatus() {
         return detailedStatus;
     }
@@ -192,6 +222,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setDetailedStatus(String value) {
         this.detailedStatus = value;
     }
@@ -204,6 +235,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isExecuting() {
         return executing;
     }
@@ -216,6 +248,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setExecuting(Boolean value) {
         this.executing = value;
     }
@@ -228,6 +261,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getFailedOps() {
         return failedOps;
     }
@@ -240,6 +274,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setFailedOps(Integer value) {
         this.failedOps = value;
     }
@@ -252,6 +287,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getFailureReason() {
         return failureReason;
     }
@@ -264,6 +300,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setFailureReason(String value) {
         this.failureReason = value;
     }
@@ -276,6 +313,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getOpsCompleted() {
         return opsCompleted;
     }
@@ -288,6 +326,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setOpsCompleted(Integer value) {
         this.opsCompleted = value;
     }
@@ -300,6 +339,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Integer getOpsExpected() {
         return opsExpected;
     }
@@ -312,6 +352,7 @@ public class ProcessStatus {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setOpsExpected(Integer value) {
         this.opsExpected = value;
     }
@@ -324,6 +365,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getProgress() {
         return progress;
     }
@@ -336,6 +378,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setProgress(String value) {
         this.progress = value;
     }
@@ -348,6 +391,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getReturnValue() {
         return returnValue;
     }
@@ -360,6 +404,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setReturnValue(String value) {
         this.returnValue = value;
     }
@@ -372,6 +417,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getServerId() {
         return serverId;
     }
@@ -384,6 +430,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setServerId(String value) {
         this.serverId = value;
     }
@@ -396,6 +443,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public XMLGregorianCalendar getStartDate() {
         return startDate;
     }
@@ -408,6 +456,7 @@ public class ProcessStatus {
      *     {@link XMLGregorianCalendar }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setStartDate(XMLGregorianCalendar value) {
         this.startDate = value;
     }
@@ -420,6 +469,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isStarting() {
         return starting;
     }
@@ -432,6 +482,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setStarting(Boolean value) {
         this.starting = value;
     }
@@ -444,6 +495,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isStartingOrExecuting() {
         return startingOrExecuting;
     }
@@ -456,6 +508,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setStartingOrExecuting(Boolean value) {
         this.startingOrExecuting = value;
     }
@@ -468,6 +521,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public Boolean isSuccess() {
         return success;
     }
@@ -480,6 +534,7 @@ public class ProcessStatus {
      *     {@link Boolean }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setSuccess(Boolean value) {
         this.success = value;
     }
@@ -492,6 +547,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public String getType() {
         return type;
     }
@@ -504,6 +560,7 @@ public class ProcessStatus {
      *     {@link String }
      *     
      */
+    @Generated(value = "com.sun.tools.internal.xjc.Driver", date = "2021-05-03T11:25:33-06:00", comments = "JAXB RI v2.2.8-b130911.1802")
     public void setType(String value) {
         this.type = value;
     }
