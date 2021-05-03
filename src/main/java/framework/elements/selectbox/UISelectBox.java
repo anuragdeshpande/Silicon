@@ -8,6 +8,7 @@ import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
@@ -164,6 +165,39 @@ public class UISelectBox extends UISelect {
         return (String[]) this.select.getAllSelectedOptions().stream().map(WebElement::getText).toArray();
     }
 
+    @Override
+    public void scrollToTop(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+getElement().getAttribute("name")+"\")[0].scrollTop -= document.getElementsByName(\""+getElement().getAttribute("name")+"\")[0].scrollHeight");
+    }
 
+    @Override
+    public void scrollToTop(String name){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+name+"\")[0].scrollTop -= document.getElementsByName(\""+name+"\")[0].scrollHeight");
+    }
 
+    @Override
+    public void scrollToBottom(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+getElement().getAttribute("name")+"\")[0].scrollTop += document.getElementsByName(\""+getElement().getAttribute("name")+"\")[0].scrollHeight");
+    }
+
+    @Override
+    public void scrollToBottom(String name){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+name+"\")[0].scrollTop += document.getElementsByName(\""+name+"\")[0].scrollHeight");
+    }
+
+    @Override
+    public void scrollIntoView(){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+getElement().getAttribute("name")+"\")[0].scrollIntoViewIfNeeded()");
+    }
+
+    @Override
+    public void scrollIntoView(String name){
+        WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
+        ((JavascriptExecutor) driver).executeScript("document.getElementsByName(\""+name+"\")[0].scrollIntoViewIfNeeded()");
+    }
 }
