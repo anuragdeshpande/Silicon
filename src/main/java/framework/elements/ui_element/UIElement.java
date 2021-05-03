@@ -172,7 +172,7 @@ public class UIElement implements IUIElementOperations {
 
     public void scrollToTop(){
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollTop -= document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+ getElement().getAttribute("id")+"\").scrollTop -= document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
     }
 
     public void scrollToTop(String id){
