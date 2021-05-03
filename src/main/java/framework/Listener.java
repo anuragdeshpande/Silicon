@@ -227,7 +227,7 @@ public class Listener implements ISuiteListener, ITestListener {
         return destinationFilePath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
     }
 
-    private TestDetailsDTO buildTestDetailsDTO(ITestResult iTestResult) {
+    public static TestDetailsDTO buildTestDetailsDTO(ITestResult iTestResult) {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
