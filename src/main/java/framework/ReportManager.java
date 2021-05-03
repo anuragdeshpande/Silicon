@@ -6,6 +6,7 @@ import annotations.ClockMoveTest;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.model.NamedAttribute;
 import com.aventstack.extentreports.model.Test;
 import com.aventstack.extentreports.reporter.ExtentKlovReporter;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
@@ -35,6 +36,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReportManager {
 
@@ -357,7 +359,8 @@ public class ReportManager {
             AutomationHistory historyAnnotation = historyAnnotations[0];
             tags.append(Joiner.on("|").join(historyAnnotation.StoryOrDefectNumbers())).append("|");
         }
-
+        List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
+        tags.append(Joiner.on("|").join(testTags)).append("|");
         return tags.toString();
     }
 
