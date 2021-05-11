@@ -31,6 +31,7 @@ import framework.webdriver.BrowserFactory;
 import framework.webdriver.DriverFactory;
 import framework.webdriver.PauseTest;
 import framework.webdriver.ThreadFactory;
+import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Validate;
@@ -171,8 +172,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             ThreadFactory.getInstance().setDriver(DriverFactory.getInstance().createBrowserWindow());
         }
 
-
         if(isUp()){
+            BrowserStorageAccess.getInstance().store("ApplicationSystem", "guidewire");
             GuidewireInteract interact = getInteractObject();
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
