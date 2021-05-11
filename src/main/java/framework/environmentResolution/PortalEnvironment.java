@@ -51,7 +51,7 @@ public class PortalEnvironment extends GenericEnvironment {
 
     public static PortalEnvironment DEV = new PortalEnvironment("http://fbmsdkr-dev1.idfbins.com/amp/html/#/auth/login", Environments.DEV, new DBConnectionDTO("fbmsdkr-dev1.idfbins.com", "uaa", "password", ""));
     public static PortalEnvironment UAT = new PortalEnvironment("http://fbmsdkrptl-uat1.idfbins.com//amp/html/#/auth/login", Environments.UAT, new DBConnectionDTO("fbmsdkrptl-uat1.idfbins.com", "uaa", "password", ""));
-    public static PortalEnvironment DEV10 = new PortalEnvironment("https://portaldev10.idfbins.com/amp/html/#/auth/login", Environments.DEV, new DBConnectionDTO("fbmsdkr-dev1.idfbins.com:3308", "uaa", "password", ""));
+    public static PortalEnvironment DEV10 = new PortalEnvironment("https://portaldev10.idfbins.com/amp/html/#/auth/login", Environments.DEV10, new DBConnectionDTO("fbmsdkr-dev1.idfbins.com:3308", "uaa", "password", ""));
 
     public static PortalEnvironment resolveCustomEnvironment(String portalUrl, Environments gwEnvironmentPortalUses, DBConnectionDTO uaaServerDetails) {
         return new PortalEnvironment(portalUrl, gwEnvironmentPortalUses, uaaServerDetails);
