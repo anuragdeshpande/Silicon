@@ -48,6 +48,12 @@ dependencies {
     implementation 'com.rallydev.rest:rally-rest-api:2.2.1'
     implementation 'com.aventstack:klov-reporter:5.0.7'
     implementation 'org.apache.axis:axis:1.4'
+    implementation 'org.simplejavamail:simple-java-mail:6.5.3'
+
+
+
+
+
 }
 
 group = 'com.idfbins.qa'
