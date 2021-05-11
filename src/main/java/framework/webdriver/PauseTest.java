@@ -1,13 +1,16 @@
 package framework.webdriver;
 
 import framework.constants.ReactionTime;
+import framework.guidewire.PortalInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.webdriver.utils.BrowserStorageAccess;
 import framework.webdriver.utils.WaitConditions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 // TODO clean up class and remove GWCore support
@@ -142,11 +145,19 @@ public class PauseTest {
         WaitConditions waitConditions = PauseTest.createSpecialInstance(reactionTime.getTime())
                 .showMessage(showMessage);
         try{
-            waitConditions
-                    .until(ExpectedConditions.and(
-                            ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
-                            ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
-                    ), messageToShowWhileWaiting);
+            switch (BrowserStorageAccess.getInstance().get("ApplicationSystem").toLowerCase(Locale.ROOT)){
+                case "portals":
+                    PortalInteract.waitForPageLoad();
+                    break;
+                case "guidewire":
+                default:
+                    waitConditions
+                            .until(ExpectedConditions.and(
+                                    ExpectedConditions.attributeToBe(By.id("gw-click-overlay"), "class", "gw-click-overlay"),
+                                    ExpectedConditions.elementToBeClickable(GWIDs.QUICK_JUMP.getReference())
+                            ), messageToShowWhileWaiting);
+            }
+
         } catch (TimeoutException te){
             if(!waitConditions.shouldSkipTimeout()){
                 throw te;
