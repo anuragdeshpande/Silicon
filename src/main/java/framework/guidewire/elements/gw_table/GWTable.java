@@ -14,6 +14,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class GWTable extends UIElement implements IGWUITable {
 
@@ -152,6 +153,18 @@ public class GWTable extends UIElement implements IGWUITable {
     public Optional<GWRow> getRow(Predicate<GWRow> predicate) {
         return this.getRows().stream().filter(predicate).findFirst();
     }
+
+    /**
+     * Attempts to find row(s) that meets the conditional predicate passed
+     *
+     * @param predicate Group of conditions that need to be satisfied by the given row
+     * @return Returns {@link Stream<GWRow>} if rows exists.
+     */
+    public Optional<Stream<GWRow>> getRows(Predicate<GWRow> predicate) {
+        return Optional.of(this.getRows().stream().filter(predicate));
+    }
+
+
 
     @Override
     public Optional<GWRow> getOptionalRowWithText(String value) {
