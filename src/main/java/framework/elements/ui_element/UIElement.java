@@ -1,6 +1,7 @@
 package framework.elements.ui_element;
 
 import framework.constants.ReactionTime;
+import framework.constants.StringConstants;
 import framework.customExceptions.ElementNotFoundException;
 import framework.customExceptions.NotInitializedException;
 import framework.elements.Identifier;
@@ -8,6 +9,7 @@ import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
+import framework.webdriver.ThreadFactory;
 import framework.webdriver.utils.WaitUtils;
 import org.openqa.selenium.*;
 import org.testng.Assert;
@@ -129,8 +131,12 @@ public class UIElement implements IUIElementOperations {
             e.printStackTrace();
             Assert.fail("*** See Stack Trace ***");
         }
+
+
         if (!element.isEnabled()) {
-            System.out.println("Element is not Enabled");
+            String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+            String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+            System.out.println("["+className+": "+testName+"] Element is not Enabled");
         }
 
         this.element = element;
@@ -155,7 +161,9 @@ public class UIElement implements IUIElementOperations {
             interact.withDOM().clearBannerMessage();
             return element;
         } catch (Exception e) {
-            System.out.println("Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
+            String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+            String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+            System.out.println("["+className+": "+testName+"]Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
             if(System.getProperty("jenkinsBuildNumber") != null) {
                 interact.withDOM().clearBannerMessage();
             }
