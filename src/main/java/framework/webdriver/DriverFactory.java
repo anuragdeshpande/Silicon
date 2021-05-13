@@ -94,6 +94,8 @@ public class DriverFactory {
                 } else {
                     driver = new ChromeDriver(options);
                 }
+                RegressionLogger.print("Browser window created. Breaking the loop");
+                break;
             } catch (WebDriverException we) {
                 if (we.getLocalizedMessage().equalsIgnoreCase("Timed out waiting for driver server to start.")) {
                     RegressionLogger.getFirstAvailableLogger().info("Failed to create browser window. Trying again");
