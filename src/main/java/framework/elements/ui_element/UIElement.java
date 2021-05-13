@@ -120,12 +120,12 @@ public class UIElement implements IUIElementOperations {
         WebElement element = null;
 
         try {
-            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), identifier.getTimeout()/2);
+            element = waitUtils.waitUntilElementIsVisible(identifier.getReference(), identifier.getTimeout());
         } catch (TimeoutException t) {
             try {
-                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), identifier.getTimeout()/2);
+                element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), identifier.getTimeout());
             } catch (TimeoutException e) {
-                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found after waiting for approx 30 seconds", e);
+                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found after waiting for approx "+identifier.getTimeout()*2+" seconds", e);
             }
         } catch (Exception e) {
             e.printStackTrace();
