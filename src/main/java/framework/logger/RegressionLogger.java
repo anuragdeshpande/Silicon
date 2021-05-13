@@ -88,7 +88,7 @@ public class RegressionLogger {
     }
 
     public void info(Object message) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
         }
@@ -96,7 +96,7 @@ public class RegressionLogger {
     }
 
     public void info(Object message, Throwable e) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
             extentLogger.log(Status.INFO, e);
@@ -107,14 +107,14 @@ public class RegressionLogger {
     }
 
     public void fail(Object message) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
         }
     }
 
     public void fail(Object message, Throwable e) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
             extentLogger.log(Status.FAIL, e);
@@ -125,7 +125,7 @@ public class RegressionLogger {
     }
 
     public void warn(Object message) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
         }
@@ -142,7 +142,7 @@ public class RegressionLogger {
     }
 
     public void warn(Object message, Throwable e) {
-        System.out.println(message);
+        print(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
             extentLogger.log(Status.WARNING, e);
@@ -205,5 +205,11 @@ public class RegressionLogger {
             e.printStackTrace();
         }
         return destinationFilePath;
+    }
+
+    public static void print(Object message){
+        String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+        String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+        System.out.println("["+className+": "+testName+"] "+message);
     }
 }
