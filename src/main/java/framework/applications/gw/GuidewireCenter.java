@@ -79,6 +79,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         super();
     }
 
+    protected abstract boolean isCurrentCenterOpen();
+
     @Override
     public GuidewireInteract getInteractObject() {
         return BrowserFactory.getCurrentGuidewireBrowser();
@@ -178,7 +180,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
             String currentUrl = interact.getDriver().getCurrentUrl();
-            if (!currentUrl.equalsIgnoreCase("data:,")) {
+            if (isCurrentCenterOpen()) {
                 PauseTest.waitForPageToLoad();
                 if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
                     forceLogout();
