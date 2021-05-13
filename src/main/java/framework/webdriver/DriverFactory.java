@@ -3,10 +3,12 @@ package framework.webdriver;
 import com.google.common.primitives.Longs;
 import framework.constants.ReactionTime;
 import framework.customExceptions.UnexpectedTerminationException;
+import framework.logger.RegressionLogger;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.utils.WebDriverOptionsManager;
 import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -82,15 +84,30 @@ public class DriverFactory {
     }
 
     private WebDriver _createBrowserWindow(ChromeOptions options) throws MalformedURLException{
-        ChromeDriverManager.chromedriver().setup();
-        WebDriver driver;
-        if(isRemote){
-            driver = new RemoteWebDriver(new URL(remoteHubURL), options);
+        WebDriver driver = null;
+        int counter = 3;
+        do {
+            ChromeDriverManager.chromedriver().setup();
+            try {
+                if (isRemote) {
+                    driver = new RemoteWebDriver(new URL(remoteHubURL), options);
+                } else {
+                    driver = new ChromeDriver(options);
+                }
+            } catch (WebDriverException we) {
+                if (we.getLocalizedMessage().equalsIgnoreCase("Timed out waiting for driver server to start.")) {
+                    RegressionLogger.getFirstAvailableLogger().info("Failed to create browser window. Trying again");
+                }
+            }
+            counter--;
+        } while (counter >= 0);
+
+        if(driver != null){
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         } else {
-            driver = new ChromeDriver(options);
+            throw new UnexpectedTerminationException("Failed to create new browser window after 3 attempts. Quitting the test");
         }
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
 
         return driver;
     }
