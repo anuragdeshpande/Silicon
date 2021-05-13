@@ -1,5 +1,6 @@
 package framework.webdriver.utils;
 
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.TimeoutException;
@@ -43,20 +44,26 @@ public class WaitConditions {
         if (showMessage) {
             interact.withDOM().injectInfoMessage(messageToShowWhileWaiting);
         }
-        try {
-            V until = wait.until(waitCondition);
-            if (showMessage) {
-                interact.withDOM().clearBannerMessage();
+        int counter = 0;
+        do {
+            try {
+                V until = wait.until(waitCondition);
+                if (showMessage) {
+                    interact.withDOM().clearBannerMessage();
+                }
+                return until;
+            } catch (TimeoutException toe) {
+                interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
+                RegressionLogger.getFirstAvailableLogger().addTag("extended_wait_time");
+                RegressionLogger.getFirstAvailableLogger().info("Attempt: "+counter+" Page is still loading. Automatically extending wait time by another "+timeoutInSeconds);
             }
-            return until;
-        } catch (TimeoutException toe) {
-            interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
-            throw new TimeoutException("Page is still loading");
+            counter++;
+        } while (counter <= 2);
 
-        }
+        throw new TimeoutException("Page is still loading after "+counter+" attempts of "+timeoutInSeconds+" waits");
     }
 
-    public boolean shouldSkipTimeout(){
+    public boolean shouldSkipTimeout() {
         return this.skipTimeout;
     }
 }
