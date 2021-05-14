@@ -153,7 +153,9 @@ public class UISelectBox extends UISelect {
             } else {
                 throw new JavascriptException("Cannot find element");
             }
-        } catch (JavascriptException je){
+        } catch (Exception e){
+        // not generally recommended to catch Super Class type.
+        // Making an exception here to indicate if there is ANY issue in getting value from JS, fallback is in catch block
             interact.withDOM().injectInfoMessage("Getting selected Item using selenium. This might take some time");
             String text = this.select.getFirstSelectedOption().getText();
             interact.withDOM().clearBannerMessage();
