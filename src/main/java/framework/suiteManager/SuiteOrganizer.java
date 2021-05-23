@@ -6,6 +6,7 @@ import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
 import framework.database.models.DBConnectionDTO;
 import framework.database.models.TestRuntimeDTO;
+import framework.enums.SQLBooleanValue;
 import framework.suiteManager.dtos.PackagedSuite;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfoList;
@@ -33,6 +34,7 @@ public class SuiteOrganizer {
         clockMoveDTOs = new ArrayList<>();
         try {
             deleteVoidTests();
+            resetAvailabilityOfTests();
             dtos = getAllExistingTestsFromDB();
             potentialTests = indexPotentialTestsInRunPackage();
             dtos = getAllExistingTestsFromDB();
@@ -43,6 +45,8 @@ public class SuiteOrganizer {
                     nonClockMoveDTOs.add(runtimeDTO);
                 }
             });
+            deleteNotLiveTests();
+            resetAvailabilityOfTests();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
@@ -98,7 +102,7 @@ public class SuiteOrganizer {
         String projectSource = System.getProperty("ApplicationName");
         if (basePackage != null) {
             ClassGraph graph = new ClassGraph();
-            ClassInfoList classesWithTestAnnotation = graph.whitelistPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+            ClassInfoList classesWithTestAnnotation = graph.acceptPackages(basePackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
             // Excluding disabled tests
             ClassInfoList disabledTests = classesWithTestAnnotation.filter(classInfo -> classInfo.hasAnnotation(DisabledTest.class.getCanonicalName()));
             classesWithTestAnnotation = classesWithTestAnnotation.exclude(disabledTests);
@@ -123,6 +127,7 @@ public class SuiteOrganizer {
                 }
 
                 TestRuntimeDTO runtimeDTO = TestRuntimeDTO.getInstance(classInfo.getName(), classInfo.getPackageName(), classNames.containsKey(classInfo.getName()) ? classNames.get(classInfo.getName()).getTotalRuntime() : 1, projectSource, classInfo.hasAnnotation(ClockMoveTest.class.getCanonicalName()) + "", testType);
+                runtimeDTO.setLive(true);
                 ReportManager.insertIntoTestRuntimeCatalog(runtimeDTO);
                 potentialTests.add(runtimeDTO);
                 newClassesInserted.add(classInfo.getName());
@@ -140,8 +145,24 @@ public class SuiteOrganizer {
         String basePackage = System.getProperty("RunPackage");
         // deleting tests where their run times are at 0 or 1
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
-        int totalRowsUpdated = regressionDB.update("Delete from TestRuntimeCatalog where packageName = '"+basePackage+"' and  totalRunTime = 1 or totalRunTime = 0");
+        int totalRowsUpdated = regressionDB.update("Delete from TestRuntimeCatalog where packageName like '"+basePackage+"%' and  totalRunTime = 1 or totalRunTime = 0");
         System.out.println("Deleted "+totalRowsUpdated+" rows that were at runtime = 0/1 so that the current run could insert if the tests are still needed");
+    }
+
+    private static void deleteNotLiveTests() throws SQLException {
+        String basePackage = System.getProperty("RunPackage");
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        List<TestRuntimeDTO> testsBeingDeleted = regressionDB.query("Select * from TestRuntimeCatalog where packageName like '%" + basePackage + "%' and isLive = " + SQLBooleanValue.FALSE.getStringValue(), new BeanListHandler<>(TestRuntimeDTO.class));
+        testsBeingDeleted.forEach(System.out::println);
+        int totalRowsUpdated = regressionDB.update("Delete from TestRuntimeCatalog where packageName like '%"+basePackage+"%' and isLive = "+ SQLBooleanValue.FALSE.getStringValue());
+        System.out.println("Deleted "+totalRowsUpdated+" rows that were marked as not live to remove stale tests");
+    }
+
+    private static void resetAvailabilityOfTests() throws SQLException {
+        String basePackage = System.getProperty("RunPackage");
+        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        int totalRowsUpdated = regressionDB.update("Update TestRuntimeCatalog set isLive = 0 where packageName like '" + basePackage + "%'");
+        System.out.println("Tests marked as unavailable on "+totalRowsUpdated+" Rows");
     }
 
     private static List<TestRuntimeDTO> getAllExistingTestsFromDB() throws SQLException {

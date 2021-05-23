@@ -64,6 +64,8 @@ public class Listener implements ISuiteListener, ITestListener {
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
+        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), true);
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
         Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
         TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
@@ -91,6 +93,8 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestResult.getTestContext());
+        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), false);
         ExtentTest test = ReportManager.getTest(dto);
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
@@ -180,7 +184,7 @@ public class Listener implements ISuiteListener, ITestListener {
     public void onFinish(ITestContext iTestContext) {
         try {
             TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestContext);
-            System.out.println("Insert/Update completed Test: " + testRuntimeDTO.getFullClassName() + ": " + testRuntimeDTO.toString());
+            System.out.println("Insert/Update completed Test: " + testRuntimeDTO.getFullClassName() + ": " + testRuntimeDTO);
             ReportManager.insertIntoTestRuntimeCatalog(testRuntimeDTO);
         } catch (ArrayIndexOutOfBoundsException aie) {
             if (iTestContext.getAllTestMethods().length == 0) {
@@ -236,9 +240,15 @@ public class Listener implements ISuiteListener, ITestListener {
     }
 
     private TestRuntimeDTO buildTestRuntimeDTO(ITestContext testContext) {
-        LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         LocalTime endTime = testContext.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
+        LocalTime startTime = testContext.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         long timeTakenToRunSeconds = Duration.between(startTime, endTime).toMinutes() * 60;
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(testContext);
+        testRuntimeDTO.setTotalRuntime(timeTakenToRunSeconds);
+        return testRuntimeDTO;
+    }
+
+    private TestRuntimeDTO buildTestRuntimeDTOForTestStart(ITestContext testContext){
         Class realClass = testContext.getAllTestMethods()[0].getRealClass();
         String isClockMove = realClass.isAnnotationPresent(ClockMoveTest.class) ? "true" : "false";
         String testType = StringConstants.UI_TEST;
@@ -249,8 +259,7 @@ public class Listener implements ISuiteListener, ITestListener {
         if (realClass.isAnnotationPresent(SmokeTest.class)) {
             testType = StringConstants.SMOKE_TEST;
         }
-        return TestRuntimeDTO.getInstance(realClass.getName(), realClass.getPackage().getName(), timeTakenToRunSeconds, System.getProperty("startedByUser"), isClockMove, testType);
+
+        return TestRuntimeDTO.getInstance(realClass.getName(), realClass.getPackage().getName(), 0, System.getProperty("startedByUser"), isClockMove, testType);
     }
-
-
 }

@@ -42,10 +42,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
@@ -160,6 +157,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public void forceLogout(){
         GuidewireInteract.clearCookiesToForceLogout();
+        Alert alert = getInteractObject().getDriver().switchTo().alert();
+        if(alert != null){
+            alert.accept();
+        }
     }
 
 
