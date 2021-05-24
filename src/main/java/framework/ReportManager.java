@@ -223,17 +223,18 @@ public class ReportManager {
     public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO) {
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
-            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
+            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType, isLive from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
                     new BeanHandler<>(TestRuntimeDTO.class));
-            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null));
+            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null)+": "+hasExistingRecord);
             return regressionDB.update(hasExistingRecord == null ?
                             TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
                     runtimeDTO.getFullClassName(),
                     runtimeDTO.getPackageName(),
-                    runtimeDTO.getTotalRuntime(),
+                    (hasExistingRecord != null && hasExistingRecord.isLive()) ? hasExistingRecord.getTotalRuntime() : runtimeDTO.getTotalRuntime(),
                     runtimeDTO.getProjectSource(),
                     runtimeDTO.getIsClockMove(),
-                    runtimeDTO.getTestType()) > 0;
+                    runtimeDTO.getTestType(),
+                    runtimeDTO.isLive()) > 0;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to insert: " + e.getLocalizedMessage());

@@ -17,6 +17,7 @@ import org.openqa.selenium.WebElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class GWElement extends UIElement {
     public GWElement(Identifier identifier) {
@@ -49,10 +50,11 @@ public class GWElement extends UIElement {
 
         try {
             this.getElement().click();
-            PauseTest.waitForPageToLoad();
+            PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
         } catch (ElementClickInterceptedException cie) {
-            PauseTest.waitForPageToLoad();
+            PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
             this.getElement().click();
+            PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
         } catch (UnhandledAlertException uae){
             Alert alert = BrowserFactory.getCurrentGuidewireBrowser().getDriver().switchTo().alert();
             RegressionLogger.getTestLogger().info("Accepting Alert: "+alert.getText());

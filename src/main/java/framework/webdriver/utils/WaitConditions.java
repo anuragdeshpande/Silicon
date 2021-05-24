@@ -48,19 +48,17 @@ public class WaitConditions {
         do {
             try {
                 V until = wait.until(waitCondition);
-                if (showMessage) {
-                    interact.withDOM().clearBannerMessage();
-                }
+                interact.withDOM().clearBannerMessage();
                 return until;
             } catch (TimeoutException toe) {
                 interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
                 RegressionLogger.getFirstAvailableLogger().addTag("extended_wait_time");
-                RegressionLogger.getFirstAvailableLogger().info("Attempt: "+counter+" Page is still loading. Automatically extending wait time by another "+timeoutInSeconds+" seconds");
+                RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Automatically extending wait time by another " + timeoutInSeconds + " seconds");
             }
             counter++;
         } while (counter <= 2);
 
-        throw new TimeoutException("Page is still loading after "+counter+" attempts of "+timeoutInSeconds+" seconds waits");
+        throw new TimeoutException("Page is still loading after " + counter + " attempts of " + timeoutInSeconds + " seconds waits");
     }
 
     public boolean shouldSkipTimeout() {
