@@ -289,22 +289,22 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         try {
             // Moving PC clock
             PCDebugToolsAPIPortType pcDebugToolsAPI = getPCDebugToolsAPI();
-            interact.withDOM().injectInfoMessage("Moving PC Clock to: " + date.toString());
+            interact.withDOM().injectInfoMessage("Moving PC Clock to: " + date);
             pcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal, getComputerName());
 
             // Moving CC clock
             CCDebugToolsAPIPortType ccDebugToolsAPI = getCCDebugToolsAPI();
-            interact.withDOM().injectInfoMessage("Moving CC Clock to: " + date.toString());
+            interact.withDOM().injectInfoMessage("Moving CC Clock to: " + date);
             ccDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
 
             // Moving BC clock
             BCDebugToolsAPIPortType bcDebugToolsAPI = getBCDebugToolsAPI();
-            interact.withDOM().injectInfoMessage("Moving BC Clock to: " + date.toString());
+            interact.withDOM().injectInfoMessage("Moving BC Clock to: " + date);
             bcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
 
             // Moving AB clock
             ABDebugToolsAPIPortType abDebugToolsAPI = getABDebugToolsAPI();
-            interact.withDOM().injectInfoMessage("Moving AB Clock to: " + date.toString());
+            interact.withDOM().injectInfoMessage("Moving AB Clock to: " + date);
             abDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
 
         } catch (WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.cc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.bc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.ab.WsiAuthenticationException_Exception e) {
