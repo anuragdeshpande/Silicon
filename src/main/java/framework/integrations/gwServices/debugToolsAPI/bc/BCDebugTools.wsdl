@@ -1,0 +1,790 @@
+<wsdl:definitions xmlns:gwsoap="http://guidewire.com/ws/soapheaders" xmlns:gwwsdl="http://guidewire.com/pl/wsdl"
+                  xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:tns="http://guidewire.com/bc/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  targetNamespace="http://guidewire.com/bc/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI"
+                  name="BCDebugToolsAPI">
+    <wsdl:types>
+        <xs:schema xmlns:gw="http://guidewire.com/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                   targetNamespace="http://guidewire.com/bc/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI"
+                   elementFormDefault="qualified">
+            <xs:import namespace="http://guidewire.com/ws/soapheaders"
+                       schemaLocation="../../soapheaders/soapheaders.xsd"/>
+            <!--  moveClockTo(Date)  -->
+            <xs:element name="moveClockTo">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="date" type="xs:dateTime" minOccurs="0" gw:type="java.util.Date"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="moveClockToResponse">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="WsiAuthenticationException">
+                <xs:complexType/>
+            </xs:element>
+            <!--  getCurrentDate() : Date  -->
+            <xs:element name="getCurrentDate">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="getCurrentDateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:dateTime" minOccurs="0" gw:type="java.util.Date"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runInvoice()  -->
+            <xs:element name="runInvoice">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runInvoiceResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isInvoiceRunning() : Boolean  -->
+            <xs:element name="isInvoiceRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isInvoiceRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runInvoiceDue()  -->
+            <xs:element name="runInvoiceDue">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runInvoiceDueResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isInvoiceDueRunning() : Boolean  -->
+            <xs:element name="isInvoiceDueRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isInvoiceDueRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runPaymentRequest()  -->
+            <xs:element name="runPaymentRequest">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runPaymentRequestResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isPaymentRequestRunning() : Boolean  -->
+            <xs:element name="isPaymentRequestRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isPaymentRequestRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runWorkflow()  -->
+            <xs:element name="runWorkflow">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runWorkflowResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isWorkflowRunning() : Boolean  -->
+            <xs:element name="isWorkflowRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isWorkflowRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runReceivableAging()  -->
+            <xs:element name="runReceivableAging">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runReceivableAgingResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isReceivableAgingRunning() : Boolean  -->
+            <xs:element name="isReceivableAgingRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isReceivableAgingRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <!--  runCaptureDailyBalances()  -->
+            <xs:element name="runCaptureDailyBalances">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="runCaptureDailyBalancesResponse">
+                <xs:complexType/>
+            </xs:element>
+            <!--  isCaptureDailyBalancesRunning() : Boolean  -->
+            <xs:element name="isCaptureDailyBalancesRunning">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="isCaptureDailyBalancesRunningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:portType name="BCDebugToolsAPIPortType">
+        <wsdl:operation name="moveClockTo">
+            <wsdl:input name="moveClockTo" message="tns:moveClockTo"/>
+            <wsdl:output name="moveClockToResponse" message="tns:moveClockToResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getCurrentDate">
+            <wsdl:input name="getCurrentDate" message="tns:getCurrentDate"/>
+            <wsdl:output name="getCurrentDateResponse" message="tns:getCurrentDateResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoice">
+            <wsdl:input name="runInvoice" message="tns:runInvoice"/>
+            <wsdl:output name="runInvoiceResponse" message="tns:runInvoiceResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceRunning">
+            <wsdl:input name="isInvoiceRunning" message="tns:isInvoiceRunning"/>
+            <wsdl:output name="isInvoiceRunningResponse" message="tns:isInvoiceRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoiceDue">
+            <wsdl:input name="runInvoiceDue" message="tns:runInvoiceDue"/>
+            <wsdl:output name="runInvoiceDueResponse" message="tns:runInvoiceDueResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceDueRunning">
+            <wsdl:input name="isInvoiceDueRunning" message="tns:isInvoiceDueRunning"/>
+            <wsdl:output name="isInvoiceDueRunningResponse" message="tns:isInvoiceDueRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runPaymentRequest">
+            <wsdl:input name="runPaymentRequest" message="tns:runPaymentRequest"/>
+            <wsdl:output name="runPaymentRequestResponse" message="tns:runPaymentRequestResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isPaymentRequestRunning">
+            <wsdl:input name="isPaymentRequestRunning" message="tns:isPaymentRequestRunning"/>
+            <wsdl:output name="isPaymentRequestRunningResponse" message="tns:isPaymentRequestRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runWorkflow">
+            <wsdl:input name="runWorkflow" message="tns:runWorkflow"/>
+            <wsdl:output name="runWorkflowResponse" message="tns:runWorkflowResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isWorkflowRunning">
+            <wsdl:input name="isWorkflowRunning" message="tns:isWorkflowRunning"/>
+            <wsdl:output name="isWorkflowRunningResponse" message="tns:isWorkflowRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runReceivableAging">
+            <wsdl:input name="runReceivableAging" message="tns:runReceivableAging"/>
+            <wsdl:output name="runReceivableAgingResponse" message="tns:runReceivableAgingResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isReceivableAgingRunning">
+            <wsdl:input name="isReceivableAgingRunning" message="tns:isReceivableAgingRunning"/>
+            <wsdl:output name="isReceivableAgingRunningResponse" message="tns:isReceivableAgingRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="runCaptureDailyBalances">
+            <wsdl:input name="runCaptureDailyBalances" message="tns:runCaptureDailyBalances"/>
+            <wsdl:output name="runCaptureDailyBalancesResponse" message="tns:runCaptureDailyBalancesResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="isCaptureDailyBalancesRunning">
+            <wsdl:input name="isCaptureDailyBalancesRunning" message="tns:isCaptureDailyBalancesRunning"/>
+            <wsdl:output name="isCaptureDailyBalancesRunningResponse"
+                         message="tns:isCaptureDailyBalancesRunningResponse"/>
+            <wsdl:fault name="WsiAuthenticationException" message="tns:WsiAuthenticationException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="BCDebugToolsAPISoap12Binding" type="tns:BCDebugToolsAPIPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="moveClockTo">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="moveClockTo">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="moveClockToResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getCurrentDate">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="getCurrentDate">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getCurrentDateResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoice">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runInvoice">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runInvoiceResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isInvoiceRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isInvoiceRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoiceDue">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runInvoiceDue">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runInvoiceDueResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceDueRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isInvoiceDueRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isInvoiceDueRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runPaymentRequest">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runPaymentRequest">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runPaymentRequestResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isPaymentRequestRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isPaymentRequestRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isPaymentRequestRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runWorkflow">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runWorkflow">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runWorkflowResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isWorkflowRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isWorkflowRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isWorkflowRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runReceivableAging">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runReceivableAging">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runReceivableAgingResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isReceivableAgingRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isReceivableAgingRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isReceivableAgingRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runCaptureDailyBalances">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="runCaptureDailyBalances">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runCaptureDailyBalancesResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isCaptureDailyBalancesRunning">
+            <soap12:operation soapActionRequired="false" style="document"/>
+            <wsdl:input name="isCaptureDailyBalancesRunning">
+                <soap12:body use="literal"/>
+                <soap12:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap12:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap12:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap12:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isCaptureDailyBalancesRunningResponse">
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap12:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="BCDebugToolsAPISoap11Binding" type="tns:BCDebugToolsAPIPortType">
+        <soap11:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="moveClockTo">
+            <soap11:operation style="document"/>
+            <wsdl:input name="moveClockTo">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="moveClockToResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getCurrentDate">
+            <soap11:operation style="document"/>
+            <wsdl:input name="getCurrentDate">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getCurrentDateResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoice">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runInvoice">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runInvoiceResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isInvoiceRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isInvoiceRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runInvoiceDue">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runInvoiceDue">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runInvoiceDueResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isInvoiceDueRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isInvoiceDueRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isInvoiceDueRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runPaymentRequest">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runPaymentRequest">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runPaymentRequestResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isPaymentRequestRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isPaymentRequestRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isPaymentRequestRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runWorkflow">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runWorkflow">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runWorkflowResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isWorkflowRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isWorkflowRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isWorkflowRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runReceivableAging">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runReceivableAging">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runReceivableAgingResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isReceivableAgingRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isReceivableAgingRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isReceivableAgingRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="runCaptureDailyBalances">
+            <soap11:operation style="document"/>
+            <wsdl:input name="runCaptureDailyBalances">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="runCaptureDailyBalancesResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="isCaptureDailyBalancesRunning">
+            <soap11:operation style="document"/>
+            <wsdl:input name="isCaptureDailyBalancesRunning">
+                <soap11:body use="literal"/>
+                <soap11:header message="tns:gw-authentication" part="gw-authentication" use="literal"/>
+                <soap11:header message="tns:gw-language-only" part="gw-language-only" use="literal"/>
+                <soap11:header message="tns:gw-locale-only" part="gw-locale-only" use="literal"/>
+                <soap11:header message="tns:gw-traceability-id" part="gw-traceability-id" use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="isCaptureDailyBalancesRunningResponse">
+                <soap11:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="WsiAuthenticationException">
+                <soap11:fault name="WsiAuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="BCDebugToolsAPI">
+        <wsdl:port name="BCDebugToolsAPISoap12Port" binding="tns:BCDebugToolsAPISoap12Binding">
+            <soap12:address
+                    location="http://bc10dev.idfbins.com/bc/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI"/>
+            <gwwsdl:address location="${bc}/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI"/>
+        </wsdl:port>
+        <wsdl:port name="BCDebugToolsAPISoap11Port" binding="tns:BCDebugToolsAPISoap11Binding">
+            <soap11:address
+                    location="http://bc10dev.idfbins.com/bc/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI/soap11"/>
+            <gwwsdl:address location="${bc}/ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI/soap11"/>
+        </wsdl:port>
+    </wsdl:service>
+    <wsdl:message name="moveClockTo">
+        <wsdl:part name="parameters" element="tns:moveClockTo"/>
+    </wsdl:message>
+    <wsdl:message name="moveClockToResponse">
+        <wsdl:part name="parameters" element="tns:moveClockToResponse"/>
+    </wsdl:message>
+    <wsdl:message name="WsiAuthenticationException">
+        <wsdl:part name="WsiAuthenticationException" element="tns:WsiAuthenticationException"/>
+    </wsdl:message>
+    <wsdl:message name="getCurrentDate">
+        <wsdl:part name="parameters" element="tns:getCurrentDate"/>
+    </wsdl:message>
+    <wsdl:message name="getCurrentDateResponse">
+        <wsdl:part name="parameters" element="tns:getCurrentDateResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runInvoice">
+        <wsdl:part name="parameters" element="tns:runInvoice"/>
+    </wsdl:message>
+    <wsdl:message name="runInvoiceResponse">
+        <wsdl:part name="parameters" element="tns:runInvoiceResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isInvoiceRunning">
+        <wsdl:part name="parameters" element="tns:isInvoiceRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isInvoiceRunningResponse">
+        <wsdl:part name="parameters" element="tns:isInvoiceRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runInvoiceDue">
+        <wsdl:part name="parameters" element="tns:runInvoiceDue"/>
+    </wsdl:message>
+    <wsdl:message name="runInvoiceDueResponse">
+        <wsdl:part name="parameters" element="tns:runInvoiceDueResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isInvoiceDueRunning">
+        <wsdl:part name="parameters" element="tns:isInvoiceDueRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isInvoiceDueRunningResponse">
+        <wsdl:part name="parameters" element="tns:isInvoiceDueRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runPaymentRequest">
+        <wsdl:part name="parameters" element="tns:runPaymentRequest"/>
+    </wsdl:message>
+    <wsdl:message name="runPaymentRequestResponse">
+        <wsdl:part name="parameters" element="tns:runPaymentRequestResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isPaymentRequestRunning">
+        <wsdl:part name="parameters" element="tns:isPaymentRequestRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isPaymentRequestRunningResponse">
+        <wsdl:part name="parameters" element="tns:isPaymentRequestRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runWorkflow">
+        <wsdl:part name="parameters" element="tns:runWorkflow"/>
+    </wsdl:message>
+    <wsdl:message name="runWorkflowResponse">
+        <wsdl:part name="parameters" element="tns:runWorkflowResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isWorkflowRunning">
+        <wsdl:part name="parameters" element="tns:isWorkflowRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isWorkflowRunningResponse">
+        <wsdl:part name="parameters" element="tns:isWorkflowRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runReceivableAging">
+        <wsdl:part name="parameters" element="tns:runReceivableAging"/>
+    </wsdl:message>
+    <wsdl:message name="runReceivableAgingResponse">
+        <wsdl:part name="parameters" element="tns:runReceivableAgingResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isReceivableAgingRunning">
+        <wsdl:part name="parameters" element="tns:isReceivableAgingRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isReceivableAgingRunningResponse">
+        <wsdl:part name="parameters" element="tns:isReceivableAgingRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="runCaptureDailyBalances">
+        <wsdl:part name="parameters" element="tns:runCaptureDailyBalances"/>
+    </wsdl:message>
+    <wsdl:message name="runCaptureDailyBalancesResponse">
+        <wsdl:part name="parameters" element="tns:runCaptureDailyBalancesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="isCaptureDailyBalancesRunning">
+        <wsdl:part name="parameters" element="tns:isCaptureDailyBalancesRunning"/>
+    </wsdl:message>
+    <wsdl:message name="isCaptureDailyBalancesRunningResponse">
+        <wsdl:part name="parameters" element="tns:isCaptureDailyBalancesRunningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="gw-authentication">
+        <wsdl:part name="gw-authentication" element="gwsoap:authentication"/>
+    </wsdl:message>
+    <wsdl:message name="gw-locale-only">
+        <wsdl:part name="gw-locale-only" element="gwsoap:gw_locale"/>
+    </wsdl:message>
+    <wsdl:message name="gw-language-only">
+        <wsdl:part name="gw-language-only" element="gwsoap:gw_language"/>
+    </wsdl:message>
+    <wsdl:message name="gw-transaction-id">
+        <wsdl:part name="gw-transaction-id" element="gwsoap:transaction_id"/>
+    </wsdl:message>
+    <wsdl:message name="gw-traceability-id">
+        <wsdl:part name="gw-traceability-id" element="gwsoap:traceability_id"/>
+    </wsdl:message>
+</wsdl:definitions>
