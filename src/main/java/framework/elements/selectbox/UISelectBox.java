@@ -6,6 +6,7 @@ import framework.elements.Identifier;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
+import framework.webdriver.PauseTest;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -62,12 +63,14 @@ public class UISelectBox extends UISelect {
     @Override
     public void select(String selection) {
         this.select.selectByVisibleText(selection);
+        PauseTest.waitForPageToLoad();
     }
 
     @Override
     public String selectRandom() {
         String optionToSelect = this.listElements.get(new Random(System.currentTimeMillis()).nextInt(this.listElements.size())).getText();
         this.select.selectByVisibleText(optionToSelect);
+        PauseTest.waitForPageToLoad();
         return optionToSelect;
     }
 
@@ -80,6 +83,7 @@ public class UISelectBox extends UISelect {
         try{
             selection = this.listElements.get(itemNumber).getText();
             this.select.selectByVisibleText(selection);
+            PauseTest.waitForPageToLoad();
             return selection;
         }catch (ArrayIndexOutOfBoundsException aie){
             throw new IncorrectCallException("By default <none> option is filtered. Hence when a item number is given it is subtracted by 1. If you would like to override this behavior" +
@@ -93,6 +97,7 @@ public class UISelectBox extends UISelect {
             if (listItem.getText().contains(selection)) {
                 String selectedText = listItem.getText();
                 this.select.selectByVisibleText(selectedText);
+                PauseTest.waitForPageToLoad();
                 return selectedText;
             }
         }
@@ -116,6 +121,7 @@ public class UISelectBox extends UISelect {
         for (String selection : selections) {
             if (this.hasOption(selection)) {
                 this.select.selectByVisibleText(selection);
+                PauseTest.waitForPageToLoad();
                 return selection;
             }
         }
@@ -131,16 +137,19 @@ public class UISelectBox extends UISelect {
         for (String selection : selections) {
             this.select.selectByVisibleText(selection);
         }
+        PauseTest.waitForPageToLoad();
     }
 
     public void multipleDeselect(List<String> selections) {
         for (String selection : selections) {
             this.select.deselectByValue(selection);
         }
+        PauseTest.waitForPageToLoad();
     }
 
     public void multipleDeselectAll() {
         this.select.deselectAll();
+        PauseTest.waitForPageToLoad();
     }
 
     public String getFirstSelectedOption(){

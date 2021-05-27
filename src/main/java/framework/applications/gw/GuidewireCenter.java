@@ -71,6 +71,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     protected QueryRunner queryRunner;
     protected String currentUsername;
     protected String currentPassword;
+    private String bcUrl, abUrl, ccUrl, pcUrl;
 
     public GuidewireCenter() {
         super();
@@ -319,11 +320,17 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public BCDebugToolsAPIPortType getBCDebugToolsAPI() {
         try {
-            BCDebugToolsAPI api = null;
-            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
-                api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.BC)).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc801/BCDebugToolsAPI?WSDL"));
+            BCDebugToolsAPI api;
+            if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
+                api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.BC)).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             } else {
-                api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.BC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc801/BCDebugToolsAPI?WSDL"));
+                String environmentURL;
+                if (bcUrl != null) {
+                    environmentURL = bcUrl;
+                } else {
+                    environmentURL = Objects.requireNonNull(Environment.resolve(ApplicationNames.BC, environment.getEnvironmentName())).getEnvironmentUrl();
+                }
+                api = new BCDebugToolsAPI(new URL(environmentURL + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             }
             BCDebugToolsAPIPortType service = api.getBCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
@@ -336,11 +343,17 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public PCDebugToolsAPIPortType getPCDebugToolsAPI() {
         try {
-            PCDebugToolsAPI api = null;
-            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+            PCDebugToolsAPI api;
+            if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
             } else {
-                api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+                String environmentUrl;
+                if (pcUrl != null) {
+                    environmentUrl = pcUrl;
+                } else {
+                    environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl();
+                }
+                api = new PCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
             }
             PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
@@ -353,11 +366,17 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public CCDebugToolsAPIPortType getCCDebugToolsAPI() {
         try {
-            CCDebugToolsAPI api = null;
-            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+            CCDebugToolsAPI api;
+            if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             } else {
-                api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
+                String environmentUrl;
+                if (ccUrl != null) {
+                    environmentUrl = ccUrl;
+                } else {
+                    environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl();
+                }
+                api = new CCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             }
             CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
@@ -371,10 +390,16 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public ABDebugToolsAPIPortType getABDebugToolsAPI() {
         try {
             ABDebugToolsAPI api = null;
-            if (environment.getEnvironmentName().equals(Environments.LOCAL)) {
+            if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             } else {
-                api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
+                String environmentUrl;
+                if (abUrl != null) {
+                    environmentUrl = abUrl;
+                } else {
+                    environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl();
+                }
+                api = new ABDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             }
             ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
@@ -428,5 +453,21 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     private String cleanUpEnvironmentURL(String environmentURL) {
         String cleanupURL = environmentURL.substring(0, environmentURL.lastIndexOf("/"));
         return cleanupURL.substring(0, cleanupURL.lastIndexOf("/")) + "/";
+    }
+
+    public void setBcUrl(String bcUrl) {
+        this.bcUrl = bcUrl;
+    }
+
+    public void setAbUrl(String abUrl) {
+        this.abUrl = abUrl;
+    }
+
+    public void setCcUrl(String ccUrl) {
+        this.ccUrl = ccUrl;
+    }
+
+    public void setPcUrl(String pcUrl) {
+        this.pcUrl = pcUrl;
     }
 }
