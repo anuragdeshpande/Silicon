@@ -14,11 +14,9 @@ import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
-import framework.customExceptions.BlockedMessageQueueException;
-import framework.customExceptions.PotentialSystemIssueException;
 import framework.database.ConnectionManager;
 import framework.database.models.*;
-import framework.guidewire.ErrorMessageOnScreenException;
+import framework.enums.FrameworkSystemTags;
 import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.ThreadFactory;
@@ -440,10 +438,10 @@ public class ReportManager {
                             passedTests++;
                             break;
                         case FAIL:
-                            fatalTests += test.getExceptions().stream()
-                                    .filter(exceptionInfo -> exceptionInfo.getException() instanceof ErrorMessageOnScreenException
-                                            || exceptionInfo.getException() instanceof BlockedMessageQueueException
-                                            || exceptionInfo.getException() instanceof PotentialSystemIssueException).count();
+                            fatalTests += test.getCategorySet().stream()
+                                    .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
+                                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
+                                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
                             failedTests++;
                             break;
                         case SKIP:
