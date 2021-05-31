@@ -14,6 +14,7 @@ import framework.customExceptions.BlockedMessageQueueException;
 import framework.customExceptions.KnownDefectException;
 import framework.customExceptions.PotentialSystemIssueException;
 import framework.database.models.TestRuntimeDTO;
+import framework.enums.FrameworkSystemTags;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.logger.RegressionLogger;
@@ -124,7 +125,7 @@ public class Listener implements ISuiteListener, ITestListener {
         // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
             testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
-            testNode.assignCategory("ErrorOnScreen");
+            testNode.assignCategory(FrameworkSystemTags.ERROR_ON_SCREEN.getValue());
             GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY).ifPresent(errorMessagesFromScreen -> {
                 for (String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
@@ -134,16 +135,16 @@ public class Listener implements ISuiteListener, ITestListener {
         }
 
         if (iTestResult.getThrowable() instanceof KnownDefectException) {
-            testNode.assignCategory("ActiveDefect");
+            testNode.assignCategory(FrameworkSystemTags.ACTIVE_DEFECT.getValue());
             ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: " + iTestResult.getThrowable().getLocalizedMessage());
         }
 
         if (iTestResult.getThrowable() instanceof BlockedMessageQueueException) {
-            testNode.assignCategory("BlockedMessageQueue");
-            testNode.assignCategory("PotentialSystemFailure");
+            testNode.assignCategory(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue());
+            testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
         }
         if (iTestResult.getThrowable() instanceof PotentialSystemIssueException) {
-            testNode.assignCategory("PotentialSystemFailure");
+            testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
         }
 
         if (writeToDatabase) {
