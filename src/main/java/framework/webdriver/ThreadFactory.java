@@ -44,7 +44,10 @@ public class ThreadFactory {
 
     public void closeAllBrowserWindows() {
         driverPool.forEach((integer, storage) -> {
-            ((WebDriver) storage.get("Driver")).close();
+            WebDriver driver = (WebDriver) storage.get("Driver");
+            if(driver != null){
+                driver.close();
+            }
         });
     }
 
