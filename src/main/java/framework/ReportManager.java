@@ -348,12 +348,8 @@ public class ReportManager {
 
         StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
-        tags.append(automatedAnnotation.Team()).append("|");
-        tags.append(automatedAnnotation.PI()).append("|");
         tags.append(automatedAnnotation.FeatureNumber()).append("|");
-        tags.append(automatedAnnotation.Iteration()).append("|");
         tags.append(automatedAnnotation.StoryOrDefectNumber()).append("|");
-        tags.append(Joiner.on("|").join(automatedAnnotation.Centers())).append("|");
         tags.append(Joiner.on("|").join(automatedAnnotation.Themes())).append("|");
 
         if (historyAnnotations.length > 0) {
