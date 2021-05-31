@@ -81,9 +81,7 @@ public class Listener implements ISuiteListener, ITestListener {
             if (!automatedTest.FeatureNumber().isEmpty()) {
                 testLogger.assignCategory(automatedTest.FeatureNumber());
             }
-            testLogger.assignCategory(automatedTest.Iteration(), automatedTest.PI(), automatedTest.StoryOrDefectNumber(), automatedTest.Team());
-            testLogger.assignCategory(iTestResult.getTestContext().getSuite().getName());
-            testLogger.assignCategory(automatedTest.Centers());
+            testLogger.assignCategory(automatedTest.StoryOrDefectNumber(), iTestResult.getTestContext().getSuite().getName());
             testLogger.assignCategory(automatedTest.Themes());
         }
     }
@@ -93,7 +91,7 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
-        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTO(iTestResult.getTestContext());
+        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
         TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), false);
         ExtentTest test = ReportManager.getTest(dto);
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));

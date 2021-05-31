@@ -127,14 +127,17 @@ public class BaseOperations {
 
     @AfterClass(description = "AfterClass")
     public void afterClass(ITestContext context, XmlTest xmlTest) {
-        RegressionLogger.getTestClassLogger().info("Closing browser");
-        GuidewireInteract.clearCookiesToForceLogout();
-        try{
-            BrowserFactory.closeCurrentBrowser();
-        } catch (UnhandledAlertException e){
-            BrowserFactory.getCurrentBrowser().getDriver().switchTo().alert().accept();
-            BrowserFactory.closeCurrentBrowser();
+        if(ThreadFactory.getInstance().getDriver() != null){
+            RegressionLogger.getTestClassLogger().info("Closing browser");
+            GuidewireInteract.clearCookiesToForceLogout();
+            try{
+                BrowserFactory.closeCurrentBrowser();
+            } catch (UnhandledAlertException e){
+                BrowserFactory.getCurrentBrowser().getDriver().switchTo().alert().accept();
+                BrowserFactory.closeCurrentBrowser();
+            }
         }
+
     }
 
     @AfterTest(description = "AfterTest")
