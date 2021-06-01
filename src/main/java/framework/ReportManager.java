@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class ReportManager {
@@ -438,10 +439,7 @@ public class ReportManager {
                             passedTests++;
                             break;
                         case FAIL:
-                            fatalTests += test.getCategorySet().stream()
-                                    .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
-                                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
-                                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
+                            fatalTests += getFatalTestCount(test);
                             failedTests++;
                             break;
                         case SKIP:
@@ -460,6 +458,22 @@ public class ReportManager {
             SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests,fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
+    }
+
+    private static long getFatalTestCount(Test test){
+        AtomicLong fatalTestCounter = new AtomicLong(0);
+        test.getChildren().forEach(test1 -> {
+            long count = test1.getCategorySet().stream()
+                    .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
+                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
+                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
+            if(count > 0){
+                fatalTestCounter.incrementAndGet();
+            }
+
+        });
+
+        return fatalTestCounter.get();
     }
 
     private static void attachCustomConfig(ExtentSparkReporter extentReporter) {
