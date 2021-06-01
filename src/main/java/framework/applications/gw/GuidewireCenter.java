@@ -99,6 +99,12 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         this.overrideEnvironmentURL = url;
     }
 
+
+    public void overrideEnvironment(Environment environment){
+        this.environment = environment;
+    }
+
+
     @Override
     public void setLogLevel(String loggerName, LogLevel logLevel) {
         ServerPages serverPages = openServerPages();
@@ -349,7 +355,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         try {
             PCDebugToolsAPI api;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
-                api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+                api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             } else {
                 String environmentUrl;
                 if (pcUrl != null) {
