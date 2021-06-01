@@ -119,7 +119,7 @@ public class TestRuntimeDTO {
         try{
             queryRunner.update("Update TestRuntimeCatalog set isLive = "+valueToSet+"  where packageName = '"+packageName+"' and fullClassName = '"+className+"'");
         }catch (SQLException e){
-            RegressionLogger.getFirstAvailableLogger().info("Could not set live status to: "+value+" for Class: "+packageName+"."+className);
+            RegressionLogger.getFirstAvailableLogger().info("Could not set live status to: "+value+" for Class: "+packageName+"."+className, e);
         }
     }
 
