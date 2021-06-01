@@ -158,9 +158,13 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public void forceLogout(){
         GuidewireInteract.clearCookiesToForceLogout();
-        Alert alert = getInteractObject().getDriver().switchTo().alert();
-        if(alert != null){
-            alert.accept();
+        try {
+            Alert alert = getInteractObject().getDriver().switchTo().alert();
+            if (alert != null) {
+                alert.accept();
+            }
+        } catch (NoAlertPresentException nae){
+            // nothing to do. alert was not present.
         }
     }
 
