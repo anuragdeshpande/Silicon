@@ -363,7 +363,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 } else {
                     environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl();
                 }
-                api = new PCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/pc/pc800/pcdebugtools/PCDebugToolsAPI?WSDL"));
+                api = new PCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             }
             PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
