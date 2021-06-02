@@ -65,8 +65,8 @@ public class Listener implements ISuiteListener, ITestListener {
     // Fires at the beginning of each test
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
-        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), true);
+//        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
+//        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), true);
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
         Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
         TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
@@ -92,8 +92,8 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
-        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
-        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), false);
+//        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
+//        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), false);
         ExtentTest test = ReportManager.getTest(dto);
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
