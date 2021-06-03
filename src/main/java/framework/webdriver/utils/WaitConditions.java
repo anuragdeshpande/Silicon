@@ -1,5 +1,6 @@
 package framework.webdriver.utils;
 
+import framework.enums.FrameworkSystemEvents;
 import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
@@ -52,7 +53,7 @@ public class WaitConditions {
                 return until;
             } catch (TimeoutException toe) {
                 interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
-                RegressionLogger.getFirstAvailableLogger().addTag("extended_wait_time");
+                RegressionLogger.getFirstAvailableLogger().addTag(FrameworkSystemEvents.EXTENDED_WAIT_TIME.getValue());
                 RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Automatically extending wait time by another " + timeoutInSeconds + " seconds");
             }
             counter++;
