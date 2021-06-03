@@ -1,6 +1,7 @@
 package framework.elements;
 
 import framework.elements.enums.ElementType;
+import framework.enums.FrameworkSystemEvents;
 import framework.logger.RegressionLogger;
 import framework.webdriver.DriverFactory;
 import org.openqa.selenium.By;
@@ -75,8 +76,8 @@ public class Identifier extends GenericIdentifier {
 
     public Identifier setTimeoutInSeconds(int newTimeoutInSeconds){
         RegressionLogger testLogger = RegressionLogger.getTestLogger();
-        testLogger.addTag("Custom_Timeout");
-        testLogger.info("Default timeout is being changed from: "+getTimeout()+" seconds to: "+newTimeoutInSeconds+" seconds");
+        testLogger.addTag(FrameworkSystemEvents.CUSTOM_TIMEOUT.getValue());
+        testLogger.info("Default timeout is being changed for element:"+getFriendlyName()+" from: "+getTimeout()+" seconds to: "+newTimeoutInSeconds+" seconds");
         this.timeoutInSeconds = newTimeoutInSeconds;
         return this;
     }
