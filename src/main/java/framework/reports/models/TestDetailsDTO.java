@@ -5,6 +5,7 @@ public class TestDetailsDTO {
     private String className;
     private String xmlTestName;
     private String suiteName;
+    private String packageName;
 
     public TestDetailsDTO() {
     }
@@ -43,5 +44,13 @@ public class TestDetailsDTO {
 
     public String getReportTestName(){
         return this.className+"_"+this.testName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

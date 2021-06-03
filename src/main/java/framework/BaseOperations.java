@@ -30,12 +30,14 @@ import java.util.Optional;
 public class BaseOperations {
 
     protected ExtentReports reports;
+    private String suiteName;
 
     @BeforeSuite
     public void beforeSuite(XmlTest xmlTest, ITestContext context) {
         String suiteName = context.getSuite().getName();
         if (!ReportManager.isInitiated()) {
-            this.reports = ReportManager.initiate("BO Init_"+ suiteName);
+            this.suiteName = "BO Init_"+ suiteName;
+            this.reports = ReportManager.initiate(this.suiteName);
         }
     }
 
@@ -55,6 +57,8 @@ public class BaseOperations {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setClassName(this.getClass().getSimpleName());
         dto.setXmlTestName(xmlTest.getName());
+        dto.setPackageName(this.getClass().getPackage().getName());
+        dto.setSuiteName(iTestContext.getSuite().getName());
         if (!dto.getClassName().equalsIgnoreCase("TestRunner")) {
             ReportManager.recordClass(dto);
             BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving class name to cache");
@@ -148,5 +152,8 @@ public class BaseOperations {
     @AfterSuite(description = "AfterSuite")
     public void afterSuite(XmlTest xmlTest, ITestContext context){
         BrowserFactory.closeAllWindows();
+        if(this.suiteName != null && this.suiteName.startsWith("BO Init_")){
+            reports.flush();
+        }
     }
 }

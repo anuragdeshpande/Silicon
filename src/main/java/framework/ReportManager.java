@@ -110,6 +110,8 @@ public class ReportManager {
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
             ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).createNode(className);
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_CLASS_NAME, className);
+            ThreadFactory.getInstance().getStorage().put(StringConstants.PACKAGE_NAME, dto.getPackageName());
+            ThreadFactory.getInstance().getStorage().put(StringConstants.SUITE_NAME, dto.getSuiteName());
             classMap.put(className, extentTestClass);
         }
         return classMap.get(className);
