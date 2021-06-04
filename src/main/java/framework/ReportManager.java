@@ -133,7 +133,7 @@ public class ReportManager {
     public static ExtentTest recordTest(TestDetailsDTO dto, String description) {
         String testName = dto.getTestName();
         if (!testMap.containsKey(testName)) {
-            ExtentTest extentTest = classMap.get(dto.getClassName()).createNode(dto.getTestName(), description);
+            ExtentTest extentTest = xmlTestMap.get(dto.getXmlTestName()).createNode(dto.getTestName(), description);
             testMap.put(testName, extentTest);
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_NAME, testName);
         }
