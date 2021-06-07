@@ -46,7 +46,7 @@ public class GWCell extends UIElement  {
     }
 
     public void clickSelect() {
-        WebElement element = this.element.findElement(By.xpath(".//div[contains(@class, 'gw-label') and contains(., 'Select')] | .//div[contains(@class, 'gw-mini-button')]"));
+        WebElement element = this.element.findElement(By.xpath(".//div[contains(@class, 'gw-label') and contains(., 'Select')] | .//div[contains(@class, 'gw-mini-button')] | .//div[@role='link']"));
         element.click();
     }
 
