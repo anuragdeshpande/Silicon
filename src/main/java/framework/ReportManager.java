@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class ReportManager {
@@ -226,7 +225,7 @@ public class ReportManager {
         try {
             TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType, isLive from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
                     new BeanHandler<>(TestRuntimeDTO.class));
-            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null)+": "+hasExistingRecord);
+            System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null) + ": " + hasExistingRecord);
             return regressionDB.update(hasExistingRecord == null ?
                             TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters() : TestRuntimeDTO.getJDBCPreparedUpdateStatementWithoutParameters(runtimeDTO.getFullClassName(), runtimeDTO.getPackageName()),
                     runtimeDTO.getFullClassName(),
@@ -350,8 +349,8 @@ public class ReportManager {
         StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.FeatureNumber()).append("|");
-        tags.append(automatedAnnotation.StoryOrDefectNumber()).append("|");
-        tags.append(Joiner.on("|").join(automatedAnnotation.Themes())).append("|");
+        tags.append("SD_").append(automatedAnnotation.StoryOrDefectNumber()).append("|");
+        tags.append(Joiner.on("|").join(Arrays.stream(automatedAnnotation.Themes()).map(s -> s = "TH_"+s).collect(Collectors.toList()))).append("|");
 
         if (historyAnnotations.length > 0) {
             AutomationHistory historyAnnotation = historyAnnotations[0];
@@ -359,7 +358,13 @@ public class ReportManager {
         }
         List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
         tags.append(Joiner.on("|").join(testTags)).append("|");
-        return tags.toString();
+        //noinspection RegExpEmptyAlternationBranch
+
+        return tags.toString().replaceAll("\\|\\|", "|");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("|Ken Tennant||US19052||DEV10|ClaimCenter|US19052|CC_ClaimSearch||CC_UITests|PotentialSystemFailure|".replaceAll("\\|\\|", "|"));
     }
 
     public static String getReportPath() {
@@ -457,25 +462,22 @@ public class ReportManager {
 
             System.out.println("Inserting master record in the suite results table");
             finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests,fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
     }
 
-    private static long getFatalTestCount(Test test){
-        AtomicLong fatalTestCounter = new AtomicLong(0);
-        test.getChildren().forEach(test1 -> {
-            long count = test1.getCategorySet().stream()
-                    .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
-                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
-                            || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
-            if(count > 0){
-                fatalTestCounter.incrementAndGet();
-            }
+    private static long getFatalTestCount(Test test) {
+        int fatalTestCounter = 0;
+        long count = test.getCategorySet().stream()
+                .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
+                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
+                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
+        if (count > 0) {
+           fatalTestCounter++;
+        }
 
-        });
-
-        return fatalTestCounter.get();
+        return fatalTestCounter;
     }
 
     private static void attachCustomConfig(ExtentSparkReporter extentReporter) {

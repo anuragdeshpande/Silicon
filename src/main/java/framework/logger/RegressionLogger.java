@@ -5,6 +5,7 @@ import com.aventstack.extentreports.Status;
 import framework.ReportManager;
 import framework.constants.StringConstants;
 import framework.customExceptions.UnexpectedTerminationException;
+import framework.logger.eventMessaging.LoggingEvent;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.ThreadFactory;
@@ -16,15 +17,20 @@ import org.openqa.selenium.WebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class RegressionLogger {
 
     private final ExtentTest extentLogger;
     private final boolean isSuite;
+    private List<LoggingEvent> events;
 
     public RegressionLogger(ExtentTest extentLogger, boolean isSuite) {
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
+        this.events = new ArrayList<>();
     }
 
     public synchronized static RegressionLogger getFirstAvailableLogger(){
@@ -211,5 +217,40 @@ public class RegressionLogger {
         String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
         String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
         System.out.println("["+className+": "+testName+"] "+message);
+    }
+
+    public <T extends LoggingEvent> Optional<T> startEvent(Class<T> eventClassName){
+        T event = null;
+        try {
+            event = eventClassName.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            warn("Unable to create Event: "+eventClassName.getName(), e);
+        }
+        if(event != null){
+            event.startEvent();
+            if(System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")){
+                print(event.getCurrentState());
+            }
+        }
+
+        return Optional.ofNullable(event);
+    }
+
+    public <T extends LoggingEvent> String endEvent(T event){
+        event.endEvent();
+        if(System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")){
+            print(event.getCurrentState());
+        }
+
+        return event.getCurrentState();
+    }
+
+    public void enableEventLogging(){
+        System.setProperty("logEventsInReports", "true");
+
+    }
+
+    public void disableEventLogging(){
+        System.setProperty("logEventsInReports", "false");
     }
 }

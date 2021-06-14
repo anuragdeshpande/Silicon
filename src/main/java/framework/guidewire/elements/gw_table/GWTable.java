@@ -28,7 +28,7 @@ public class GWTable extends UIElement implements IGWUITable {
     public GWTable(Identifier identifier) {
         super(identifier);
         hasHeaderRow = true;
-        if(identifier.shouldIgnoreLVCheckForTable() != hasHeaderRow){
+        if (identifier.shouldIgnoreLVCheckForTable() != hasHeaderRow) {
             hasHeaderRow = identifier.shouldIgnoreLVCheckForTable();
         }
         if (!identifier.getReference().toString().toUpperCase(Locale.ROOT).endsWith("LV") && identifier.shouldIgnoreLVCheckForTable()) {
@@ -40,7 +40,7 @@ public class GWTable extends UIElement implements IGWUITable {
         super(identifier);
         columnLabelMap = new HashMap<>();
         hasHeaderRow = hasNoHeaderRow;
-        if(identifier.shouldIgnoreLVCheckForTable()){
+        if (identifier.shouldIgnoreLVCheckForTable()) {
             hasHeaderRow = true;
         }
     }
@@ -118,7 +118,7 @@ public class GWTable extends UIElement implements IGWUITable {
         boolean isLastPage = false;
 
         do {
-            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[not(contains(@class, 'gw-header-row'))]"))) {
+            for (WebElement row : this.getElement().findElements(By.xpath(".//tr[not(contains(@class, 'gw-header-row')) and not(contains(@class, 'gw-table-row'))]"))) {
                 // new code
                 String rowContent = row.getText();
                 if (rowContent.contains(value)) {
@@ -163,7 +163,6 @@ public class GWTable extends UIElement implements IGWUITable {
     public Optional<Stream<GWRow>> getRows(Predicate<GWRow> predicate) {
         return Optional.of(this.getRows().stream().filter(predicate));
     }
-
 
 
     @Override
@@ -211,22 +210,22 @@ public class GWTable extends UIElement implements IGWUITable {
         return rows.get(rows.size() - 1);
     }
 
-    public GWRow getLastNthRow(int n){
+    public GWRow getLastNthRow(int n) {
         List<GWRow> rows = this.getRows();
-        return rows.get(rows.size() - (n+1));
+        return rows.get(rows.size() - (n + 1));
     }
 
     public boolean hasRowWithText(String value) {
-        try{
+        try {
             return getRowWithText(value) != null;
-        } catch (PotentialSystemIssueException pse){
+        } catch (PotentialSystemIssueException pse) {
             return false;
         }
     }
 
     @Override
     public List<GWCell> getCells(String columnName) {
-        if(columnLabelMap == null){
+        if (columnLabelMap == null) {
             throw new IncorrectCallException("First call buildColumnMap() when reading the table \"interact.withTable().buildColumnMap()\"");
         }
         ArrayList<GWCell> cells = new ArrayList<>();
@@ -252,7 +251,7 @@ public class GWTable extends UIElement implements IGWUITable {
     }
 
     public HashMap<String, String> getColumnLabels() {
-        if(columnLabelMap == null){
+        if (columnLabelMap == null) {
             throw new IncorrectCallException("First call buildColumnMap() when reading the table \"interact.withTable().buildColumnMap()\"");
         }
         if (hasHeaderRow) {
@@ -266,15 +265,22 @@ public class GWTable extends UIElement implements IGWUITable {
         return new GWTableSelectionColumn(this, identifier);
     }
 
-    public GWTable buildColumnMap(){
+    public GWTable buildColumnMap() {
         columnLabelMap = new HashMap<>();
         List<WebElement> labels = getElement().findElements(By.xpath(".//table//tr[contains(@class, 'gw-header-row')]/td"));
         for (WebElement webElement : labels) {
             String label = webElement.getText().trim();
             String id = webElement.getAttribute("id");
-            String[] headers = id.replaceAll("Header", "").split("LV-");
-            headers[0] = headers[0] + "LV-\\d{0,}-";
-            id = StringUtil.join(headers, "");
+            if (identifier.getReferenceValue().contains("LV-") && !identifier.shouldIgnoreLVCheckForTable()) {
+                String[] headers = id.replaceAll("Header", "").split("LV-");
+                headers[0] = headers[0] + "LV-\\d{0,}-";
+                id = StringUtil.join(headers, "");
+            } else {
+                int lastIndexOf = webElement.getAttribute("id").lastIndexOf("-");
+                String part1 = id.substring(0, lastIndexOf+1);
+                String part2 = id.substring(lastIndexOf).replace("Header", "");
+                id = part1 + "\\d{0,}"+part2;
+            }
             columnLabelMap.put(label, id);
         }
 

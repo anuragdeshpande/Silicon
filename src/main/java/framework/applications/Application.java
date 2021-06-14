@@ -13,8 +13,8 @@ import java.util.Locale;
 
 abstract public class Application {
     protected Environment environment;
-    private final HashMap<String, String> storage = new HashMap<>();
-    private final HashMap<String, Object> objectStorage = new HashMap<>();
+    private HashMap<String, String> storage = new HashMap<>();
+    private HashMap<String, Object> objectStorage = new HashMap<>();
     private final Faker faker = new Faker(Locale.US);
 
     public Application(){
@@ -51,5 +51,13 @@ abstract public class Application {
 
     public RegressionLogger xmlTestLogger(){
         return RegressionLogger.getXMLTestLogger();
+    }
+
+    public void setStorage(HashMap<String, String> storage) {
+        this.storage = storage;
+    }
+
+    public void setObjectStorage(HashMap<String, Object> objectStorage) {
+        this.objectStorage = objectStorage;
     }
 }

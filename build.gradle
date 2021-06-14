@@ -24,7 +24,6 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     implementation 'org.testng:testng:7.0.0'
     implementation 'org.apache.commons:commons-dbcp2:2.5.0'
-    implementation 'org.apache.logging.log4j:log4j-1.2-api:2.13.3'
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'commons-dbutils:commons-dbutils:1.7'
     implementation 'commons-io:commons-io:2.6'
@@ -51,6 +50,9 @@ dependencies {
     implementation 'org.simplejavamail:simple-java-mail:6.5.3'
 // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.23'
+    implementation "ch.qos.logback:logback-core:1.2.3"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "org.slf4j:slf4j-api:1.7.30"
 
 
 
