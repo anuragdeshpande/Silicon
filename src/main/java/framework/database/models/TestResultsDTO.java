@@ -11,6 +11,8 @@ public class TestResultsDTO {
     private boolean isClockMove;
     private String testCreator;
     private String testName;
+    private String className;
+    private String packageName;
     private Timestamp startTimeStamp;
     private Timestamp endTimestamp;
     private String failureImageURL;
@@ -21,8 +23,7 @@ public class TestResultsDTO {
     private String testRunSource;
     private String tags;
     private String UUID;
-    private String className;
-    private String packageName;
+
 
     private TestResultsDTO(boolean isClockMove, String testCreator, String testName, String className, String packageName, Timestamp startTimeStamp, Timestamp endTimestamp, String failureImageURL, Status status, String failureReason, String buildNumber, String suiteName, String testRunSource, String tags) {
         this.isClockMove = isClockMove;
@@ -180,18 +181,18 @@ public class TestResultsDTO {
         values[0] = isClockMove();
         values[1] = getTestCreator();
         values[2] = getTestName();
-        values[3] = getStartTimeStamp();
-        values[4] = getEndTimestamp();
-        values[5] = getFailureImageURL();
-        values[6] = StringUtils.capitalize(getStatus().name());
-        values[7] = getFailureReason();
-        values[8] = getBuildNumber();
-        values[9] = getSuiteName();
-        values[10] = getTestRunSource();
-        values[11] = getTags();
-        values[12] = getUUID();
-        values[13] = getClassName();
-        values[14] = getPackageName();
+        values[3] = getClassName();
+        values[4] = getPackageName();
+        values[5] = getStartTimeStamp();
+        values[6] = getEndTimestamp();
+        values[7] = getFailureImageURL();
+        values[8] = StringUtils.capitalize(getStatus().name());
+        values[9] = getFailureReason();
+        values[10] = getBuildNumber();
+        values[11] = getSuiteName();
+        values[12] = getTestRunSource();
+        values[13] = getTags();
+        values[14] = getUUID();
         return values;
     }
 

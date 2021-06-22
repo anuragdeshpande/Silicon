@@ -1,10 +1,13 @@
 package framework.logger;
 
+import ch.qos.logback.classic.Logger;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import framework.ReportManager;
 import framework.constants.StringConstants;
 import framework.customExceptions.UnexpectedTerminationException;
+import framework.logger.eventMessaging.IMaintainEventNames;
+import framework.logger.eventMessaging.LogEventState;
 import framework.logger.eventMessaging.LoggingEvent;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
@@ -13,27 +16,24 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class RegressionLogger {
 
     private final ExtentTest extentLogger;
     private final boolean isSuite;
-    private List<LoggingEvent> events;
+    private final static Logger regressionLogger = (Logger) LoggerFactory.getLogger("RegressionLogger");
 
     public RegressionLogger(ExtentTest extentLogger, boolean isSuite) {
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
-        this.events = new ArrayList<>();
     }
 
-    public synchronized static RegressionLogger getFirstAvailableLogger(){
+    public synchronized static RegressionLogger getFirstAvailableLogger() {
         String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
         String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
         String xmlName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME));
@@ -41,19 +41,19 @@ public class RegressionLogger {
         dto.setClassName(className);
         dto.setTestName(testName);
 
-        if(ReportManager.getTest(dto) != null){
+        if (ReportManager.getTest(dto) != null) {
             return getTestLogger();
         }
 
-        if(ReportManager.getClass(className) != null){
+        if (ReportManager.getClass(className) != null) {
             return getTestClassLogger();
         }
 
-        if(ReportManager.getXMLTest(xmlName) != null){
+        if (ReportManager.getXMLTest(xmlName) != null) {
             return getXMLTestLogger();
         }
 
-        throw new UnexpectedTerminationException("Could not find a suitable logger at the moment (XMLTestLogger: "+xmlName+", ClassTestLogger: "+className+", TestLogger: "+dto.getTestName()+"), please check if the test is initialized.");
+        throw new UnexpectedTerminationException("Could not find a suitable logger at the moment (XMLTestLogger: " + xmlName + ", ClassTestLogger: " + className + ", TestLogger: " + dto.getTestName() + "), please check if the test is initialized.");
 
     }
 
@@ -61,7 +61,7 @@ public class RegressionLogger {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(testMethodName);
         dto.setClassName(testClassName);
-        ExtentTest extentTest = ReportManager.getTest(dto);
+        ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
         return new RegressionLogger(extentTest, ReportManager.isInitiated());
     }
 
@@ -69,27 +69,27 @@ public class RegressionLogger {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME)));
         dto.setClassName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME)));
-        ExtentTest extentTest = ReportManager.getTest(dto);
+        ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
         return new RegressionLogger(extentTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getTestClassLogger(String testClassName) {
-        ExtentTest extentClassTest = ReportManager.getClass(testClassName);
+        ExtentTest extentClassTest = ReportManager.getClass(testClassName).getExtentTest();
         return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getTestClassLogger() {
-        ExtentTest extentClassTest = ReportManager.getClass(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME)));
+        ExtentTest extentClassTest = ReportManager.getClass(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME))).getExtentTest();
         return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getXMLTestLogger(String xmlTestName) {
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(xmlTestName);
+        ExtentTest extentXMLTest = ReportManager.getXMLTest(xmlTestName).getExtentTest();
         return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getXMLTestLogger() {
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME)));
+        ExtentTest extentXMLTest = ReportManager.getXMLTest(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME))).getExtentTest();
         return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
@@ -213,44 +213,51 @@ public class RegressionLogger {
         return destinationFilePath;
     }
 
-    public static void print(Object message){
+    public <T extends IMaintainEventNames> LoggingEvent startEvent(T eventName) {
+        LoggingEvent event = LoggingEvent.newEvent(eventName.getEventName());
+        event.startEvent();
+        if (System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")) {
+            print(event.getCurrentStateMessage());
+        }
+
+        ReportManager.getClass(getTestClassName()).addEvent(eventName, event);
+        return event;
+    }
+
+    public <T extends IMaintainEventNames> void  logInstantEvent(T eventName, String eventMessage){
+        LoggingEvent startEvent = startEvent(eventName);
+        startEvent.updateEvent(eventMessage);
+        endEvent(startEvent);
+    }
+
+    public String endEvent(LoggingEvent event) {
+        if(event.getCurrentState() == LogEventState.STARTED){
+            event.endEvent();
+        }
+        if (System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")) {
+            print(event.getCurrentStateMessage());
+        }
+
+        return event.getCurrentStateMessage();
+    }
+
+    public static void print(Object message) {
         String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
         String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-        System.out.println("["+className+": "+testName+"] "+message);
+        System.out.println("[" + className + ": " + testName + "] " + message);
+        regressionLogger.info("[" + className + ": " + testName + "] " + message);
     }
 
-    public <T extends LoggingEvent> Optional<T> startEvent(Class<T> eventClassName){
-        T event = null;
-        try {
-            event = eventClassName.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            warn("Unable to create Event: "+eventClassName.getName(), e);
-        }
-        if(event != null){
-            event.startEvent();
-            if(System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")){
-                print(event.getCurrentState());
-            }
-        }
-
-        return Optional.ofNullable(event);
-    }
-
-    public <T extends LoggingEvent> String endEvent(T event){
-        event.endEvent();
-        if(System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")){
-            print(event.getCurrentState());
-        }
-
-        return event.getCurrentState();
-    }
-
-    public void enableEventLogging(){
+    public void enableEventLogging() {
         System.setProperty("logEventsInReports", "true");
 
     }
 
-    public void disableEventLogging(){
+    public void disableEventLogging() {
         System.setProperty("logEventsInReports", "false");
+    }
+
+    public <T extends IMaintainEventNames> LoggingEvent getEvent(T eventName) {
+        return ReportManager.getClass(getTestClassName()).getEvents().get(eventName);
     }
 }

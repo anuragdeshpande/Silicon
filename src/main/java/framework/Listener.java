@@ -4,6 +4,7 @@ import annotations.APITest;
 import annotations.AutomatedTest;
 import annotations.ClockMoveTest;
 import annotations.SmokeTest;
+import ch.qos.logback.classic.Logger;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -18,6 +19,8 @@ import framework.enums.FrameworkSystemTags;
 import framework.guidewire.ErrorMessageOnScreenException;
 import framework.guidewire.GuidewireInteract;
 import framework.logger.RegressionLogger;
+import framework.logger.eventMessaging.GWEvents;
+import framework.logger.regressionTestLogging.RegressionLogTemplates;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +28,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.LoggerFactory;
 import org.testng.*;
 import org.testng.annotations.Test;
 
@@ -42,6 +46,7 @@ public class Listener implements ISuiteListener, ITestListener {
 
     private ExtentReports extentReports;
     public boolean writeToDatabase;
+    private final Logger regressionLogger = (Logger) LoggerFactory.getLogger("EventLogger");
 
 
     // Fires at the beginning of each suite
@@ -70,7 +75,7 @@ public class Listener implements ISuiteListener, ITestListener {
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
         Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
         TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
-        ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0 ? testAnnotations[0].description() : null);
+        ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0 ? testAnnotations[0].description() : null).getExtentTest();
         AutomatedTest[] annotations = testMethod.getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
@@ -94,10 +99,11 @@ public class Listener implements ISuiteListener, ITestListener {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
 //        TestRuntimeDTO testRuntimeDTO = buildTestRuntimeDTOForTestStart(iTestResult.getTestContext());
 //        TestRuntimeDTO.setLiveStatusInDB(testRuntimeDTO.getPackageName(), testRuntimeDTO.getFullClassName(), false);
-        ExtentTest test = ReportManager.getTest(dto);
+        ExtentTest test = ReportManager.getTest(dto).getExtentTest();
         test.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         test.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         test.pass(iTestResult.getName() + ": Passed");
+        regressionLogger.info(RegressionLogTemplates.getLogTemplateForTestEndPass(iTestResult));
         if (writeToDatabase) {
             ReportManager.recordTestResult(iTestResult, Status.PASS.toString());
         } else {
@@ -110,7 +116,7 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestFailure(ITestResult iTestResult) {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
-        ExtentTest testNode = ReportManager.getTest(dto);
+        ExtentTest testNode = ReportManager.getTest(dto).getExtentTest();
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         try {
@@ -136,16 +142,21 @@ public class Listener implements ISuiteListener, ITestListener {
 
         if (iTestResult.getThrowable() instanceof KnownDefectException) {
             testNode.assignCategory(FrameworkSystemTags.ACTIVE_DEFECT.getValue());
-            ReportManager.getXMLTest(iTestResult.getTestContext().getCurrentXmlTest().getName()).warning("Test failed because of a known defect: " + iTestResult.getThrowable().getLocalizedMessage());
+            RegressionLogger.getTestClassLogger().logInstantEvent(GWEvents.FATAL_ISSUE, "Failing with "+FrameworkSystemTags.ACTIVE_DEFECT.getValue());
         }
 
         if (iTestResult.getThrowable() instanceof BlockedMessageQueueException) {
             testNode.assignCategory(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue());
+            RegressionLogger.getTestClassLogger().logInstantEvent(GWEvents.FATAL_ISSUE, "Failing with "+FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue());
             testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+            RegressionLogger.getTestClassLogger().logInstantEvent(GWEvents.FATAL_ISSUE, "Failing with "+FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
         }
         if (iTestResult.getThrowable() instanceof PotentialSystemIssueException) {
             testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+            RegressionLogger.getTestClassLogger().logInstantEvent(GWEvents.FATAL_ISSUE, "Failing with "+FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
         }
+
+        regressionLogger.info(RegressionLogTemplates.getLogTemplateForTestEndFailed(iTestResult));
 
         if (writeToDatabase) {
             ReportManager.recordTestResult(iTestResult, testNode.getStatus().toString());
@@ -158,7 +169,7 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
-        ExtentTest extentLogger = ReportManager.getTest(dto);
+        ExtentTest extentLogger = ReportManager.getTest(dto).getExtentTest();
         extentLogger.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         extentLogger.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         extentLogger.skip(iTestResult.getName() + ": Skipped");
@@ -170,6 +181,7 @@ public class Listener implements ISuiteListener, ITestListener {
                 System.out.println("Test " + dto.getTestName() + "has been Skipped. but, Build is marked as TestBuild, skipping recording results to db");
             }
         }
+        regressionLogger.info(RegressionLogTemplates.getLogTemplateForTestEndSkipped(iTestResult));
     }
 
     // fires when the test fails, but passes a certain test coverage percentage.
@@ -234,7 +246,7 @@ public class Listener implements ISuiteListener, ITestListener {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
-
+        dto.setPackageName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getPackage().getName());
         return dto;
     }
 

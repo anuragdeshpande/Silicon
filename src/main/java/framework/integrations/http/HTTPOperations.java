@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipException;
 
 public class HTTPOperations {
 
@@ -38,7 +39,15 @@ public class HTTPOperations {
 
             int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                br = new BufferedReader(new InputStreamReader(new GZIPInputStream(con.getInputStream())));
+                try{
+                    br = new BufferedReader(new InputStreamReader(new GZIPInputStream(con.getInputStream())));
+                } catch (ZipException e){
+                    if(e.getMessage().contains("Not in GZIP format")){
+                        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    } else {
+                        throw e;
+                    }
+                }
                 StringBuilder response = new StringBuilder();
                 while ((line = br.readLine()) != null) {
                     response.append(line);
@@ -53,6 +62,11 @@ public class HTTPOperations {
             mue.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        String s = makeGETRequest("http://ab10dev:8080/ab/service/rununittests?username=su&password=gw&testsuite=com.idfbins.ab.AllTestsSuite");
+        System.out.println(s);
     }
 
 

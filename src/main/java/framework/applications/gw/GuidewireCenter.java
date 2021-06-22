@@ -14,8 +14,7 @@ import framework.enums.Environments;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
-import framework.guidewire.events.LoginEvent;
-import framework.guidewire.events.LogoutEvent;
+import framework.guidewire.events.GWEvents;
 import framework.guidewire.pages.GWIDs;
 import framework.integrations.gwServices.adminImporter.AdminDataImporter;
 import framework.integrations.gwServices.debugToolsAPI.ab.ABDebugToolsAPI;
@@ -29,6 +28,7 @@ import framework.integrations.gwServices.debugToolsAPI.pc.PCDebugToolsAPIPortTyp
 import framework.integrations.gwServices.debugToolsAPI.pc.WsiAuthenticationException_Exception;
 import framework.integrations.gwServices.gosuScriptRunner.GosuScriptRunner;
 import framework.logger.RegressionLogger;
+import framework.logger.eventMessaging.LoggingEvent;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.DriverFactory;
 import framework.webdriver.PauseTest;
@@ -58,7 +58,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
@@ -151,7 +154,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             throw new IncorrectCallException("There is pending/Unsaved work. Please save/cancel before test can logout");
         }
         RegressionLogger logger = RegressionLogger.getFirstAvailableLogger();
-        Optional<LogoutEvent> logoutEvent = logger.startEvent(LogoutEvent.class);
+        LoggingEvent logoutEvent = logger.startEvent(GWEvents.LOGOUT);
         try{
             interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
         } catch (StaleElementReferenceException se){
@@ -161,7 +164,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             }
         }
         PauseTest.createInstance().until(ExpectedConditions.visibilityOfElementLocated(GWIDs.Login.LOGIN.getReference()), "Waiting for logout to complete");
-        logoutEvent.ifPresent(logger::endEvent);
+        logger.endEvent(logoutEvent);
     }
 
     public void forceLogout(){
@@ -237,7 +240,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     private void _login(String username, String password) {
         RegressionLogger testLogger = RegressionLogger.getTestLogger();
-        Optional<LoginEvent> loginEvent = testLogger.startEvent(LoginEvent.class);
+        LoggingEvent loginEvent = testLogger.startEvent(GWEvents.LOGIN);
         GuidewireInteract interact = getInteractObject();
         if (this.environment == null) {
             getLogger().info("Environment is not initialized. Opening Default environment");
@@ -264,7 +267,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
         PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
         testLogger.info("Logging in with: " + username);
-        loginEvent.ifPresent(testLogger::endEvent);
+        testLogger.endEvent(loginEvent);
     }
 
     protected void initiateService(BindingProvider provider, String userName, String password) {

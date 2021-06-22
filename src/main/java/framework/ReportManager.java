@@ -17,6 +17,7 @@ import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
 import framework.database.models.*;
 import framework.enums.FrameworkSystemTags;
+import framework.reports.models.LoggerDTO;
 import framework.reports.models.TestDetailsDTO;
 import framework.utils.fileFilters.JSONFileNameFilter;
 import framework.webdriver.ThreadFactory;
@@ -46,10 +47,10 @@ public class ReportManager {
     private static String INIT_SUITE_NAME;
 
     // Reporting Indices
-    private static HashMap<String, ExtentTest> xmlTestMap;
-    private static HashMap<String, ExtentTest> classMap;
-    private static HashMap<String, ExtentTest> testMap;
-    private static HashMap<String, ExtentTest> suiteMap;
+    private static HashMap<String, LoggerDTO> xmlTestMap;
+    private static HashMap<String, LoggerDTO> classMap;
+    private static HashMap<String, LoggerDTO> testMap;
+    private static HashMap<String, LoggerDTO> suiteMap;
 
     private static ExtentReports extentReports;
 
@@ -94,34 +95,34 @@ public class ReportManager {
         return extentReports;
     }
 
-    public static ExtentTest recordSuite(TestDetailsDTO dto) {
+    public static LoggerDTO recordSuite(TestDetailsDTO dto) {
         if (!suiteMap.containsKey(dto.getSuiteName())) {
             ExtentTest suite = extentReports.createTest("SuiteLogger - " + dto.getSuiteName());
             suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
-            suiteMap.put(dto.getSuiteName(), suite);
+            suiteMap.put(dto.getSuiteName(), new LoggerDTO(suite));
         }
 
         return suiteMap.get(dto.getSuiteName());
     }
 
-    public static ExtentTest recordClass(TestDetailsDTO dto) {
+    public static LoggerDTO recordClass(TestDetailsDTO dto) {
         String className = dto.getClassName();
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
-            ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).createNode(className);
+            ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(className);
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_CLASS_NAME, className);
             ThreadFactory.getInstance().getStorage().put(StringConstants.PACKAGE_NAME, dto.getPackageName());
             ThreadFactory.getInstance().getStorage().put(StringConstants.SUITE_NAME, dto.getSuiteName());
-            classMap.put(className, extentTestClass);
+            classMap.put(className, new LoggerDTO(extentTestClass));
         }
         return classMap.get(className);
     }
 
     @SuppressWarnings("Duplicates")
-    public static ExtentTest recordXMLTest(TestDetailsDTO dto) {
+    public static LoggerDTO recordXMLTest(TestDetailsDTO dto) {
         String xmlTestName = dto.getXmlTestName();
         if (!xmlTestMap.containsKey(xmlTestName)) {
             ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
-            xmlTestMap.put(xmlTestName, extentXMLTest);
+            xmlTestMap.put(xmlTestName, new LoggerDTO(extentXMLTest));
             ThreadFactory.getInstance().getStorage().put(StringConstants.XML_TEST_NAME, xmlTestName);
         }
 
@@ -129,11 +130,11 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    public static ExtentTest recordTest(TestDetailsDTO dto, String description) {
+    public static LoggerDTO recordTest(TestDetailsDTO dto, String description) {
         String testName = dto.getTestName();
         if (!testMap.containsKey(testName)) {
-            ExtentTest extentTest = xmlTestMap.get(dto.getXmlTestName()).createNode(dto.getTestName(), description);
-            testMap.put(testName, extentTest);
+            ExtentTest extentTest = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(dto.getTestName(), description);
+            testMap.put(testName, new LoggerDTO(extentTest));
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_NAME, testName);
         }
 
@@ -142,22 +143,22 @@ public class ReportManager {
     }
 
     public static void removeClass(String className) {
-        extentReports.removeTest(classMap.get(className));
+        extentReports.removeTest(classMap.get(className).getExtentTest());
     }
 
-    public static ExtentTest getTest(TestDetailsDTO dto) {
+    public static LoggerDTO getTest(TestDetailsDTO dto) {
         return testMap.get(dto.getTestName());
     }
 
-    public static ExtentTest getClass(String className) {
+    public static LoggerDTO getClass(String className) {
         return classMap.get(className);
     }
 
-    public static ExtentTest getXMLTest(String xmlTestName) {
+    public static LoggerDTO getXMLTest(String xmlTestName) {
         return xmlTestMap.get(xmlTestName);
     }
 
-    public static ExtentTest getSuite(String suiteName) {
+    public static LoggerDTO getSuite(String suiteName) {
         return suiteMap.get(suiteName);
     }
 
@@ -356,7 +357,7 @@ public class ReportManager {
             AutomationHistory historyAnnotation = historyAnnotations[0];
             tags.append(Joiner.on("|").join(historyAnnotation.StoryOrDefectNumbers())).append("|");
         }
-        List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
+        List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getExtentTest().getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
         tags.append(Joiner.on("|").join(testTags)).append("|");
         //noinspection RegExpEmptyAlternationBranch
 
