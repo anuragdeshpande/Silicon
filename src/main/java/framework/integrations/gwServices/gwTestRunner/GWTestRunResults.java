@@ -60,7 +60,11 @@ public class GWTestRunResults {
                 ExtentTest test = extentReports.createTest(testCase.getName());
                 test.getModel().setDescription("Package Name: "+testCase.getClassname().replaceAll("null\\(", "").replaceAll("\\)", ""));
                 test.getModel().setStartTime(testSuiteTimeStamp);
-                testSuiteTimeStamp = DateUtils.addMilliseconds(testSuiteTimeStamp, (int) (Double.parseDouble(testCase.getTime()) * 1000));
+                String timeTaken = "0";
+                if(testCase.getTime() != null){
+                    timeTaken = testCase.getTime();
+                }
+                testSuiteTimeStamp = DateUtils.addMilliseconds(testSuiteTimeStamp, (int) (Double.parseDouble(timeTaken) * 1000));
                 test.getModel().setEndTime(testSuiteTimeStamp);
                 if (testCase.getFailure().isEmpty() && testCase.getError().isEmpty()) {
                     test.pass(testCase.getName() + ": Passed");
@@ -118,7 +122,11 @@ public class GWTestRunResults {
                 Status status = Status.PASS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
                 DecimalFormat format = new DecimalFormat("000000.000");
-                int testRunTimeInMilliSeconds = (int)((Double.parseDouble(format.format(Double.parseDouble(testcase.getTime()))))*1000);
+                String timeTaken = "0";
+                if(testcase.getTime() != null){
+                    timeTaken = testcase.getTime();
+                }
+                int testRunTimeInMilliSeconds = (int)((Double.parseDouble(format.format(Double.parseDouble(timeTaken))))*1000);
                 Timestamp startTimeStamp = new Timestamp(testSuiteTimeStamp.getTime());
                 Timestamp endTimeStamp = new Timestamp(DateUtils.addMilliseconds(testSuiteTimeStamp, testRunTimeInMilliSeconds).getTime());
                 testSuiteTimeStamp = endTimeStamp;
