@@ -299,11 +299,11 @@ public class ReportManager {
 
 
     public static void recordPartitionGWApplicationSuiteResults(String buildUUID) {
-        TestCountDTO pcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.PC.getFullName());
-        TestCountDTO bcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.BC.getFullName());
-        TestCountDTO ccTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.CC.getFullName());
-        TestCountDTO abTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.AB.getFullName());
-        TestCountDTO portalsTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL.getFullName());
+        TestCountDTO pcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.PC);
+        TestCountDTO bcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.BC);
+        TestCountDTO ccTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.CC);
+        TestCountDTO abTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.AB);
+        TestCountDTO portalsTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL);
 
         String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
         String reportPath = getReportPath();
