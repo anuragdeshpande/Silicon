@@ -16,6 +16,7 @@ import com.google.common.base.Joiner;
 import framework.constants.StringConstants;
 import framework.database.ConnectionManager;
 import framework.database.models.*;
+import framework.enums.ApplicationNames;
 import framework.enums.FrameworkSystemTags;
 import framework.reports.models.LoggerDTO;
 import framework.reports.models.TestDetailsDTO;
@@ -296,6 +297,36 @@ public class ReportManager {
 
     }
 
+
+    public static void recordPartitionGWApplicationSuiteResults(String buildUUID) {
+        TestCountDTO pcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.PC.getFullName());
+        TestCountDTO bcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.BC.getFullName());
+        TestCountDTO ccTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.CC.getFullName());
+        TestCountDTO abTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.AB.getFullName());
+        TestCountDTO portalsTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL.getFullName());
+
+        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+        String reportPath = getReportPath();
+        //PC
+        insertIntoSuiteResults(buildSuiteDTO(pcTestCountDTO, ApplicationNames.PC.getFullName(), "PC_UITests", jenkinsBuildNumber, reportPath));
+
+        //BC
+        insertIntoSuiteResults(buildSuiteDTO(bcTestCountDTO, ApplicationNames.BC.getFullName(), "BC_UITests", jenkinsBuildNumber, reportPath));
+
+        //CC
+        insertIntoSuiteResults(buildSuiteDTO(ccTestCountDTO, ApplicationNames.CC.getFullName(), "CC_UITests", jenkinsBuildNumber, reportPath));
+
+        //AB
+        insertIntoSuiteResults(buildSuiteDTO(abTestCountDTO, ApplicationNames.AB.getFullName(), "AB_UITests", jenkinsBuildNumber, reportPath));
+
+        //Portals
+        insertIntoSuiteResults(buildSuiteDTO(portalsTestCountDTO, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL.getFullName(), "AMP_UITests", jenkinsBuildNumber, reportPath));
+    }
+
+    private static SuiteResultsDTO buildSuiteDTO(TestCountDTO dto, String applicationName, String suiteName, String jenkinsBuildNumber, String reportPath){
+        return SuiteResultsDTO.createInstance(applicationName, dto.getPassCount(), dto.getFailCount(), dto.getSkipCount(), dto.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
+    }
+
     public static boolean insertIntoSuiteResults(SuiteResultsDTO suiteResultsDTO) {
         QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
@@ -351,7 +382,7 @@ public class ReportManager {
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.FeatureNumber()).append("|");
         tags.append("SD_").append(automatedAnnotation.StoryOrDefectNumber()).append("|");
-        tags.append(Joiner.on("|").join(Arrays.stream(automatedAnnotation.Themes()).map(s -> s = "TH_"+s).collect(Collectors.toList()))).append("|");
+        tags.append(Joiner.on("|").join(Arrays.stream(automatedAnnotation.Themes()).map(s -> s = "TH_" + s).collect(Collectors.toList()))).append("|");
 
         if (historyAnnotations.length > 0) {
             AutomationHistory historyAnnotation = historyAnnotations[0];
@@ -475,7 +506,7 @@ public class ReportManager {
                         || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
                         || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
         if (count > 0) {
-           fatalTestCounter++;
+            fatalTestCounter++;
         }
 
         return fatalTestCounter;
