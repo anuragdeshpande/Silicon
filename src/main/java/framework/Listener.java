@@ -46,6 +46,7 @@ public class Listener implements ISuiteListener, ITestListener {
 
     private ExtentReports extentReports;
     public boolean writeToDatabase;
+    public boolean skipSuiteWriteToDB;
     private final Logger regressionLogger = (Logger) LoggerFactory.getLogger("EventLogger");
 
 
@@ -57,6 +58,7 @@ public class Listener implements ISuiteListener, ITestListener {
         String suiteName = iSuite.getName();
         this.extentReports = ReportManager.initiate(suiteName + "_" + timeStamp);
         writeToDatabase = !suiteName.equalsIgnoreCase("Default Suite") && System.getProperty("MarkAsTestBuild", "true").equalsIgnoreCase("false");
+        this.skipSuiteWriteToDB = Boolean.parseBoolean(System.getProperty("SkipSuiteDBWrite", "false"));
     }
 
 
@@ -219,10 +221,14 @@ public class Listener implements ISuiteListener, ITestListener {
             LocalTime endTime = test.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
             System.out.println(test.getFullName() + ": " + Duration.between(startTime, endTime).toMinutes() + " minute(s)");
         });
-        if (this.writeToDatabase) {
+        if (this.writeToDatabase && !this.skipSuiteWriteToDB) {
             ReportManager.recordSuiteResults(iSuite);
         } else {
             System.out.println("Suite complete. But, Build is marked as TestBuild, skipping recording suite results to db");
+        }
+
+        if(Boolean.parseBoolean(System.getProperty("SplitSuitesAtEnd", "false"))){
+            ReportManager.recordPartitionGWApplicationSuiteResults(System.getProperty("UUID"));
         }
     }
 
