@@ -49,7 +49,7 @@ public class TestCountDTO {
         QueryRunner testNGReportingServer = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         List<StatusResultDTO> resultDTOS;
         try {
-            resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' and Tags contains '"+applicationName+"' group by t.TestStatus",
+            resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' and Tags like '%"+applicationName.getFullName()+"%' group by t.TestStatus",
                     new BeanListHandler<>(StatusResultDTO.class));
         } catch (SQLException e) {
             throw new RuntimeException(e);
