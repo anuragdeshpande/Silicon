@@ -2,6 +2,7 @@ package framework.database.models;
 
 import com.aventstack.extentreports.Status;
 import framework.database.ConnectionManager;
+import framework.enums.ApplicationNames;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
@@ -23,6 +24,32 @@ public class TestCountDTO {
         List<StatusResultDTO> resultDTOS;
         try {
             resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' and SuiteName= '"+suiteName+"' group by t.TestStatus",
+                    new BeanListHandler<>(StatusResultDTO.class));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        HashMap<Status, Integer> map = StatusResultDTO.convertToStatusMap(resultDTOS);
+        int passTestCount = map.get(Status.PASS);
+        int failTestCount = map.get(Status.FAIL);
+        int skipTestCount = map.get(Status.SKIP);
+        int warningTestCount = map.get(Status.WARNING);
+
+        TestCountDTO testCountDTO = new TestCountDTO();
+        testCountDTO.setPassCount(passTestCount);
+        testCountDTO.setFailCount(failTestCount);
+        testCountDTO.setSkipCount(skipTestCount);
+        testCountDTO.setWarningCount(warningTestCount);
+
+        return testCountDTO;
+    }
+
+
+    public static TestCountDTO getTestCountDataFor(String uuid, ApplicationNames applicationName){
+        QueryRunner testNGReportingServer = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        List<StatusResultDTO> resultDTOS;
+        try {
+            resultDTOS = testNGReportingServer.query("select t.TestStatus as testStatus, count(TestStatus) as testCount from TestResults t where t.UUID = '" + uuid + "' and Tags contains '"+applicationName+"' group by t.TestStatus",
                     new BeanListHandler<>(StatusResultDTO.class));
         } catch (SQLException e) {
             throw new RuntimeException(e);
