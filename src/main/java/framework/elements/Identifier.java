@@ -12,6 +12,7 @@ public class Identifier extends GenericIdentifier {
     private String friendlyName;
     private boolean ignoreTableLVCheck = true;
     private int timeoutInSeconds;
+    private String optionalLookupMessage;
 
     protected Identifier(){
         setDefaultTimeout();
@@ -86,5 +87,12 @@ public class Identifier extends GenericIdentifier {
         this.timeoutInSeconds = ((int) DriverFactory.getReactionTime().getTime());
     }
 
+    public String getOptionalLookupMessage() {
+        return optionalLookupMessage;
+    }
 
+    public Identifier setOptionalLookupMessage(String optionalLookupMessage) {
+        this.optionalLookupMessage = optionalLookupMessage;
+        return this;
+    }
 }

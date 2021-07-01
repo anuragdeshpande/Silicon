@@ -44,7 +44,6 @@ public class UIElement implements IUIElementOperations {
         this.identifier = identifier;
         this.elementLocation = identifier.getReference();
         this.element = findOptional(identifier, reactionTime);
-
     }
 
     public UIElement(WebElement element) {
@@ -163,7 +162,9 @@ public class UIElement implements IUIElementOperations {
         } catch (Exception e) {
             String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
             String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-            System.out.println("["+className+": "+testName+"]Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
+            if(!identifier.getOptionalLookupMessage().isEmpty()){
+                System.out.println("["+className+": "+testName+"]Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
+            }
             if(System.getProperty("jenkinsBuildNumber") != null) {
                 interact.withDOM().clearBannerMessage();
             }
