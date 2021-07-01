@@ -308,19 +308,28 @@ public class ReportManager {
         String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
         String reportPath = getReportPath();
         //PC
-        insertIntoSuiteResults(buildSuiteDTO(pcTestCountDTO, ApplicationNames.PC.getFullName(), "PC_UITests", jenkinsBuildNumber, reportPath));
+        updateExistingOrInsertSuiteDTO(buildUUID, pcTestCountDTO, ApplicationNames.PC, "PC_UITests", jenkinsBuildNumber, reportPath);
 
         //BC
-        insertIntoSuiteResults(buildSuiteDTO(bcTestCountDTO, ApplicationNames.BC.getFullName(), "BC_UITests", jenkinsBuildNumber, reportPath));
+        updateExistingOrInsertSuiteDTO(buildUUID, bcTestCountDTO, ApplicationNames.BC, "BC_UITests", jenkinsBuildNumber, reportPath);
 
         //CC
-        insertIntoSuiteResults(buildSuiteDTO(ccTestCountDTO, ApplicationNames.CC.getFullName(), "CC_UITests", jenkinsBuildNumber, reportPath));
+        updateExistingOrInsertSuiteDTO(buildUUID, ccTestCountDTO, ApplicationNames.CC, "CC_UITests", jenkinsBuildNumber, reportPath);
 
         //AB
-        insertIntoSuiteResults(buildSuiteDTO(abTestCountDTO, ApplicationNames.AB.getFullName(), "AB_UITests", jenkinsBuildNumber, reportPath));
+        updateExistingOrInsertSuiteDTO(buildUUID, abTestCountDTO, ApplicationNames.AB, "AB_UITests", jenkinsBuildNumber, reportPath);
 
         //Portals
-        insertIntoSuiteResults(buildSuiteDTO(portalsTestCountDTO, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL.getFullName(), "AMP_UITests", jenkinsBuildNumber, reportPath));
+        updateExistingOrInsertSuiteDTO(buildUUID, portalsTestCountDTO, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL, "AMP_UITests", jenkinsBuildNumber, reportPath);
+    }
+
+    private static void updateExistingOrInsertSuiteDTO(String uuid, TestCountDTO dto, ApplicationNames applicationName, String suiteName, String jenkinsBuildNumber, String reportPath){
+        Optional<SuiteResultsDTO> amp_uiTests = SuiteResultsDTO.getExisting(uuid, applicationName.getFullName(), suiteName);
+        if(!amp_uiTests.isPresent()){
+            insertIntoSuiteResults(buildSuiteDTO(dto, applicationName.getFullName(), suiteName, jenkinsBuildNumber, reportPath));
+        } else {
+            updateSuiteResults(SuiteResultsDTO.updateExisting(dto, amp_uiTests.get()));
+        }
     }
 
     private static SuiteResultsDTO buildSuiteDTO(TestCountDTO dto, String applicationName, String suiteName, String jenkinsBuildNumber, String reportPath){
