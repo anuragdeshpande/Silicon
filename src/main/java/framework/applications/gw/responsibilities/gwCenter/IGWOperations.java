@@ -10,6 +10,8 @@ public interface IGWOperations {
 
     void openEnvironment(Environment environment);
 
+    void openCurrentEnvironmentURL();
+
     void openDefaultEnvironment();
 
     GuidewireInteract getInteractObject();
