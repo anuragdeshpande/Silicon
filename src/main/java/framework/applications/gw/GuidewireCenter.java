@@ -3,14 +3,12 @@ package framework.applications.gw;
 import framework.applications.Application;
 import framework.applications.gw.responsibilities.gwCenter.*;
 import framework.constants.ReactionTime;
-import framework.customExceptions.AccountLockedOrDisabledException;
-import framework.customExceptions.EnvironmentNotAvailableException;
-import framework.customExceptions.IncorrectCallException;
-import framework.customExceptions.InvalidLoginException;
+import framework.customExceptions.*;
 import framework.database.ConnectionManager;
 import framework.elements.ui_element.UIElement;
 import framework.enums.ApplicationNames;
 import framework.enums.Environments;
+import framework.enums.FrameworkSystemTags;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
@@ -116,8 +114,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LEVELS).select(logLevel.name());
         if (interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL, ReactionTime.MOMENTARY).isPresent()) {
             interact.withElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).click();
+            RegressionLogger.getTestLogger().info("Loggers for: "+loggerName+" Set to: "+logLevel.name());
         } else {
-            System.out.println("System already at " + logLevel.name() + " for Logger: " + loggerName);
+            RegressionLogger.getTestLogger().info("System already at " + logLevel.name() + " for Logger: " + loggerName);
         }
 
         serverPages.returnToCenter();
@@ -222,6 +221,15 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     @Override
+    public void openCurrentEnvironmentURL() {
+        if(this.environment != null){
+            getInteractObject().getDriver().get(environment.getEnvironmentUrl());
+        } else {
+            throw new UnexpectedTerminationException("No Environment settings were found, please use openEnvironment() or openDefaultEnvironment() instead.");
+        }
+    }
+
+    @Override
     public boolean isUp() {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(environment.getEnvironmentUrl());
@@ -306,26 +314,31 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         Validate.isTrue(canMoveClock(), "This environment is not a clock move environment");
         GuidewireInteract interact = getInteractObject();
         XMLGregorianCalendar convertDateToXMLGregCal = convertDateToXMLGregCal(date);
+        RegressionLogger logger = RegressionLogger.getTestLogger();
+        logger.addTag(FrameworkSystemTags.CLOCK_MOVED.getValue());
         try {
             // Moving PC clock
             PCDebugToolsAPIPortType pcDebugToolsAPI = getPCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving PC Clock to: " + date);
             pcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal, getComputerName());
-
+            logger.info("Moved Clock in PC : " + date);
             // Moving CC clock
             CCDebugToolsAPIPortType ccDebugToolsAPI = getCCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving CC Clock to: " + date);
             ccDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
+            logger.info("Moved Clock in CC : " + date);
 
             // Moving BC clock
             BCDebugToolsAPIPortType bcDebugToolsAPI = getBCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving BC Clock to: " + date);
             bcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
+            logger.info("Moved Clock in BC : " + date);
 
             // Moving AB clock
             ABDebugToolsAPIPortType abDebugToolsAPI = getABDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving AB Clock to: " + date);
             abDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
+            logger.info("Moved Clock in AB : " + date);
 
         } catch (WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.cc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.bc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.ab.WsiAuthenticationException_Exception e) {
             getLogger().fail(e);
