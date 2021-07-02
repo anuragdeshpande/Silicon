@@ -6,6 +6,8 @@ import framework.logger.RegressionLogger;
 import framework.webdriver.DriverFactory;
 import org.openqa.selenium.By;
 
+import java.util.Optional;
+
 public class Identifier extends GenericIdentifier {
     private By reference;
     private boolean canThrowWarning;
@@ -87,8 +89,8 @@ public class Identifier extends GenericIdentifier {
         this.timeoutInSeconds = ((int) DriverFactory.getReactionTime().getTime());
     }
 
-    public String getOptionalLookupMessage() {
-        return optionalLookupMessage;
+    public Optional<String> getOptionalLookupMessage() {
+        return Optional.ofNullable(optionalLookupMessage);
     }
 
     public Identifier setOptionalLookupMessage(String optionalLookupMessage) {
