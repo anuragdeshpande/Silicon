@@ -8,7 +8,8 @@ public enum FrameworkSystemTags {
     BLOCKED_MESSAGE_QUEUE("BlockedMessageQueue"),
     POTENTIAL_SYSTEM_FAILURE("PotentialSystemFailure"),
     ERROR_ON_SCREEN("ErrorOnScreen"),
-    ACTIVE_DEFECT("ActiveDefect");
+    ACTIVE_DEFECT("ActiveDefect"),
+    CLOCK_MOVED("ClockMoved");
 
 
     private final String value;
