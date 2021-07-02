@@ -7,6 +7,7 @@ import framework.customExceptions.NotInitializedException;
 import framework.elements.Identifier;
 import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
+import framework.logger.RegressionLogger;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.PauseTest;
 import framework.webdriver.ThreadFactory;
@@ -162,9 +163,9 @@ public class UIElement implements IUIElementOperations {
         } catch (Exception e) {
             String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
             String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-            if(!identifier.getOptionalLookupMessage().isEmpty()){
-                System.out.println("["+className+": "+testName+"]Optional Element ("+identifier.getFriendlyName()+") not found at location: " + elementLocation);
-            }
+            identifier.getOptionalLookupMessage().ifPresent(message -> {
+                RegressionLogger.getTestLogger().info(("[" + className + ": " + testName + "] Optional Element (" + message + ")"));
+            });
             if(System.getProperty("jenkinsBuildNumber") != null) {
                 interact.withDOM().clearBannerMessage();
             }
