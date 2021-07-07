@@ -192,4 +192,8 @@ public class Environment extends GenericEnvironment {
 
         return resolvedEnvironment;
     }
+
+    public Environment newInstance(String environmentUrl, boolean hasRoundTripDocumentSupport, boolean canMoveClock, DBConnectionDTO dbConnectionDetails, ApplicationNames applicationName){
+        return new Environment(environmentUrl, hasRoundTripDocumentSupport, canMoveClock, dbConnectionDetails, Environments.OTHER, applicationName);
+    }
 }
