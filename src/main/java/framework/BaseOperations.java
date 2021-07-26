@@ -32,7 +32,7 @@ public class BaseOperations {
     protected ExtentReports reports;
     private String suiteName;
 
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public void beforeSuite(XmlTest xmlTest, ITestContext context) {
         String suiteName = context.getSuite().getName();
         if (!ReportManager.isInitiated()) {
@@ -41,7 +41,7 @@ public class BaseOperations {
         }
     }
 
-    @BeforeTest(description = "BeforeTest")
+    @BeforeTest(description = "BeforeTest", alwaysRun = true)
     public void beforeTest(ITestContext context, XmlTest xmlTest) {
         String xmlTestName = xmlTest.getName();
         TestDetailsDTO dto = new TestDetailsDTO();
@@ -52,7 +52,7 @@ public class BaseOperations {
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
 
-    @BeforeClass(description = "BeforeClass")
+    @BeforeClass(description = "BeforeClass", alwaysRun = true)
     public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
         TestDetailsDTO dto = new TestDetailsDTO();
         dto.setClassName(this.getClass().getSimpleName());
@@ -65,7 +65,7 @@ public class BaseOperations {
         }
     }
 
-    @BeforeMethod(description = "BeforeMethod")
+    @BeforeMethod(description = "BeforeMethod", alwaysRun = true)
     public void beforeMethod(Method method, ITestResult iTestResult) {
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving method name to cache");
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
@@ -91,7 +91,7 @@ public class BaseOperations {
         BrowserFactory.getCurrentBrowser().withDOM().clearBannerMessage();
     }
 
-    @AfterMethod(description = "AfterMethod")
+    @AfterMethod(description = "AfterMethod", alwaysRun = true)
     public void afterMethod(ITestResult iTestResult) {
         // update test case if the method is tracked
         Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
@@ -129,7 +129,7 @@ public class BaseOperations {
         }
     }
 
-    @AfterClass(description = "AfterClass")
+    @AfterClass(description = "AfterClass", alwaysRun = true)
     public void afterClass(ITestContext context, XmlTest xmlTest) {
         if(ThreadFactory.getInstance().getDriver() != null){
             RegressionLogger.getTestClassLogger().info("Closing browser");
@@ -144,12 +144,12 @@ public class BaseOperations {
 
     }
 
-    @AfterTest(description = "AfterTest")
+    @AfterTest(description = "AfterTest", alwaysRun = true)
     public void afterTest(ITestContext context, XmlTest xmlTest) {
 
     }
 
-    @AfterSuite(description = "AfterSuite")
+    @AfterSuite(description = "AfterSuite", alwaysRun = true)
     public void afterSuite(XmlTest xmlTest, ITestContext context){
         BrowserFactory.closeAllWindows();
         if(this.suiteName != null && this.suiteName.startsWith("BO Init_")){

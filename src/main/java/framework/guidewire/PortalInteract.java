@@ -9,7 +9,6 @@ import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import framework.webdriver.PauseTest;
 import framework.webdriver.interactionContracts.ICanInteractWithTable;
-import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -36,7 +35,7 @@ public class PortalInteract extends Interact implements ICanInteractWithTable<Po
 
     @Override
     public UICheckbox withCheckbox(Identifier identifier) {
-        throw new NotImplementedException("This feature is not yet implemented. If this is a required, please raise a ticket on git.idfbins.com under the project.");
+        return new UICheckbox(identifier);
     }
 
     @Override

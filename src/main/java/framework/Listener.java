@@ -253,6 +253,7 @@ public class Listener implements ISuiteListener, ITestListener {
         dto.setTestName(iTestResult.getMethod().getConstructorOrMethod().getMethod().getName());
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
         dto.setPackageName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getPackage().getName());
+        dto.setXmlTestName(iTestResult.getTestContext().getCurrentXmlTest().getName());
         return dto;
     }
 
