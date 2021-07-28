@@ -41,10 +41,18 @@ public class GWElement extends UIElement {
         super(element);
     }
 
+    public boolean isDisabled(){
+        String attribute = this.getElement().getAttribute("aria-disabled");
+        return attribute!= null && attribute.equalsIgnoreCase("true");
+    }
+
     @Override
     public void click() {
         PauseTest.waitForPageToLoad();
-        if (!this.isPresent()) {
+        if (!this.isPresent() || this.isDisabled()) {
+            if(this.isDisabled()){
+                RegressionLogger.getTestLogger().fail("Element: "+identifier.getFriendlyName()+" is disabled at the moment");
+            }
             throw new IncorrectCallException("Element "+identifier.getFriendlyName()+" is not clickable.");
         }
 
