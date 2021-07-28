@@ -72,6 +72,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     protected String currentUsername;
     protected String currentPassword;
     private String bcUrl, abUrl, ccUrl, pcUrl;
+    private boolean skipWaitOnLogin = false;
 
     public GuidewireCenter() {
         super();
@@ -196,7 +197,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
             String currentUrl = interact.getDriver().getCurrentUrl();
-            if (isCurrentCenterOpen()) {
+            if (!isCurrentCenterOpen()) {
                 PauseTest.waitForPageToLoad();
                 if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
                     forceLogout();
@@ -258,22 +259,25 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.USER_NAME).fill(username);
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
-        try{
-            PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.id("Login-LoginScreen-2")), "Waiting for login to complete");
-        } catch (TimeoutException te){
-            UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
-            if (loginIssues.isPresent()) {
-                if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
-                    throw new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password);
-                }
 
-                if (loginIssues.getElement().getText().contains("Locked")) {
-                    throw new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password);
+        if(!this.skipWaitOnLogin) {
+            try {
+                PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.id("Login-LoginScreen-2")), "Waiting for login to complete");
+            } catch (TimeoutException te) {
+                UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
+                if (loginIssues.isPresent()) {
+                    if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
+                        throw new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password);
+                    }
+
+                    if (loginIssues.getElement().getText().contains("Locked")) {
+                        throw new AccountLockedOrDisabledException("Unable to login with Username: " + username + " and Password " + password);
+                    }
                 }
             }
+            PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
         }
 
-        PauseTest.waitForPageToLoad(ReactionTime.getInstance(60, TimeUnit.SECONDS));
         testLogger.info("Logging in with: " + username);
         testLogger.endEvent(loginEvent);
     }
@@ -502,5 +506,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         this.pcUrl = pcUrl;
     }
 
-
+    public void setSkipWaitOnLogin(boolean skipWaitOnLogin) {
+        this.skipWaitOnLogin = skipWaitOnLogin;
+    }
 }
