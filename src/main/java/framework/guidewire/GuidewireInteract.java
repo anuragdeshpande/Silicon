@@ -89,7 +89,7 @@ public class GuidewireInteract extends Interact {
     }
 
     @Override
-    public UIElement withOptionalElement(Identifier identifier, ReactionTime reactionTime) {
+    public GWElement withOptionalElement(Identifier identifier, ReactionTime reactionTime) {
         return new GWElement(identifier, reactionTime);
     }
 
