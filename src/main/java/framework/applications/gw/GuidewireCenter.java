@@ -73,6 +73,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     protected String currentPassword;
     private String bcUrl, abUrl, ccUrl, pcUrl;
     private boolean skipWaitOnLogin = false;
+    private boolean skipLogoutIfAlreadyOpen = false;
 
     public GuidewireCenter() {
         super();
@@ -197,7 +198,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
             String currentUrl = interact.getDriver().getCurrentUrl();
-            if (!isCurrentCenterOpen()) {
+            if (isCurrentCenterOpen() && !skipLogoutIfAlreadyOpen) {
                 PauseTest.waitForPageToLoad();
                 if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
                     forceLogout();
@@ -508,5 +509,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public void setSkipWaitOnLogin(boolean skipWaitOnLogin) {
         this.skipWaitOnLogin = skipWaitOnLogin;
+    }
+
+    public void setSkipLogoutIfAlreadyOpen(boolean skipLogoutIfAlreadyOpen) {
+        this.skipLogoutIfAlreadyOpen = skipLogoutIfAlreadyOpen;
     }
 }
