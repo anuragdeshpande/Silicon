@@ -4,6 +4,7 @@ import framework.constants.ReactionTime;
 import framework.constants.StringConstants;
 import framework.customExceptions.ElementNotFoundException;
 import framework.customExceptions.NotInitializedException;
+import framework.customExceptions.UnexpectedTerminationException;
 import framework.elements.Identifier;
 import framework.elements.UninitializedIdentifier;
 import framework.guidewire.GuidewireInteract;
@@ -20,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 
 public class UIElement implements IUIElementOperations {
     private WebElement element;
-    private boolean isOptional = false;
+    protected boolean isOptional = false;
     protected Identifier identifier;
 
     // although reference is part of identifier, declaring again for child classes to override if there is a need.
@@ -28,7 +29,7 @@ public class UIElement implements IUIElementOperations {
 
     public UIElement(Identifier identifier) {
         PauseTest.waitForPageToLoad();
-        if(identifier instanceof UninitializedIdentifier){
+        if (identifier instanceof UninitializedIdentifier) {
             throw new NotInitializedException("This element has not yet been migrated. Please get the latest reference from the UI");
         }
         this.identifier = identifier;
@@ -38,7 +39,7 @@ public class UIElement implements IUIElementOperations {
     }
 
     public UIElement(Identifier identifier, ReactionTime reactionTime) {
-        if(identifier instanceof UninitializedIdentifier){
+        if (identifier instanceof UninitializedIdentifier) {
             throw new NotInitializedException("This element has not yet been migrated. Please get the latest reference from the UI");
         }
         this.isOptional = true;
@@ -58,7 +59,7 @@ public class UIElement implements IUIElementOperations {
             this.getElement().click();
 //            System.out.println("Clicked Element: " + this.elementLocation);
         } else {
-            Assert.fail("Element is not Clickable");
+            throw new UnexpectedTerminationException("Element is not Clickable");
         }
     }
 
@@ -69,7 +70,7 @@ public class UIElement implements IUIElementOperations {
             this.getElement().click();
 //            System.out.println("Double Clicked the element: " + elementLocation);
         } else {
-            Assert.fail("Element is not Clickable");
+            throw new UnexpectedTerminationException("Element is not Clickable");
         }
     }
 
@@ -108,7 +109,7 @@ public class UIElement implements IUIElementOperations {
             this.element.isEnabled();
             return element;
         } catch (Exception e) {
-            if(this.elementLocation == null){
+            if (this.elementLocation == null) {
                 throw new RuntimeException("The original element was a WebElement. Please change implementation to use Identifer from the framework");
             }
             return this.isOptional ? findOptional(identifier, ReactionTime.MOMENTARY) : findElement(identifier);
@@ -125,7 +126,7 @@ public class UIElement implements IUIElementOperations {
             try {
                 element = waitUtils.waitUntilElementIsClickable(identifier.getReference(), identifier.getTimeout());
             } catch (TimeoutException e) {
-                throw new ElementNotFoundException("Element: "+identifier.getFriendlyName()+" was not found after waiting for approx "+identifier.getTimeout()*2+" seconds", e);
+                throw new ElementNotFoundException("Element: " + identifier.getFriendlyName() + " was not found after waiting for approx " + identifier.getTimeout() * 2 + " seconds", e);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,7 +137,7 @@ public class UIElement implements IUIElementOperations {
         if (!element.isEnabled()) {
             String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
             String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-            System.out.println("["+className+": "+testName+"] Element is not Enabled");
+            System.out.println("[" + className + ": " + testName + "] Element is not Enabled");
         }
 
         this.element = element;
@@ -146,8 +147,8 @@ public class UIElement implements IUIElementOperations {
 
     private WebElement findOptional(Identifier identifier, ReactionTime reactionTime) {
         GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
-        if(System.getProperty("jenkinsBuildNumber") != null){
-            interact.withDOM().injectInfoMessage("Waiting for Optional Element: "+identifier.getFriendlyName()+" for "+reactionTime.getTime()+" "+reactionTime.getTimeUnit().name());
+        if (System.getProperty("jenkinsBuildNumber") != null) {
+            interact.withDOM().injectInfoMessage("Waiting for Optional Element: " + identifier.getFriendlyName() + " for " + reactionTime.getTime() + " " + reactionTime.getTimeUnit().name());
         }
         try {
             WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
@@ -166,7 +167,7 @@ public class UIElement implements IUIElementOperations {
             identifier.getOptionalLookupMessage().ifPresent(message -> {
                 RegressionLogger.getTestLogger().info(("[" + className + ": " + testName + "] Optional Element (" + message + ")"));
             });
-            if(System.getProperty("jenkinsBuildNumber") != null) {
+            if (System.getProperty("jenkinsBuildNumber") != null) {
                 interact.withDOM().clearBannerMessage();
             }
             return null;
@@ -179,33 +180,33 @@ public class UIElement implements IUIElementOperations {
         return LocalDate.parse(screenGrab(), DateTimeFormatter.ofPattern(pattern));
     }
 
-    public void scrollToTop(){
+    public void scrollToTop() {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+ getElement().getAttribute("id")+"\").scrollTop -= document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + getElement().getAttribute("id") + "\").scrollTop -= document.getElementById(\"" + getElement().getAttribute("id") + "\").scrollHeight");
     }
 
-    public void scrollToTop(String id){
+    public void scrollToTop(String id) {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollTop -= document.getElementById(\""+id+"\").scrollHeight");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + id + "\").scrollTop -= document.getElementById(\"" + id + "\").scrollHeight");
     }
 
-    public void scrollToBottom(){
+    public void scrollToBottom() {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollTop += document.getElementById(\""+getElement().getAttribute("id")+"\").scrollHeight");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + getElement().getAttribute("id") + "\").scrollTop += document.getElementById(\"" + getElement().getAttribute("id") + "\").scrollHeight");
     }
 
-    public void scrollToBottom(String id){
+    public void scrollToBottom(String id) {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollTop += document.getElementById(\""+id+"\").scrollHeight");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + id + "\").scrollTop += document.getElementById(\"" + id + "\").scrollHeight");
     }
 
-    public void scrollIntoView(){
+    public void scrollIntoView() {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+getElement().getAttribute("id")+"\").scrollIntoViewIfNeeded()");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + getElement().getAttribute("id") + "\").scrollIntoViewIfNeeded()");
     }
 
-    public void scrollIntoView(String id){
+    public void scrollIntoView(String id) {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
-        ((JavascriptExecutor) driver).executeScript("document.getElementById(\""+id+"\").scrollIntoViewIfNeeded()");
+        ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + id + "\").scrollIntoViewIfNeeded()");
     }
 }
