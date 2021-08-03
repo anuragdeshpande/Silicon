@@ -14,7 +14,7 @@ public class GWIDs {
     public static class Login{
         public static final Identifier USER_NAME = new Identifier(By.name("Login-LoginScreen-LoginDV-username"), "Login Username");
         public static final Identifier PASSWORD = new Identifier(By.name("Login-LoginScreen-LoginDV-password"), "Login Password");
-        public static final Identifier LOGIN = new Identifier(By.id("Login-LoginScreen-LoginDV-submit"), "Login Submit");
+        public static final Identifier LOGIN = new Identifier(By.id("Login-LoginScreen-LoginDV-submit"), "Login Submit").setTimeoutInSeconds(15);
         public static final Identifier LOGIN_MESSAGES = new Identifier(By.id("Login-LoginScreen-1"), "Login Messages");
     }
 
