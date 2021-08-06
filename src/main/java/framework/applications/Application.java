@@ -9,6 +9,7 @@ import org.apache.commons.dbutils.QueryRunner;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.UUID;
 
 
 abstract public class Application {
@@ -16,9 +17,10 @@ abstract public class Application {
     private HashMap<String, String> storage = new HashMap<>();
     private HashMap<String, Object> objectStorage = new HashMap<>();
     private final Faker faker = new Faker(Locale.US);
+    private final UUID applicationIdentifier;
 
     public Application(){
-
+        this.applicationIdentifier = UUID.randomUUID();
     }
 
     protected QueryRunner connectToDB() {
@@ -59,5 +61,9 @@ abstract public class Application {
 
     public void setObjectStorage(HashMap<String, Object> objectStorage) {
         this.objectStorage = objectStorage;
+    }
+
+    public UUID getApplicationUUID() {
+        return applicationIdentifier;
     }
 }

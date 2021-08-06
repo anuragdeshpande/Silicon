@@ -136,6 +136,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     @Override
     public void login(String userName, String password) {
         _login(userName, password);
+        if(this.currentUsername != null) {
+            getLogger().info("Username was not empty: "+this.currentUsername+" being replaced by: "+userName+" Application Identifier: "+ getApplicationUUID());
+        }
         this.currentUsername = userName;
         this.currentPassword = password;
     }
