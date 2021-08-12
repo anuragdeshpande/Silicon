@@ -77,6 +77,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public GuidewireCenter() {
         super();
+        getLogger().info("New Guidewire instance is being spawned: "+getApplicationUUID());
     }
 
     protected abstract boolean isCurrentCenterOpen();

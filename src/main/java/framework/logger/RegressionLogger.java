@@ -161,7 +161,19 @@ public class RegressionLogger {
     public void captureScreenshot(String screenShotTitle) {
         if (this.isSuite) {
             info("Screen shot Captured:" + screenShotTitle);
-            this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(), screenShotTitle);
+            WebDriver driver;
+            driver = BrowserFactory.getCurrentBrowser().getDriver();
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + File.separator + getTestName()+"customScreenshot" + ".png";
+            try {
+                File destFile = new File(destinationFilePath);
+                FileUtils.moveFile(scrFile, destFile);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            String path = destinationFilePath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
+            this.extentLogger.addScreenCaptureFromPath(path);
         } else {
             System.out.println("Skipping screen shot capture as Running test locally");
         }

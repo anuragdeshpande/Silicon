@@ -71,7 +71,9 @@ public class Interact
     }
 
     @Override
-    public UIRadioButton withRadioButton(Identifier identifier) { return new UIRadioButton(identifier); }
+    public UIRadioButton withRadioButton(Identifier identifier) {
+        return new UIRadioButton(identifier);
+    }
 
     @Override
     public UIRadioButton withOptionalRadioButton(Identifier identifier, ReactionTime reactionTime) {

@@ -18,6 +18,7 @@ import org.testng.Assert;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Consumer;
 
 public class UIElement implements IUIElementOperations {
     private WebElement element;
@@ -208,5 +209,10 @@ public class UIElement implements IUIElementOperations {
     public void scrollIntoView(String id) {
         WebDriver driver = BrowserFactory.getCurrentGuidewireBrowser().getDriver();
         ((JavascriptExecutor) driver).executeScript("document.getElementById(\"" + id + "\").scrollIntoViewIfNeeded()");
+    }
+
+    public void ifPresent(Consumer<? super UIElement> consumer) {
+        if (isPresent())
+            consumer.accept(this);
     }
 }

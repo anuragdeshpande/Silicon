@@ -39,18 +39,21 @@ public class BrowserStorageAccess {
      * deserialize the data being returned.
      */
     public synchronized String get(String key) {
-        return cache.get(ThreadFactory.getID()).get(key);
+        synchronized (cache) {
+            return cache.get(ThreadFactory.getID()).get(key);
+        }
     }
 
     /**
      * @param key
      */
     public synchronized void remove(String key) {
-        long currentThread = ThreadFactory.getID();
-        if (cache.containsKey(currentThread)) {
-            cache.get(currentThread).remove(key);
+        synchronized (cache){
+            long currentThread = ThreadFactory.getID();
+            if (cache.containsKey(currentThread)) {
+                cache.get(currentThread).remove(key);
+            }
         }
-
     }
 
     public static BrowserStorageAccess getInstance() {
@@ -58,13 +61,15 @@ public class BrowserStorageAccess {
     }
 
     private void cache(String key, String value) {
-        long threadID = ThreadFactory.getID();
-        if (cache.containsKey(threadID)) {
-            cache.get(threadID).put(key, value);
-        } else {
-            HashMap<String, String> valueMap = new HashMap<>();
-            valueMap.put(key, value);
-            cache.put(threadID, valueMap);
+        synchronized (cache){
+            long threadID = ThreadFactory.getID();
+            if (cache.containsKey(threadID)) {
+                cache.get(threadID).put(key, value);
+            } else {
+                HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(key, value);
+                cache.put(threadID, valueMap);
+            }
         }
     }
 }
