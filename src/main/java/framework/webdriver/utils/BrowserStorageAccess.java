@@ -5,9 +5,6 @@ import framework.webdriver.ThreadFactory;
 import java.util.HashMap;
 
 public class BrowserStorageAccess {
-
-    private final static HashMap<Long, HashMap<String, String>> cache = new HashMap<>();
-
     public BrowserStorageAccess() {
     }
 
@@ -30,41 +27,26 @@ public class BrowserStorageAccess {
      * @param value value associated with the key
      */
     public synchronized void store(String key, String value) {
-        cache(key, value);
+        ThreadFactory.getInstance().getStorage().put(key, value);
     }
 
     /**
      * @param key key whose value needs to be returned
-     * @return returns the value as a String. if the value stored is a complex object, it is upto the user to
+     * @return returns the value as an Object. if the value stored is a complex object, it is upto the user to
      * deserialize the data being returned.
      */
-    public synchronized String get(String key) {
-        return cache.get(ThreadFactory.getID()).get(key);
+    public synchronized Object get(String key) {
+        return ThreadFactory.getInstance().getStorage().get(key);
     }
-
     /**
      * @param key
      */
     public synchronized void remove(String key) {
-        long currentThread = ThreadFactory.getID();
-        if (cache.containsKey(currentThread)) {
-            cache.get(currentThread).remove(key);
-        }
-
+        HashMap<String, Object> storage = ThreadFactory.getInstance().getStorage();
+        storage.remove(key);
     }
 
     public static BrowserStorageAccess getInstance() {
         return new BrowserStorageAccess();
-    }
-
-    private void cache(String key, String value) {
-        long threadID = ThreadFactory.getID();
-        if (cache.containsKey(threadID)) {
-            cache.get(threadID).put(key, value);
-        } else {
-            HashMap<String, String> valueMap = new HashMap<>();
-            valueMap.put(key, value);
-            cache.put(threadID, valueMap);
-        }
     }
 }
