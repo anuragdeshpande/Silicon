@@ -145,7 +145,13 @@ public class PauseTest {
         WaitConditions waitConditions = PauseTest.createSpecialInstance(reactionTime.getTime())
                 .showMessage(showMessage);
         try{
-            switch (BrowserStorageAccess.getInstance().get("ApplicationSystem").toLowerCase(Locale.ROOT)){
+            String applicationSystem = "default";
+            try{
+                applicationSystem = BrowserStorageAccess.getInstance().get("ApplicationSystem").toString().toLowerCase(Locale.ROOT);
+            } catch (NullPointerException npe){
+                // do nothing it is defaulted to guidewire.
+            }
+            switch (applicationSystem){
                 case "portals":
                     PortalInteract.waitForPageLoad();
                     break;
