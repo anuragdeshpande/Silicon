@@ -6,6 +6,8 @@ import framework.logger.RegressionLogger;
 import framework.webdriver.DriverFactory;
 import org.openqa.selenium.By;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class Identifier extends GenericIdentifier {
@@ -16,6 +18,7 @@ public class Identifier extends GenericIdentifier {
     private int timeoutInSeconds;
     private String optionalLookupMessage;
     private boolean safeguardAgainstRaceCondition = false;
+    private final ArrayList<String> raceConditionStrings = new ArrayList<>();
 
     protected Identifier(){
         setDefaultTimeout();
@@ -86,13 +89,20 @@ public class Identifier extends GenericIdentifier {
         return this;
     }
 
-    public Identifier safeguardAgainstRaceCondition(){
+    public Identifier safeguardAgainstRaceCondition(String... stringsToLookFor){
         this.safeguardAgainstRaceCondition = true;
+        if(stringsToLookFor.length > 0){
+            this.raceConditionStrings.addAll(Arrays.asList(stringsToLookFor));
+        }
         return this;
     }
 
     public boolean shouldSafeguardAgainstRaceCondition(){
         return this.safeguardAgainstRaceCondition;
+    }
+
+    public ArrayList<String> getRaceConditionStrings(){
+        return this.raceConditionStrings;
     }
 
     private void setDefaultTimeout(){

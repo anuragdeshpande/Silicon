@@ -16,6 +16,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -41,19 +42,19 @@ public class GWElement extends UIElement {
         super(element);
     }
 
-    public boolean isDisabled(){
+    public boolean isDisabled() {
         String attribute = this.getElement().getAttribute("aria-disabled");
-        return attribute!= null && attribute.equalsIgnoreCase("true");
+        return attribute != null && attribute.equalsIgnoreCase("true");
     }
 
     @Override
     public void click() {
         PauseTest.waitForPageToLoad();
         if (!this.isPresent() || this.isDisabled()) {
-            if(this.isDisabled()){
-                RegressionLogger.getTestLogger().fail("Element: "+identifier.getFriendlyName()+" is disabled at the moment");
+            if (this.isDisabled()) {
+                RegressionLogger.getTestLogger().fail("Element: " + identifier.getFriendlyName() + " is disabled at the moment");
             }
-            throw new IncorrectCallException("Element "+identifier.getFriendlyName()+" is not clickable.");
+            throw new IncorrectCallException("Element " + identifier.getFriendlyName() + " is not clickable.");
         }
 
         try {
@@ -63,22 +64,27 @@ public class GWElement extends UIElement {
             PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
             this.getElement().click();
             PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
-        } catch (UnhandledAlertException uae){
+        } catch (UnhandledAlertException uae) {
             Alert alert = BrowserFactory.getCurrentGuidewireBrowser().getDriver().switchTo().alert();
-            RegressionLogger.getTestLogger().info("Accepting Alert: "+alert.getText());
+            RegressionLogger.getTestLogger().info("Accepting Alert: " + alert.getText());
             alert.accept();
         }
 
-        if(identifier.shouldSafeguardAgainstRaceCondition() && GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE)){
-            RegressionLogger.getTestLogger().info("Encountered simultaneous changes in the system for element"+identifier.getFriendlyName()+", waiting for 10 seconds before retrying the action again.");
-            PauseTest.startWaitTimer(10);
-            this.getElement().click();
-        }
-
-        if(GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()){
+        if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()) {
             Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
             errorMessagesFromScreen.ifPresent(strings -> {
-                throw new ErrorMessageOnScreenException(Arrays.toString(strings.toArray()));
+                if ((identifier.shouldSafeguardAgainstRaceCondition() && strings.stream().anyMatch(errorMessage -> identifier.getRaceConditionStrings().contains(errorMessage))) ||
+                        strings.stream().anyMatch(errorMessage -> errorMessage.toLowerCase(Locale.ROOT).startsWith("the object you are trying to change"))) {
+                    RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for element" + identifier.getFriendlyName() + ", waiting for 10 seconds before retrying the action again.");
+                    PauseTest.startWaitTimer(10);
+                    this.getElement().click();
+
+                    GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE).ifPresent(strings1 -> {
+                        throw new ErrorMessageOnScreenException(Arrays.toString(strings1.toArray()));
+                    });
+                } else {
+                    throw new ErrorMessageOnScreenException(Arrays.toString(strings.toArray()));
+                }
             });
         }
     }
