@@ -74,7 +74,7 @@ public class GWElement extends UIElement {
             Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
             errorMessagesFromScreen.ifPresent(strings -> {
                 if ((identifier.shouldSafeguardAgainstRaceCondition() && strings.stream().anyMatch(errorMessage -> identifier.getRaceConditionStrings().contains(errorMessage))) ||
-                        strings.stream().anyMatch(errorMessage -> errorMessage.toLowerCase(Locale.ROOT).startsWith("the object you are trying to change"))) {
+                        strings.stream().anyMatch(errorMessage -> errorMessage.toLowerCase(Locale.ROOT).contains("the object you are trying to update"))) {
                     RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for element" + identifier.getFriendlyName() + ", waiting for 10 seconds before retrying the action again.");
                     PauseTest.startWaitTimer(10);
                     this.getElement().click();
