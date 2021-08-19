@@ -69,6 +69,12 @@ public class GWElement extends UIElement {
             alert.accept();
         }
 
+        if(identifier.shouldSafeguardAgainstRaceCondition() && GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE)){
+            RegressionLogger.getTestLogger().info("Encountered simultaneous changes in the system for element"+identifier.getFriendlyName()+", waiting for 10 seconds before retrying the action again.");
+            PauseTest.startWaitTimer(10);
+            this.getElement().click();
+        }
+
         if(GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()){
             Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
             errorMessagesFromScreen.ifPresent(strings -> {

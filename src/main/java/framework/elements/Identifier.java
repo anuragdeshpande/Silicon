@@ -15,6 +15,7 @@ public class Identifier extends GenericIdentifier {
     private boolean ignoreTableLVCheck = true;
     private int timeoutInSeconds;
     private String optionalLookupMessage;
+    private boolean safeguardAgainstRaceCondition = false;
 
     protected Identifier(){
         setDefaultTimeout();
@@ -83,6 +84,15 @@ public class Identifier extends GenericIdentifier {
         testLogger.info("Default timeout is being changed for element:"+getFriendlyName()+" from: "+getTimeout()+" seconds to: "+newTimeoutInSeconds+" seconds");
         this.timeoutInSeconds = newTimeoutInSeconds;
         return this;
+    }
+
+    public Identifier safeguardAgainstRaceCondition(){
+        this.safeguardAgainstRaceCondition = true;
+        return this;
+    }
+
+    public boolean shouldSafeguardAgainstRaceCondition(){
+        return this.safeguardAgainstRaceCondition;
     }
 
     private void setDefaultTimeout(){
