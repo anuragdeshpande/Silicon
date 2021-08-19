@@ -97,6 +97,11 @@ public class Identifier extends GenericIdentifier {
         return this;
     }
 
+    public Identifier setIgnoreErrorMessageCheck(boolean value){
+        this.canThrowWarning = value;
+        return this;
+    }
+
     public boolean shouldSafeguardAgainstRaceCondition(){
         return this.safeguardAgainstRaceCondition;
     }
