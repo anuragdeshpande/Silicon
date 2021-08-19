@@ -75,7 +75,7 @@ public class GWElement extends UIElement {
             errorMessagesFromScreen.ifPresent(strings -> {
                 if ((identifier.shouldSafeguardAgainstRaceCondition() && strings.stream().anyMatch(errorMessage -> identifier.getRaceConditionStrings().contains(errorMessage))) ||
                         strings.stream().anyMatch(errorMessage -> errorMessage.toLowerCase(Locale.ROOT).contains("the object you are trying to update"))) {
-                    RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for element" + identifier.getFriendlyName() + ", waiting for 10 seconds before retrying the action again.");
+                    RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for RaceConditionElementFriendlyName=" + identifier.getFriendlyName() + " RaceConditionElementIdentifier="+identifier.getReferenceValue()+", waiting for 10 seconds before retrying the action again.");
                     PauseTest.startWaitTimer(10);
                     this.getElement().click();
 
