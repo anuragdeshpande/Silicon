@@ -8,4 +8,5 @@ public interface ILogEvent {
     void updateEvent(String updateMessage);
     void updateEvent(LogLevel logLevel, String updateMessage);
     void endEvent();
+    <T extends IMaintainEventNames> void logInstantEvent(T eventName, String message);
 }
