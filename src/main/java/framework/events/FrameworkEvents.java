@@ -5,11 +5,11 @@ import framework.logger.eventMessaging.IMaintainEventNames;
 
 public enum FrameworkEvents implements IMaintainEventNames {
 
-    ;
+    TAG("Tagged");
 
     private final String value;
 
-    FrameworkEvents(String value) {
+    FrameworkEvents(final String value) {
         this.value = value;
     }
 
@@ -18,8 +18,8 @@ public enum FrameworkEvents implements IMaintainEventNames {
         return value;
     }
 
-    public FrameworkEvents getEnum(String value) {
-        for (FrameworkEvents type : values()) {
+    public FrameworkEvents getEnum(final String value) {
+        for (final FrameworkEvents type : values()) {
             if (type.getEventName().equalsIgnoreCase(value)) {
                 return type;
             }

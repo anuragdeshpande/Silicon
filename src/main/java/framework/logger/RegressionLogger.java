@@ -6,6 +6,7 @@ import com.aventstack.extentreports.Status;
 import framework.ReportManager;
 import framework.constants.StringConstants;
 import framework.customExceptions.UnexpectedTerminationException;
+import framework.events.FrameworkEvents;
 import framework.logger.eventMessaging.IMaintainEventNames;
 import framework.logger.eventMessaging.LogEventState;
 import framework.logger.eventMessaging.LoggingEvent;
@@ -24,20 +25,20 @@ import java.time.LocalDateTime;
 
 public class RegressionLogger {
 
+    private final static Logger regressionLogger = (Logger) LoggerFactory.getLogger("RegressionLogger");
     private final ExtentTest extentLogger;
     private final boolean isSuite;
-    private final static Logger regressionLogger = (Logger) LoggerFactory.getLogger("RegressionLogger");
 
-    public RegressionLogger(ExtentTest extentLogger, boolean isSuite) {
+    public RegressionLogger(final ExtentTest extentLogger, final boolean isSuite) {
         this.extentLogger = extentLogger;
         this.isSuite = isSuite;
     }
 
     public synchronized static RegressionLogger getFirstAvailableLogger() {
-        String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
-        String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-        String xmlName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME));
-        TestDetailsDTO dto = new TestDetailsDTO();
+        final String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+        final String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+        final String xmlName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME));
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setClassName(className);
         dto.setTestName(testName);
 
@@ -57,43 +58,50 @@ public class RegressionLogger {
 
     }
 
-    public synchronized static RegressionLogger getTestLogger(String testMethodName, String testClassName) {
-        TestDetailsDTO dto = new TestDetailsDTO();
+    public synchronized static RegressionLogger getTestLogger(final String testMethodName, final String testClassName) {
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(testMethodName);
         dto.setClassName(testClassName);
-        ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
+        final ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
         return new RegressionLogger(extentTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getTestLogger() {
-        TestDetailsDTO dto = new TestDetailsDTO();
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME)));
         dto.setClassName(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME)));
-        ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
+        final ExtentTest extentTest = ReportManager.getTest(dto).getExtentTest();
         return new RegressionLogger(extentTest, ReportManager.isInitiated());
     }
 
-    public synchronized static RegressionLogger getTestClassLogger(String testClassName) {
-        ExtentTest extentClassTest = ReportManager.getClass(testClassName).getExtentTest();
+    public synchronized static RegressionLogger getTestClassLogger(final String testClassName) {
+        final ExtentTest extentClassTest = ReportManager.getClass(testClassName).getExtentTest();
         return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getTestClassLogger() {
-        ExtentTest extentClassTest = ReportManager.getClass(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME))).getExtentTest();
+        final ExtentTest extentClassTest = ReportManager.getClass(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME))).getExtentTest();
         return new RegressionLogger(extentClassTest, ReportManager.isInitiated());
     }
 
-    public synchronized static RegressionLogger getXMLTestLogger(String xmlTestName) {
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(xmlTestName).getExtentTest();
+    public synchronized static RegressionLogger getXMLTestLogger(final String xmlTestName) {
+        final ExtentTest extentXMLTest = ReportManager.getXMLTest(xmlTestName).getExtentTest();
         return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
     public synchronized static RegressionLogger getXMLTestLogger() {
-        ExtentTest extentXMLTest = ReportManager.getXMLTest(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME))).getExtentTest();
+        final ExtentTest extentXMLTest = ReportManager.getXMLTest(((String) ThreadFactory.getInstance().getStorage().get(StringConstants.XML_TEST_NAME))).getExtentTest();
         return new RegressionLogger(extentXMLTest, ReportManager.isInitiated());
     }
 
-    public void info(Object message) {
+    public static void print(final Object message) {
+        final String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
+        final String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
+        System.out.println("[" + className + ": " + testName + "] " + message);
+        regressionLogger.info("[" + className + ": " + testName + "] " + message);
+    }
+
+    public void info(final Object message) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
@@ -101,7 +109,7 @@ public class RegressionLogger {
 
     }
 
-    public void info(Object message, Throwable e) {
+    public void info(final Object message, final Throwable e) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.INFO, message.toString());
@@ -112,14 +120,14 @@ public class RegressionLogger {
 
     }
 
-    public void fail(Object message) {
+    public void fail(final Object message) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
         }
     }
 
-    public void fail(Object message, Throwable e) {
+    public void fail(final Object message, final Throwable e) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.FAIL, message.toString());
@@ -130,7 +138,7 @@ public class RegressionLogger {
 
     }
 
-    public void warn(Object message) {
+    public void warn(final Object message) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
@@ -138,16 +146,17 @@ public class RegressionLogger {
 
     }
 
-    public void addTag(String tagName) {
+    public void addTag(final String tagName) {
         if (isSuite) {
             extentLogger.log(Status.INFO, "Tagging: " + tagName);
+            logInstantEvent(FrameworkEvents.TAG, "TagValue=" + tagName);
             extentLogger.assignCategory(tagName);
         } else {
             System.out.println("Could not tag since the run is not a suite");
         }
     }
 
-    public void warn(Object message, Throwable e) {
+    public void warn(final Object message, final Throwable e) {
         print(message);
         if (isSuite) {
             extentLogger.log(Status.WARNING, message.toString());
@@ -158,28 +167,28 @@ public class RegressionLogger {
 
     }
 
-    public void captureScreenshot(String screenShotTitle) {
+    public void captureScreenshot(final String screenShotTitle) {
         if (this.isSuite) {
             info("Screen shot Captured:" + screenShotTitle);
-            WebDriver driver;
+            final WebDriver driver;
             driver = BrowserFactory.getCurrentBrowser().getDriver();
-            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + File.separator + getTestName()+"customScreenshot" + ".png";
+            final File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            final String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + File.separator + getTestName() + "customScreenshot" + ".png";
             try {
-                File destFile = new File(destinationFilePath);
+                final File destFile = new File(destinationFilePath);
                 FileUtils.moveFile(scrFile, destFile);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            String path = destinationFilePath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
+            final String path = destinationFilePath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
             this.extentLogger.addScreenCaptureFromPath(path);
         } else {
             System.out.println("Skipping screen shot capture as Running test locally");
         }
     }
 
-    public void captureScreenshot(WebDriver driver, String screenShotTitle) {
+    public void captureScreenshot(final WebDriver driver, final String screenShotTitle) {
         if (this.isSuite) {
             info("Screen shot Captured:" + screenShotTitle);
             this.extentLogger.addScreenCaptureFromPath(getScreenshotPath(driver), screenShotTitle);
@@ -198,13 +207,13 @@ public class RegressionLogger {
 
     @SuppressWarnings("Duplicates")
     private String getScreenshotPath() {
-        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
+        final WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+        final File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        final String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
         try {
-            File destFile = new File(destinationFilePath);
+            final File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -212,21 +221,21 @@ public class RegressionLogger {
     }
 
     @SuppressWarnings("Duplicates")
-    private String getScreenshotPath(WebDriver driver) {
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
+    private String getScreenshotPath(final WebDriver driver) {
+        final File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        final String destinationFilePath = ReportManager.REPORT_DIRECTORY_LOCATION + "\\" + LocalDateTime.now() + "_" + ThreadFactory.getID() + ".png";
         try {
-            File destFile = new File(destinationFilePath);
+            final File destFile = new File(destinationFilePath);
             FileUtils.moveFile(scrFile, destFile);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return destinationFilePath;
     }
 
-    public <T extends IMaintainEventNames> LoggingEvent startEvent(T eventName) {
-        LoggingEvent event = LoggingEvent.newEvent(eventName.getEventName());
+    public <T extends IMaintainEventNames> LoggingEvent startEvent(final T eventName) {
+        final LoggingEvent event = LoggingEvent.newEvent(eventName.getEventName());
         event.startEvent();
         if (System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")) {
             print(event.getCurrentStateMessage());
@@ -236,14 +245,14 @@ public class RegressionLogger {
         return event;
     }
 
-    public <T extends IMaintainEventNames> void  logInstantEvent(T eventName, String eventMessage){
-        LoggingEvent startEvent = startEvent(eventName);
+    public <T extends IMaintainEventNames> void logInstantEvent(final T eventName, final String eventMessage) {
+        final LoggingEvent startEvent = startEvent(eventName);
         startEvent.updateEvent(eventMessage);
         endEvent(startEvent);
     }
 
-    public String endEvent(LoggingEvent event) {
-        if(event.getCurrentState() == LogEventState.STARTED){
+    public String endEvent(final LoggingEvent event) {
+        if (event.getCurrentState() == LogEventState.STARTED) {
             event.endEvent();
         }
         if (System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")) {
@@ -251,13 +260,6 @@ public class RegressionLogger {
         }
 
         return event.getCurrentStateMessage();
-    }
-
-    public static void print(Object message) {
-        String testName = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_NAME));
-        String className = ((String) ThreadFactory.getInstance().getStorage().get(StringConstants.TEST_CLASS_NAME));
-        System.out.println("[" + className + ": " + testName + "] " + message);
-        regressionLogger.info("[" + className + ": " + testName + "] " + message);
     }
 
     public void enableEventLogging() {
@@ -269,7 +271,7 @@ public class RegressionLogger {
         System.setProperty("logEventsInReports", "false");
     }
 
-    public <T extends IMaintainEventNames> LoggingEvent getEvent(T eventName) {
+    public <T extends IMaintainEventNames> LoggingEvent getEvent(final T eventName) {
         return ReportManager.getClass(getTestClassName()).getEvents().get(eventName);
     }
 }
