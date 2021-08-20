@@ -15,8 +15,8 @@ public interface IDefaultEventLoggingMessages {
         }
     }
 
-    static <T extends LoggingEvent> String eventEndMessage(String testName, T loggingEvent , String timeTakenSeconds){
-        String returnMessage = "Test=" + testName + " EventID=" + loggingEvent.getEventID() + " Event=" + loggingEvent.getEventName() + " Ended. TimeTaken=" + timeTakenSeconds;
+    static <T extends LoggingEvent> String eventEndMessage(String testName, String className, T loggingEvent , String timeTakenSeconds){
+        String returnMessage = "Test=" + testName + " Class="+className+" EventID=" + loggingEvent.getEventID() + " Event=" + loggingEvent.getEventName() + " Ended. TimeTaken=" + timeTakenSeconds;
         if(loggingEvent.getParentEventID().isPresent()){
             return returnMessage +" ParentEventID="+loggingEvent.getParentEventID().get();
         } else {
