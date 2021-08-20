@@ -2,6 +2,7 @@ package framework.elements;
 
 import framework.elements.enums.ElementType;
 import framework.enums.FrameworkSystemEvents;
+import framework.events.FrameworkEvents;
 import framework.logger.RegressionLogger;
 import framework.webdriver.DriverFactory;
 import org.openqa.selenium.By;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class Identifier extends GenericIdentifier {
+    private final ArrayList<String> raceConditionStrings = new ArrayList<>();
     private By reference;
     private boolean canThrowWarning;
     private String friendlyName;
@@ -18,30 +20,29 @@ public class Identifier extends GenericIdentifier {
     private int timeoutInSeconds;
     private String optionalLookupMessage;
     private boolean safeguardAgainstRaceCondition = false;
-    private final ArrayList<String> raceConditionStrings = new ArrayList<>();
 
-    protected Identifier(){
+    protected Identifier() {
         setDefaultTimeout();
     }
 
-    protected Identifier(By reference, ElementType type){
+    protected Identifier(final By reference, final ElementType type) {
         setDefaultTimeout();
     }
 
-    public Identifier(By reference) {
+    public Identifier(final By reference) {
         canThrowWarning = false;
         this.reference = reference;
         setDefaultTimeout();
     }
 
-    public Identifier(By reference, String friendlyName){
+    public Identifier(final By reference, final String friendlyName) {
         this.reference = reference;
         this.friendlyName = friendlyName;
         this.canThrowWarning = false;
         setDefaultTimeout();
     }
 
-    public Identifier(By reference, String friendlyName, boolean checkForWarning){
+    public Identifier(final By reference, final String friendlyName, final boolean checkForWarning) {
         this(reference, friendlyName);
         this.canThrowWarning = checkForWarning;
         setDefaultTimeout();
@@ -51,12 +52,12 @@ public class Identifier extends GenericIdentifier {
         return canThrowWarning;
     }
 
-    public Identifier ignoreLVCheckForTable(){
+    public Identifier ignoreLVCheckForTable() {
         this.ignoreTableLVCheck = false;
         return this;
     }
 
-    public Identifier doNotIgnoreLVCheckForTable(){
+    public Identifier doNotIgnoreLVCheckForTable() {
         this.ignoreTableLVCheck = true;
         return this;
     }
@@ -73,44 +74,45 @@ public class Identifier extends GenericIdentifier {
         return ignoreTableLVCheck;
     }
 
-    public String getReferenceValue(){
+    public String getReferenceValue() {
         return (this.reference.toString().split(":")[1]).trim();
     }
 
-    public int getTimeout(){
+    public int getTimeout() {
         return this.timeoutInSeconds;
     }
 
-    public Identifier setTimeoutInSeconds(int newTimeoutInSeconds){
-        RegressionLogger testLogger = RegressionLogger.getTestLogger();
+    public Identifier setTimeoutInSeconds(final int newTimeoutInSeconds) {
+        final RegressionLogger testLogger = RegressionLogger.getTestLogger();
         testLogger.addTag(FrameworkSystemEvents.CUSTOM_TIMEOUT.getValue());
-        testLogger.info("Default timeout is being changed for element:"+getFriendlyName()+" from: "+getTimeout()+" seconds to: "+newTimeoutInSeconds+" seconds");
+        testLogger.logInstantEvent(FrameworkEvents.CUSTOM_TIMEOUT, "ElementFriendlyName=" + getFriendlyName() + " CustomTimeoutValue=" + newTimeoutInSeconds);
+        testLogger.info("Default timeout is being changed for element:" + getFriendlyName() + " from: " + getTimeout() + " seconds to: " + newTimeoutInSeconds + " seconds");
         this.timeoutInSeconds = newTimeoutInSeconds;
         return this;
     }
 
-    public Identifier safeguardAgainstRaceCondition(String... stringsToLookFor){
+    public Identifier safeguardAgainstRaceCondition(final String... stringsToLookFor) {
         this.safeguardAgainstRaceCondition = true;
-        if(stringsToLookFor.length > 0){
+        if (stringsToLookFor.length > 0) {
             this.raceConditionStrings.addAll(Arrays.asList(stringsToLookFor));
         }
         return this;
     }
 
-    public Identifier setIgnoreErrorMessageCheck(boolean value){
+    public Identifier setIgnoreErrorMessageCheck(final boolean value) {
         this.canThrowWarning = value;
         return this;
     }
 
-    public boolean shouldSafeguardAgainstRaceCondition(){
+    public boolean shouldSafeguardAgainstRaceCondition() {
         return this.safeguardAgainstRaceCondition;
     }
 
-    public ArrayList<String> getRaceConditionStrings(){
+    public ArrayList<String> getRaceConditionStrings() {
         return this.raceConditionStrings;
     }
 
-    private void setDefaultTimeout(){
+    private void setDefaultTimeout() {
         this.timeoutInSeconds = ((int) DriverFactory.getReactionTime().getTime());
     }
 
@@ -118,7 +120,7 @@ public class Identifier extends GenericIdentifier {
         return Optional.ofNullable(optionalLookupMessage);
     }
 
-    public Identifier setOptionalLookupMessage(String optionalLookupMessage) {
+    public Identifier setOptionalLookupMessage(final String optionalLookupMessage) {
         this.optionalLookupMessage = optionalLookupMessage;
         return this;
     }
