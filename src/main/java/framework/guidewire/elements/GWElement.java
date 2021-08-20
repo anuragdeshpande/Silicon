@@ -52,7 +52,7 @@ public class GWElement extends UIElement {
         PauseTest.waitForPageToLoad();
         if (!this.isPresent() || this.isDisabled()) {
             if (this.isDisabled()) {
-                RegressionLogger.getTestLogger().fail("Element: " + identifier.getFriendlyName() + " is disabled at the moment");
+                RegressionLogger.getTestLogger().warn("Element: " + identifier.getFriendlyName() + " is disabled at the moment");
             }
             throw new IncorrectCallException("Element " + identifier.getFriendlyName() + " is not clickable.");
         }
