@@ -1,8 +1,10 @@
 package framework.logger.eventMessaging;
 
 import ch.qos.logback.classic.Logger;
+import com.google.common.base.Joiner;
 import framework.enums.LogLevel;
 import framework.logger.RegressionLogger;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
@@ -12,22 +14,26 @@ import java.util.UUID;
 public final class LoggingEvent implements ILogEvent {
 
     private final String eventName;
-//    private final Stack<String> eventMessages;
+    private final String eventID;
+    private final Logger logger = (Logger) LoggerFactory.getLogger("EventLogger");
+    //    private final Stack<String> eventMessages;
 //    private final HashMap<String, LoggingEvent> subEvents;
     private String currentStateMessage;
     private Timestamp startTimestamp;
     private Timestamp endTimestamp;
-    private final String eventID;
     private LogEventState currentState;
     private String parentEventID;
-    private final Logger logger = (Logger) LoggerFactory.getLogger("EventLogger");
 
-    private LoggingEvent(String eventName) {
+    private LoggingEvent(final String eventName) {
         this.eventName = eventName;
         this.eventID = UUID.randomUUID().toString();
         this.currentState = LogEventState.NOT_STARTED;
 //        this.eventMessages = new Stack<>();
 //        this.subEvents = new HashMap<>();
+    }
+
+    public synchronized static LoggingEvent newEvent(final String eventName) {
+        return new LoggingEvent(eventName);
     }
 
     @Override
@@ -37,21 +43,21 @@ public final class LoggingEvent implements ILogEvent {
     }
 
     @Override
-    public synchronized void updateEvent(String updateMessage) {
+    public synchronized void updateEvent(final String updateMessage) {
         _updateEvent(LogLevel.INFO, updateMessage);
     }
 
     @Override
-    public synchronized void updateEvent(LogLevel logLevel, String updateMessage) {
+    public synchronized void updateEvent(final LogLevel logLevel, final String updateMessage) {
         _updateEvent(logLevel, updateMessage);
     }
 
-    private synchronized void _updateEvent(LogLevel logLevel, String updateMessage){
-        String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
-        String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
-        this.currentStateMessage = IDefaultEventLoggingMessages.eventUpdateMessage(classMethodName,className, this, updateMessage);
+    private synchronized void _updateEvent(final LogLevel logLevel, final String updateMessage) {
+        final String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
+        final String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
+        this.currentStateMessage = IDefaultEventLoggingMessages.eventUpdateMessage(classMethodName, className, this, updateMessage);
 
-        switch (logLevel){
+        switch (logLevel) {
             case ERROR:
                 logger.error(currentStateMessage);
                 break;
@@ -70,40 +76,39 @@ public final class LoggingEvent implements ILogEvent {
     }
 
     @Override
-    public synchronized void endEvent() {
-        String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
-        String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
+    public synchronized void endEvent(final String... additionalTags) {
+        final String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
+        final String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
         this.endTimestamp = new Timestamp(System.currentTimeMillis());
-        long timeDiff = (endTimestamp.getTime() - startTimestamp.getTime())/1000;
-        String eventEndMessage = IDefaultEventLoggingMessages.eventEndMessage(classMethodName, className, this, timeDiff + " Seconds");
+        final long timeDiff = (endTimestamp.getTime() - startTimestamp.getTime()) / 1000;
+        final String eventEndMessage = IDefaultEventLoggingMessages.eventEndMessage(classMethodName, className, this, timeDiff + " Seconds");
         this.currentState = LogEventState.ENDED;
 //        eventMessages.add(eventEndMessage);
-        logger.info(eventEndMessage);
+        if (ArrayUtils.isNotEmpty(additionalTags)) {
+            logger.info(eventEndMessage + Joiner.on(" ").skipNulls().join(additionalTags));
+        } else {
+            logger.info(eventEndMessage);
+        }
     }
 
-    public synchronized void setParentEventID(String parentEventID){
-        this.parentEventID = parentEventID;
-    }
-
-    public synchronized Optional<String> getParentEventID(){
+    public synchronized Optional<String> getParentEventID() {
         return Optional.ofNullable(this.parentEventID);
     }
 
-    public synchronized String getEventID(){
-        return this.eventID;
+    public synchronized void setParentEventID(final String parentEventID) {
+        this.parentEventID = parentEventID;
     }
 
-
-    public synchronized String getEventName() {
-        return eventName;
+    public synchronized String getEventID() {
+        return this.eventID;
     }
 
 //    public List<String> getEventMessages() {
 //        return eventMessages;
 //    }
 
-    public synchronized String getCurrentStateMessage(){
-        return this.currentStateMessage;
+    public synchronized String getEventName() {
+        return eventName;
     }
 
 //    public Optional<LoggingEvent> getSubEvent(String name){
@@ -114,6 +119,9 @@ public final class LoggingEvent implements ILogEvent {
 //        this.subEvents.put(eventKey, event);
 //    }
 
+    public synchronized String getCurrentStateMessage() {
+        return this.currentStateMessage;
+    }
 
     public synchronized LogEventState getCurrentState() {
         return currentState;
@@ -125,9 +133,5 @@ public final class LoggingEvent implements ILogEvent {
 
     public synchronized Timestamp getEndTimestamp() {
         return endTimestamp;
-    }
-
-    public synchronized static LoggingEvent newEvent(String eventName){
-        return new LoggingEvent(eventName);
     }
 }

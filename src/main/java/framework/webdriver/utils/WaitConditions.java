@@ -2,12 +2,16 @@ package framework.webdriver.utils;
 
 import framework.enums.FrameworkSystemEvents;
 import framework.events.FrameworkEvents;
+import framework.guidewire.pages.GWIDs;
 import framework.logger.RegressionLogger;
 import framework.logger.eventMessaging.LoggingEvent;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.function.Function;
@@ -26,6 +30,11 @@ public class WaitConditions {
         this.pollingIntervalMilliseconds = pollingIntervalMilliseconds;
 
         this.wait = new WebDriverWait(driver, timeoutInSeconds);
+    }
+
+    public static void main(final String[] args) {
+        final ExpectedCondition<WebElement> waitCondition = ExpectedConditions.elementToBeClickable(GWIDs.Login.LOGIN.getReference());
+        System.out.println(waitCondition);
     }
 
     public WebDriverWait getWebdriverWait() {
@@ -60,13 +69,13 @@ public class WaitConditions {
                 if (extendedWaitTimeEvent == null) {
                     extendedWaitTimeEvent = RegressionLogger.getFirstAvailableLogger().startEvent(FrameworkEvents.EXTENDED_TIME);
                 }
-                RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Automatically extending wait time by another " + timeoutInSeconds + " seconds");
+                RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Waiting for condition to be true:" + waitCondition + " Automatically extending wait time by another " + timeoutInSeconds + " seconds");
             }
             counter++;
         } while (counter <= 10);
 
         if (extendedWaitTimeEvent != null) {
-            RegressionLogger.getFirstAvailableLogger().endEvent(extendedWaitTimeEvent);
+            RegressionLogger.getFirstAvailableLogger().endEvent(extendedWaitTimeEvent, "WaitCondition=\"" + waitCondition + "\"");
         }
         throw new TimeoutException("Page is still loading after " + counter + " attempts of " + timeoutInSeconds + " seconds waits");
     }

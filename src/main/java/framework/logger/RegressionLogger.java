@@ -251,9 +251,9 @@ public class RegressionLogger {
         endEvent(startEvent);
     }
 
-    public String endEvent(final LoggingEvent event) {
+    public String endEvent(final LoggingEvent event, final String... additionalTags) {
         if (event.getCurrentState() == LogEventState.STARTED) {
-            event.endEvent();
+            event.endEvent(additionalTags);
         }
         if (System.getProperty("logEventsInReports", "false").equalsIgnoreCase("true")) {
             print(event.getCurrentStateMessage());
