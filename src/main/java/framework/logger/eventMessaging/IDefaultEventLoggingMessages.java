@@ -6,8 +6,8 @@ public interface IDefaultEventLoggingMessages {
         return "Test="+testName+" EventID="+event.getEventID()+" Event="+ event.getEventName()+" Started.";
     }
 
-    static <T extends LoggingEvent> String eventUpdateMessage(String testName, T loggingEvent , String updateMessage){
-        String returnMessage = "Test="+testName+" Event="+loggingEvent.getEventName()+" EventID="+loggingEvent.getEventID()+" EventUpdate="+updateMessage;
+    static <T extends LoggingEvent> String eventUpdateMessage(String testName, String className, T loggingEvent , String updateMessage){
+        String returnMessage = "Test="+testName+" Class="+className+" Event="+loggingEvent.getEventName()+" EventID="+loggingEvent.getEventID()+" EventUpdate="+updateMessage;
         if (loggingEvent.getParentEventID().isPresent()) {
             return returnMessage +" ParentEventID="+loggingEvent.getParentEventID().get();
         } else {

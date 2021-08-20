@@ -17,7 +17,7 @@ public final class LoggingEvent implements ILogEvent {
     private String currentStateMessage;
     private Timestamp startTimestamp;
     private Timestamp endTimestamp;
-    private String eventID;
+    private final String eventID;
     private LogEventState currentState;
     private String parentEventID;
     private final Logger logger = (Logger) LoggerFactory.getLogger("EventLogger");
@@ -32,12 +32,8 @@ public final class LoggingEvent implements ILogEvent {
 
     @Override
     public synchronized void startEvent() {
-        String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
         this.startTimestamp = new Timestamp(System.currentTimeMillis());
-        this.currentStateMessage = IDefaultEventLoggingMessages.eventStartMessage(classMethodName, this);
         this.currentState = LogEventState.STARTED;
-//        eventMessages.add(eventStartMessage);
-        logger.info(this.currentStateMessage);
     }
 
     @Override
@@ -51,8 +47,9 @@ public final class LoggingEvent implements ILogEvent {
     }
 
     private synchronized void _updateEvent(LogLevel logLevel, String updateMessage){
+        String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
         String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
-        this.currentStateMessage = IDefaultEventLoggingMessages.eventUpdateMessage(classMethodName, this, updateMessage);
+        this.currentStateMessage = IDefaultEventLoggingMessages.eventUpdateMessage(classMethodName,className, this, updateMessage);
 
         switch (logLevel){
             case ERROR:
@@ -74,10 +71,11 @@ public final class LoggingEvent implements ILogEvent {
 
     @Override
     public synchronized void endEvent() {
+        String className = RegressionLogger.getFirstAvailableLogger().getTestClassName();
         String classMethodName = RegressionLogger.getFirstAvailableLogger().getTestName();
         this.endTimestamp = new Timestamp(System.currentTimeMillis());
         long timeDiff = (endTimestamp.getTime() - startTimestamp.getTime())/1000;
-        String eventEndMessage = IDefaultEventLoggingMessages.eventEndMessage(classMethodName, this, timeDiff + " Seconds");
+        String eventEndMessage = IDefaultEventLoggingMessages.eventEndMessage(classMethodName, className, this, timeDiff + " Seconds");
         this.currentState = LogEventState.ENDED;
 //        eventMessages.add(eventEndMessage);
         logger.info(eventEndMessage);
