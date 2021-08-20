@@ -5,7 +5,8 @@ import framework.logger.eventMessaging.IMaintainEventNames;
 
 public enum FrameworkEvents implements IMaintainEventNames {
 
-    TAG("Tagged");
+    TAG("Tagged"),
+    EXTENDED_TIME("ExtendedTime");
 
     private final String value;
 

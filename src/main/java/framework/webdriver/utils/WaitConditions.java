@@ -1,7 +1,9 @@
 package framework.webdriver.utils;
 
 import framework.enums.FrameworkSystemEvents;
+import framework.events.FrameworkEvents;
 import framework.logger.RegressionLogger;
+import framework.logger.eventMessaging.LoggingEvent;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.Interact;
 import org.openqa.selenium.TimeoutException;
@@ -11,14 +13,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.function.Function;
 
 public class WaitConditions {
-    private WebDriver driver;
-    private long timeoutInSeconds;
-    private long pollingIntervalMilliseconds;
-    private WebDriverWait wait;
+    private final WebDriver driver;
+    private final long timeoutInSeconds;
+    private final long pollingIntervalMilliseconds;
+    private final WebDriverWait wait;
     private boolean showMessage = true;
     private boolean skipTimeout;
 
-    public WaitConditions(WebDriver driver, long timeoutInSeconds, long pollingIntervalMilliseconds) {
+    public WaitConditions(final WebDriver driver, final long timeoutInSeconds, final long pollingIntervalMilliseconds) {
         this.driver = driver;
         this.timeoutInSeconds = timeoutInSeconds;
         this.pollingIntervalMilliseconds = pollingIntervalMilliseconds;
@@ -30,35 +32,42 @@ public class WaitConditions {
         return wait;
     }
 
-    public WaitConditions showMessage(boolean value) {
+    public WaitConditions showMessage(final boolean value) {
         this.showMessage = value;
         return this;
     }
 
-    public WaitConditions skipTimeOut(boolean value) {
+    public WaitConditions skipTimeOut(final boolean value) {
         this.skipTimeout = value;
         return this;
     }
 
-    public <V> V until(Function<? super WebDriver, V> waitCondition, String messageToShowWhileWaiting) {
-        Interact interact = BrowserFactory.getCurrentBrowser();
+    public <V> V until(final Function<? super WebDriver, V> waitCondition, final String messageToShowWhileWaiting) {
+        final Interact interact = BrowserFactory.getCurrentBrowser();
         if (showMessage) {
             interact.withDOM().injectInfoMessage(messageToShowWhileWaiting);
         }
+        LoggingEvent extendedWaitTimeEvent = null;
         int counter = 0;
         do {
             try {
-                V until = wait.until(waitCondition);
+                final V until = wait.until(waitCondition);
                 interact.withDOM().clearBannerMessage();
                 return until;
-            } catch (TimeoutException toe) {
+            } catch (final TimeoutException toe) {
                 interact.withDOM().injectDangerMessage("Page did not load in under " + timeoutInSeconds + " seconds");
                 RegressionLogger.getFirstAvailableLogger().addTag(FrameworkSystemEvents.EXTENDED_WAIT_TIME.getValue());
+                if (extendedWaitTimeEvent == null) {
+                    extendedWaitTimeEvent = RegressionLogger.getFirstAvailableLogger().startEvent(FrameworkEvents.EXTENDED_TIME);
+                }
                 RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Automatically extending wait time by another " + timeoutInSeconds + " seconds");
             }
             counter++;
         } while (counter <= 10);
 
+        if (extendedWaitTimeEvent != null) {
+            RegressionLogger.getFirstAvailableLogger().endEvent(extendedWaitTimeEvent);
+        }
         throw new TimeoutException("Page is still loading after " + counter + " attempts of " + timeoutInSeconds + " seconds waits");
     }
 
