@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class LoggingEvent implements ILogEvent {
+public final class LoggingEvent implements ILogEvent, AutoCloseable {
 
     private final String eventName;
     private final String eventID;
@@ -133,5 +133,10 @@ public final class LoggingEvent implements ILogEvent {
 
     public synchronized Timestamp getEndTimestamp() {
         return endTimestamp;
+    }
+
+    @Override
+    public void close() {
+        endEvent();
     }
 }
