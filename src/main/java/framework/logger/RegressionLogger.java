@@ -6,7 +6,6 @@ import com.aventstack.extentreports.Status;
 import framework.ReportManager;
 import framework.constants.StringConstants;
 import framework.customExceptions.UnexpectedTerminationException;
-import framework.events.FrameworkEvents;
 import framework.logger.eventMessaging.IMaintainEventNames;
 import framework.logger.eventMessaging.LogEventState;
 import framework.logger.eventMessaging.LoggingEvent;
@@ -149,7 +148,6 @@ public class RegressionLogger {
     public void addTag(final String tagName) {
         if (isSuite) {
             extentLogger.log(Status.INFO, "Tagging: " + tagName);
-            logInstantEvent(FrameworkEvents.TAG, "TagValue=" + tagName);
             extentLogger.assignCategory(tagName);
         } else {
             System.out.println("Could not tag since the run is not a suite");
