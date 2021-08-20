@@ -5,10 +5,7 @@ import framework.logger.eventMessaging.IMaintainEventNames;
 
 public enum FrameworkEvents implements IMaintainEventNames {
 
-    TEST_START("TestStart"),
-    TEST_FAILED("TestFailed"),
-    TEST_SKIPPED("TestSkipped"),
-    TEST_PASSED("TestPassed");
+    ;
 
     private final String value;
 
