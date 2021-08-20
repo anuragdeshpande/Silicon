@@ -246,9 +246,7 @@ public class RegressionLogger {
     }
 
     public <T extends IMaintainEventNames> void logInstantEvent(final T eventName, final String eventMessage) {
-        final LoggingEvent startEvent = startEvent(eventName);
-        startEvent.updateEvent(eventMessage);
-        endEvent(startEvent);
+        LoggingEvent.newEvent(eventName.getEventName()).updateEvent(eventMessage);
     }
 
     public String endEvent(final LoggingEvent event, final String... additionalTags) {
