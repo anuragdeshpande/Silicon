@@ -3,8 +3,10 @@ package framework.logger.regressionTestLogging;
 import annotations.AutomatedTest;
 import com.aventstack.extentreports.Status;
 import com.google.common.base.Joiner;
+import framework.customExceptions.KnownDefectException;
 import framework.reports.models.TestDetailsDTO;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.testng.ITestResult;
 
 import java.sql.Timestamp;
@@ -14,11 +16,21 @@ import java.util.stream.Collectors;
 
 public class RegressionLogTemplates {
 
+    public static void main(String[] args) {
+        System.out.println(ExceptionUtils.getThrowableList(new KnownDefectException("This is a test")).get(0).getClass().getSimpleName());
+    }
+
     public static String getLogTemplateForTestEndPass(ITestResult iTestResult, String... additionalTags){
         return _getBaseTemplateTestEnd(iTestResult, Status.PASS.getName(), additionalTags);
     }
 
     public static String getLogTemplateForTestEndFailed(ITestResult iTestResult, String... additionalTags){
+        Throwable throwable = iTestResult.getThrowable();
+        String exceptionType = throwable.getClass().getSimpleName();
+        String exceptionMessage = throwable.getMessage();
+        List<String> strings = Arrays.asList(additionalTags);
+        strings.addAll(Arrays.asList("ExceptionType="+exceptionType, "ExceptionMessage="+exceptionMessage));
+        additionalTags = strings.toArray(new String[0]);
         return _getBaseTemplateTestEnd(iTestResult, Status.FAIL.getName(), additionalTags);
     }
 
