@@ -3,6 +3,7 @@ package framework.webdriver;
 import framework.constants.ReactionTime;
 import framework.guidewire.PortalInteract;
 import framework.guidewire.pages.GWIDs;
+import framework.logger.RegressionLogger;
 import framework.webdriver.utils.BrowserStorageAccess;
 import framework.webdriver.utils.WaitConditions;
 import org.openqa.selenium.By;
@@ -16,13 +17,13 @@ import java.util.concurrent.TimeUnit;
 // TODO clean up class and remove GWCore support
 public class PauseTest {
 
-    private synchronized static WebDriver initiateDriver(ReactionTime reactionTime) {
-        WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
+    private synchronized static WebDriver initiateDriver(final ReactionTime reactionTime) {
+        final WebDriver driver = BrowserFactory.getCurrentBrowser().getDriver();
         driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         return driver;
     }
 
-    private synchronized static WebDriver initiateDriver(WebDriver driver, ReactionTime reactionTime) {
+    private synchronized static WebDriver initiateDriver(final WebDriver driver, final ReactionTime reactionTime) {
         driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         return driver;
     }
@@ -35,8 +36,8 @@ public class PauseTest {
      * @param pollingIntervalInMilliseconds how frequently do you want to check for the waiting condition
      * @return Standard Webdriver wait object
      */
-    public synchronized static WaitConditions createSpecialInstance(long timeOutInSeconds, long pollingIntervalInMilliseconds) {
-        WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
+    public synchronized static WaitConditions createSpecialInstance(final long timeOutInSeconds, final long pollingIntervalInMilliseconds) {
+        final WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
         return new WaitConditions(webDriver, timeOutInSeconds, pollingIntervalInMilliseconds);
     }
 
@@ -47,8 +48,8 @@ public class PauseTest {
      * @param timeOutInSeconds timeout after which the lookup is terminated
      * @return standard Webdriver wait object
      */
-    public synchronized static WaitConditions createSpecialInstance(long timeOutInSeconds) {
-        WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
+    public synchronized static WaitConditions createSpecialInstance(final long timeOutInSeconds) {
+        final WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
         return new WaitConditions(webDriver, timeOutInSeconds, 10);
     }
 
@@ -61,7 +62,7 @@ public class PauseTest {
      * @return Standard WebdriverWait Object.
      */
     public synchronized static WaitConditions createInstance() {
-        WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
+        final WebDriver webDriver = initiateDriver(ReactionTime.IMMEDIATE);
         return new WaitConditions(webDriver, 10, 100);
     }
 
@@ -87,7 +88,7 @@ public class PauseTest {
      *
      * @param messageToShowWhileWaiting Message to show while waiting
      */
-    public synchronized static void waitForPageToLoad(String messageToShowWhileWaiting) {
+    public synchronized static void waitForPageToLoad(final String messageToShowWhileWaiting) {
         _waitForPageToLoad(ReactionTime.getInstance(10, TimeUnit.SECONDS), messageToShowWhileWaiting, true);
     }
 
@@ -101,7 +102,7 @@ public class PauseTest {
      *
      * @param timeToWait {@link ReactionTime} time to wait for page load to complete
      */
-    public synchronized static void waitForPageToLoad(ReactionTime timeToWait) {
+    public synchronized static void waitForPageToLoad(final ReactionTime timeToWait) {
         _waitForPageToLoad(timeToWait, "This message should not show", false);
     }
 
@@ -115,7 +116,7 @@ public class PauseTest {
      * @param timeToWait                {@link ReactionTime} time to wait for page load to complete
      * @param messageToShowWhileWaiting Message to show while waiting
      */
-    public synchronized static void waitForPageToLoad(ReactionTime timeToWait, String messageToShowWhileWaiting) {
+    public synchronized static void waitForPageToLoad(final ReactionTime timeToWait, final String messageToShowWhileWaiting) {
         _waitForPageToLoad(ReactionTime.getInstance(timeToWait.getTime(), TimeUnit.SECONDS), messageToShowWhileWaiting, true);
     }
 
@@ -126,11 +127,12 @@ public class PauseTest {
      *
      * @param timeoutInSeconds Time to wait in seconds
      */
-    public synchronized static void startWaitTimer(int timeoutInSeconds) {
+    public synchronized static void startWaitTimer(final int timeoutInSeconds) {
         long elapsedTime = 0;
-        long startTime = System.currentTimeMillis();
-        Interact interact = BrowserFactory.getCurrentBrowser();
+        final long startTime = System.currentTimeMillis();
+        final Interact interact = BrowserFactory.getCurrentBrowser();
         interact.withDOM().injectInfoMessage("Starting timer for " + timeoutInSeconds + " Seconds");
+        RegressionLogger.getTestLogger().info("Starting timer for " + timeoutInSeconds + " seconds");
         while (elapsedTime < timeoutInSeconds) {
             if (startTime + (elapsedTime * 1000) <= System.currentTimeMillis()) {
                 interact.withDOM().injectWarningMessage("Waiting for timer to run out in " + (timeoutInSeconds - elapsedTime) + " Seconds");
@@ -141,17 +143,17 @@ public class PauseTest {
     }
 
 
-    private synchronized static void _waitForPageToLoad(ReactionTime reactionTime, String messageToShowWhileWaiting, boolean showMessage) {
-        WaitConditions waitConditions = PauseTest.createSpecialInstance(reactionTime.getTime())
+    private synchronized static void _waitForPageToLoad(final ReactionTime reactionTime, final String messageToShowWhileWaiting, final boolean showMessage) {
+        final WaitConditions waitConditions = PauseTest.createSpecialInstance(reactionTime.getTime())
                 .showMessage(showMessage);
-        try{
+        try {
             String applicationSystem = "default";
-            try{
+            try {
                 applicationSystem = BrowserStorageAccess.getInstance().get("ApplicationSystem").toString().toLowerCase(Locale.ROOT);
-            } catch (NullPointerException npe){
+            } catch (final NullPointerException npe) {
                 // do nothing it is defaulted to guidewire.
             }
-            switch (applicationSystem){
+            switch (applicationSystem) {
                 case "portals":
                     PortalInteract.waitForPageLoad();
                     break;
@@ -164,8 +166,8 @@ public class PauseTest {
                             ), messageToShowWhileWaiting);
             }
 
-        } catch (TimeoutException te){
-            if(!waitConditions.shouldSkipTimeout()){
+        } catch (final TimeoutException te) {
+            if (!waitConditions.shouldSkipTimeout()) {
                 throw te;
             }
         }
