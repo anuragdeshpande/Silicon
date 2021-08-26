@@ -212,8 +212,6 @@ public class Listener implements ISuiteListener, ITestListener {
                 throw new RuntimeException(aie);
             }
         }
-
-
     }
 
     // Fires at the end of each suite.

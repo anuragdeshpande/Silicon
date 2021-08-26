@@ -72,7 +72,7 @@ public class WaitConditions {
                 RegressionLogger.getFirstAvailableLogger().info("Attempt: " + counter + " Page is still loading. Waiting for condition to be true:" + waitCondition + " Automatically extending wait time by another " + timeoutInSeconds + " seconds");
             }
             counter++;
-        } while (counter <= 10);
+        } while (counter <= 3);
 
         if (extendedWaitTimeEvent != null) {
             RegressionLogger.getFirstAvailableLogger().endEvent(extendedWaitTimeEvent, "WaitCondition=\"" + waitCondition + "\"");
