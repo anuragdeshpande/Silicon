@@ -10,6 +10,7 @@ public class GWIDs {
     public static final Identifier INFO_MESSAGES = new Identifier(By.xpath("//div[@class='gw-WebMessage']//div[contains(@class, 'gw-alert-info')]//div[@class='gw-message'] | //div[contains(@class, 'gw-MessagesWidget--group-info')]//div[@class='gw-message']"), "Info Messages");
     public static final Identifier UNSAVED_WORK = new Identifier(By.id("TabBar-UnsavedWorkTabBarLink"), "Unsaved Work");
     public static final Identifier BOTTOM_CENTER_SHEET = new Identifier(By.id("gw-center-bottom-section"), "Center Bottom sheet on the screen");
+    public static final Identifier CURRENT_DATE_TOP_BAR = new Identifier(By.xpath("//div[contains(@id, '-CurrentDate') and contains(@class, '--InfoBarWidget')]/div[contains(@class, 'gw-infoValue')]"), "Current Date in Top Bar");
 
 
     public static class Login {

@@ -25,17 +25,9 @@ public class DriverFactory {
     private static String remoteHubURL = "";
     private static ReactionTime reactionTime = ReactionTime.STANDARD_WAIT_TIME;
 
-    private DriverFactory(){
-
-    }
-
-    public static DriverFactory getInstance(){
-        return new DriverFactory();
-    }
-
     static {
         try {
-            Properties properties = PropertiesFileLoader.load("config.properties");
+            final Properties properties = PropertiesFileLoader.load("config.properties");
 
             // First priority, Jenkins Build
             remoteHubURL = System.getProperty("hubUrl");
@@ -53,37 +45,45 @@ public class DriverFactory {
             }
 
             // set the default timeout for the application
-            String gwPageTimeout = properties.getProperty("GWPageTimeout");
-            if(gwPageTimeout != null && !gwPageTimeout.isEmpty()){
-                Long waitTime = Longs.tryParse(gwPageTimeout);
+            final String gwPageTimeout = properties.getProperty("GWPageTimeout");
+            if (gwPageTimeout != null && !gwPageTimeout.isEmpty()) {
+                final Long waitTime = Longs.tryParse(gwPageTimeout);
                 reactionTime = ReactionTime.getInstance(waitTime, TimeUnit.SECONDS);
             }
-        } catch (Exception e){
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
-    public WebDriver createBrowserWindow(){
-        try {
-            return _createBrowserWindow(optionsManager.getChromeOptions());
-        } catch (MalformedURLException e) {
-            throw new UnexpectedTerminationException("Malformed URL: "+e.getLocalizedMessage());
-        }
+    private DriverFactory() {
+
     }
 
-    public WebDriver createBrowserWindow(ChromeOptions options) {
-        try{
-            return _createBrowserWindow(options);
-        } catch (MalformedURLException e){
-            throw new UnexpectedTerminationException("Malformed URL: "+e.getLocalizedMessage());
-        }
+    public static DriverFactory getInstance() {
+        return new DriverFactory();
     }
 
-    public static ReactionTime getReactionTime(){
+    public static ReactionTime getReactionTime() {
         return reactionTime;
     }
 
-    private WebDriver _createBrowserWindow(ChromeOptions options) throws MalformedURLException{
+    public WebDriver createBrowserWindow() {
+        try {
+            return _createBrowserWindow(optionsManager.getChromeOptions());
+        } catch (final MalformedURLException e) {
+            throw new UnexpectedTerminationException("Malformed URL: " + e.getLocalizedMessage());
+        }
+    }
+
+    public WebDriver createBrowserWindow(final ChromeOptions options) {
+        try {
+            return _createBrowserWindow(options);
+        } catch (final MalformedURLException e) {
+            throw new UnexpectedTerminationException("Malformed URL: " + e.getLocalizedMessage());
+        }
+    }
+
+    private WebDriver _createBrowserWindow(final ChromeOptions options) throws MalformedURLException {
         WebDriver driver = null;
         int counter = 3;
         do {
@@ -96,7 +96,7 @@ public class DriverFactory {
                 }
                 RegressionLogger.print("Browser window created. Breaking the loop");
                 break;
-            } catch (WebDriverException we) {
+            } catch (final WebDriverException we) {
                 if (we.getLocalizedMessage().equalsIgnoreCase("Timed out waiting for driver server to start.")) {
                     RegressionLogger.getFirstAvailableLogger().info("Failed to create browser window. Trying again");
                 }
@@ -104,7 +104,7 @@ public class DriverFactory {
             counter--;
         } while (counter >= 0);
 
-        if(driver != null){
+        if (driver != null) {
             driver.manage().window().maximize();
             driver.manage().timeouts().implicitlyWait(reactionTime.getTime(), reactionTime.getTimeUnit());
         } else {

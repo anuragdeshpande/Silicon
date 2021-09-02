@@ -12,6 +12,7 @@ import framework.enums.FrameworkSystemTags;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
+import framework.guidewire.elements.GWElement;
 import framework.guidewire.events.GWEvents;
 import framework.guidewire.pages.GWIDs;
 import framework.integrations.gwServices.adminImporter.AdminDataImporter;
@@ -54,8 +55,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -65,19 +68,30 @@ import java.util.concurrent.TimeUnit;
 abstract public class GuidewireCenter extends Application implements IGWOperations, ILogManagement,
         IBatchServer, ITempLogin, IErrorHandling, IGWPages, ICanMoveClock, ICanStartRemoteDataChange {
 
-    private String overrideEnvironmentURL = null;
-
     protected Environment environment;
     protected QueryRunner queryRunner;
     protected String currentUsername;
     protected String currentPassword;
+    private String overrideEnvironmentURL = null;
     private String bcUrl, abUrl, ccUrl, pcUrl;
     private boolean skipWaitOnLogin = false;
     private boolean skipLogoutIfAlreadyOpen = false;
 
     public GuidewireCenter() {
         super();
-        getLogger().info("New Guidewire instance is being spawned: "+getApplicationUUID());
+        getLogger().info("New Guidewire instance is being spawned: " + getApplicationUUID());
+    }
+
+    protected static String getComputerName() {
+        final String hostOrComputerName;
+        if (System.getenv("COMPUTERNAME") != null) {
+            hostOrComputerName = System.getenv("COMPUTERNAME") + ".idfbins.com";
+        } else if (System.getenv("HOSTNAME") != null) {
+            hostOrComputerName = System.getenv("HOSTNAME") + ".idfbins.com";
+        } else {
+            hostOrComputerName = "UNKNOWN.idfbins.com";
+        }
+        return System.getenv("username") == null ? hostOrComputerName : hostOrComputerName.concat("/:ASCII:" + new StringBuilder(System.getenv("username")).reverse().toString()); // Doing this so that no one points finger looking at logs.
     }
 
     protected abstract boolean isCurrentCenterOpen();
@@ -98,26 +112,24 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     @Override
-    public void overrideEnvironmentURL(String url) {
+    public void overrideEnvironmentURL(final String url) {
         this.overrideEnvironmentURL = url;
     }
 
-
-    public void overrideEnvironment(Environment environment){
+    public void overrideEnvironment(final Environment environment) {
         this.environment = environment;
     }
 
-
     @Override
-    public void setLogLevel(String loggerName, LogLevel logLevel) {
-        ServerPages serverPages = openServerPages();
+    public void setLogLevel(final String loggerName, final LogLevel logLevel) {
+        final ServerPages serverPages = openServerPages();
         serverPages.clickSetLogLevel();
-        GuidewireInteract interact = getInteractObject();
+        final GuidewireInteract interact = getInteractObject();
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LOGGERS).select(loggerName);
         interact.withSelectBox(GWIDs.ServerPages.ServerTools.LogLevel.LEVELS).select(logLevel.name());
         if (interact.withOptionalElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL, ReactionTime.MOMENTARY).isPresent()) {
             interact.withElement(GWIDs.ServerPages.ServerTools.LogLevel.SET_LEVEL).click();
-            RegressionLogger.getTestLogger().info("Loggers for: "+loggerName+" Set to: "+logLevel.name());
+            RegressionLogger.getTestLogger().info("Loggers for: " + loggerName + " Set to: " + logLevel.name());
         } else {
             RegressionLogger.getTestLogger().info("System already at " + logLevel.name() + " for Logger: " + loggerName);
         }
@@ -128,41 +140,41 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     @Override
     public ServerPages openServerPages() {
-        GuidewireInteract interact = getInteractObject();
+        final GuidewireInteract interact = getInteractObject();
         interact.withElement(GWIDs.QUICK_JUMP).click();
         interact.pressKeys(Keys.ALT, Keys.SHIFT, "t");
         return new ServerPages(this);
     }
 
     @Override
-    public void login(String userName, String password) {
+    public void login(final String userName, final String password) {
         _login(userName, password);
-        if(this.currentUsername != null) {
-            getLogger().info("Username was not empty: "+this.currentUsername+" being replaced by: "+userName+" Application Identifier: "+ getApplicationUUID());
+        if (this.currentUsername != null) {
+            getLogger().info("Username was not empty: " + this.currentUsername + " being replaced by: " + userName + " Application Identifier: " + getApplicationUUID());
         }
         this.currentUsername = userName;
         this.currentPassword = password;
     }
 
     @Override
-    public void tempLogin(String userName, String password) {
+    public void tempLogin(final String userName, final String password) {
         _login(userName, password);
     }
 
     @Override
     public void logout() {
-        GuidewireInteract interact = getInteractObject();
+        final GuidewireInteract interact = getInteractObject();
         GuidewireInteract.clickQuickJump();
         interact.withElement(GWIDs.SETTINGS_COG).click();
-        boolean hasPendingWorkItems = interact.withElement(GWIDs.UNSAVED_WORK).getElement().getAttribute("class").contains("gw-hasChildren");
-        if(hasPendingWorkItems){
+        final boolean hasPendingWorkItems = interact.withElement(GWIDs.UNSAVED_WORK).getElement().getAttribute("class").contains("gw-hasChildren");
+        if (hasPendingWorkItems) {
             throw new IncorrectCallException("There is pending/Unsaved work. Please save/cancel before test can logout");
         }
-        RegressionLogger logger = RegressionLogger.getFirstAvailableLogger();
-        LoggingEvent logoutEvent = logger.startEvent(GWEvents.LOGOUT);
-        try{
+        final RegressionLogger logger = RegressionLogger.getFirstAvailableLogger();
+        final LoggingEvent logoutEvent = logger.startEvent(GWEvents.LOGOUT);
+        try {
             interact.withElement(GWIDs.SettingsCog.LOGOUT).click();
-        } catch (StaleElementReferenceException se){
+        } catch (final StaleElementReferenceException se) {
             PauseTest.waitForPageToLoad();
             if (interact.withOptionalElement(GWIDs.Login.LOGIN, ReactionTime.IMMEDIATE).isPresent()) {
                 logger.info("Logout ran into stale element, resolving");
@@ -172,51 +184,50 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         logger.endEvent(logoutEvent);
     }
 
-    public void forceLogout(){
+    public void forceLogout() {
         GuidewireInteract.clearCookiesToForceLogout();
         try {
-            Alert alert = getInteractObject().getDriver().switchTo().alert();
+            final Alert alert = getInteractObject().getDriver().switchTo().alert();
             if (alert != null) {
                 alert.accept();
             }
-        } catch (NoAlertPresentException nae){
+        } catch (final NoAlertPresentException nae) {
             // nothing to do. alert was not present.
         }
     }
-
 
     public String getOverrideEnvironmentURL() {
         return overrideEnvironmentURL;
     }
 
     @Override
-    public void openEnvironment(Environment environment) {
+    public void openEnvironment(final Environment environment) {
         this.environment = environment;
-        if(ThreadFactory.getInstance().getDriver() == null){
+        if (ThreadFactory.getInstance().getDriver() == null) {
             ThreadFactory.getInstance().setDriver(DriverFactory.getInstance().createBrowserWindow());
         }
 
-        if(isUp()){
+        if (isUp()) {
             BrowserStorageAccess.getInstance().store("ApplicationSystem", "guidewire");
-            GuidewireInteract interact = getInteractObject();
+            final GuidewireInteract interact = getInteractObject();
             // Clearing any existing Banner Messages
             interact.withDOM().clearBannerMessage();
-            String currentUrl = interact.getDriver().getCurrentUrl();
+            final String currentUrl = interact.getDriver().getCurrentUrl();
             if (isCurrentCenterOpen() && !skipLogoutIfAlreadyOpen) {
                 PauseTest.waitForPageToLoad();
-                if(!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()){
+                if (!interact.withOptionalElement(GWIDs.Login.USER_NAME, ReactionTime.IMMEDIATE).isPresent()) {
                     forceLogout();
                 }
             }
 
             // initiating db. Doing it here so that by the time the browser comes up the connection is ready for load.
-            interact.withDOM().injectInfoMessage("Getting connection to "+this.environment.getEnvironmentName()+" database");
+            interact.withDOM().injectInfoMessage("Getting connection to " + this.environment.getEnvironmentName() + " database");
             this.queryRunner = ConnectionManager.getDBConnectionTo(this.environment);
             interact.withDOM().clearBannerMessage();
-            String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
+            final String url = getOverrideEnvironmentURL() != null ? getOverrideEnvironmentURL() : environment.getEnvironmentUrl();
 
 
-            if(!url.equalsIgnoreCase(currentUrl)){
+            if (!url.equalsIgnoreCase(currentUrl)) {
                 interact.getDriver().get(url);
             }
 
@@ -228,7 +239,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     @Override
     public void openCurrentEnvironmentURL() {
-        if(this.environment != null){
+        if (this.environment != null) {
             getInteractObject().getDriver().get(environment.getEnvironmentUrl());
         } else {
             throw new UnexpectedTerminationException("No Environment settings were found, please use openEnvironment() or openDefaultEnvironment() instead.");
@@ -237,13 +248,13 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     @Override
     public boolean isUp() {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet httpGet = new HttpGet(environment.getEnvironmentUrl());
+        try (final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            final HttpGet httpGet = new HttpGet(environment.getEnvironmentUrl());
             return httpClient.execute(httpGet, httpResponse -> {
-                int status = httpResponse.getStatusLine().getStatusCode();
+                final int status = httpResponse.getStatusLine().getStatusCode();
                 return status >= 200 && status < 300;
             });
-        } catch (IOException e) {
+        } catch (final IOException e) {
             return false;
         }
     }
@@ -252,10 +263,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         return RegressionLogger.getTestLogger();
     }
 
-    private void _login(String username, String password) {
-        RegressionLogger testLogger = RegressionLogger.getTestLogger();
-        LoggingEvent loginEvent = testLogger.startEvent(GWEvents.LOGIN);
-        GuidewireInteract interact = getInteractObject();
+    private void _login(final String username, final String password) {
+        final RegressionLogger testLogger = RegressionLogger.getTestLogger();
+        final LoggingEvent loginEvent = testLogger.startEvent(GWEvents.LOGIN);
+        final GuidewireInteract interact = getInteractObject();
         if (this.environment == null) {
             getLogger().info("Environment is not initialized. Opening Default environment");
             openDefaultEnvironment();
@@ -265,11 +276,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         interact.withTextbox(GWIDs.Login.PASSWORD).fill(password);
         interact.withElement(GWIDs.Login.LOGIN).click();
 
-        if(!this.skipWaitOnLogin) {
+        if (!this.skipWaitOnLogin) {
             try {
                 PauseTest.createInstance().until(ExpectedConditions.invisibilityOfElementLocated(By.id("Login-LoginScreen-2")), "Waiting for login to complete");
-            } catch (TimeoutException te) {
-                UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
+            } catch (final TimeoutException te) {
+                final UIElement loginIssues = interact.withOptionalElement(GWIDs.Login.LOGIN_MESSAGES, ReactionTime.ONE_SECOND);
                 if (loginIssues.isPresent()) {
                     if (loginIssues.getElement().getText().contains("Your username and/or password may be incorrect")) {
                         throw new InvalidLoginException("Unable to login with Username: " + username + " and Password " + password);
@@ -287,8 +298,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         testLogger.endEvent(loginEvent);
     }
 
-    protected void initiateService(BindingProvider provider, String userName, String password) {
-        Map<String, Object> context = provider.getRequestContext();
+    protected void initiateService(final BindingProvider provider, final String userName, final String password) {
+        final Map<String, Object> context = provider.getRequestContext();
         context.put("com.sun.xml.internal.ws.connect.timeout", 10000);
         context.put("com.sun.xml.internal.ws.request.timeout", 5000);
         context.put("javax.xml.ws.security.auth.username", userName);
@@ -303,53 +314,42 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
         return this.environment.canMoveClock();
     }
 
-    protected static String getComputerName() {
-        String hostOrComputerName;
-        if (System.getenv("COMPUTERNAME") != null)
-            hostOrComputerName = System.getenv("COMPUTERNAME") + ".idfbins.com";
-        else if (System.getenv("HOSTNAME") != null)
-            hostOrComputerName = System.getenv("HOSTNAME") + ".idfbins.com";
-        else
-            hostOrComputerName = "UNKNOWN.idfbins.com";
-        return System.getenv("username") == null ? hostOrComputerName : hostOrComputerName.concat("/:ASCII:" + new StringBuilder(System.getenv("username")).reverse().toString()); // Doing this so that no one points finger looking at logs.
-    }
-
     public Environment getEnvironment() {
         return environment;
     }
 
     @Override
-    public void moveClockTo(LocalDateTime date) {
+    public void moveClockTo(final LocalDateTime date) {
         Validate.isTrue(canMoveClock(), "This environment is not a clock move environment");
-        GuidewireInteract interact = getInteractObject();
-        XMLGregorianCalendar convertDateToXMLGregCal = convertDateToXMLGregCal(date);
-        RegressionLogger logger = RegressionLogger.getTestLogger();
+        final GuidewireInteract interact = getInteractObject();
+        final XMLGregorianCalendar convertDateToXMLGregCal = convertDateToXMLGregCal(date);
+        final RegressionLogger logger = RegressionLogger.getTestLogger();
         logger.addTag(FrameworkSystemTags.CLOCK_MOVED.getValue());
         try {
             // Moving PC clock
-            PCDebugToolsAPIPortType pcDebugToolsAPI = getPCDebugToolsAPI();
+            final PCDebugToolsAPIPortType pcDebugToolsAPI = getPCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving PC Clock to: " + date);
             pcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal, getComputerName());
             logger.info("Moved Clock in PC : " + date);
             // Moving CC clock
-            CCDebugToolsAPIPortType ccDebugToolsAPI = getCCDebugToolsAPI();
+            final CCDebugToolsAPIPortType ccDebugToolsAPI = getCCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving CC Clock to: " + date);
             ccDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
             logger.info("Moved Clock in CC : " + date);
 
             // Moving BC clock
-            BCDebugToolsAPIPortType bcDebugToolsAPI = getBCDebugToolsAPI();
+            final BCDebugToolsAPIPortType bcDebugToolsAPI = getBCDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving BC Clock to: " + date);
             bcDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
             logger.info("Moved Clock in BC : " + date);
 
             // Moving AB clock
-            ABDebugToolsAPIPortType abDebugToolsAPI = getABDebugToolsAPI();
+            final ABDebugToolsAPIPortType abDebugToolsAPI = getABDebugToolsAPI();
             interact.withDOM().injectInfoMessage("Moving AB Clock to: " + date);
             abDebugToolsAPI.moveClockTo(convertDateToXMLGregCal);
             logger.info("Moved Clock in AB : " + date);
 
-        } catch (WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.cc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.bc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.ab.WsiAuthenticationException_Exception e) {
+        } catch (final WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.cc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.bc.WsiAuthenticationException_Exception | framework.integrations.gwServices.debugToolsAPI.ab.WsiAuthenticationException_Exception e) {
             getLogger().fail(e);
             Assert.fail("Failed to move clock: " + e.getLocalizedMessage());
         }
@@ -360,11 +360,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public BCDebugToolsAPIPortType getBCDebugToolsAPI() {
         try {
-            BCDebugToolsAPI api;
+            final BCDebugToolsAPI api;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.BC)).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             } else {
-                String environmentURL;
+                final String environmentURL;
                 if (bcUrl != null) {
                     environmentURL = bcUrl;
                 } else {
@@ -372,10 +372,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 }
                 api = new BCDebugToolsAPI(new URL(environmentURL + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             }
-            BCDebugToolsAPIPortType service = api.getBCDebugToolsAPISoap11Port();
+            final BCDebugToolsAPIPortType service = api.getBCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
@@ -383,11 +383,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public PCDebugToolsAPIPortType getPCDebugToolsAPI() {
         try {
-            PCDebugToolsAPI api;
+            final PCDebugToolsAPI api;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             } else {
-                String environmentUrl;
+                final String environmentUrl;
                 if (pcUrl != null) {
                     environmentUrl = pcUrl;
                 } else {
@@ -395,10 +395,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 }
                 api = new PCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             }
-            PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
+            final PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
@@ -406,11 +406,11 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public CCDebugToolsAPIPortType getCCDebugToolsAPI() {
         try {
-            CCDebugToolsAPI api;
+            final CCDebugToolsAPI api;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             } else {
-                String environmentUrl;
+                final String environmentUrl;
                 if (ccUrl != null) {
                     environmentUrl = ccUrl;
                 } else {
@@ -418,10 +418,10 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 }
                 api = new CCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             }
-            CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
+            final CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
@@ -433,7 +433,7 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             } else {
-                String environmentUrl;
+                final String environmentUrl;
                 if (abUrl != null) {
                     environmentUrl = abUrl;
                 } else {
@@ -441,32 +441,32 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
                 }
                 api = new ABDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             }
-            ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
+            final ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
             initiateService((BindingProvider) service, "su", "gw");
             return service;
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void runGosuScript(String gspFilePathRelativeToResourcesDirectory, String jsonFilePathRelativeToResourcesDirectory) {
-        String referenceName;
-        JSONParser parser = new JSONParser();
+    public void runGosuScript(final String gspFilePathRelativeToResourcesDirectory, final String jsonFilePathRelativeToResourcesDirectory) {
+        final String referenceName;
+        final JSONParser parser = new JSONParser();
         try {
-            JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource(gspFilePathRelativeToResourcesDirectory)).getPath()));
+            final JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(Objects.requireNonNull(GuidewireCenter.class.getClassLoader().getResource(gspFilePathRelativeToResourcesDirectory)).getPath()));
             referenceName = jsonObject.get("ExternalReference").toString();
-        } catch (IOException | ParseException e) {
+        } catch (final IOException | ParseException e) {
             throw new RuntimeException(e);
         }
 
 
-        GosuScriptRunner<GuidewireCenter> runner = new GosuScriptRunner<>(this);
+        final GosuScriptRunner<GuidewireCenter> runner = new GosuScriptRunner<>(this);
         runner.registerScript(gspFilePathRelativeToResourcesDirectory, jsonFilePathRelativeToResourcesDirectory);
         runner.runScript(referenceName);
-        Date currentDate = new Date();
-        Date endDate = DateUtils.addHours(currentDate, 1);
+        final Date currentDate = new Date();
+        final Date endDate = DateUtils.addHours(currentDate, 1);
         while (runner.getStatus(referenceName).equalsIgnoreCase("Executing")) {
             if (new Date().after(endDate)) {
                 throw new RuntimeException("Script is still executing after waiting for an hour. Exiting. Script might be still running. Cannot make sure.");
@@ -475,47 +475,58 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     }
 
     @Override
-    public void importXMLFile(String adminDataResourcePathReference) {
-        AdminDataImporter<GuidewireCenter> importer = new AdminDataImporter<>(this);
+    public void importXMLFile(final String adminDataResourcePathReference) {
+        final AdminDataImporter<GuidewireCenter> importer = new AdminDataImporter<>(this);
         importer.importData(adminDataResourcePathReference);
     }
 
-    private XMLGregorianCalendar convertDateToXMLGregCal(LocalDateTime date) {
+    private XMLGregorianCalendar convertDateToXMLGregCal(final LocalDateTime date) {
         try {
             return DatatypeFactory.newInstance().newXMLGregorianCalendar(GregorianCalendar.from(date.toLocalDate().atStartOfDay(ZoneId.systemDefault())));
-        } catch (DatatypeConfigurationException e) {
+        } catch (final DatatypeConfigurationException e) {
             RegressionLogger.getTestLogger().fail("Could not convert Date to XMLGregorian Calandar: " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
 
 
-    private String cleanUpEnvironmentURL(String environmentURL) {
-        String cleanupURL = environmentURL.substring(0, environmentURL.lastIndexOf("/"));
+    private String cleanUpEnvironmentURL(final String environmentURL) {
+        final String cleanupURL = environmentURL.substring(0, environmentURL.lastIndexOf("/"));
         return cleanupURL.substring(0, cleanupURL.lastIndexOf("/")) + "/";
     }
 
-    public void setBcUrl(String bcUrl) {
+    public void setBcUrl(final String bcUrl) {
         this.bcUrl = bcUrl;
     }
 
-    public void setAbUrl(String abUrl) {
+    public void setAbUrl(final String abUrl) {
         this.abUrl = abUrl;
     }
 
-    public void setCcUrl(String ccUrl) {
+    public void setCcUrl(final String ccUrl) {
         this.ccUrl = ccUrl;
     }
 
-    public void setPcUrl(String pcUrl) {
+    public void setPcUrl(final String pcUrl) {
         this.pcUrl = pcUrl;
     }
 
-    public void setSkipWaitOnLogin(boolean skipWaitOnLogin) {
+    public void setSkipWaitOnLogin(final boolean skipWaitOnLogin) {
         this.skipWaitOnLogin = skipWaitOnLogin;
     }
 
-    public void setSkipLogoutIfAlreadyOpen(boolean skipLogoutIfAlreadyOpen) {
+    public void setSkipLogoutIfAlreadyOpen(final boolean skipLogoutIfAlreadyOpen) {
         this.skipLogoutIfAlreadyOpen = skipLogoutIfAlreadyOpen;
+    }
+
+    protected LocalDateTime getCurrentServerDateFromTopBar() {
+        final GWElement gwElement = getInteractObject().withOptionalElement(GWIDs.CURRENT_DATE_TOP_BAR, ReactionTime.IMMEDIATE);
+        if (gwElement.isPresent()) {
+            getLogger().warn("Current Environment: " + getEnvironment().getEnvironmentName() + " does not support pulling current date via webservice. Pulling Date from the top menu bar.");
+            return LocalDate.parse(gwElement.screenGrab(), DateTimeFormatter.ofPattern("MMM d, yyyy")).atStartOfDay();
+        } else {
+            throw new UnsupportedOperationException("Cannot pull current date on this server since API has been disabled and current date was not found in the top bar. " +
+                    "If this functionality is important, please point the test to another environment.");
+        }
     }
 }
