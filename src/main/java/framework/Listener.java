@@ -220,22 +220,6 @@ public class Listener implements ISuiteListener, ITestListener {
         System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
-        this.extentReports.getReport().getTestList().forEach(test -> {
-            if (test != null) {
-                final Date unresolvedStartTime = test.getStartTime();
-                final Date unresolvedEndTime = test.getEndTime();
-                if (unresolvedEndTime != null && unresolvedStartTime != null) {
-                    final LocalTime startTime = unresolvedStartTime.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-                    final LocalTime endTime = unresolvedEndTime.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-                    System.out.println(test.getFullName() + ": " + Duration.between(startTime, endTime).toMinutes() + " minute(s)");
-                } else {
-                    System.out.println("Test Start Time: " + unresolvedStartTime + " Test End Time: " + unresolvedEndTime);
-                }
-            } else {
-                System.out.println("Test value was null");
-            }
-
-        });
         if (this.writeToDatabase && !this.skipSuiteWriteToDB) {
             ReportManager.recordSuiteResults(iSuite);
         } else {
