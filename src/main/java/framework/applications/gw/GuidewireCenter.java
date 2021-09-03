@@ -12,7 +12,6 @@ import framework.enums.FrameworkSystemTags;
 import framework.enums.LogLevel;
 import framework.environmentResolution.Environment;
 import framework.guidewire.GuidewireInteract;
-import framework.guidewire.elements.GWElement;
 import framework.guidewire.events.GWEvents;
 import framework.guidewire.pages.GWIDs;
 import framework.integrations.gwServices.adminImporter.AdminDataImporter;
@@ -55,10 +54,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -361,19 +358,25 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public BCDebugToolsAPIPortType getBCDebugToolsAPI() {
         try {
             final BCDebugToolsAPI api;
+            boolean isProdLikeEnvironment = false;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new BCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.BC)).getEnvironmentUrl() + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             } else {
-                final String environmentURL;
+                String environmentURL;
                 if (bcUrl != null) {
                     environmentURL = bcUrl;
                 } else {
                     environmentURL = Objects.requireNonNull(Environment.resolve(ApplicationNames.BC, environment.getEnvironmentName())).getEnvironmentUrl();
                 }
+
+                if (environment != null && this.environment.getEnvironmentName() == Environments.STAGING10) {
+                    isProdLikeEnvironment = true;
+                    environmentURL = this.environment.getBatchEnvironmentURL().get();
+                }
                 api = new BCDebugToolsAPI(new URL(environmentURL + "ws/gw/webservice/policycenter/bc1000/BCDebugToolsAPI?WSDL"));
             }
             final BCDebugToolsAPIPortType service = api.getBCDebugToolsAPISoap11Port();
-            initiateService((BindingProvider) service, "su", "gw");
+            initiateService((BindingProvider) service, isProdLikeEnvironment ? "emessaging" : "su", "gw");
             return service;
         } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
@@ -384,19 +387,24 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public PCDebugToolsAPIPortType getPCDebugToolsAPI() {
         try {
             final PCDebugToolsAPI api;
+            boolean isProdLikeEnvironment = false;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new PCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.PC)).getEnvironmentUrl() + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             } else {
-                final String environmentUrl;
+                String environmentUrl;
                 if (pcUrl != null) {
                     environmentUrl = pcUrl;
                 } else {
                     environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.PC, environment.getEnvironmentName())).getEnvironmentUrl();
+                    if (environment != null && this.environment.getEnvironmentName() == Environments.STAGING10) {
+                        isProdLikeEnvironment = true;
+                        environmentUrl = this.environment.getBatchEnvironmentURL().get();
+                    }
                 }
                 api = new PCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/pc/pc1000/pcdebugtools/PCDebugToolsAPI?WSDL"));
             }
             final PCDebugToolsAPIPortType service = api.getPCDebugToolsAPISoap11Port();
-            initiateService((BindingProvider) service, "su", "gw");
+            initiateService((BindingProvider) service, isProdLikeEnvironment ? "emessaging" : "su", "gw");
             return service;
         } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
@@ -407,19 +415,24 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public CCDebugToolsAPIPortType getCCDebugToolsAPI() {
         try {
             final CCDebugToolsAPI api;
+            boolean isProdLikeEnvironment = false;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new CCDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.CC)).getEnvironmentUrl() + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             } else {
-                final String environmentUrl;
+                String environmentUrl;
                 if (ccUrl != null) {
                     environmentUrl = ccUrl;
                 } else {
                     environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.CC, environment.getEnvironmentName())).getEnvironmentUrl();
+                    if (environment != null && this.environment.getEnvironmentName() == Environments.STAGING10) {
+                        isProdLikeEnvironment = true;
+                        environmentUrl = this.environment.getBatchEnvironmentURL().get();
+                    }
                 }
                 api = new CCDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/cc/cc1000/ccdebugtools/CCDebugToolsAPI?WSDL"));
             }
             final CCDebugToolsAPIPortType service = api.getCCDebugToolsAPISoap11Port();
-            initiateService((BindingProvider) service, "su", "gw");
+            initiateService((BindingProvider) service, isProdLikeEnvironment ? "emessaging" : "su", "gw");
             return service;
         } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
@@ -430,19 +443,24 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public ABDebugToolsAPIPortType getABDebugToolsAPI() {
         try {
             ABDebugToolsAPI api = null;
+            boolean isProdLikeEnvironment = false;
             if (environment != null && environment.getEnvironmentName().equals(Environments.LOCAL)) {
                 api = new ABDebugToolsAPI(new URL(Objects.requireNonNull(Environment.resolveLocal(ApplicationNames.AB)).getEnvironmentUrl() + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             } else {
-                final String environmentUrl;
+                String environmentUrl;
                 if (abUrl != null) {
                     environmentUrl = abUrl;
                 } else {
                     environmentUrl = Objects.requireNonNull(Environment.resolve(ApplicationNames.AB, environment.getEnvironmentName())).getEnvironmentUrl();
+                    if (environment != null && this.environment.getEnvironmentName() == Environments.STAGING10) {
+                        isProdLikeEnvironment = true;
+                        environmentUrl = this.environment.getBatchEnvironmentURL().get();
+                    }
                 }
                 api = new ABDebugToolsAPI(new URL(environmentUrl + "ws/gw/webservice/ab/ab1000/abdebugtoolsapi/ABDebugToolsAPI?WSDL"));
             }
             final ABDebugToolsAPIPortType service = api.getABDebugToolsAPISoap11Port();
-            initiateService((BindingProvider) service, "su", "gw");
+            initiateService((BindingProvider) service, isProdLikeEnvironment ? "emessaging" : "su", "gw");
             return service;
         } catch (final MalformedURLException e) {
             getLogger().fail("Failed to connect to BC Debug Tools API" + e.getLocalizedMessage());
@@ -517,16 +535,5 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public void setSkipLogoutIfAlreadyOpen(final boolean skipLogoutIfAlreadyOpen) {
         this.skipLogoutIfAlreadyOpen = skipLogoutIfAlreadyOpen;
-    }
-
-    protected LocalDateTime getCurrentServerDateFromTopBar() {
-        final GWElement gwElement = getInteractObject().withOptionalElement(GWIDs.CURRENT_DATE_TOP_BAR, ReactionTime.IMMEDIATE);
-        if (gwElement.isPresent()) {
-            getLogger().warn("Current Environment: " + getEnvironment().getEnvironmentName() + " does not support pulling current date via webservice. Pulling Date from the top menu bar.");
-            return LocalDate.parse(gwElement.screenGrab(), DateTimeFormatter.ofPattern("MMM d, yyyy")).atStartOfDay();
-        } else {
-            throw new UnsupportedOperationException("Cannot pull current date on this server since API has been disabled and current date was not found in the top bar. " +
-                    "If this functionality is important, please point the test to another environment.");
-        }
     }
 }
