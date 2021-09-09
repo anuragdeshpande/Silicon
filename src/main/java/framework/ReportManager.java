@@ -8,7 +8,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.NamedAttribute;
 import com.aventstack.extentreports.model.Test;
-import com.aventstack.extentreports.reporter.ExtentKlovReporter;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.JsonFormatter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -63,7 +62,7 @@ public class ReportManager {
         return extentReports != null;
     }
 
-    public static ExtentReports initiate(String suiteName) {
+    public static ExtentReports initiate(final String suiteName) {
         if (System.getProperty("jenkinsBuildNumber") != null) {
             Validate.notNull(System.getProperty("UUID"));
             Validate.notBlank(System.getProperty("UUID"));
@@ -79,26 +78,26 @@ public class ReportManager {
         }
 
         FULL_FILE_PATH = REPORT_DIRECTORY_LOCATION + File.separator + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".html";
-        File file = new File(FULL_FILE_PATH);
+        final File file = new File(FULL_FILE_PATH);
         if (!file.exists()) {
             new File(REPORT_DIRECTORY_LOCATION).mkdirs();
             System.setProperty("ReportDirectoryFullLocation", REPORT_DIRECTORY_LOCATION);
         }
 
-        ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
+        final ExtentSparkReporter extentReporter = new ExtentSparkReporter(FULL_FILE_PATH);
         extentReports = new ExtentReports();
 
         attachCustomConfig(extentReporter);
         extentReports.attachReporter(extentReporter);
         // attaching json reporter for combining reports at the end of the suite run
-        JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION + File.separator + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".json");
+        final JsonFormatter jsonReport = new JsonFormatter(REPORT_DIRECTORY_LOCATION + File.separator + INIT_SUITE_NAME + "_" + REPORT_FILE_NAME + ".json");
         extentReports.attachReporter(jsonReport);
         return extentReports;
     }
 
-    public static LoggerDTO recordSuite(TestDetailsDTO dto) {
+    public static LoggerDTO recordSuite(final TestDetailsDTO dto) {
         if (!suiteMap.containsKey(dto.getSuiteName())) {
-            ExtentTest suite = extentReports.createTest("SuiteLogger - " + dto.getSuiteName());
+            final ExtentTest suite = extentReports.createTest("SuiteLogger - " + dto.getSuiteName());
             suite.log(Status.INFO, "This is NOT a test, this has been created for Config Methods like BeforeSuite and AfterSuite Methods Only");
             suiteMap.put(dto.getSuiteName(), new LoggerDTO(suite));
         }
@@ -106,10 +105,10 @@ public class ReportManager {
         return suiteMap.get(dto.getSuiteName());
     }
 
-    public static LoggerDTO recordClass(TestDetailsDTO dto) {
-        String className = dto.getClassName();
+    public static LoggerDTO recordClass(final TestDetailsDTO dto) {
+        final String className = dto.getClassName();
         if (!classMap.containsKey(className) && !className.equalsIgnoreCase("TestRunner")) {
-            ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(className);
+            final ExtentTest extentTestClass = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(className);
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_CLASS_NAME, className);
             ThreadFactory.getInstance().getStorage().put(StringConstants.PACKAGE_NAME, dto.getPackageName());
             ThreadFactory.getInstance().getStorage().put(StringConstants.SUITE_NAME, dto.getSuiteName());
@@ -119,10 +118,10 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    public static LoggerDTO recordXMLTest(TestDetailsDTO dto) {
-        String xmlTestName = dto.getXmlTestName();
+    public static LoggerDTO recordXMLTest(final TestDetailsDTO dto) {
+        final String xmlTestName = dto.getXmlTestName();
         if (!xmlTestMap.containsKey(xmlTestName)) {
-            ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
+            final ExtentTest extentXMLTest = extentReports.createTest(xmlTestName);
             xmlTestMap.put(xmlTestName, new LoggerDTO(extentXMLTest));
             ThreadFactory.getInstance().getStorage().put(StringConstants.XML_TEST_NAME, xmlTestName);
         }
@@ -131,10 +130,10 @@ public class ReportManager {
     }
 
     @SuppressWarnings("Duplicates")
-    public static LoggerDTO recordTest(TestDetailsDTO dto, String description) {
-        String testName = dto.getTestName();
+    public static LoggerDTO recordTest(final TestDetailsDTO dto, final String description) {
+        final String testName = dto.getTestName();
         if (!testMap.containsKey(testName)) {
-            ExtentTest extentTest = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(dto.getTestName(), description);
+            final ExtentTest extentTest = xmlTestMap.get(dto.getXmlTestName()).getExtentTest().createNode(dto.getTestName(), description);
             testMap.put(testName, new LoggerDTO(extentTest));
             ThreadFactory.getInstance().getStorage().put(StringConstants.TEST_NAME, testName);
         }
@@ -143,61 +142,61 @@ public class ReportManager {
 
     }
 
-    public static void removeClass(String className) {
+    public static void removeClass(final String className) {
         extentReports.removeTest(classMap.get(className).getExtentTest());
     }
 
-    public static LoggerDTO getTest(TestDetailsDTO dto) {
+    public static LoggerDTO getTest(final TestDetailsDTO dto) {
         return testMap.get(dto.getTestName());
     }
 
-    public static LoggerDTO getClass(String className) {
+    public static LoggerDTO getClass(final String className) {
         return classMap.get(className);
     }
 
-    public static LoggerDTO getXMLTest(String xmlTestName) {
+    public static LoggerDTO getXMLTest(final String xmlTestName) {
         return xmlTestMap.get(xmlTestName);
     }
 
-    public static LoggerDTO getSuite(String suiteName) {
+    public static LoggerDTO getSuite(final String suiteName) {
         return suiteMap.get(suiteName);
     }
 
-    public static boolean recordTestResult(ITestResult iTestResult, String status) {
-        AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
+    public static boolean recordTestResult(final ITestResult iTestResult, final String status) {
+        final AutomatedTest automatedAnnotation = iTestResult.getMethod().getConstructorOrMethod().getMethod().getAnnotationsByType(AutomatedTest.class)[0];
 
-        Timestamp startDate = new Timestamp(iTestResult.getStartMillis());
-        Timestamp endDate = new Timestamp(iTestResult.getEndMillis());
+        final Timestamp startDate = new Timestamp(iTestResult.getStartMillis());
+        final Timestamp endDate = new Timestamp(iTestResult.getEndMillis());
         String failureImageURL = null;
         String failureReason = null;
-        boolean clockMove;
+        final boolean clockMove;
         if (System.getProperty("UseClockMoveAnnotation", "false").equalsIgnoreCase("true")) {
             clockMove = iTestResult.getTestClass().getRealClass().isAnnotationPresent(ClockMoveTest.class);
         } else {
             clockMove = Arrays.stream(iTestResult.getTestContext().getIncludedGroups()).anyMatch(s -> s.equalsIgnoreCase("ClockMove"));
         }
 
-        String testCreator = automatedAnnotation.Author();
-        String testName = iTestResult.getMethod().getMethodName();
-        String className = iTestResult.getMethod().getTestClass().getName();
-        String packageName = iTestResult.getMethod().getTestClass().getRealClass().getPackage().getName();
-        String buildNumber = System.getProperty("jenkinsBuildNumber");
-        String suiteName = iTestResult.getTestContext().getSuite().getName();
-        String testRunSource = System.getProperty("startedByUser");
-        String tags = flattenTags(iTestResult);
+        final String testCreator = automatedAnnotation.Author();
+        final String testName = iTestResult.getMethod().getMethodName();
+        final String className = iTestResult.getMethod().getTestClass().getName();
+        final String packageName = iTestResult.getMethod().getTestClass().getRealClass().getPackage().getName();
+        final String buildNumber = System.getProperty("jenkinsBuildNumber");
+        final String suiteName = iTestResult.getTestContext().getSuite().getName();
+        final String testRunSource = System.getProperty("startedByUser");
+        final String tags = flattenTags(iTestResult);
 
         if (status.equalsIgnoreCase(Status.FAIL.toString())) {
             failureImageURL = REPORT_DIRECTORY_LOCATION + "\\" + iTestResult.getName() + ".png";
             failureReason = iTestResult.getThrowable().getLocalizedMessage();
         }
-        TestResultsDTO testResultsDTO = TestResultsDTO.getInstance(clockMove, testCreator, testName, className, packageName, startDate, endDate, failureImageURL, Status.valueOf(status.toUpperCase()), failureReason, buildNumber, suiteName, testRunSource, tags);
+        final TestResultsDTO testResultsDTO = TestResultsDTO.getInstance(clockMove, testCreator, testName, className, packageName, startDate, endDate, failureImageURL, Status.valueOf(status.toUpperCase()), failureReason, buildNumber, suiteName, testRunSource, tags);
         return insertIntoTestResults(testResultsDTO);
 
     }
 
 
-    public static boolean insertIntoTestResults(TestResultsDTO testResultsDTO) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+    public static boolean insertIntoTestResults(final TestResultsDTO testResultsDTO) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
             return regressionDB
                     .update(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
@@ -216,16 +215,16 @@ public class ReportManager {
                             testResultsDTO.getTestRunSource(),
                             testResultsDTO.getTags(),
                             testResultsDTO.getUUID()) > 0;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public static boolean insertIntoTestRuntimeCatalog(TestRuntimeDTO runtimeDTO) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+    public static boolean insertIntoTestRuntimeCatalog(final TestRuntimeDTO runtimeDTO) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
-            TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType, isLive from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
+            final TestRuntimeDTO hasExistingRecord = regressionDB.query("select fullClassName, packageName, totalRunTime, projectSource, isClockMove, testType, isLive from TestRuntimeCatalog where fullClassName = '" + runtimeDTO.getFullClassName() + "' and packageName = '" + runtimeDTO.getPackageName() + "'",
                     new BeanHandler<>(TestRuntimeDTO.class));
             System.out.println(runtimeDTO.getFullClassName() + " has existing Record so updating with latest info: " + (hasExistingRecord != null) + ": " + hasExistingRecord);
             return regressionDB.update(hasExistingRecord == null ?
@@ -237,58 +236,58 @@ public class ReportManager {
                     runtimeDTO.getIsClockMove(),
                     runtimeDTO.getTestType(),
                     runtimeDTO.isLive()) > 0;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             System.out.println("Failed to insert: " + e.getLocalizedMessage());
             return false;
         }
     }
 
-    public static boolean insertBulkIntoTestRuntimeCatalog(List<TestRuntimeDTO> runtimeDTOs) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
-        Object[][] params = new Object[runtimeDTOs.size()][TestResultsDTO.getFieldCount()];
+    public static boolean insertBulkIntoTestRuntimeCatalog(final List<TestRuntimeDTO> runtimeDTOs) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        final Object[][] params = new Object[runtimeDTOs.size()][TestResultsDTO.getFieldCount()];
         for (int i = 0; i < runtimeDTOs.size(); i++) {
             params[i] = runtimeDTOs.get(i).getValuesAsObjectArray();
         }
 
         try {
             return regressionDB.batch(TestRuntimeDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             return false;
         }
 
     }
 
-    public static boolean bulkInsertIntoTestResults(List<TestResultsDTO> resultsDTOS) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
-        Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
+    public static boolean bulkInsertIntoTestResults(final List<TestResultsDTO> resultsDTOS) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+        final Object[][] params = new Object[resultsDTOS.size()][TestResultsDTO.getFieldCount()];
         for (int i = 0; i < resultsDTOS.size(); i++) {
             params[i] = resultsDTOS.get(i).getValuesAsObjectArray();
         }
         try {
             return regressionDB.batch(TestResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(), params).length > 0;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public static void recordSuiteResults(ISuite iSuite) {
+    public static void recordSuiteResults(final ISuite iSuite) {
         if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
 //            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
-            String UUID = System.getProperty("UUID");
-            String suiteName = iSuite.getName();
-            TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID, suiteName);
-            String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
-            String applicationName = System.getProperty("ApplicationName");
-            String reportPath = getReportPath();
-            Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
+            final String UUID = System.getProperty("UUID");
+            final String suiteName = iSuite.getName();
+            final TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID, suiteName);
+            final String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+            final String applicationName = System.getProperty("ApplicationName");
+            final String reportPath = getReportPath();
+            final Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
             if (existingSuiteDTO.isPresent()) {
-                SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
+                final SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
                 updateSuiteResults(updatedDTO);
             } else {
-                SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
+                final SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
                 insertIntoSuiteResults(suiteDTO);
             }
         } else {
@@ -298,15 +297,15 @@ public class ReportManager {
     }
 
 
-    public static void recordPartitionGWApplicationSuiteResults(String buildUUID) {
-        TestCountDTO pcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.PC);
-        TestCountDTO bcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.BC);
-        TestCountDTO ccTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.CC);
-        TestCountDTO abTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.AB);
-        TestCountDTO portalsTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL);
+    public static void recordPartitionGWApplicationSuiteResults(final String buildUUID) {
+        final TestCountDTO pcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.PC);
+        final TestCountDTO bcTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.BC);
+        final TestCountDTO ccTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.CC);
+        final TestCountDTO abTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.AB);
+        final TestCountDTO portalsTestCountDTO = TestCountDTO.getTestCountDataFor(buildUUID, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL);
 
-        String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
-        String reportPath = getReportPath();
+        final String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+        final String reportPath = getReportPath();
         //PC
         updateExistingOrInsertSuiteDTO(buildUUID, pcTestCountDTO, ApplicationNames.PC, "PC_UITests", jenkinsBuildNumber, reportPath);
 
@@ -323,21 +322,21 @@ public class ReportManager {
         updateExistingOrInsertSuiteDTO(buildUUID, portalsTestCountDTO, ApplicationNames.ACCOUNT_MANAGEMENT_PORTAL, "AMP_UITests", jenkinsBuildNumber, reportPath);
     }
 
-    private static void updateExistingOrInsertSuiteDTO(String uuid, TestCountDTO dto, ApplicationNames applicationName, String suiteName, String jenkinsBuildNumber, String reportPath){
-        Optional<SuiteResultsDTO> amp_uiTests = SuiteResultsDTO.getExisting(uuid, applicationName.getFullName(), suiteName);
-        if(!amp_uiTests.isPresent()){
+    private static void updateExistingOrInsertSuiteDTO(final String uuid, final TestCountDTO dto, final ApplicationNames applicationName, final String suiteName, final String jenkinsBuildNumber, final String reportPath) {
+        final Optional<SuiteResultsDTO> amp_uiTests = SuiteResultsDTO.getExisting(uuid, applicationName.getFullName(), suiteName);
+        if (!amp_uiTests.isPresent()) {
             insertIntoSuiteResults(buildSuiteDTO(dto, applicationName.getFullName(), suiteName, jenkinsBuildNumber, reportPath));
         } else {
             updateSuiteResults(SuiteResultsDTO.updateExisting(dto, amp_uiTests.get()));
         }
     }
 
-    private static SuiteResultsDTO buildSuiteDTO(TestCountDTO dto, String applicationName, String suiteName, String jenkinsBuildNumber, String reportPath){
+    private static SuiteResultsDTO buildSuiteDTO(final TestCountDTO dto, final String applicationName, final String suiteName, final String jenkinsBuildNumber, final String reportPath) {
         return SuiteResultsDTO.createInstance(applicationName, dto.getPassCount(), dto.getFailCount(), dto.getSkipCount(), dto.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
     }
 
-    public static boolean insertIntoSuiteResults(SuiteResultsDTO suiteResultsDTO) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+    public static boolean insertIntoSuiteResults(final SuiteResultsDTO suiteResultsDTO) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
             regressionDB.update(SuiteResultsDTO.getJDBCPreparedInsertStatementWithoutParameters(),
                     suiteResultsDTO.getApplicationName(),
@@ -355,15 +354,15 @@ public class ReportManager {
                     suiteResultsDTO.shouldShowInPowerBI(),
                     suiteResultsDTO.getUUID());
             return true;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             Assert.fail("Could not save the suite results to the database");
             return false;
         }
     }
 
-    public static boolean updateSuiteResults(SuiteResultsDTO suiteResultsDTO) {
-        QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
+    public static boolean updateSuiteResults(final SuiteResultsDTO suiteResultsDTO) {
+        final QueryRunner regressionDB = ConnectionManager.getDBConnectionTo(DBConnectionDTO.TEST_NG_REPORTING_SERVER);
         try {
             regressionDB.update(SuiteResultsDTO.getJDBCPreparedUpdateStatementWithoutParameters(),
                     suiteResultsDTO.getPassedTests(),
@@ -375,36 +374,36 @@ public class ReportManager {
                     suiteResultsDTO.getSuiteName(),
                     suiteResultsDTO.getApplicationName());
             return true;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             Assert.fail("Could not update the suite results to the database");
             return false;
         }
     }
 
-    private static String flattenTags(ITestResult iTestResult) {
-        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        AutomationHistory[] historyAnnotations = testMethod.getAnnotationsByType(AutomationHistory.class);
-        AutomatedTest automatedAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class)[0];
+    private static String flattenTags(final ITestResult iTestResult) {
+        final Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        final AutomationHistory[] historyAnnotations = testMethod.getAnnotationsByType(AutomationHistory.class);
+        final AutomatedTest automatedAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class)[0];
 
-        StringBuilder tags = new StringBuilder();
+        final StringBuilder tags = new StringBuilder();
         tags.append("|").append(automatedAnnotation.Author()).append("|");
         tags.append(automatedAnnotation.FeatureNumber()).append("|");
         tags.append("SD_").append(automatedAnnotation.StoryOrDefectNumber()).append("|");
         tags.append(Joiner.on("|").join(Arrays.stream(automatedAnnotation.Themes()).map(s -> s = "TH_" + s).collect(Collectors.toList()))).append("|");
 
         if (historyAnnotations.length > 0) {
-            AutomationHistory historyAnnotation = historyAnnotations[0];
+            final AutomationHistory historyAnnotation = historyAnnotations[0];
             tags.append(Joiner.on("|").join(historyAnnotation.StoryOrDefectNumbers())).append("|");
         }
-        List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getExtentTest().getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
+        final List<String> testTags = getTest(Listener.buildTestDetailsDTO(iTestResult)).getExtentTest().getModel().getCategorySet().stream().map(NamedAttribute::getName).collect(Collectors.toList());
         tags.append(Joiner.on("|").join(testTags)).append("|");
         //noinspection RegExpEmptyAlternationBranch
 
         return tags.toString().replaceAll("\\|\\|", "|");
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println("|Ken Tennant||US19052||DEV10|ClaimCenter|US19052|CC_ClaimSearch||CC_UITests|PotentialSystemFailure|".replaceAll("\\|\\|", "|"));
     }
 
@@ -412,31 +411,31 @@ public class ReportManager {
         return ReportManager.FULL_FILE_PATH.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
     }
 
-    public static void generateCombinedReports(boolean forMasterFile, String targetLocation, String... sourceFilesDirectoryPath) throws IOException {
+    public static void generateCombinedReports(final boolean forMasterFile, final String targetLocation, final String... sourceFilesDirectoryPath) throws IOException {
         System.out.println("Combining Reports present at " + Arrays.toString(sourceFilesDirectoryPath));
         System.out.println("Final Report will be generated at: " + targetLocation);
-        ExtentReports extent = new ExtentReports();
+        final ExtentReports extent = new ExtentReports();
         // report to klov reporting if flag is setup
-        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
-            System.out.println("Attempting to push tests to klov server");
-            ExtentKlovReporter klov = new ExtentKlovReporter();
-            klov
-                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
-                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"), 27017);
-            klov.setProjectName(System.getProperty("ProjectName"));
-            klov.setReportName(System.getProperty("ApplicationName") + "_" + System.getProperty("jenkinsBuildNumber"));
-            extent.attachReporter(klov);
-        }
+//        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
+//            System.out.println("Attempting to push tests to klov server");
+//            ExtentKlovReporter klov = new ExtentKlovReporter();
+//            klov
+//                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
+//                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"), 27017);
+//            klov.setProjectName(System.getProperty("ProjectName"));
+//            klov.setReportName(System.getProperty("ApplicationName") + "_" + System.getProperty("jenkinsBuildNumber"));
+//            extent.attachReporter(klov);
+//        }
 
         // Scanning for json files to parse for reports
-        ArrayList<File> jsonFiles = new ArrayList<>();
+        final ArrayList<File> jsonFiles = new ArrayList<>();
         if (forMasterFile) {
             // deep scanning target location for existing combined reports
-            for (String directoryPath : sourceFilesDirectoryPath) {
-                File directory = new File(directoryPath);
+            for (final String directoryPath : sourceFilesDirectoryPath) {
+                final File directory = new File(directoryPath);
                 jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
                 if (directory.isDirectory()) {
-                    for (File subdirectory : Objects.requireNonNull(directory.listFiles())) {
+                    for (final File subdirectory : Objects.requireNonNull(directory.listFiles())) {
                         if (subdirectory.isDirectory()) {
                             jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(subdirectory.listFiles(new JSONFileNameFilter()))));
                         }
@@ -444,20 +443,20 @@ public class ReportManager {
                 }
             }
         } else {
-            for (String directoryPath : sourceFilesDirectoryPath) {
-                File directory = new File(directoryPath);
+            for (final String directoryPath : sourceFilesDirectoryPath) {
+                final File directory = new File(directoryPath);
                 jsonFiles.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles(new JSONFileNameFilter()))));
             }
         }
 
         // Preparing to read existing Reports
-        for (File jsonFile : jsonFiles) {
+        for (final File jsonFile : jsonFiles) {
             System.out.println("Parsing Report: " + jsonFile.getAbsolutePath());
             extent.createDomainFromJsonArchive(jsonFile);
         }
         String finalReportPath = targetLocation + "\\" + "combinedReport.html";
-        ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
-        JsonFormatter jsonReporter = new JsonFormatter(finalReportPath.replace(".html", ".json"));
+        final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(finalReportPath);
+        final JsonFormatter jsonReporter = new JsonFormatter(finalReportPath.replace(".html", ".json"));
         attachCustomConfig(sparkReporter);
         extent.attachReporter(sparkReporter);
         extent.attachReporter(jsonReporter);
@@ -473,7 +472,7 @@ public class ReportManager {
             int fatalTests = 0;
             System.setProperty("SuiteStartTime", String.valueOf(extent.getReport().getStartTime().getTime()));
             System.setProperty("SuiteEndTime", String.valueOf(extent.getReport().getEndTime().getTime()));
-            for (Test ancestorTest : extent.getReport().getTestList()) {
+            for (final Test ancestorTest : extent.getReport().getTestList()) {
                 List<Test> testsToParse = new ArrayList<>();
                 if (ancestorTest.hasChildren()) {
                     testsToParse = ancestorTest.getChildren();
@@ -481,7 +480,7 @@ public class ReportManager {
                     testsToParse.add(ancestorTest);
                 }
 
-                for (Test test : testsToParse) {
+                for (final Test test : testsToParse) {
                     switch (test.getStatus()) {
                         case PASS:
                             passedTests++;
@@ -503,14 +502,14 @@ public class ReportManager {
 
             System.out.println("Inserting master record in the suite results table");
             finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
     }
 
-    private static long getFatalTestCount(Test test) {
+    private static long getFatalTestCount(final Test test) {
         int fatalTestCounter = 0;
-        long count = test.getCategorySet().stream()
+        final long count = test.getCategorySet().stream()
                 .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
                         || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
                         || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
@@ -521,13 +520,13 @@ public class ReportManager {
         return fatalTestCounter;
     }
 
-    private static void attachCustomConfig(ExtentSparkReporter extentReporter) {
+    private static void attachCustomConfig(final ExtentSparkReporter extentReporter) {
         // Configurations
         extentReporter.config().setTimelineEnabled(true);
         extentReporter.config().setTheme(Theme.DARK);
 //        extentReporter.config().setCSS(compileCustomCSS());
         extentReporter.config().setJs("document.getElementsByClassName(\"brand-logo blue darken-3\")[0].innerText = \"QA Report\"");
-        String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
+        final String applicationName = System.getProperty("ApplicationName") == null ? "Custom" : System.getProperty("ApplicationName");
         extentReporter.config().setDocumentTitle(applicationName + " Regression Health Report");
         extentReporter.config().setReportName(applicationName + " Regression Report");
     }

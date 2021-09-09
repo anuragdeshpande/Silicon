@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.aventstack.extentreports.reporter.ExtentKlovReporter;
 import framework.ReportManager;
 import framework.database.models.SuiteResultsDTO;
 import framework.database.models.TestResultsDTO;
@@ -24,44 +23,44 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class GWTestRunResults {
 
-    private Testsuite testsuiteResults;
+    private final Testsuite testsuiteResults;
 
-    public GWTestRunResults(Testsuite testsuiteResults) {
+    public GWTestRunResults(final Testsuite testsuiteResults) {
         this.testsuiteResults = testsuiteResults;
     }
 
     public void generateHTMLReport() {
-        DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
+        final DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
         utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date testSuiteTimeStamp;
         try {
             testSuiteTimeStamp = utcFormat.parse(testsuiteResults.getTimestamp());
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new RuntimeException(e);
         }
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss")
+        final String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss")
                 .format(testSuiteTimeStamp);
-        String suiteName = this.testsuiteResults.getName();
-        ExtentReports extentReports = ReportManager.initiate(suiteName + "_" + timeStamp);
+        final String suiteName = this.testsuiteResults.getName();
+        final ExtentReports extentReports = ReportManager.initiate(suiteName + "_" + timeStamp);
         // report to klov reporting if flag is setup
-        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
-            System.out.println("Attempting to push tests to klov server");
-            ExtentKlovReporter klov = new ExtentKlovReporter();
-            klov
-                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
-                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"),  27017);
-            klov.setProjectName(System.getProperty("ProjectName"));
-            klov.setReportName(System.getProperty("ApplicationName")+"_"+System.getProperty("jenkinsBuildNumber"));
-            extentReports.attachReporter(klov);
-        }
+//        if (System.getProperty("EnableKLOVReporting", "false").equalsIgnoreCase("true")) {
+//            System.out.println("Attempting to push tests to klov server");
+//            final ExtentKlovReporter klov = new ExtentKlovReporter();
+//            klov
+//                    .initKlovServerConnection(System.getProperty("KLOVHost", "http://127.0.0.1:80"))
+//                    .initMongoDbConnection(System.getProperty("MongoHost", "127.0.0.1"), 27017);
+//            klov.setProjectName(System.getProperty("ProjectName"));
+//            klov.setReportName(System.getProperty("ApplicationName") + "_" + System.getProperty("jenkinsBuildNumber"));
+//            extentReports.attachReporter(klov);
+//        }
         extentReports.setReportUsesManualConfiguration(true);
         if (this.testsuiteResults.getTestcase().size() > 0) {
-            for (Testcase testCase : this.testsuiteResults.getTestcase()) {
-                ExtentTest test = extentReports.createTest(testCase.getName());
-                test.getModel().setDescription("Package Name: "+testCase.getClassname().replaceAll("null\\(", "").replaceAll("\\)", ""));
+            for (final Testcase testCase : this.testsuiteResults.getTestcase()) {
+                final ExtentTest test = extentReports.createTest(testCase.getName());
+                test.getModel().setDescription("Package Name: " + testCase.getClassname().replaceAll("null\\(", "").replaceAll("\\)", ""));
                 test.getModel().setStartTime(testSuiteTimeStamp);
                 String timeTaken = "0";
-                if(testCase.getTime() != null){
+                if (testCase.getTime() != null) {
                     timeTaken = testCase.getTime();
                 }
                 testSuiteTimeStamp = DateUtils.addMilliseconds(testSuiteTimeStamp, (int) (Double.parseDouble(timeTaken) * 1000));
@@ -93,12 +92,12 @@ public class GWTestRunResults {
     }
 
     public boolean recordResultsInReportsDb() {
-        DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
+        final DateFormat utcFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss z");
         utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date testSuiteTimeStamp;
         try {
             testSuiteTimeStamp = utcFormat.parse(testsuiteResults.getTimestamp());
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             throw new RuntimeException(e);
         }
 
@@ -109,26 +108,26 @@ public class GWTestRunResults {
             startedByUser = "Local";
         }
 
-        if(jenkinsBuildNumber == null){
+        if (jenkinsBuildNumber == null) {
             jenkinsBuildNumber = "9999999";
             System.out.println("No Jenkins Build Number Received. Using default Build Number: 9999999");
         }
 
         if (this.testsuiteResults.getTestcase().size() > 0) {
-            ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
+            final ArrayList<TestResultsDTO> resultsDTOS = new ArrayList<>();
             // Recording to the TestResults Table
-            for (Testcase testcase : this.testsuiteResults.getTestcase()) {
+            for (final Testcase testcase : this.testsuiteResults.getTestcase()) {
                 String failureReason = null;
                 Status status = Status.PASS;
                 // Time on testCase is total run time in Seconds. Convert to milliseconds and construct timeStamps.
-                DecimalFormat format = new DecimalFormat("000000.000");
+                final DecimalFormat format = new DecimalFormat("000000.000");
                 String timeTaken = "0";
-                if(testcase.getTime() != null){
+                if (testcase.getTime() != null) {
                     timeTaken = testcase.getTime();
                 }
-                int testRunTimeInMilliSeconds = (int)((Double.parseDouble(format.format(Double.parseDouble(timeTaken))))*1000);
-                Timestamp startTimeStamp = new Timestamp(testSuiteTimeStamp.getTime());
-                Timestamp endTimeStamp = new Timestamp(DateUtils.addMilliseconds(testSuiteTimeStamp, testRunTimeInMilliSeconds).getTime());
+                final int testRunTimeInMilliSeconds = (int) ((Double.parseDouble(format.format(Double.parseDouble(timeTaken)))) * 1000);
+                final Timestamp startTimeStamp = new Timestamp(testSuiteTimeStamp.getTime());
+                final Timestamp endTimeStamp = new Timestamp(DateUtils.addMilliseconds(testSuiteTimeStamp, testRunTimeInMilliSeconds).getTime());
                 testSuiteTimeStamp = endTimeStamp;
 
                 if (testcase.getSkipped() != null) {
@@ -145,7 +144,7 @@ public class GWTestRunResults {
                     status = Status.FAIL;
                 }
 
-                TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(), testcase.getClassname(), testcase.getClassname(),
+                final TestResultsDTO resultsDTO = TestResultsDTO.getInstance(false, "Guidewire", testcase.getName(), testcase.getClassname(), testcase.getClassname(),
                         startTimeStamp, endTimeStamp, null, status, failureReason, jenkinsBuildNumber, testsuiteResults.getName(), startedByUser, "");
 
                 resultsDTOS.add(resultsDTO);
@@ -157,11 +156,11 @@ public class GWTestRunResults {
             if (applicationName == null) {
                 applicationName = "Local Run";
             }
-            String reportPath = ReportManager.getReportPath();
-            AtomicInteger totalTests = new AtomicInteger(0);
-            AtomicInteger passingTests = new AtomicInteger(0);
-            AtomicInteger failingTests = new AtomicInteger(0);
-            AtomicInteger skippedTests = new AtomicInteger(0);
+            final String reportPath = ReportManager.getReportPath();
+            final AtomicInteger totalTests = new AtomicInteger(0);
+            final AtomicInteger passingTests = new AtomicInteger(0);
+            final AtomicInteger failingTests = new AtomicInteger(0);
+            final AtomicInteger skippedTests = new AtomicInteger(0);
             if (testsuiteResults.getTestcase().size() > 0) {
                 totalTests.set(Integer.parseInt(testsuiteResults.getTests()));
                 testsuiteResults.getTestcase().forEach(testCase -> {
@@ -172,7 +171,7 @@ public class GWTestRunResults {
                     }
                 });
             }
-            SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
+            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
         return false;

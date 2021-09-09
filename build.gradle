@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.assertj:assertj-core:3.17.2'
     implementation 'org.tigris.jsapar:jsapar:2.1.1'
     implementation 'com.codoid.products:fillo:1.18'
-    implementation 'com.aventstack:extentreports:5.0.8'
+//    implementation 'com.aventstack:extentreports:5.0.8'
     implementation 'io.github.classgraph:classgraph:4.8.104'
     implementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
     implementation 'org.seleniumhq.selenium:selenium-chrome-driver:3.141.59'
@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.jasypt:jasypt:1.9.3'
     implementation 'commons-net:commons-net:3.6'
     implementation 'com.rallydev.rest:rally-rest-api:2.2.1'
-    implementation 'com.aventstack:klov-reporter:5.0.7'
+//    implementation 'com.aventstack:klov-reporter:5.0.7'
     implementation 'org.apache.axis:axis:1.4'
     implementation 'org.simplejavamail:simple-java-mail:6.5.3'
 // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
@@ -53,6 +53,14 @@ dependencies {
     implementation "ch.qos.logback:logback-core:1.2.3"
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation "org.slf4j:slf4j-api:1.7.30"
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+
+
+//     idfbins libraries
+    implementation "com.idfbins:extentreports:0.0.2"
 
 
 }
