@@ -224,18 +224,20 @@ public class Listener implements ISuiteListener, ITestListener {
             this.extentReports.getReport().getTestList().forEach(test -> {
                 final LocalTime startTime = test.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
                 final LocalTime endTime = test.getEndTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
-//                System.out.println(test.getFullName() + ": " + Duration.between(startTime, endTime).toMinutes() + " minute(s)");
+                System.out.println(test.getFullName() + ": " + Duration.between(startTime, endTime).toMinutes() + " minute(s)");
             });
         } catch (final Exception e) {
             System.out.println("Ran into Exception: " + e.getLocalizedMessage());
         }
         if (this.writeToDatabase && !this.skipSuiteWriteToDB) {
+            System.out.println("Recording suite results");
             ReportManager.recordSuiteResults(iSuite);
         } else {
             System.out.println("Suite complete. But, Build is marked as TestBuild, skipping recording suite results to db");
         }
 
         if (Boolean.parseBoolean(System.getProperty("SplitSuitesAtEnd", "false"))) {
+            System.out.println("Splitting suite");
             ReportManager.recordPartitionGWApplicationSuiteResults(System.getProperty("UUID"));
         }
     }
