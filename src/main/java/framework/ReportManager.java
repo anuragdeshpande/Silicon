@@ -24,6 +24,7 @@ import framework.webdriver.ThreadFactory;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.testng.Assert;
 import org.testng.ISuite;
 import org.testng.ITestResult;
@@ -274,26 +275,29 @@ public class ReportManager {
     }
 
     public static void recordSuiteResults(final ISuite iSuite) {
-        if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
+        try {
+            if (!iSuite.getName().equalsIgnoreCase("Default Suite") && ReportManager.FULL_FILE_PATH.startsWith("\\\\")) {
 //            System.out.println("!!!!!! Recording Suite Results to the database. !!!!!!");
-            final String UUID = System.getProperty("UUID");
-            final String suiteName = iSuite.getName();
-            final TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID, suiteName);
-            final String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
-            final String applicationName = System.getProperty("ApplicationName");
-            final String reportPath = getReportPath();
-            final Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
-            if (existingSuiteDTO.isPresent()) {
-                final SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
-                updateSuiteResults(updatedDTO);
+                final String UUID = System.getProperty("UUID");
+                final String suiteName = iSuite.getName();
+                final TestCountDTO testCountDTO = TestCountDTO.getTestCountDataFor(UUID, suiteName);
+                final String jenkinsBuildNumber = System.getProperty("jenkinsBuildNumber");
+                final String applicationName = System.getProperty("ApplicationName");
+                final String reportPath = getReportPath();
+                final Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
+                if (existingSuiteDTO.isPresent()) {
+                    final SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
+                    updateSuiteResults(updatedDTO);
+                } else {
+                    final SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
+                    insertIntoSuiteResults(suiteDTO);
+                }
             } else {
-                final SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
-                insertIntoSuiteResults(suiteDTO);
+                System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
             }
-        } else {
-            System.out.println("Could not Record Suite: " + iSuite.getName() + " with report path: " + ReportManager.FULL_FILE_PATH);
+        } catch (final Exception e) {
+            System.out.println(ExceptionUtils.getStackTrace(e));
         }
-
     }
 
 

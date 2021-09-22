@@ -140,6 +140,7 @@ public class Listener implements ISuiteListener, ITestListener {
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
             testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
             testNode.assignCategory(FrameworkSystemTags.ERROR_ON_SCREEN.getValue());
+            testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
             GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY).ifPresent(errorMessagesFromScreen -> {
                 for (final String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
