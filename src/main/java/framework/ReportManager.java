@@ -514,9 +514,9 @@ public class ReportManager {
     private static long getFatalTestCount(final Test test) {
         int fatalTestCounter = 0;
         final long count = test.getCategorySet().stream()
-                .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())
-                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
-                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
+                .filter(category -> category.getName().equalsIgnoreCase(FrameworkSystemTags.ERROR_ON_SCREEN.getValue())).count();
+//                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.BLOCKED_MESSAGE_QUEUE.getValue())
+//                        || category.getName().equalsIgnoreCase(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue())).count();
         if (count > 0) {
             fatalTestCounter++;
         }
