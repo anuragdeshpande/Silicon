@@ -81,7 +81,7 @@ public class BaseOperations {
         final boolean hasNoAutomatedTestAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class).length == 0;
         final boolean hasNoPostResetScriptAnnotation = testMethod.getAnnotationsByType(PreResetScript.class).length == 0;
         final boolean hasNoPreResetScriptAnnotation = testMethod.getAnnotationsByType(PostResetScript.class).length == 0;
-        final boolean hasNoCPPTestAnnotation = testMethod.getAnnotationsByType(CPPTest.class).length == 0;
+        final boolean hasNoCPPTestAnnotation = testMethod.getDeclaringClass().getAnnotationsByType(CPPTest.class).length == 0;
         if (hasNoCPPTestAnnotation) {
             BrowserStorageAccess.getInstance().store("isCPP", "false");
         } else {
