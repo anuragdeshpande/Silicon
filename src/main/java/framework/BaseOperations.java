@@ -1,9 +1,6 @@
 package framework;
 
-import annotations.AutomatedTest;
-import annotations.PostResetScript;
-import annotations.PreResetScript;
-import annotations.TestCase;
+import annotations.*;
 import com.aventstack.extentreports.ExtentReports;
 import constants.Users;
 import framework.guidewire.GuidewireInteract;
@@ -14,6 +11,7 @@ import framework.logger.RegressionLogger;
 import framework.reports.models.TestDetailsDTO;
 import framework.webdriver.BrowserFactory;
 import framework.webdriver.ThreadFactory;
+import framework.webdriver.utils.BrowserStorageAccess;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.UnhandledAlertException;
 import org.testng.ITestContext;
@@ -33,28 +31,28 @@ public class BaseOperations {
     private String suiteName;
 
     @BeforeSuite(alwaysRun = true)
-    public void beforeSuite(XmlTest xmlTest, ITestContext context) {
-        String suiteName = context.getSuite().getName();
+    public void beforeSuite(final XmlTest xmlTest, final ITestContext context) {
+        final String suiteName = context.getSuite().getName();
         if (!ReportManager.isInitiated()) {
-            this.suiteName = "BO Init_"+ suiteName;
+            this.suiteName = "BO Init_" + suiteName;
             this.reports = ReportManager.initiate(this.suiteName);
         }
     }
 
     @BeforeTest(description = "BeforeTest", alwaysRun = true)
-    public void beforeTest(ITestContext context, XmlTest xmlTest) {
-        String xmlTestName = xmlTest.getName();
-        TestDetailsDTO dto = new TestDetailsDTO();
+    public void beforeTest(final ITestContext context, final XmlTest xmlTest) {
+        final String xmlTestName = xmlTest.getName();
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setXmlTestName(xmlTestName);
         ReportManager.recordXMLTest(dto);
-        RegressionLogger.getXMLTestLogger().info("Running Test in: "+Thread.currentThread().getName()+"- ID: "+ ThreadFactory.getID());
-        RegressionLogger.getXMLTestLogger().info("Test was part of the suite: "+context.getSuite().getName());
+        RegressionLogger.getXMLTestLogger().info("Running Test in: " + Thread.currentThread().getName() + "- ID: " + ThreadFactory.getID());
+        RegressionLogger.getXMLTestLogger().info("Test was part of the suite: " + context.getSuite().getName());
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving xml test name to cache");
     }
 
     @BeforeClass(description = "BeforeClass", alwaysRun = true)
-    public void beforeClass(XmlTest xmlTest, ITestContext iTestContext) {
-        TestDetailsDTO dto = new TestDetailsDTO();
+    public void beforeClass(final XmlTest xmlTest, final ITestContext iTestContext) {
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setClassName(this.getClass().getSimpleName());
         dto.setXmlTestName(xmlTest.getName());
         dto.setPackageName(this.getClass().getPackage().getName());
@@ -66,10 +64,10 @@ public class BaseOperations {
     }
 
     @BeforeMethod(description = "BeforeMethod", alwaysRun = true)
-    public void beforeMethod(Method method, ITestResult iTestResult) {
+    public void beforeMethod(final Method method, final ITestResult iTestResult) {
         BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: In Before Test Method, saving method name to cache");
-        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        TestDetailsDTO dto = new TestDetailsDTO();
+        final Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        final TestDetailsDTO dto = new TestDetailsDTO();
         dto.setTestName(testMethod.getName());
         dto.setClassName(iTestResult.getMethod().getConstructorOrMethod().getDeclaringClass().getSimpleName());
 
@@ -78,11 +76,18 @@ public class BaseOperations {
             ReportManager.recordClass(dto);
         }
 
-        Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
-        ReportManager.recordTest(dto, testAnnotations.length > 0? testAnnotations[0].description() : null);
-        boolean hasNoAutomatedTestAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class).length == 0;
-        boolean hasNoPostResetScriptAnnotation = testMethod.getAnnotationsByType(PreResetScript.class).length == 0;
-        boolean hasNoPreResetScriptAnnotation = testMethod.getAnnotationsByType(PostResetScript.class).length == 0;
+        final Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
+        ReportManager.recordTest(dto, testAnnotations.length > 0 ? testAnnotations[0].description() : null);
+        final boolean hasNoAutomatedTestAnnotation = testMethod.getAnnotationsByType(AutomatedTest.class).length == 0;
+        final boolean hasNoPostResetScriptAnnotation = testMethod.getAnnotationsByType(PreResetScript.class).length == 0;
+        final boolean hasNoPreResetScriptAnnotation = testMethod.getAnnotationsByType(PostResetScript.class).length == 0;
+        final boolean hasNoCPPTestAnnotation = testMethod.getAnnotationsByType(CPPTest.class).length == 0;
+        if (hasNoCPPTestAnnotation) {
+            BrowserStorageAccess.getInstance().store("isCPP", "false");
+        } else {
+            BrowserStorageAccess.getInstance().store("isCPP", "true");
+        }
+
         if ((hasNoAutomatedTestAnnotation && (hasNoPostResetScriptAnnotation && hasNoPreResetScriptAnnotation)) && testAnnotations.length > 0) {
             BrowserFactory.getCurrentBrowser().withDOM().injectInfoMessage("Base Operations: Skipping test as annotation requirements are not met");
             iTestResult.setStatus(ITestResult.SKIP);
@@ -92,27 +97,27 @@ public class BaseOperations {
     }
 
     @AfterMethod(description = "AfterMethod", alwaysRun = true)
-    public void afterMethod(ITestResult iTestResult) {
+    public void afterMethod(final ITestResult iTestResult) {
         // update test case if the method is tracked
-        Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
-        TestCase testCaseAnnotation = testMethod.getAnnotation(TestCase.class);
-        AutomatedTest automatedTest = testMethod.getAnnotation(AutomatedTest.class);
-        if (testCaseAnnotation != null){
-            RallyTestCase rallyTestCase = RallyTestCase.getTestCaseByID(testCaseAnnotation.id(), null);
-            if(rallyTestCase.getRelatedUserStory().isStoryTracked()){
-                GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
+        final Method testMethod = iTestResult.getMethod().getConstructorOrMethod().getMethod();
+        final TestCase testCaseAnnotation = testMethod.getAnnotation(TestCase.class);
+        final AutomatedTest automatedTest = testMethod.getAnnotation(AutomatedTest.class);
+        if (testCaseAnnotation != null) {
+            final RallyTestCase rallyTestCase = RallyTestCase.getTestCaseByID(testCaseAnnotation.id(), null);
+            if (rallyTestCase.getRelatedUserStory().isStoryTracked()) {
+                final GuidewireInteract interact = BrowserFactory.getCurrentGuidewireBrowser();
                 interact.withDOM().injectInfoMessage("Uploading results to rally test case");
 
-                Optional<Users.User> user = Users.get(automatedTest.Author());
+                final Optional<Users.User> user = Users.get(automatedTest.Author());
                 String userReference = null;
-                if(user.isPresent()){
+                if (user.isPresent()) {
                     userReference = RallyUserReference.getUserReference(user.get().getRallyUserEmail());
                 }
 
 
-                String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                String buildTag = System.getProperty("jenkinsBuildNumber") == null ? "Local: "+ timestamp: "Regression Build " + System.getProperty("jenkinsBuildNumber");
-                switch (iTestResult.getStatus()){
+                final String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                final String buildTag = System.getProperty("jenkinsBuildNumber") == null ? "Local: " + timestamp : "Regression Build " + System.getProperty("jenkinsBuildNumber");
+                switch (iTestResult.getStatus()) {
                     case ITestResult.SUCCESS:
                         rallyTestCase.recordTestResult(RallyTestCaseDTO.getInstance(true, iTestResult.getMethod().getDescription(), userReference, buildTag));
                         break;
@@ -130,13 +135,13 @@ public class BaseOperations {
     }
 
     @AfterClass(description = "AfterClass", alwaysRun = true)
-    public void afterClass(ITestContext context, XmlTest xmlTest) {
-        if(ThreadFactory.getInstance().getDriver() != null){
+    public void afterClass(final ITestContext context, final XmlTest xmlTest) {
+        if (ThreadFactory.getInstance().getDriver() != null) {
             RegressionLogger.getTestClassLogger().info("Closing browser");
             GuidewireInteract.clearCookiesToForceLogout();
-            try{
+            try {
                 BrowserFactory.closeCurrentBrowser();
-            } catch (UnhandledAlertException e){
+            } catch (final UnhandledAlertException e) {
                 BrowserFactory.getCurrentBrowser().getDriver().switchTo().alert().accept();
                 BrowserFactory.closeCurrentBrowser();
             }
@@ -145,14 +150,14 @@ public class BaseOperations {
     }
 
     @AfterTest(description = "AfterTest", alwaysRun = true)
-    public void afterTest(ITestContext context, XmlTest xmlTest) {
+    public void afterTest(final ITestContext context, final XmlTest xmlTest) {
 
     }
 
     @AfterSuite(description = "AfterSuite", alwaysRun = true)
-    public void afterSuite(XmlTest xmlTest, ITestContext context){
+    public void afterSuite(final XmlTest xmlTest, final ITestContext context) {
         BrowserFactory.closeAllWindows();
-        if(this.suiteName != null && this.suiteName.startsWith("BO Init_")){
+        if (this.suiteName != null && this.suiteName.startsWith("BO Init_")) {
             reports.flush();
         }
     }
