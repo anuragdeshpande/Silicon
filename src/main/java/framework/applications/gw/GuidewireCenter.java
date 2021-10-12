@@ -77,6 +77,8 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
     public GuidewireCenter() {
         super();
         getLogger().info("New Guidewire instance is being spawned: " + getApplicationUUID());
+        getObjectStorage().put("isCPP", Boolean.parseBoolean(BrowserStorageAccess.getInstance().get("isCPP").toString()));
+        getStorage().put("isCPP", BrowserStorageAccess.getInstance().get("isCPP").toString());
     }
 
     protected static String getComputerName() {
@@ -535,5 +537,9 @@ abstract public class GuidewireCenter extends Application implements IGWOperatio
 
     public void setSkipLogoutIfAlreadyOpen(final boolean skipLogoutIfAlreadyOpen) {
         this.skipLogoutIfAlreadyOpen = skipLogoutIfAlreadyOpen;
+    }
+
+    public boolean isCPPTest() {
+        return Boolean.parseBoolean(BrowserStorageAccess.getInstance().get("isCPP").toString());
     }
 }
