@@ -168,9 +168,12 @@ public class Listener implements ISuiteListener, ITestListener {
 
         if (iTestResult.getThrowable() instanceof ErrorMessageOnScreenException) {
             final Properties properties = PropertiesFileLoader.load("config.properties");
-            final String[] errorMessagesOnScreenToIgnore = properties.getProperty("ErrorMessagesOnScreenToIgnore").split(";");
-            if (Arrays.stream(errorMessagesOnScreenToIgnore).noneMatch(s -> s.contains(iTestResult.getThrowable().getMessage()))) {
-                testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+            final String stringsToIgnore = properties.getProperty("ErrorMessagesOnScreenToIgnore");
+            if (stringsToIgnore != null) {
+                final String[] errorMessagesOnScreenToIgnore = stringsToIgnore.split(";");
+                if (Arrays.stream(errorMessagesOnScreenToIgnore).noneMatch(s -> s.contains(iTestResult.getThrowable().getMessage()))) {
+                    testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+                }
             }
         }
 
