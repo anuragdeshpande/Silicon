@@ -22,6 +22,7 @@ import framework.logger.RegressionLogger;
 import framework.logger.eventMessaging.GWEvents;
 import framework.logger.regressionTestLogging.RegressionLogTemplates;
 import framework.reports.models.TestDetailsDTO;
+import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -41,6 +42,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Properties;
 
 public class Listener implements ISuiteListener, ITestListener {
 
@@ -140,7 +142,6 @@ public class Listener implements ISuiteListener, ITestListener {
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
             testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
             testNode.assignCategory(FrameworkSystemTags.ERROR_ON_SCREEN.getValue());
-            testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
             GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY).ifPresent(errorMessagesFromScreen -> {
                 for (final String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
@@ -163,6 +164,14 @@ public class Listener implements ISuiteListener, ITestListener {
         if (iTestResult.getThrowable() instanceof PotentialSystemIssueException) {
             testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
             RegressionLogger.getTestClassLogger().logInstantEvent(GWEvents.FATAL_ISSUE, "Failing with " + FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+        }
+
+        if (iTestResult.getThrowable() instanceof ErrorMessageOnScreenException) {
+            final Properties properties = PropertiesFileLoader.load("config.properties");
+            final String[] errorMessagesOnScreenToIgnore = properties.getProperty("ErrorMessagesOnScreenToIgnore").split(";");
+            if (Arrays.stream(errorMessagesOnScreenToIgnore).noneMatch(s -> s.contains(iTestResult.getThrowable().getMessage()))) {
+                testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+            }
         }
 
         regressionLogger.info(RegressionLogTemplates.getLogTemplateForTestEndFailed(iTestResult));
