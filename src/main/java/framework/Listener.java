@@ -1,14 +1,12 @@
 package framework;
 
-import annotations.APITest;
-import annotations.AutomatedTest;
-import annotations.ClockMoveTest;
-import annotations.SmokeTest;
+import annotations.*;
 import ch.qos.logback.classic.Logger;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.model.ExceptionInfo;
 import framework.constants.ReactionTime;
 import framework.constants.StringConstants;
 import framework.customExceptions.BlockedMessageQueueException;
@@ -22,6 +20,9 @@ import framework.logger.RegressionLogger;
 import framework.logger.eventMessaging.GWEvents;
 import framework.logger.regressionTestLogging.RegressionLogTemplates;
 import framework.reports.models.TestDetailsDTO;
+import framework.reports.models.junit.Failure;
+import framework.reports.models.junit.Testcase;
+import framework.reports.models.junit.Testsuite;
 import framework.utils.PropertiesFileLoader;
 import framework.webdriver.BrowserFactory;
 import org.apache.commons.io.FileUtils;
@@ -33,16 +34,18 @@ import org.slf4j.LoggerFactory;
 import org.testng.*;
 import org.testng.annotations.Test;
 
+import javax.xml.bind.JAXB;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Listener implements ISuiteListener, ITestListener {
@@ -76,7 +79,6 @@ public class Listener implements ISuiteListener, ITestListener {
     @Override
     public void onStart(final ITestContext iTestContext) {
         // do nothing
-//        System.out.println("In Test Start");
     }
 
     // Fires at the beginning of each test
@@ -88,6 +90,12 @@ public class Listener implements ISuiteListener, ITestListener {
         final Test[] testAnnotations = testMethod.getDeclaredAnnotationsByType(Test.class);
         final TestDetailsDTO testDetailsDTO = buildTestDetailsDTO(iTestResult);
         final ExtentTest testLogger = ReportManager.recordTest(testDetailsDTO, testAnnotations.length > 0 ? testAnnotations[0].description() : null).getExtentTest();
+
+        final CPPTest[] declaredAnnotationsByType = iTestResult.getTestClass().getRealClass().getDeclaredAnnotationsByType(CPPTest.class);
+        if (declaredAnnotationsByType.length > 0) {
+            testLogger.assignCategory("CPPTest");
+        }
+
         final AutomatedTest[] annotations = testMethod.getDeclaredAnnotationsByType(AutomatedTest.class);
         if (annotations.length == 0) {
             testLogger.fail("Fatal Error: @AutomatedTest annotation not found.");
@@ -240,6 +248,52 @@ public class Listener implements ISuiteListener, ITestListener {
         System.setProperty("SuiteEndTime", String.valueOf(System.currentTimeMillis()));
 //        EMailWriter.writeNewEMail().sendRegressionReport(, "http://qa.idfbins.com/regression_logs/"+ReportManager.REPORT_FILE_NAME+"/"+ReportManager.REPORT_FILE_NAME+".html");
         this.extentReports.flush();
+        // generating xml report
+        final File xmlReportFile = new File(ReportManager.REPORT_DIRECTORY_LOCATION + File.separator + iSuite.getName() + ".xml");
+        final Testsuite testSuite = new Testsuite();
+        for (final com.aventstack.extentreports.model.Test ancestorTest : extentReports.getReport().getTestList()) {
+            List<com.aventstack.extentreports.model.Test> testsToParse = new ArrayList<>();
+            if (ancestorTest.hasChildren()) {
+                testsToParse = ancestorTest.getChildren();
+            } else {
+                testsToParse.add(ancestorTest);
+            }
+
+            testSuite.setName(iSuite.getName());
+            testSuite.setTests(String.valueOf(testsToParse.size()));
+            for (final com.aventstack.extentreports.model.Test test : testsToParse) {
+                final Testcase testcase = new Testcase();
+                testcase.setName(test.getName());
+                testcase.setClassname(test.getFullName());
+                testcase.setTime(String.valueOf(Duration.between(LocalDateTime.ofInstant(test.getStartTime().toInstant(), ZoneId.systemDefault()), LocalDateTime.ofInstant(test.getEndTime().toInstant(), ZoneId.systemDefault())).toMinutes()));
+                switch (test.getStatus()) {
+                    case PASS:
+                    case WARNING:
+                    case INFO:
+                        break;
+                    case FAIL:
+                        for (final ExceptionInfo exception : test.getExceptions()) {
+                            final Failure failure = new Failure();
+                            failure.setContent(exception.getStackTrace());
+                            failure.setType(exception.getName());
+                            failure.setMessage(exception.getException().getLocalizedMessage());
+                            testcase.getFailure().add(failure);
+                        }
+                        break;
+                    case SKIP:
+                        testcase.setSkipped(test.getFullName());
+                        break;
+                }
+                testSuite.getTestcase().add(testcase);
+            }
+        }
+        try (final FileWriter writer = new FileWriter(xmlReportFile)) {
+            final StringWriter sw = new StringWriter();
+            JAXB.marshal(testSuite, sw);
+            writer.write(sw.toString());
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
         try {
             this.extentReports.getReport().getTestList().forEach(test -> {
                 final LocalTime startTime = test.getStartTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
