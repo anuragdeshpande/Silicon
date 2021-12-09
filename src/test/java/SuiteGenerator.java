@@ -37,8 +37,8 @@ public class SuiteGenerator {
 
         final String runClasses = System.getProperty("RunClasses");
         System.out.println("Default Class(es) To be run: " + runClasses);
-        if (runClasses != null) {
-            final ClassInfoList classesWithAnnotation = graph.acceptClasses(runClasses.split(",")).scan().getAllClasses();
+        if (runClasses != null && !runClasses.isEmpty()) {
+            final ClassInfoList classesWithAnnotation = graph.acceptClasses(runClasses.split(",")).enableAllInfo().scan().getAllClasses();
             if (regressionTests != null) {
                 regressionTests.addAll(classesWithAnnotation);
             } else {
