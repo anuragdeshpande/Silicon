@@ -132,5 +132,7 @@ public class SuiteGenerator {
         } else {
             System.out.println("No Suites to run.");
         }
+
+        System.exit(0);
     }
 }
