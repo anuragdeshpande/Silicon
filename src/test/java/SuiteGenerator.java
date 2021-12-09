@@ -67,7 +67,7 @@ public class SuiteGenerator {
         }
 
         final List<XmlSuite> suitesToRun = new ArrayList<>();
-        if (regressionTests != null) {
+        if (regressionTests != null && regressionTests.size() > 0) {
             final ClassInfoList disabledTests = regressionTests.filter(classInfo -> classInfo.hasAnnotation(DisabledTest.class.getCanonicalName()));
             regressionTests = regressionTests.exclude(disabledTests);
 
