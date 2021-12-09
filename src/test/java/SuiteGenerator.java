@@ -27,13 +27,23 @@ public class SuiteGenerator {
         System.out.println(ThreadFactory.getID() + ": !!!!!!! -- STARTING SUITE GENERATOR -- !!!!!!!");
         final boolean isClockMove = System.getProperty("isClockMove", "false").equalsIgnoreCase("true");
         final String runningNode = System.getProperty("RunningNode");
-        ClassInfoList regressionTests;
+        ClassInfoList regressionTests = null;
         ClassGraph graph = new ClassGraph();
-        System.out.println("Default Class white listing from RunPackage(s): " + System.getProperty("RunPackage"));
-        regressionTests = graph.acceptPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        final String runPackage = System.getProperty("RunPackage");
+        if (runPackage != null && !runPackage.isEmpty()) {
+            System.out.println("Default Class white listing from RunPackage(s): " + runPackage);
+            regressionTests = graph.acceptPackages(runPackage.split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        }
+
         final String runClasses = System.getProperty("RunClasses");
+        System.out.println("Default Class(es) To be run: " + runClasses);
         if (runClasses != null) {
-            regressionTests.addAll(graph.acceptClasses(runClasses.split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName()));
+            final ClassInfoList classesWithAnnotation = graph.acceptClasses(runClasses.split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName());
+            if (regressionTests != null) {
+                regressionTests.addAll(classesWithAnnotation);
+            } else {
+                regressionTests = classesWithAnnotation;
+            }
         }
 
         if (System.getProperty("LoadBalancedFile") != null
