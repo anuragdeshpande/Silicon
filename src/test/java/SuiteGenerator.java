@@ -30,7 +30,11 @@ public class SuiteGenerator {
         ClassInfoList regressionTests;
         ClassGraph graph = new ClassGraph();
         System.out.println("Default Class white listing from RunPackage(s): " + System.getProperty("RunPackage"));
-        regressionTests = graph.whitelistPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        regressionTests = graph.acceptPackages(System.getProperty("RunPackage").split(",")).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+        final String runClasses = System.getProperty("RunClasses");
+        if (runClasses != null) {
+            regressionTests.addAll(graph.acceptClasses(runClasses.split(",")).enableAllInfo().scan().getClassesWithAnnotation(Test.class.getCanonicalName()));
+        }
 
         if (System.getProperty("LoadBalancedFile") != null
                 && !System.getProperty("LoadBalancedFile").isEmpty()
@@ -48,7 +52,7 @@ public class SuiteGenerator {
             final List<String> lines = FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8);
             final String[] classes = lines.toArray(new String[0]);
             if (classes.length > 0) {
-                regressionTests = graph.whitelistClasses(classes).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
+                regressionTests = graph.acceptClasses(classes).enableAllInfo().scan().getClassesWithMethodAnnotation(Test.class.getCanonicalName());
             }
         }
 
@@ -119,51 +123,4 @@ public class SuiteGenerator {
             System.out.println("No Suites to run.");
         }
     }
-
-
-    // Reference Methods
-    /*private static void startGWUnitTests() {
-        ClassGraph graph = new ClassGraph();
-        String gwUnitTestPackage = System.getProperty("gwUnitTestPackage");
-        ClassInfoList gwUnitTestRunners = graph.whitelistPackages(gwUnitTestPackage).enableAllInfo().scan().getClassesImplementing(IGWUnitTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found " + gwUnitTestRunners.size() + " Unit Test Runners in the package: " + gwUnitTestPackage);
-        gwUnitTestRunners.forEach(classInfo -> {
-            try {
-                classInfo.loadClass(IGWUnitTestRunner.class).getConstructor().newInstance().runTests();
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
-
-    private static void startGWIntegrationTests() {
-        ClassGraph graph = new ClassGraph();
-        String gwIntegrationTestPackage = System.getProperty("gwIntegrationTestPackage");
-        ClassInfoList gwIntegrationTestRunners = graph.whitelistPackages(gwIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found " + gwIntegrationTestRunners.size() + " Unit Test Runners in the package: " + gwIntegrationTestPackage);
-        gwIntegrationTestRunners.forEach(classInfo -> {
-            try {
-                classInfo.loadClass(IGWIntegrationTestRunner.class).getConstructor().newInstance().runTests();
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private static void startGWSystemIntegrationTests() {
-        String gwSystemIntegrationTestPackage = System.getProperty("gwSystemIntegrationTestPackage");
-        ClassGraph graph = new ClassGraph();
-        ClassInfoList gwSystemIntegrationTestRunners = graph.whitelistPackages(gwSystemIntegrationTestPackage).enableAllInfo().scan().getClassesImplementing(IGWSystemIntegrationTestRunner.class.getCanonicalName()).getStandardClasses();
-        System.out.println("Found " + gwSystemIntegrationTestRunners.size() + " Unit Test Runners in the package: " + gwSystemIntegrationTestPackage);
-        gwSystemIntegrationTestRunners.forEach(classInfo -> {
-            try {
-                classInfo.loadClass(IGWSystemIntegrationTestRunner.class).getConstructor().newInstance().runTests();
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
-    }*/
-
-
 }
