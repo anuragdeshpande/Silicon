@@ -43,6 +43,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Listener implements ISuiteListener, ITestListener {
 
@@ -127,6 +128,7 @@ public class Listener implements ISuiteListener, ITestListener {
     public void onTestFailure(final ITestResult iTestResult) {
         final TestDetailsDTO dto = buildTestDetailsDTO(iTestResult);
         final ExtentTest testNode = ReportManager.getTest(dto).getExtentTest();
+        final AtomicBoolean writeErrorMessageToLog = new AtomicBoolean(true);
         testNode.getModel().setStartTime(new Date(iTestResult.getStartMillis()));
         testNode.getModel().setEndTime(new Date(iTestResult.getEndMillis()));
         try {
@@ -146,6 +148,7 @@ public class Listener implements ISuiteListener, ITestListener {
                 for (final String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
                 }
+                writeErrorMessageToLog.set(false);
                 iTestResult.setThrowable(new ErrorMessageOnScreenException(Arrays.toString(errorMessagesFromScreen.toArray())));
             });
         }
@@ -173,6 +176,10 @@ public class Listener implements ISuiteListener, ITestListener {
                 final String[] errorMessagesOnScreenToIgnore = stringsToIgnore.split(";");
                 if (Arrays.stream(errorMessagesOnScreenToIgnore).noneMatch(s -> s.contains(iTestResult.getThrowable().getMessage()))) {
                     testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
+
+                    if (writeErrorMessageToLog.get()) {
+                        testNode.fail(iTestResult.getThrowable().getMessage());
+                    }
                 }
             }
         }
