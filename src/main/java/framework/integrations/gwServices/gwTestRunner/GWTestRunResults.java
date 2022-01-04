@@ -171,7 +171,9 @@ public class GWTestRunResults {
                     }
                 });
             }
-            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath);
+
+            final String suiteType = System.getProperty("RunType", "Custom");
+            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(applicationName, passingTests.get(), failingTests.get(), skippedTests.get(), 0, 0, jenkinsBuildNumber, testsuiteResults.getName(), reportPath, suiteType);
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
         return false;

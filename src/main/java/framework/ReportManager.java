@@ -285,11 +285,12 @@ public class ReportManager {
                 final String applicationName = System.getProperty("ApplicationName");
                 final String reportPath = getReportPath();
                 final Optional<SuiteResultsDTO> existingSuiteDTO = SuiteResultsDTO.getExisting(UUID, applicationName, suiteName);
+                final String suiteType = System.getProperty("RunType", "Custom");
                 if (existingSuiteDTO.isPresent()) {
                     final SuiteResultsDTO updatedDTO = SuiteResultsDTO.updateExisting(testCountDTO, existingSuiteDTO.get());
                     updateSuiteResults(updatedDTO);
                 } else {
-                    final SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
+                    final SuiteResultsDTO suiteDTO = SuiteResultsDTO.createInstance(applicationName, testCountDTO.getPassCount(), testCountDTO.getFailCount(), testCountDTO.getSkipCount(), testCountDTO.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath, suiteType);
                     insertIntoSuiteResults(suiteDTO);
                 }
             } else {
@@ -329,14 +330,15 @@ public class ReportManager {
     private static void updateExistingOrInsertSuiteDTO(final String uuid, final TestCountDTO dto, final ApplicationNames applicationName, final String suiteName, final String jenkinsBuildNumber, final String reportPath) {
         final Optional<SuiteResultsDTO> amp_uiTests = SuiteResultsDTO.getExisting(uuid, applicationName.getFullName(), suiteName);
         if (!amp_uiTests.isPresent()) {
-            insertIntoSuiteResults(buildSuiteDTO(dto, applicationName.getFullName(), suiteName, jenkinsBuildNumber, reportPath));
+            final String suiteType = System.getProperty("RunType", "Custom");
+            insertIntoSuiteResults(buildSuiteDTO(dto, applicationName.getFullName(), suiteName, jenkinsBuildNumber, reportPath, suiteType));
         } else {
             updateSuiteResults(SuiteResultsDTO.updateExisting(dto, amp_uiTests.get()));
         }
     }
 
-    private static SuiteResultsDTO buildSuiteDTO(final TestCountDTO dto, final String applicationName, final String suiteName, final String jenkinsBuildNumber, final String reportPath) {
-        return SuiteResultsDTO.createInstance(applicationName, dto.getPassCount(), dto.getFailCount(), dto.getSkipCount(), dto.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath);
+    private static SuiteResultsDTO buildSuiteDTO(final TestCountDTO dto, final String applicationName, final String suiteName, final String jenkinsBuildNumber, final String reportPath, final String suiteType) {
+        return SuiteResultsDTO.createInstance(applicationName, dto.getPassCount(), dto.getFailCount(), dto.getSkipCount(), dto.getWarningCount(), 0, jenkinsBuildNumber, suiteName, reportPath, suiteType);
     }
 
     public static boolean insertIntoSuiteResults(final SuiteResultsDTO suiteResultsDTO) {
@@ -506,7 +508,7 @@ public class ReportManager {
 
             System.out.println("Inserting master record in the suite results table");
             finalReportPath = finalReportPath.replace("\\\\qa\\regression_logs\\", "http://qa.idfbins.com/regression_logs/").replaceAll("\\\\", "/");
-            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath);
+            final SuiteResultsDTO suiteResultsDTO = SuiteResultsDTO.createInstance(System.getProperty("ProjectName", "NightlyRegression"), passedTests, failedTests, skippedTests, warningTests, fatalTests, System.getProperty("jenkinsBuildNumber"), System.getProperty("masterReportName"), finalReportPath, System.getProperty("RunType", "Custom"));
             ReportManager.insertIntoSuiteResults(suiteResultsDTO);
         }
     }
