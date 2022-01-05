@@ -358,7 +358,8 @@ public class ReportManager {
                     suiteResultsDTO.getSuiteEndTimeStamp(),
                     suiteResultsDTO.isSuiteTestBuild(),
                     suiteResultsDTO.shouldShowInPowerBI(),
-                    suiteResultsDTO.getUUID());
+                    suiteResultsDTO.getUUID(),
+                    suiteResultsDTO.getSuiteType());
             return true;
         } catch (final SQLException e) {
             e.printStackTrace();
