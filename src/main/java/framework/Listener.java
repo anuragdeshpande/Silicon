@@ -148,10 +148,8 @@ public class Listener implements ISuiteListener, ITestListener {
         testNode.log(Status.FAIL, iTestResult.getName() + ": Failed");
         testNode.fail(MarkupHelper.createCodeBlock(ExceptionUtils.getStackTrace(iTestResult.getThrowable())));
 
-        // Special Guidewire check - will be moved at a later date to the DOM listener functionality
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.MOMENTARY)) {
             testNode.log(Status.FAIL, iTestResult.getName() + " Failed with critical system failure");
-            testNode.assignCategory(FrameworkSystemTags.ERROR_ON_SCREEN.getValue());
             GuidewireInteract.getErrorMessageFromScreen(ReactionTime.MOMENTARY).ifPresent(errorMessagesFromScreen -> {
                 for (final String errorMessageFromScreen : errorMessagesFromScreen) {
                     testNode.fail(errorMessageFromScreen);
@@ -184,10 +182,12 @@ public class Listener implements ISuiteListener, ITestListener {
                 final String[] errorMessagesOnScreenToIgnore = stringsToIgnore.split(";");
                 if (Arrays.stream(errorMessagesOnScreenToIgnore).noneMatch(s -> s.contains(iTestResult.getThrowable().getMessage()))) {
                     testNode.assignCategory(FrameworkSystemTags.POTENTIAL_SYSTEM_FAILURE.getValue());
-
+                    testNode.assignCategory(FrameworkSystemTags.ERROR_ON_SCREEN.getValue());
                     if (writeErrorMessageToLog.get()) {
                         testNode.fail(iTestResult.getThrowable().getMessage());
                     }
+                } else {
+                    testNode.log(Status.INFO, "Match found for: " + iTestResult.getThrowable().getMessage() + " in " + Arrays.toString(errorMessagesOnScreenToIgnore) + ". Not marking as a Potential system failure");
                 }
             }
         }
