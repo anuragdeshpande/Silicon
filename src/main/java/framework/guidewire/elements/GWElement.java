@@ -2,6 +2,7 @@ package framework.guidewire.elements;
 
 import framework.constants.ReactionTime;
 import framework.customExceptions.IncorrectCallException;
+import framework.customExceptions.SimultaneousChangeException;
 import framework.elements.Identifier;
 import framework.elements.ui_element.UIElement;
 import framework.guidewire.ErrorMessageOnScreenException;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class GWElement extends UIElement {
-    public GWElement(Identifier identifier) {
+    public GWElement(final Identifier identifier) {
         super(identifier);
     }
 
@@ -34,16 +35,16 @@ public class GWElement extends UIElement {
      * @param identifier   element Identifier
      * @param reactionTime time to wait
      */
-    public GWElement(Identifier identifier, ReactionTime reactionTime) {
+    public GWElement(final Identifier identifier, final ReactionTime reactionTime) {
         super(identifier, reactionTime);
     }
 
-    protected GWElement(WebElement element) {
+    protected GWElement(final WebElement element) {
         super(element);
     }
 
     public boolean isDisabled() {
-        String attribute = this.getElement().getAttribute("aria-disabled");
+        final String attribute = this.getElement().getAttribute("aria-disabled");
         return attribute != null && attribute.equalsIgnoreCase("true");
     }
 
@@ -60,28 +61,28 @@ public class GWElement extends UIElement {
         try {
             this.getElement().click();
             PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
-        } catch (ElementClickInterceptedException cie) {
+        } catch (final ElementClickInterceptedException cie) {
             PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
             this.getElement().click();
             PauseTest.waitForPageToLoad(ReactionTime.getInstance(identifier.getTimeout(), TimeUnit.SECONDS));
-        } catch (UnhandledAlertException uae) {
-            Alert alert = BrowserFactory.getCurrentGuidewireBrowser().getDriver().switchTo().alert();
+        } catch (final UnhandledAlertException uae) {
+            final Alert alert = BrowserFactory.getCurrentGuidewireBrowser().getDriver().switchTo().alert();
             RegressionLogger.getTestLogger().info("Accepting Alert: " + alert.getText());
             alert.accept();
         }
 
         if (GuidewireInteract.hasErrorMessageOnScreen(ReactionTime.IMMEDIATE) && !identifier.shouldCheckForWarning()) {
-            Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
+            final Optional<List<String>> errorMessagesFromScreen = GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE);
             errorMessagesFromScreen.ifPresent(strings -> {
                 if ((identifier.shouldSafeguardAgainstRaceCondition() && strings.stream().anyMatch(errorMessage -> identifier.getRaceConditionStrings().contains(errorMessage))) ||
                         strings.stream().anyMatch(errorMessage -> errorMessage.toLowerCase(Locale.ROOT).contains("the object you are trying to update"))) {
                     identifier.setIgnoreErrorMessageCheck(true);
-                    RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for RaceConditionElementFriendlyName=" + identifier.getFriendlyName() + " RaceConditionElementIdentifier="+identifier.getReferenceValue()+", waiting for 10 seconds before retrying the action again.");
+                    RegressionLogger.getTestLogger().warn("Encountered simultaneous changes in the system for RaceConditionElementFriendlyName=" + identifier.getFriendlyName() + " RaceConditionElementIdentifier=" + identifier.getReferenceValue() + ", waiting for 10 seconds before retrying the action again.");
                     PauseTest.startWaitTimer(10);
                     this.getElement().click();
                     identifier.setIgnoreErrorMessageCheck(false);
                     GuidewireInteract.getErrorMessageFromScreen(ReactionTime.IMMEDIATE).ifPresent(strings1 -> {
-                        throw new ErrorMessageOnScreenException(Arrays.toString(strings1.toArray()));
+                        throw new SimultaneousChangeException(Arrays.toString(strings1.toArray()));
                     });
                 } else {
                     throw new ErrorMessageOnScreenException(Arrays.toString(strings.toArray()));
